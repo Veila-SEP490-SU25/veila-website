@@ -108,13 +108,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           toast.success("Đăng nhập thành công.", {
             description: "Chào mừng bạn quay trở lại.",
           });
+          if (pathname === "/login") router.push("/");
           return;
         } else if (statusCode === 401) {
           const { item, statusCode, message } = await requestOtpMutation({
             email: body.email,
           }).unwrap();
           if (statusCode === 200) {
-            router.push(`/verify-otp?userId=${item}`);
+            router.push(`/verify-otp?userId=${item}&email=${body.email}`);
           } else {
             toast.error("Đăng nhập thất bại.", {
               description: message,
@@ -153,6 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           toast.success("Đăng nhập thành công.", {
             description: "Chào mừng bạn quay trở lại.",
           });
+          if (pathname === "/verify-otp") router.push("/");
           return;
         } else {
           toast.error("Đăng nhập thất bại.", {
