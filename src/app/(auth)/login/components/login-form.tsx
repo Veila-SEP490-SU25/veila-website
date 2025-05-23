@@ -19,29 +19,24 @@ export const LoginFrom = () => {
 
   return (
     <div className="w-full flex flex-col gap-3 items-center">
-      <div className="w-full grid grid-cols-7 gap-2">
-        <Label className="font-medium text-md col-span-2">Email</Label>
-        <Input
-          className="w-full col-span-5"
-          type="email"
-          placeholder="Nhập email của bạn"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="w-full grid grid-cols-7 gap-2">
-        <Label className="font-medium text-md col-span-2">Mật khẩu</Label>
-        <Input
-          className="w-full col-span-5"
-          type="password"
-          placeholder="Nhập mật khẩu của bạn"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
+      <Input
+        className="w-full col-span-5"
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <Input
+        className="w-full"
+        type="password"
+        placeholder="Mật khẩu"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
       <Button
         onClick={handleLogin}
         className="cursor-pointer bg-maroon-400 hover:bg-maroon-400/80 text-white rounded-full w-full"
+        disabled={isAuthenticating}
       >
         {isAuthenticating ? "Đang đăng nhập..." : "Đăng nhập"}
       </Button>
