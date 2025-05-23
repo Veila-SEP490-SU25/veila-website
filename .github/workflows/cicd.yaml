@@ -13,9 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build nocache Docker image
-        run: docker build -t veila-website:latest --no-cache .
-
       - name: Build Docker image
         run: docker build -t veila-website:latest .
 
