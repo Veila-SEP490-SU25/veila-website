@@ -7,14 +7,13 @@ import {
   useRequestOtpMutation,
   useVerifyOtpMutation,
 } from "@/services/apis";
-import { ILogin, IRequestOtp, IUser, IVerifyOtp } from "@/services/types";
+import { ILogin, IUser, IVerifyOtp } from "@/services/types";
 import {
   delTokens,
   getAccessToken,
   getFromLocalStorage,
   getRefreshToken,
   removeFromLocalStorage,
-  setAccessToken,
   setTokens,
   setToLocalStorage,
 } from "@/utils";

@@ -1,6 +1,8 @@
 import { VerifyOtpForm } from "@/app/(auth)/verify-otp/components/verify-otp-form";
 import { Image } from "@/components/image";
+import { LoadingItem } from "@/components/loading-item";
 import { Separator } from "@/components/ui/separator";
+import { Suspense } from "react";
 
 const VerifyOtpPage = () => {
   return (
@@ -14,7 +16,17 @@ const VerifyOtpPage = () => {
         xác thực tài khoản của bạn.
       </p>
       <Separator />
-      <VerifyOtpForm />
+      <Suspense
+        fallback={
+          <div className="w-full flex flex-col gap-2">
+            <LoadingItem />
+            <LoadingItem />
+            <LoadingItem />
+          </div>
+        }
+      >
+        <VerifyOtpForm />
+      </Suspense>
     </div>
   );
 };

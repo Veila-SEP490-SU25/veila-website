@@ -106,6 +106,7 @@ export const VerifyOtpForm = () => {
           variant="link"
           className="text-sm font-bold text-maroon-400 cursor-pointer"
           disabled={isTimerStarted}
+          onClick={handleResendOtp}
         >
           Gửi lại
         </Button>
