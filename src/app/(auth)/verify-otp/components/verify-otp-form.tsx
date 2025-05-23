@@ -117,14 +117,14 @@ export const VerifyOtpForm = () => {
         disabled={isAuthenticating}
       >
         {isAuthenticating ? (
-          <div className="">
-            <Loader className="mr-2 h-4 w-4 text-white animate-spin" />{" "}
+          <div className="flex items-center justify-center gap-2">
+            <Loader className=" h-4 w-4 text-white animate-spin" />{" "}
             {" Đang xác thực..."}
           </div>
         ) : (
-          <div className="">
+          <div className="flex items-center justify-center gap-2">
             {"Xác thực "}
-            <ArrowRight className="ml-2 h-4 w-4 text-white" />
+            <ArrowRight className=" h-4 w-4 text-white" />
           </div>
         )}
       </Button>

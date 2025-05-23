@@ -13,7 +13,7 @@ export const HeroSection = () => {
   return (
     <div className="w-full bg-white flex flex-col items-center gap-5">
       <Image src="/veila.png" alt="Veila" className="w-2xs h-auto" />
-      <div className="w-4xl my-0 mx-auto flex flex-col items-center gap-5">
+      <div className="max-w-[100%] w-4xl my-0 mx-auto flex flex-col items-center gap-5">
         {isAuthenticating ? (
           <div className="w-full grid grid-cols-3">
             <div className="col-span-1 w-full">
@@ -37,7 +37,7 @@ export const HeroSection = () => {
           </div>
         ) : (
           <div className="w-full">
-            <h1 className="font-playfair text-3xl font-bold text-maroon-400 text-center mb-3">
+            <h1 className="w-full font-playfair text-3xl font-bold text-maroon-400 text-center mb-3">
               Chào mừng{" "}
               {isAuthenticated
                 ? `${currentUser?.firstName} ${currentUser?.middleName || ""} ${

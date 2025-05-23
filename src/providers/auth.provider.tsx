@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           toast.success("Đăng nhập thành công.", {
             description: "Chào mừng bạn quay trở lại.",
           });
-          if (pathname === "/login") router.push("/");
+          if (pathname !== "/") router.push("/");
           return;
         } else if (statusCode === 401) {
           const { item, statusCode, message } = await requestOtpMutation({
@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           toast.success("Đăng nhập thành công.", {
             description: "Chào mừng bạn quay trở lại.",
           });
-          if (pathname === "/verify-otp") router.push("/");
+          if (pathname !== "/") router.push("/");
           return;
         } else {
           toast.error("Đăng nhập thất bại.", {

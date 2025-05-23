@@ -19,6 +19,7 @@ export const OtpLoginForm = () => {
       toast.error("Vui lòng không để trống email.");
       return;
     }
+    console.log("email", email);
     try {
       const { item, message, statusCode } = await requestOtpMutation({
         email,

@@ -56,10 +56,10 @@ export const authApi = createApi({
     }),
 
     requestOtp: builder.mutation<IItemResponse<string>, IRequestOtp>({
-      query: (email) => ({
+      query: (body) => ({
         url: "auth/request-otp",
         method: "POST",
-        body: { email },
+        body,
       }),
     }),
 
