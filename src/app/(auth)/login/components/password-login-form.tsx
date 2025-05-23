@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/providers/auth.provider";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 
-export const LoginFrom = () => {
+export const PasswordLoginFrom = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

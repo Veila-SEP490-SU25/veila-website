@@ -1,7 +1,9 @@
-import { LoginFrom } from "@/app/(auth)/login/components/login-form";
+import { OtpLoginForm } from "@/app/(auth)/login/components/otp-login-from";
+import { PasswordLoginFrom } from "@/app/(auth)/login/components/password-login-form";
 import { Image } from "@/components/image";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const LoginPage = () => {
   return (
@@ -14,7 +16,18 @@ const LoginPage = () => {
         Đăng nhập vào tài khoản của bạn để tiếp tục
       </p>
       <Separator />
-      <LoginFrom />
+      <Tabs defaultValue="password" className="w-full">
+        <TabsList className="w-full grid grid-cols-2 gap-1">
+          <TabsTrigger value="password">Dùng mật khẩu</TabsTrigger>
+          <TabsTrigger value="otp">Dùng mã OTP</TabsTrigger>
+        </TabsList>
+        <TabsContent value="password">
+          <PasswordLoginFrom />
+        </TabsContent>
+        <TabsContent value="otp">
+          <OtpLoginForm />
+        </TabsContent>
+      </Tabs>
       <div className="w-full grid grid-cols-7 gap-1 items-center">
         <Separator className="col-span-3" />
         <p className="text-center text-sm text-muted-foreground col-span-1">

@@ -33,7 +33,7 @@ export const RegisterForm = () => {
         middleName,
       }).unwrap();
       if (statusCode === 200) {
-        router.push(`/verify-otp?userId=${item}`);
+        router.push(`/verify-otp?userId=${item}&email=${email}`);
       } else {
         toast.error("Đăng ký thất bại.", {
           description: message,

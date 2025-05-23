@@ -91,6 +91,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [logoutMutation, { isLoading: isLogoutLoading }] = useLogoutMutation();
   const [getMeQuery, { isLoading: isGetMeLoading }] = useLazyGetMeQuery();
 
+  const [requestOtpMutation] = useRequestOtpMutation();
+
   const login = useCallback(
     async (body: ILogin) => {
       try {
@@ -107,6 +109,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             description: "Chào mừng bạn quay trở lại.",
           });
           return;
+        } else if (statusCode === 401) {
+          const { item, statusCode, message } = await requestOtpMutation({
+            email: body.email,
+          }).unwrap();
+          if (statusCode === 200) {
+            router.push(`/verify-otp?userId=${item}`);
+          } else {
+            toast.error("Đăng nhập thất bại.", {
+              description: message,
+            });
+            return;
+          }
         } else {
           toast.error("Đăng nhập thất bại.", {
             description: message,
@@ -121,7 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
     },
-    [loginMutation, saveTokens, setIsAuthenticated]
+    [loginMutation, saveTokens, setIsAuthenticated, router]
   );
 
   const verifyOtp = useCallback(
