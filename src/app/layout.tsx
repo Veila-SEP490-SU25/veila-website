@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/providers/theme.provider";
 import { StoreProvider } from "@/providers/store.provider";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/providers/auth.provider";
 
 export const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -34,8 +35,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <StoreProvider>{children}</StoreProvider>
-          <Toaster 
+          <StoreProvider>
+            <AuthProvider>
+              <div className="min-h-screen min-w-screen">{children}</div>
+            </AuthProvider>
+          </StoreProvider>
+          <Toaster
             closeButton={true}
             position="top-right"
             duration={3000}
