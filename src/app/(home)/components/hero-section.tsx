@@ -12,7 +12,7 @@ export const HeroSection = () => {
 
   return (
     <div className="w-full bg-white flex flex-col items-center gap-5">
-      <Image src="/Veila.png" alt="Veila" className="w-2xs h-auto" />
+      <Image src="/veila.png" alt="Veila" className="w-2xs h-auto" />
       <div className="w-4xl my-0 mx-auto flex flex-col items-center gap-5">
         {isAuthenticating ? (
           <div className="w-full grid grid-cols-3">
