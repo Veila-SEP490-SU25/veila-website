@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+console.log(process.env);
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
