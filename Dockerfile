@@ -10,7 +10,7 @@ ENV NODE_ENV=production
 FROM base AS deps
 COPY package.json ./
 RUN --mount=type=cache,target=/root/.npm \
-    npm install --omit=dev --legacy-peer-deps
+    npm install --legacy-peer-deps
 
 # Build app với devDependencies
 FROM base AS build
