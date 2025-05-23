@@ -1,5 +1,4 @@
-import { IItemResponse, IToken } from "@/services/types";
-import { delTokens, getTokens, setTokens } from "@/utils";
+import { getTokens } from "@/utils";
 import {
   BaseQueryFn,
   FetchArgs,

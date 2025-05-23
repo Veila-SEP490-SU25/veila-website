@@ -6,7 +6,6 @@ interface ImageProps {
   className?: string;
   width?: number;
   height?: number;
-  onClick?: () => void;
 }
 
 export const Image = ({
@@ -15,10 +14,9 @@ export const Image = ({
   className = "",
   width = 100,
   height = 100,
-  onClick = () => {},
 }: ImageProps) => {
   return (
-    <div className={cn("block", className)} onClick={onClick}>
+    <div className={cn("block", className)}>
       <img
         src={src}
         alt={alt}

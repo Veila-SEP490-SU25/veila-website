@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+"use client"
+
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme.provider";
@@ -16,18 +17,16 @@ export const inter = Inter({
   subsets: ["latin", "vietnamese"],
 });
 
-export const metadata: Metadata = {
-  title: "Veila",
-  description: "Wedding Dress Services Platform",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
+      <head>
+        <title>Veila</title>
+      </head>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider
           attribute="class"
@@ -37,16 +36,16 @@ export default function RootLayout({
         >
           <StoreProvider>
             <AuthProvider>
-              <div className="min-h-screen min-w-screen">{children}</div>
+              {children}
             </AuthProvider>
           </StoreProvider>
           <Toaster
-            closeButton={true}
             position="top-right"
-            duration={3000}
+            duration={5000}
             expand={true}
-            visibleToasts={5}
+            visibleToasts={3}
             gap={5}
+            richColors={true}
           />
         </ThemeProvider>
       </body>
