@@ -1,5 +1,5 @@
 import { IItemResponse, IToken } from "@/services/types";
-import { clearLocalStorage, getTokens, setTokens } from "@/utils";
+import { clearLocalStorage, getTokens, getVeilaServerConfig, setTokens } from "@/utils";
 import {
   BaseQueryFn,
   FetchArgs,
@@ -8,7 +8,7 @@ import {
 } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = getVeilaServerConfig();
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
