@@ -86,6 +86,26 @@
   --color-sky-700: #243642;
   --color-sky-800: #1a272f;
   --color-sky-900: #0b1115;
+  --color-gray-100: #868686;
+  --color-gray-200: #727272;
+  --color-gray-300: #5e5e5e;
+  --color-gray-400: #4a4a4a;
+  --color-gray-500: #363636;
+  --color-gray-600: #313131;
+  --color-gray-700: #2b2b2b;
+  --color-gray-800: #262626;
+  --color-gray-900: #202020;
+  --color-white: #fff0ea;
+  --color-black: #070707;
+  --color-pink-100: #fdaed8;
+  --color-pink-200: #fda1d2;
+  --color-pink-300: #fd93cb;
+  --color-pink-400: #fc86c5;
+  --color-pink-500: #fc78be;
+  --color-pink-600: #e36cab;
+  --color-pink-700: #ca6098;
+  --color-pink-800: #b05485;
+  --color-pink-900: #974872;
 }
 
 :root {
