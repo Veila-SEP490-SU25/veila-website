@@ -55,3 +55,4 @@ pnpm-lock.yaml
 # IDEs
 .vscode
 .idea
+pnpm-workspace.yaml
