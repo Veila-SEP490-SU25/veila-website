@@ -1,3 +1,4 @@
+import { GoogleButton } from "@/app/(auth)/components/google-button";
 import { RegisterForm } from "@/app/(auth)/register/components/register-form";
 import { Image } from "@/components/image";
 import { Button } from "@/components/ui/button";
@@ -22,17 +23,7 @@ const RegisterPage = () => {
         </p>
         <Separator className="col-span-3" />
       </div>
-      <Button
-        variant="outline"
-        className="cursor-pointer boder-1 bg-white text-maroon-500 border-maroon-400 hover:bg-maroon-400 hover:text-white rounded-full w-full"
-      >
-        Đăng ký với Google{" "}
-        <Image
-          src="/google-icon.svg"
-          alt="Google Icon"
-          className="h-full w-auto"
-        />
-      </Button>
+      <GoogleButton variant="signup" />
     </div>
   );
 };

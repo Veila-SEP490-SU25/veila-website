@@ -1,3 +1,4 @@
+import { GoogleButton } from "@/app/(auth)/components/google-button";
 import { OtpLoginForm } from "@/app/(auth)/login/components/otp-login-from";
 import { PasswordLoginFrom } from "@/app/(auth)/login/components/password-login-form";
 import { Image } from "@/components/image";
@@ -35,17 +36,7 @@ const LoginPage = () => {
         </p>
         <Separator className="col-span-3" />
       </div>
-      <Button
-        variant="outline"
-        className="cursor-pointer boder-1 bg-white text-maroon-500 border-maroon-400 hover:bg-maroon-400 hover:text-white rounded-full w-full"
-      >
-        Đăng nhập với Google{" "}
-        <Image
-          src="/google-icon.svg"
-          alt="Google Icon"
-          className="h-full w-auto"
-        />
-      </Button>
+      <GoogleButton variant="login" />
     </div>
   );
 };

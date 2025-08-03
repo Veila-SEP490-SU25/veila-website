@@ -8,7 +8,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 
-const getFirebase = () => {
+export const useFirebase = () => {
   const firebaseConfig = getFirebaseConfig();
 
   const app = initializeApp(firebaseConfig);
@@ -26,5 +26,3 @@ const getFirebase = () => {
     signInWithPopup,
   };
 };
-
-export const firebase = getFirebase();
