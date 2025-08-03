@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           toast.success("Đăng nhập thành công.", {
             description: "Chào mừng bạn quay trở lại.",
           });
-          if (pathname !== "/") router.push("/");
+          router.push("/");
           return;
         } else if (statusCode === 401) {
           const { item, statusCode, message } = await requestOtpMutation({
