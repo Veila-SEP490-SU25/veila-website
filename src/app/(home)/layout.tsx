@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import { Header } from "@/components/header/header";
 import { Metadata } from "next";
 import { ReactNode } from "react";
@@ -11,6 +12,7 @@ const HomeLayout = ({ children }: { children: ReactNode }) => {
     <div className="w-full relative">
       <Header />
       {children}
+      <Footer />
     </div>
   );
 };

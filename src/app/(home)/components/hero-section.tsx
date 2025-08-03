@@ -2,80 +2,93 @@
 
 import { Image } from "@/components/image";
 import { LoadingItem } from "@/components/loading-item";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/providers/auth.provider";
+import { Heart, Search, Star, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const HeroSection = () => {
   const router = useRouter();
   const { currentUser, isAuthenticating, isAuthenticated, logout } = useAuth();
 
-  return (
-    <div className="w-full bg-white flex flex-col items-center gap-5">
-      <Image src="/veila.png" alt="Veila" className="w-2xs h-auto" />
-      <div className="max-w-[100%] w-4xl my-0 mx-auto flex flex-col items-center gap-5">
-        {isAuthenticating ? (
-          <div className="w-full grid grid-cols-3">
-            <div className="col-span-1 w-full">
-              <LoadingItem />
+  return <section className="relative py-20 px-4 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge variant="secondary" className="bg-rose-100 text-rose-700 hover:bg-rose-200">
+                  ✨ Váy Cưới Mơ Ước Của Bạn Đang Chờ Đón
+                </Badge>
+                <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+                  Tìm Kiếm Chiếc
+                  <span className="text-rose-600 block">Váy Cưới Hoàn Hảo</span>
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Kết nối với các nhà thiết kế chuyên nghiệp để tạo ra những chiếc váy cưới được thiết kế riêng, hoặc
+                  khám phá bộ sưu tập cho thuê và mua bán được tuyển chọn kỹ lưỡng. Chiếc váy cưới mơ ước của bạn chỉ
+                  cách một cuộc tư vấn.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white px-8 py-3">
+                  <Heart className="w-5 h-5 mr-2" />
+                  Bắt Đầu Hành Trình
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-rose-200 text-rose-700 hover:bg-rose-50 px-8 py-3 bg-transparent"
+                >
+                  <Search className="w-5 h-5 mr-2" />
+                  Xem Thiết Kế
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-8 pt-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">500+</div>
+                  <div className="text-sm text-gray-600">Cô Dâu Hạnh Phúc</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">50+</div>
+                  <div className="text-sm text-gray-600">Nhà Thiết Kế Chuyên Nghiệp</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">4.9</div>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm text-gray-600">Đánh Giá</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="col-span-1 w-full">
-              <LoadingItem />
-            </div>
-            <div className="col-span-1 w-full">
-              <LoadingItem />
-            </div>
-            <div className="col-span-1 w-full">
-              <LoadingItem />
-            </div>
-            <div className="col-span-1 w-full">
-              <LoadingItem />
-            </div>
-            <div className="col-span-1 w-full">
-              <LoadingItem />
+
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/placeholder.svg?height=600&width=500&text=Elegant+Wedding+Dress"
+                  alt="Beautiful wedding dress"
+                  width={500}
+                  height={600}
+                  className="w-full h-auto"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              </div>
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-rose-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Váy cưới</div>
+                    <div className="text-sm text-gray-600">Được thiết kế hoàn hảo</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="w-full">
-            <h1 className="w-full font-playfair text-3xl font-bold text-maroon-400 text-center mb-3">
-              Chào mừng{" "}
-              {isAuthenticated
-                ? `${currentUser?.firstName} ${currentUser?.middleName || ""} ${
-                    currentUser?.lastName
-                  }`
-                : "bạn"}{" "}
-              đến với Veila
-            </h1>
-            <h6 className="text-xl font-medium text-maroon-400 font-playfair text-center text-wrap mb-3">
-              Nền tảng kết nối dịch vụ cho thuê, mua bán và đặt may váy cưới.{" "}
-              <br></br>
-              Nơi bạn có thể tìm thấy những chiếc váy cưới hoàn hảo nhất cho
-              ngày trọng đại của mình.
-            </h6>
-            <div className="text-center text-sm text-crimson-900 w-full">
-              {isAuthenticated ? (
-                <Button
-                  onClick={logout}
-                  className="bg-maroon-400 text-white hover:bg-maroon-400/50 cursor-pointer rounded-full w-fit px-10 py-2"
-                  disabled={isAuthenticating}
-                >
-                  Đăng xuất
-                </Button>
-              ) : (
-                <Button
-                  disabled={isAuthenticating}
-                  onClick={() => {
-                    router.push("/login");
-                  }}
-                  className="bg-maroon-400 text-white hover:bg-maroon-400/50 cursor-pointer rounded-full w-fit px-10 py-2"
-                >
-                  Đăng nhập
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+      </section>
 };
