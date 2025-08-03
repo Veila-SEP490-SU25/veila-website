@@ -16,11 +16,10 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
 
   const handleGoogleSignIn = useCallback(async () => {
     const { user } = await signInWithPopup(auth, googleProvider);
-    const { displayName, email, photoURL } = user;
+    const { displayName, email } = user;
     console.log("Google Sign-In successful:", {
       displayName,
       email,
-      photoURL,
     });
   }, [auth, signInWithPopup, googleProvider]);
 
