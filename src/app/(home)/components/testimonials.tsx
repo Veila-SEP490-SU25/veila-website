@@ -17,8 +17,8 @@ export const Testimonials: React.FC = () => {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4">
-                  "Veila đã biến chiếc váy mơ ước của tôi thành hiện thực. Nhà thiết kế hiểu hoàn hảo tầm nhìn của tôi
-                  và tạo ra thứ gì đó vượt ngoài mong đợi."
+                  &quot;Veila đã biến chiếc váy mơ ước của tôi thành hiện thực. Nhà thiết kế hiểu hoàn hảo tầm nhìn của tôi
+                  và tạo ra thứ gì đó vượt ngoài mong đợi.&quot;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
@@ -40,8 +40,8 @@ export const Testimonials: React.FC = () => {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4">
-                  "Dịch vụ cho thuê thật tuyệt vời! Tôi có được một chiếc váy thiết kế với giá cả không thể tin được.
-                  Chất lượng và dịch vụ đều xuất sắc."
+                  &quot;Dịch vụ cho thuê thật tuyệt vời! Tôi có được một chiếc váy thiết kế với giá cả không thể tin được.
+                  Chất lượng và dịch vụ đều xuất sắc.&quot;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
@@ -63,8 +63,8 @@ export const Testimonials: React.FC = () => {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4">
-                  "Từ tư vấn đến thử váy cuối cùng, đội ngũ Veila đều chuyên nghiệp và chu đáo. Họ làm cho toàn bộ quá
-                  trình không có căng thẳng."
+                  &quot;Từ tư vấn đến thử váy cuối cùng, đội ngũ Veila đều chuyên nghiệp và chu đáo. Họ làm cho toàn bộ quá
+                  trình không có căng thẳng.&quot;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
