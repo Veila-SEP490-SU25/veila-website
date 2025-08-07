@@ -22,7 +22,7 @@ const eslintConfig = [
           ignoreRestSiblings: true,
         },
       ],
-      
+      "react/no-unescaped-entities": "off",
     }
   }
 ];
