@@ -14,3 +14,20 @@ export interface IBlog extends IItem {
   isVerified: boolean;
   status: BlogStatus;
 }
+
+export interface IUpdateBlog{
+  id: string;
+  categoryId: string;
+  title: string;
+  content: string;
+  images: string;
+  status: BlogStatus;
+}
+
+export interface ICreateBlog {
+  categoryId: string;
+  title: string;
+  content: string;
+  images: string;
+  status: BlogStatus;
+}
