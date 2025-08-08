@@ -160,7 +160,7 @@ const LoginPage = () => {
             </div>
 
             {/* OTP Login */}
-            <Link href="/auth/login-otp">
+            <Link href="/login-otp">
               <Button
                 variant="outline"
                 className="w-full h-11 border-rose-200 text-rose-700 hover:bg-rose-50"
