@@ -24,3 +24,20 @@ export interface IVerifyOtp {
   userId: string;
   otp: string;
 }
+
+export interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface IResetPassword {
+  userId: string;
+  otp: string;
+  newPassword: string;
+}
+
+export interface IGoogleAuth {
+  email: string;
+  fullname: string;
+}
