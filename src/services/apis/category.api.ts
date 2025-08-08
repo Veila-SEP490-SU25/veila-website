@@ -20,7 +20,7 @@ export const categoryApi = createApi({
   endpoints: (builders) => ({
     getCategory: builders.query<IItemResponse<ICategory>, string>({
       query: (id) => ({
-        url: `/categories/${id}`,
+        url: `categories/${id}`,
         method: "GET",
       }),
     }),
@@ -30,7 +30,7 @@ export const categoryApi = createApi({
       ICategoryGetRequest
     >({
       query: ({ id, filter, page, size, sort }) => ({
-        url: `/categories/${id}/accessories`,
+        url: `categories/${id}/accessories`,
         method: "GET",
         params: {
           filter,
@@ -46,7 +46,7 @@ export const categoryApi = createApi({
       ICategoryGetRequest
     >({
       query: ({ id, filter, page, size, sort }) => ({
-        url: `/categories/${id}/blogs`,
+        url: `categories/${id}/blogs`,
         method: "GET",
         params: {
           filter,
@@ -62,7 +62,7 @@ export const categoryApi = createApi({
       ICategoryGetRequest
     >({
       query: ({ id, filter, page, size, sort }) => ({
-        url: `/categories/${id}/dresses`,
+        url: `categories/${id}/dresses`,
         method: "GET",
         params: {
           filter,
@@ -78,7 +78,7 @@ export const categoryApi = createApi({
       ICategoryGetRequest
     >({
       query: ({ id, filter, page, size, sort }) => ({
-        url: `/categories/${id}/services`,
+        url: `categories/${id}/services`,
         method: "GET",
         params: {
           filter,
@@ -91,7 +91,7 @@ export const categoryApi = createApi({
 
     getMyShopCategories: builders.query<IListResponse<ICategory>, IPagination>({
       query: ({ filter, page, size, sort }) => ({
-        url: `/categories/me`,
+        url: `categories/me`,
         method: "GET",
         params: {
           filter,
@@ -104,7 +104,7 @@ export const categoryApi = createApi({
 
     getMyShopCategory: builders.query<IItemResponse<ICategory>, string>({
       query: (id) => ({
-        url: `/categories/${id}/me`,
+        url: `categories/${id}/me`,
         method: "GET",
       }),
     }),
@@ -114,7 +114,7 @@ export const categoryApi = createApi({
       ICreateCategory
     >({
       query: (body) => ({
-        url: `/categories/me`,
+        url: `categories/me`,
         method: "POST",
         body,
       }),
@@ -125,7 +125,7 @@ export const categoryApi = createApi({
       IUpdateCategory
     >({
       query: (body) => ({
-        url: `/categories/me`,
+        url: `categories/me`,
         method: "PUT",
         body,
       }),
@@ -133,14 +133,14 @@ export const categoryApi = createApi({
 
     deleteMyShopCategory: builders.mutation<IItemResponse<null>, string>({
       query: (id) => ({
-        url: `/categories/${id}/me`,
+        url: `categories/${id}/me`,
         method: "DELETE",
       }),
     }),
 
     restoreMyShopCategory: builders.mutation<IItemResponse<null>, string>({
       query: (id) => ({
-        url: `/categories/${id}/me`,
+        url: `categories/${id}/me`,
         method: "PATCH",
       }),
     }),
