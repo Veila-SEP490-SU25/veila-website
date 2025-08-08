@@ -20,3 +20,7 @@ export interface IDress extends IItem {
   status: DressStatus;
   feedbacks: IFeedback[];
 }
+
+export interface ICreateDress {
+  
+}
