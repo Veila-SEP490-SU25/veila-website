@@ -1,4 +1,4 @@
-import { accessoryApi, authApi, blogApi } from "@/services/apis";
+import { accessoryApi, authApi, blogApi, categoryApi } from "@/services/apis";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
@@ -7,12 +7,14 @@ const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [accessoryApi.reducerPath]: accessoryApi.reducer,
     [blogApi.reducerPath]: blogApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       authApi.middleware,
       accessoryApi.middleware,
-      blogApi.middleware
+      blogApi.middleware,
+      categoryApi.middleware
     ),
 });
 
