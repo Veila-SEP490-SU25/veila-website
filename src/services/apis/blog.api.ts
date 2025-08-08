@@ -61,6 +61,13 @@ export const blogApi = createApi({
       }),
     }),
 
+    restoreMyShopBlog: builders.mutation<IItemResponse<null>, string>({
+      query: (id) => ({
+        url: `blogs/${id}/me`,
+        method: "PATCH",
+      }),
+    }),
+
     createMyShopBlog: builders.mutation<IItemResponse<IBlog>, ICreateBlog>({
       query: (body) => ({
         url: `blogs/me`,
