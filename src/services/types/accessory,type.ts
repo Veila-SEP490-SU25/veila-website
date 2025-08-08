@@ -20,3 +20,28 @@ export interface IAccessory extends IItem {
   status: AccessoryStatus;
   feedbacks: IFeedback[];
 }
+
+export interface IUpdateAccessory {
+  id: string;
+  categoryId: string;
+  images: string;
+  name: string;
+  description: string;
+  sellPrice: number;
+  rentalPrice: number;
+  isSellable: boolean;
+  isRentable: boolean;
+  status: AccessoryStatus;
+}
+
+export interface ICreateAccessory {
+  categoryId: string;
+  images: string;
+  name: string;
+  description: string;
+  sellPrice: number;
+  rentalPrice: number;
+  isSellable: boolean;
+  isRentable: boolean;
+  status: AccessoryStatus;
+}

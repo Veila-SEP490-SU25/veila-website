@@ -28,3 +28,10 @@ export interface IItem {
   updatedAt: Date;
   deletedAt: Date | null;
 }
+
+export interface IPagination {
+  page: number | null;
+  size: number | null;
+  filter: string | null;
+  sort: string | null;
+}
