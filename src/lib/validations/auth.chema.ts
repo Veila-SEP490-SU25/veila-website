@@ -67,7 +67,15 @@ export const phoneSchema = z.object({
     .regex(/^\d{10}$/, "Số điện thoại không hợp lệ"),
 });
 
+export const otpSchema = z.object({
+  otp: z
+    .string()
+    .min(6, "Mã OTP phải có 6 ký tự")
+    .max(6, "Mã OTP phải có 6 ký tự"),
+});
+
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type LoginOTPSchema = z.infer<typeof loginOTPSchema>;
 export type RegisterSchema = z.infer<typeof registerSchema>;
 export type PhoneSchema = z.infer<typeof phoneSchema>;
+export type OTPSchema = z.infer<typeof otpSchema>;
