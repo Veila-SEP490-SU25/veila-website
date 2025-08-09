@@ -1,9 +1,11 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
+  ICreateDress,
   IDress,
   IItemResponse,
   IListResponse,
   IPagination,
+  IUpdateDress,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
@@ -46,6 +48,36 @@ export const dressApi = createApi({
         };
       },
     }),
+
+    createDress: builders.mutation<IItemResponse<IDress>, ICreateDress>({
+      query: (body) => ({
+        url: "/dresses/me",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    updateDress: builders.mutation<IItemResponse<null>, IUpdateDress>({
+      query: ({ id, ...body }) => ({
+        url: `/dresses/${id}/me`,
+        method: "PUT",
+        body,
+      }),
+    }),
+
+    deleteDress: builders.mutation<IItemResponse<null>, string>({
+      query: (id) => ({
+        url: `/dresses/${id}/me`,
+        method: "DELETE",
+      }),
+    }),
+
+    restoreDress: builders.mutation<IItemResponse<null>, string>({
+      query: (id) => ({
+        url: `/dresses/${id}/me`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -54,4 +86,7 @@ export const {
   useLazyGetDressQuery,
   useLazyGetMyShopDressQuery,
   useLazyGetMyShopDressesQuery,
+  useCreateDressMutation,
+  useUpdateDressMutation,
+  useDeleteDressMutation,
 } = dressApi;

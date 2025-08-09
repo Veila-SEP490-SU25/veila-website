@@ -22,5 +22,17 @@ export interface IDress extends IItem {
 }
 
 export interface ICreateDress {
-  
+  categoryId: string;
+  name: string;
+  description: string;
+  sellPrice: number;
+  rentalPrice: number;
+  isSellable: boolean;
+  isRentable: boolean;
+  status: DressStatus;
+  images: string;
+}
+
+export interface IUpdateDress extends ICreateDress {
+  id: string;
 }
