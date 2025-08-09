@@ -7,6 +7,7 @@ import {
   contractApi,
   dressApi,
   feedbackApi,
+  milestoneApi,
 } from "@/services/apis";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
@@ -21,6 +22,7 @@ const store = configureStore({
     [contractApi.reducerPath]: contractApi.reducer,
     [dressApi.reducerPath]: dressApi.reducer,
     [feedbackApi.reducerPath]: feedbackApi.reducer,
+    [milestoneApi.reducerPath]: milestoneApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -31,7 +33,8 @@ const store = configureStore({
       complaintApi.middleware,
       contractApi.middleware,
       dressApi.middleware,
-      feedbackApi.middleware
+      feedbackApi.middleware,
+      milestoneApi.middleware
     ),
 });
 
