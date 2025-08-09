@@ -16,7 +16,7 @@ export const dressApi = createApi({
     getDresses: builders.query<IListResponse<IDress>, IPagination>({
       query: ({ filter = "", page = 1, size = 10, sort = "" }) => {
         return {
-          url: "/dresses",
+          url: "dresses",
           params: { filter, page, size, sort },
         };
       },
@@ -25,7 +25,7 @@ export const dressApi = createApi({
     getDress: builders.query<IItemResponse<IDress>, string>({
       query: (id) => {
         return {
-          url: `/dresses/${id}`,
+          url: `dresses/${id}`,
           method: "GET",
         };
       },
@@ -34,7 +34,7 @@ export const dressApi = createApi({
     getMyShopDresses: builders.query<IListResponse<IDress>, IPagination>({
       query: ({ filter = "", page = 1, size = 10, sort = "" }) => {
         return {
-          url: "/dresses/me",
+          url: "dresses/me",
           params: { filter, page, size, sort },
         };
       },
@@ -43,7 +43,7 @@ export const dressApi = createApi({
     getMyShopDress: builders.query<IItemResponse<IDress>, string>({
       query: (id) => {
         return {
-          url: `/dresses/${id}/me`,
+          url: `dresses/${id}/me`,
           method: "GET",
         };
       },
@@ -51,7 +51,7 @@ export const dressApi = createApi({
 
     createDress: builders.mutation<IItemResponse<IDress>, ICreateDress>({
       query: (body) => ({
-        url: "/dresses/me",
+        url: "dresses/me",
         method: "POST",
         body,
       }),
@@ -59,7 +59,7 @@ export const dressApi = createApi({
 
     updateDress: builders.mutation<IItemResponse<null>, IUpdateDress>({
       query: ({ id, ...body }) => ({
-        url: `/dresses/${id}/me`,
+        url: `dresses/${id}/me`,
         method: "PUT",
         body,
       }),
@@ -67,14 +67,14 @@ export const dressApi = createApi({
 
     deleteDress: builders.mutation<IItemResponse<null>, string>({
       query: (id) => ({
-        url: `/dresses/${id}/me`,
+        url: `dresses/${id}/me`,
         method: "DELETE",
       }),
     }),
 
     restoreDress: builders.mutation<IItemResponse<null>, string>({
       query: (id) => ({
-        url: `/dresses/${id}/me`,
+        url: `dresses/${id}/me`,
         method: "PATCH",
       }),
     }),

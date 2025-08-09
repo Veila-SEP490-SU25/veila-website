@@ -16,3 +16,11 @@ export interface IFeedback extends IItem {
   content: string;
   rating: number;
 }
+
+export interface ICreateFeedback {
+  orderId: string;
+  productId: string;
+  content: string;
+  rating: number;
+  images: string;
+}
