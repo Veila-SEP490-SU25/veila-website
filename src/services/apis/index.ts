@@ -7,3 +7,4 @@ export * from './contract.api';
 export * from './dress.api';
 export * from './feedback.api';
 export * from './milestone.api';
+export * from './order.api';
