@@ -1,23 +1,25 @@
+import { IItem, IShop } from "@/services/types";
+import { IContract } from "@/services/types/contract.type";
+
 export enum UserRole {
-  Customer = 'customer',
-  Supplier = 'supplier',
-  SystemOperator = 'system_operator',
-  Admin = 'admin',
-  SuperAdmin = 'super_admin',
+  SUPER_ADMIN = "SUPER_ADMIN",
+  ADMIN = "ADMIN",
+  STAFF = "STAFF",
+  SHOP = "SHOP",
+  CUSTOMER = "CUSTOMER",
 }
 
 export enum UserStatus {
-  Active = 'active',
-  Inactive = 'inactive',
-  Suspended = 'suspended',
-  Deleted = 'deleted',
-  Banned = 'banned',
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  SUSPENDED = "SUSPENDED",
+  BANNED = "BANNED",
 }
 
-export interface IUser {
-  id: string;
+export interface IUser extends IItem {
   username: string;
   email: string;
+  password: string;
   firstName: string;
   middleName: string | null;
   lastName: string;
@@ -26,9 +28,11 @@ export interface IUser {
   birthDate: Date | null;
   avatarUrl: string | null;
   coverUrl: string | null;
-  isVerified: boolean;
   role: UserRole;
   status: UserStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  reputation: number;
+  isVerified: boolean;
+  isIdentified: boolean;
+  shop: IShop | null;
+  contract: IContract;
 }

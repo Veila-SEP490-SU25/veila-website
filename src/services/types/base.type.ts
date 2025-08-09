@@ -20,3 +20,18 @@ export interface IErrorResponse {
   message: string;
   statusCode: number;
 }
+
+export interface IItem {
+  id: string;
+  images: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+}
+
+export interface IPagination {
+  page: number | null;
+  size: number | null;
+  filter: string | null;
+  sort: string | null;
+}

@@ -1,9 +1,12 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
+  IChangePassword,
+  IGoogleAuth,
   IItemResponse,
   ILogin,
   IRegister,
   IRequestOtp,
+  IResetPassword,
   IToken,
   IUser,
   IVerifyOtp,
@@ -70,6 +73,30 @@ export const authApi = createApi({
         body,
       }),
     }),
+
+    changePassword: builder.mutation<IItemResponse<null>, IChangePassword>({
+      query: (body) => ({
+        url: "auth/change-password",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    resetPassword: builder.mutation<IItemResponse<null>, IResetPassword>({
+      query: (body) => ({
+        url: "auth/reset-password",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    googleAuth: builder.mutation<IItemResponse<IToken>, IGoogleAuth>({
+      query: (body) => ({
+        url: "auth/google/login",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -81,4 +108,7 @@ export const {
   useRegisterMutation,
   useRequestOtpMutation,
   useVerifyOtpMutation,
+  useChangePasswordMutation,
+  useResetPasswordMutation,
+  useGoogleAuthMutation,
 } = authApi;
