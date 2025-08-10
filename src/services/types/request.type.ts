@@ -1,16 +1,16 @@
 import { IItem, IUser } from "@/services/types";
 
 export enum RequestStatus {
-  DRAFT = 'DRAFT',
-  SUBMIT = 'SUBMIT',
-  ACCEPTED = 'ACCEPTED',
-  CANCELLED = 'CANCELLED',
+  DRAFT = "DRAFT",
+  SUBMIT = "SUBMIT",
+  ACCEPTED = "ACCEPTED",
+  CANCELLED = "CANCELLED",
 }
 
 export enum UpdateRequestStatus {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED',
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
 }
 
 export interface IRequest extends IItem {
@@ -67,4 +67,36 @@ export interface IUpdateRequest extends IItem {
   specialElement: string | null;
   coverage: string | null;
   status: UpdateRequestStatus;
+}
+
+export interface IUpdateRequestInfo extends ICreateRequest{
+  id: string;
+}
+
+export interface ICreateRequest {
+  title: string;
+  description: string;
+  images: string;
+  high: number;
+  weight: number;
+  bust: number;
+  waist: number;
+  hip: number;
+  armpit: number;
+  bicep: number;
+  neck: number;
+  shoulderWidth: number;
+  sleeveLength: number;
+  backLength: number;
+  lowerWaist: number;
+  waistToFloor: number;
+  dressStyle: string;
+  curtainNeckline: string;
+  sleeveStyle: string;
+  material: string;
+  color: string;
+  specialElements: string;
+  coverage: string;
+  status: RequestStatus;
+  isPrivate: boolean;
 }
