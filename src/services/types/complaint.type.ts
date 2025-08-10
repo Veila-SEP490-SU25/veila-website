@@ -1,4 +1,4 @@
-import { IItem, IOrder, IUser } from "@/services/types";
+import { IItem, IOrder, IPagination, IUser } from "@/services/types";
 
 export enum ComplaintStatus {
   DRAFT = "DRAFT",
@@ -26,4 +26,16 @@ export interface IUpdateComplaint {
 export interface IResponseComplaint {
   id: string;
   status: ComplaintStatus.APPROVED | ComplaintStatus.REJECTED;
+}
+
+export interface IGetComplaints extends IPagination {
+  id: string;
+}
+
+export interface ICreateComplaint {
+  id: string;
+  title: string;
+  description: string;
+  images: string;
+  status: ComplaintStatus;
 }

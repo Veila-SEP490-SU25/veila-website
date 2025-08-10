@@ -1,9 +1,9 @@
 import { ICategory, IFeedback, IItem, IUser } from "@/services/types";
 
 export enum AccessoryStatus {
-  AVAILABLE = 'AVAILABLE',
-  UNAVAILABLE = 'UNAVAILABLE',
-  OUT_OF_STOCK = 'OUT_OF_STOCK',
+  AVAILABLE = "AVAILABLE",
+  UNAVAILABLE = "UNAVAILABLE",
+  OUT_OF_STOCK = "OUT_OF_STOCK",
 }
 
 export interface IAccessory extends IItem {
@@ -44,4 +44,11 @@ export interface ICreateAccessory {
   isSellable: boolean;
   isRentable: boolean;
   status: AccessoryStatus;
+}
+
+export interface IAccessoriesDetail {
+  accessoryId: string;
+  quantity: number;
+  description: string;
+  is_rated: boolean;
 }

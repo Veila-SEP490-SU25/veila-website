@@ -29,7 +29,7 @@ export const categoryApi = createApi({
       IListResponse<IAccessory>,
       ICategoryGetRequest
     >({
-      query: ({ id, filter, page, size, sort }) => ({
+      query: ({ id, filter = "", page = 1, size = 10, sort = "" }) => ({
         url: `categories/${id}/accessories`,
         method: "GET",
         params: {
@@ -45,7 +45,7 @@ export const categoryApi = createApi({
       IListResponse<IBlog>,
       ICategoryGetRequest
     >({
-      query: ({ id, filter, page, size, sort }) => ({
+      query: ({ id, filter = "", page = 1, size = 10, sort = "" }) => ({
         url: `categories/${id}/blogs`,
         method: "GET",
         params: {
@@ -61,7 +61,7 @@ export const categoryApi = createApi({
       IListResponse<IDress>,
       ICategoryGetRequest
     >({
-      query: ({ id, filter, page, size, sort }) => ({
+      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `categories/${id}/dresses`,
         method: "GET",
         params: {
@@ -77,7 +77,7 @@ export const categoryApi = createApi({
       IListResponse<IService>,
       ICategoryGetRequest
     >({
-      query: ({ id, filter, page, size, sort }) => ({
+      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `categories/${id}/services`,
         method: "GET",
         params: {
@@ -90,7 +90,7 @@ export const categoryApi = createApi({
     }),
 
     getMyShopCategories: builders.query<IListResponse<ICategory>, IPagination>({
-      query: ({ filter, page, size, sort }) => ({
+      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `categories/me`,
         method: "GET",
         params: {

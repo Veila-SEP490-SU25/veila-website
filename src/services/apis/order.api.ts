@@ -1,12 +1,132 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import {
+  IComplaint,
+  ICreateComplaint,
+  ICreateOrder,
+  IGetComplaints,
+  IItemResponse,
+  IListResponse,
+  IOrder,
+  IPagination,
+  IUpdateOrderInfo,
+  IUpdateOrderStatus,
+} from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
   baseQuery: baseQueryWithRefresh,
   endpoints: (builders) => ({
-    
+    getOrders: builders.query<IListResponse<IOrder>, IPagination>({
+      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+        url: `orders`,
+        method: "GET",
+        params: {
+          sort,
+          filter,
+          page,
+          size,
+        },
+      }),
+    }),
+
+    createOrder: builders.mutation<IItemResponse<IOrder>, ICreateOrder>({
+      query: (body) => ({
+        url: "orders",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    getOrder: builders.query<IItemResponse<IOrder>, string>({
+      query: (id) => ({
+        url: `orders/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    updateOrderInfo: builders.mutation<IItemResponse<IOrder>, IUpdateOrderInfo>(
+      {
+        query: ({ id, ...body }) => ({
+          url: `orders/${id}`,
+          method: "PUT",
+          body,
+        }),
+      }
+    ),
+
+    getMyOrderComplaints: builders.query<
+      IListResponse<IComplaint>,
+      IGetComplaints
+    >({
+      query: ({ id, filter = "", page = 1, size = 10, sort = "" }) => ({
+        url: `orders/${id}/complaints/me`,
+        method: "GET",
+        params: {
+          filter,
+          page,
+          size,
+          sort,
+        },
+      }),
+    }),
+
+    createOrderComplaint: builders.mutation<
+      IItemResponse<IComplaint>,
+      ICreateComplaint
+    >({
+      query: ({ id, ...body }) => ({
+        url: `orders/${id}/complaints/me`,
+        method: "POST",
+        body,
+      }),
+    }),
+
+    updateOrderStatus: builders.mutation<
+      IItemResponse<IOrder>,
+      IUpdateOrderStatus
+    >({
+      query: ({ id, status }) => ({
+        url: `orders/${id}/${status}`,
+        method: "PUT",
+      }),
+    }),
+
+    getCustomerOrders: builders.query<IListResponse<IOrder>, IPagination>({
+      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+        url: `orders/customer`,
+        method: "GET",
+        params: {
+          sort,
+          filter,
+          page,
+          size,
+        },
+      }),
+    }),
+
+    getShopOrders: builders.query<IListResponse<IOrder>, IPagination>({
+      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+        url: `orders/shop`,
+        method: "GET",
+        params: {
+          sort,
+          filter,
+          page,
+          size,
+        },
+      }),
+    }),
   }),
 });
 
-export const {} = orderApi;
+export const {
+  useLazyGetOrdersQuery,
+  useCreateOrderMutation,
+  useLazyGetOrderQuery,
+  useUpdateOrderStatusMutation,
+  useLazyGetCustomerOrdersQuery,
+  useLazyGetMyOrderComplaintsQuery,
+  useLazyGetShopOrdersQuery,
+  useCreateOrderComplaintMutation,
+} = orderApi;

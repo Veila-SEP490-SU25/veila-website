@@ -1,9 +1,9 @@
 import { IUser, IItem, ICategory, IFeedback } from "@/services/types";
 
 export enum DressStatus {
-  AVAILABLE = 'AVAILABLE',
-  UNAVAILABLE = 'UNAVAILABLE',
-  OUT_OF_STOCK = 'OUT_OF_STOCK',
+  AVAILABLE = "AVAILABLE",
+  UNAVAILABLE = "UNAVAILABLE",
+  OUT_OF_STOCK = "OUT_OF_STOCK",
 }
 
 export interface IDress extends IItem {
@@ -35,4 +35,24 @@ export interface ICreateDress {
 
 export interface IUpdateDress extends ICreateDress {
   id: string;
+}
+
+export interface IDressDetails {
+  dressId: string;
+  high: number;
+  weight: number;
+  bust: number;
+  waist: number;
+  hip: number;
+  armpit: number;
+  bicep: number;
+  neck: number;
+  shoulderWidth: number;
+  sleeveLength: number;
+  backLength: number;
+  lowerWaist: number;
+  waistToFloor: number;
+  description: string;
+  price: number;
+  is_rated: boolean;
 }

@@ -1,6 +1,8 @@
 import {
+  IAccessoriesDetail,
   IAccessory,
   IDress,
+  IDressDetails,
   IItem,
   IMilestone,
   IRequest,
@@ -86,4 +88,33 @@ export interface IUpdateOrderServiceDetail extends IItem {
   orderServiceDetail: IOrderServiceDetail;
   updateRequest: IUpdateRequest;
   price: number;
+}
+
+export interface INewOrder {
+  shopId: string;
+  phone: string;
+  email: string;
+  address: string;
+  dueDate: Date;
+  returnDate: Date;
+}
+
+export interface ICreateOrder {
+  newOrder: INewOrder;
+  dressDetails: IDressDetails[];
+  accessoriesDetails: IAccessoriesDetail[];
+}
+
+export interface IUpdateOrderInfo {
+  id: string;
+  phone: string;
+  email: string;
+  address: string;
+  dueDate: Date;
+  returnDate: Date;
+}
+
+export interface IUpdateOrderStatus {
+  id: string;
+  status: OrderStatus;
 }
