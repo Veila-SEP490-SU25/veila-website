@@ -12,8 +12,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getBlogs: builders.query<IListResponse<IBlog>, IPagination>({
+  endpoints: (builder) => ({
+    getBlogs: builder.query<IListResponse<IBlog>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: "blogs",
         method: "GET",
@@ -21,14 +21,14 @@ export const blogApi = createApi({
       }),
     }),
 
-    getBlog: builders.query<IItemResponse<IBlog>, string>({
+    getBlog: builder.query<IItemResponse<IBlog>, string>({
       query: (id) => ({
         url: `blogs/${id}`,
         method: "GET",
       }),
     }),
 
-    getMyShopBlogs: builders.query<IListResponse<IBlog>, IPagination>({
+    getMyShopBlogs: builder.query<IListResponse<IBlog>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: "blogs/me",
         method: "GET",
@@ -36,14 +36,14 @@ export const blogApi = createApi({
       }),
     }),
 
-    getMyShopBlog: builders.query<IItemResponse<IBlog>, string>({
+    getMyShopBlog: builder.query<IItemResponse<IBlog>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
         method: "GET",
       }),
     }),
 
-    updateMyShopBlog: builders.mutation<IItemResponse<null>, IUpdateBlog>({
+    updateMyShopBlog: builder.mutation<IItemResponse<null>, IUpdateBlog>({
       query: (body) => {
         const { id, ...bodyNoId } = body;
         return {
@@ -54,21 +54,21 @@ export const blogApi = createApi({
       },
     }),
 
-    deleteMyShopBlog: builders.mutation<IItemResponse<null>, string>({
+    deleteMyShopBlog: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
         method: "DELETE",
       }),
     }),
 
-    restoreMyShopBlog: builders.mutation<IItemResponse<null>, string>({
+    restoreMyShopBlog: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
         method: "PATCH",
       }),
     }),
 
-    createMyShopBlog: builders.mutation<IItemResponse<IBlog>, ICreateBlog>({
+    createMyShopBlog: builder.mutation<IItemResponse<IBlog>, ICreateBlog>({
       query: (body) => ({
         url: `blogs/me`,
         method: "POST",

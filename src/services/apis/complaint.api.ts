@@ -12,8 +12,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const complaintApi = createApi({
   reducerPath: "complaintApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getComplaintsStaff: builders.query<IListResponse<IComplaint>, IPagination>({
+  endpoints: (builder) => ({
+    getComplaintsStaff: builder.query<IListResponse<IComplaint>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: "complaints/staff",
         method: "GET",
@@ -26,21 +26,21 @@ export const complaintApi = createApi({
       }),
     }),
 
-    getComplaintStaff: builders.query<IItemResponse<IComplaint>, string>({
+    getComplaintStaff: builder.query<IItemResponse<IComplaint>, string>({
       query: (id) => ({
         url: `complaints/${id}/staff`,
         method: "GET",
       }),
     }),
 
-    getMyComplaint: builders.query<IItemResponse<IComplaint>, string>({
+    getMyComplaint: builder.query<IItemResponse<IComplaint>, string>({
       query: (id) => ({
         url: `complaints/${id}/me`,
         method: "GET",
       }),
     }),
 
-    updateMyComplaint: builders.mutation<IItemResponse<null>, IUpdateComplaint>(
+    updateMyComplaint: builder.mutation<IItemResponse<null>, IUpdateComplaint>(
       {
         query: ({ id, ...body }) => ({
           url: `complaints/${id}`,
@@ -50,7 +50,7 @@ export const complaintApi = createApi({
       }
     ),
 
-    responseComplaint: builders.mutation<
+    responseComplaint: builder.mutation<
       IItemResponse<null>,
       IResponseComplaint
     >({

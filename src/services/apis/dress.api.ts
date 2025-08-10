@@ -12,8 +12,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const dressApi = createApi({
   reducerPath: "dressApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getDresses: builders.query<IListResponse<IDress>, IPagination>({
+  endpoints: (builder) => ({
+    getDresses: builder.query<IListResponse<IDress>, IPagination>({
       query: ({ filter = "", page = 1, size = 10, sort = "" }) => {
         return {
           url: "dresses",
@@ -22,7 +22,7 @@ export const dressApi = createApi({
       },
     }),
 
-    getDress: builders.query<IItemResponse<IDress>, string>({
+    getDress: builder.query<IItemResponse<IDress>, string>({
       query: (id) => {
         return {
           url: `dresses/${id}`,
@@ -31,7 +31,7 @@ export const dressApi = createApi({
       },
     }),
 
-    getMyShopDresses: builders.query<IListResponse<IDress>, IPagination>({
+    getMyShopDresses: builder.query<IListResponse<IDress>, IPagination>({
       query: ({ filter = "", page = 1, size = 10, sort = "" }) => {
         return {
           url: "dresses/me",
@@ -40,7 +40,7 @@ export const dressApi = createApi({
       },
     }),
 
-    getMyShopDress: builders.query<IItemResponse<IDress>, string>({
+    getMyShopDress: builder.query<IItemResponse<IDress>, string>({
       query: (id) => {
         return {
           url: `dresses/${id}/me`,
@@ -49,7 +49,7 @@ export const dressApi = createApi({
       },
     }),
 
-    createDress: builders.mutation<IItemResponse<IDress>, ICreateDress>({
+    createDress: builder.mutation<IItemResponse<IDress>, ICreateDress>({
       query: (body) => ({
         url: "dresses/me",
         method: "POST",
@@ -57,7 +57,7 @@ export const dressApi = createApi({
       }),
     }),
 
-    updateDress: builders.mutation<IItemResponse<null>, IUpdateDress>({
+    updateDress: builder.mutation<IItemResponse<null>, IUpdateDress>({
       query: ({ id, ...body }) => ({
         url: `dresses/${id}/me`,
         method: "PUT",
@@ -65,14 +65,14 @@ export const dressApi = createApi({
       }),
     }),
 
-    deleteDress: builders.mutation<IItemResponse<null>, string>({
+    deleteDress: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `dresses/${id}/me`,
         method: "DELETE",
       }),
     }),
 
-    restoreDress: builders.mutation<IItemResponse<null>, string>({
+    restoreDress: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `dresses/${id}/me`,
         method: "PATCH",

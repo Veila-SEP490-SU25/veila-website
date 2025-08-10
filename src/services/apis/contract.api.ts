@@ -5,15 +5,15 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const contractApi = createApi({
   reducerPath: "contractApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getShopContract: builders.query<IItemResponse<IContract>, void>({
+  endpoints: (builder) => ({
+    getShopContract: builder.query<IItemResponse<IContract>, void>({
       query: () => ({
         url: `contracts/shop`,
         method: "GET",
       }),
     }),
 
-    getCustomerContract: builders.query<IItemResponse<IContract>, void>({
+    getCustomerContract: builder.query<IItemResponse<IContract>, void>({
       query: () => ({
         url: `contracts/customer`,
         method: "GET",

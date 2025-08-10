@@ -13,8 +13,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const milestoneApi = createApi({
   reducerPath: "milestoneApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getMilestones: builders.query<IListResponse<IMilestone>, IRetiveMilestone>({
+  endpoints: (builder) => ({
+    getMilestones: builder.query<IListResponse<IMilestone>, IRetiveMilestone>({
       query: (params) => ({
         url: `milestones`,
         method: "GET",
@@ -22,7 +22,7 @@ export const milestoneApi = createApi({
       }),
     }),
 
-    createMilestone: builders.mutation<
+    createMilestone: builder.mutation<
       IItemResponse<IMilestone>,
       ICreateMilestone
     >({
@@ -33,14 +33,14 @@ export const milestoneApi = createApi({
       }),
     }),
 
-    getMilestone: builders.query<IItemResponse<IMilestone>, string>({
+    getMilestone: builder.query<IItemResponse<IMilestone>, string>({
       query: (id) => ({
         url: `milestones/${id}`,
         method: "GET",
       }),
     }),
 
-    updateMilestoneInfo: builders.mutation<
+    updateMilestoneInfo: builder.mutation<
       IItemResponse<IMilestone>,
       IUpdateMilestoneInfo
     >({
@@ -51,7 +51,7 @@ export const milestoneApi = createApi({
       }),
     }),
 
-    updateMilestoneStatus: builders.mutation<
+    updateMilestoneStatus: builder.mutation<
       IItemResponse<IMilestone>,
       IUpdateMilestoneStatus
     >({

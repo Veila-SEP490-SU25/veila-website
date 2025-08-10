@@ -16,8 +16,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const orderApi = createApi({
   reducerPath: "orderApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getOrders: builders.query<IListResponse<IOrder>, IPagination>({
+  endpoints: (builder) => ({
+    getOrders: builder.query<IListResponse<IOrder>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `orders`,
         method: "GET",
@@ -30,7 +30,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    createOrder: builders.mutation<IItemResponse<IOrder>, ICreateOrder>({
+    createOrder: builder.mutation<IItemResponse<IOrder>, ICreateOrder>({
       query: (body) => ({
         url: "orders",
         method: "POST",
@@ -38,14 +38,14 @@ export const orderApi = createApi({
       }),
     }),
 
-    getOrder: builders.query<IItemResponse<IOrder>, string>({
+    getOrder: builder.query<IItemResponse<IOrder>, string>({
       query: (id) => ({
         url: `orders/${id}`,
         method: "GET",
       }),
     }),
 
-    updateOrderInfo: builders.mutation<IItemResponse<IOrder>, IUpdateOrderInfo>(
+    updateOrderInfo: builder.mutation<IItemResponse<IOrder>, IUpdateOrderInfo>(
       {
         query: ({ id, ...body }) => ({
           url: `orders/${id}`,
@@ -55,7 +55,7 @@ export const orderApi = createApi({
       }
     ),
 
-    getMyOrderComplaints: builders.query<
+    getMyOrderComplaints: builder.query<
       IListResponse<IComplaint>,
       IGetComplaints
     >({
@@ -71,7 +71,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    createOrderComplaint: builders.mutation<
+    createOrderComplaint: builder.mutation<
       IItemResponse<IComplaint>,
       ICreateComplaint
     >({
@@ -82,7 +82,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    updateOrderStatus: builders.mutation<
+    updateOrderStatus: builder.mutation<
       IItemResponse<IOrder>,
       IUpdateOrderStatus
     >({
@@ -92,7 +92,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    getCustomerOrders: builders.query<IListResponse<IOrder>, IPagination>({
+    getCustomerOrders: builder.query<IListResponse<IOrder>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `orders/customer`,
         method: "GET",
@@ -105,7 +105,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    getShopOrders: builders.query<IListResponse<IOrder>, IPagination>({
+    getShopOrders: builder.query<IListResponse<IOrder>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `orders/shop`,
         method: "GET",

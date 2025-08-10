@@ -17,15 +17,15 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const categoryApi = createApi({
   reducerPath: "categoryApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getCategory: builders.query<IItemResponse<ICategory>, string>({
+  endpoints: (builder) => ({
+    getCategory: builder.query<IItemResponse<ICategory>, string>({
       query: (id) => ({
         url: `categories/${id}`,
         method: "GET",
       }),
     }),
 
-    getAccessoriesByCategory: builders.query<
+    getAccessoriesByCategory: builder.query<
       IListResponse<IAccessory>,
       ICategoryGetRequest
     >({
@@ -41,7 +41,7 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getBlogsByCategory: builders.query<
+    getBlogsByCategory: builder.query<
       IListResponse<IBlog>,
       ICategoryGetRequest
     >({
@@ -57,7 +57,7 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getDressesByCategory: builders.query<
+    getDressesByCategory: builder.query<
       IListResponse<IDress>,
       ICategoryGetRequest
     >({
@@ -73,7 +73,7 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getServicesByCategory: builders.query<
+    getServicesByCategory: builder.query<
       IListResponse<IService>,
       ICategoryGetRequest
     >({
@@ -89,7 +89,7 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getMyShopCategories: builders.query<IListResponse<ICategory>, IPagination>({
+    getMyShopCategories: builder.query<IListResponse<ICategory>, IPagination>({
       query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
         url: `categories/me`,
         method: "GET",
@@ -102,14 +102,14 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getMyShopCategory: builders.query<IItemResponse<ICategory>, string>({
+    getMyShopCategory: builder.query<IItemResponse<ICategory>, string>({
       query: (id) => ({
         url: `categories/${id}/me`,
         method: "GET",
       }),
     }),
 
-    createMyShopCategory: builders.mutation<
+    createMyShopCategory: builder.mutation<
       IItemResponse<ICategory>,
       ICreateCategory
     >({
@@ -120,7 +120,7 @@ export const categoryApi = createApi({
       }),
     }),
 
-    updateMyShopCategory: builders.mutation<
+    updateMyShopCategory: builder.mutation<
       IItemResponse<null>,
       IUpdateCategory
     >({
@@ -131,14 +131,14 @@ export const categoryApi = createApi({
       }),
     }),
 
-    deleteMyShopCategory: builders.mutation<IItemResponse<null>, string>({
+    deleteMyShopCategory: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `categories/${id}/me`,
         method: "DELETE",
       }),
     }),
 
-    restoreMyShopCategory: builders.mutation<IItemResponse<null>, string>({
+    restoreMyShopCategory: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `categories/${id}/me`,
         method: "PATCH",

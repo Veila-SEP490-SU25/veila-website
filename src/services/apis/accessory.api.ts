@@ -12,22 +12,22 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const accessoryApi = createApi({
   reducerPath: "accessoryApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    getAccessory: builders.query<IItemResponse<IAccessory>, string>({
+  endpoints: (builder) => ({
+    getAccessory: builder.query<IItemResponse<IAccessory>, string>({
       query: (id) => ({
         url: `accessories/${id}`,
         method: "GET",
       }),
     }),
 
-    getMyShopAccessory: builders.query<IItemResponse<IAccessory>, string>({
+    getMyShopAccessory: builder.query<IItemResponse<IAccessory>, string>({
       query: (id) => ({
         url: `accessories/${id}/me`,
         method: "GET",
       }),
     }),
 
-    getMyShopAccessories: builders.query<
+    getMyShopAccessories: builder.query<
       IListResponse<IAccessory>,
       IPagination
     >({
@@ -45,7 +45,7 @@ export const accessoryApi = createApi({
       },
     }),
 
-    updateAccessory: builders.mutation<IItemResponse<null>, IUpdateAccessory>({
+    updateAccessory: builder.mutation<IItemResponse<null>, IUpdateAccessory>({
       query: (body) => {
         const { id, ...bodyWithoutId } = body;
         return {
@@ -56,21 +56,21 @@ export const accessoryApi = createApi({
       },
     }),
 
-    deleteAccessory: builders.mutation<IItemResponse<null>, string>({
+    deleteAccessory: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `accessories/${id}/me`,
         method: "DELETE",
       }),
     }),
 
-    restoreAccessory: builders.mutation<IItemResponse<null>, string>({
+    restoreAccessory: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `accessories/${id}/me`,
         method: "PATCH",
       }),
     }),
 
-    createAccessory: builders.mutation<IItemResponse<null>, ICreateAccessory>({
+    createAccessory: builder.mutation<IItemResponse<null>, ICreateAccessory>({
       query: (body) => ({
         url: `accessories/me`,
         method: "POST",

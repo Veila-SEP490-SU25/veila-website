@@ -5,8 +5,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const feedbackApi = createApi({
   reducerPath: "feedbackApi",
   baseQuery: baseQueryWithRefresh,
-  endpoints: (builders) => ({
-    createFeedback: builders.mutation<
+  endpoints: (builder) => ({
+    createFeedback: builder.mutation<
       IItemResponse<IFeedback>,
       ICreateFeedback
     >({
@@ -17,7 +17,7 @@ export const feedbackApi = createApi({
       }),
     }),
 
-    getFeedback: builders.query<IItemResponse<IFeedback>, string>({
+    getFeedback: builder.query<IItemResponse<IFeedback>, string>({
       query: (id) => ({
         url: `feedbacks/${id}`,
         method: "GET",
