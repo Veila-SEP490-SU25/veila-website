@@ -19,6 +19,7 @@ export interface IShop extends IItem {
   status: ShopStatus;
   reputation: number;
   isVerified: boolean;
+  rejectReason: string | null;
 }
 
 export interface IGetShopItem extends IPagination {
