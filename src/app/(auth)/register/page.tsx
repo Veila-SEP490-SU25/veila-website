@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Heart, Mail, User, Eye, EyeOff } from "lucide-react";
+import { Mail, User, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { registerSchema, RegisterSchema } from "@/lib/validations";
 import { GoogleButton } from "@/app/(auth)/components/google-button";
@@ -66,7 +66,7 @@ export default function RegisterPage() {
         });
       }
     },
-    [registerMutation]
+    [registerMutation, router]
   );
 
   return (

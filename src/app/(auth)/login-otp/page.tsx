@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -21,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Heart, Mail, AlertCircle, ArrowLeft, CheckCircle } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { loginOTPSchema, LoginOTPSchema } from "@/lib/validations";
 import { useRouter } from "next/navigation";
@@ -30,9 +29,6 @@ import { toast } from "sonner";
 import { TextLogo } from "@/components/text-logo";
 
 export default function LoginOTPPage() {
-  const [isOTPSent, setIsOTPSent] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const router = useRouter();
 
   const [requestOtpMutation, { isLoading }] = useRequestOtpMutation();
@@ -44,24 +40,27 @@ export default function LoginOTPPage() {
     },
   });
 
-  const onSubmit = useCallback(async (data: LoginOTPSchema) => {
-    try {
-      const { item, message, statusCode } = await requestOtpMutation({
-        email: data.email,
-      }).unwrap();
-      if (statusCode === 200) {
-        router.push(`/verify-otp?userId=${item}&email=${data.email}`);
-      } else {
-        toast.error("Không thể gửi mã xác thực đến email này.", {
-          description: message,
-        });
+  const onSubmit = useCallback(
+    async (data: LoginOTPSchema) => {
+      try {
+        const { item, message, statusCode } = await requestOtpMutation({
+          email: data.email,
+        }).unwrap();
+        if (statusCode === 200) {
+          router.push(`/verify-otp?userId=${item}&email=${data.email}`);
+        } else {
+          toast.error("Không thể gửi mã xác thực đến email này.", {
+            description: message,
+          });
+        }
+      } catch (error) {
+        toast.error(
+          "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
+        );
       }
-    } catch (error) {
-      toast.error(
-        "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
-      );
-    }
-  }, []);
+    },
+    [router, useRequestOtpMutation]
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
@@ -91,24 +90,6 @@ export default function LoginOTPPage() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
-                {error && (
-                  <Alert className="border-red-200 bg-red-50">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <AlertDescription className="text-red-700">
-                      {error}
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                {success && (
-                  <Alert className="border-green-200 bg-green-50">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-700">
-                      {success}
-                    </AlertDescription>
-                  </Alert>
-                )}
-
                 <FormField
                   control={form.control}
                   name="email"
@@ -121,7 +102,7 @@ export default function LoginOTPPage() {
                           <Input
                             placeholder="Nhập địa chỉ email của bạn"
                             className="pl-10 h-11"
-                            disabled={isOTPSent}
+                            disabled={isLoading}
                             {...field}
                           />
                         </div>
@@ -134,17 +115,12 @@ export default function LoginOTPPage() {
                 <Button
                   type="submit"
                   className="w-full bg-rose-600 hover:bg-rose-700 h-11 text-base font-medium"
-                  disabled={isLoading || isOTPSent}
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                       Đang gửi OTP...
-                    </>
-                  ) : isOTPSent ? (
-                    <>
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      OTP Đã Được Gửi
                     </>
                   ) : (
                     "Gửi Mã OTP"

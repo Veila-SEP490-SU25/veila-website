@@ -11,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -25,13 +24,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import {
-  Heart,
-  AlertCircle,
-  CheckCircle,
-  ArrowLeft,
   RefreshCw,
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { otpSchema, type OTPSchema } from "@/lib/validations";
 import { useRequestOtpMutation } from "@/services/apis";
@@ -97,7 +91,7 @@ export default function VerifyOTPPage() {
       }).unwrap();
       if (statusCode === 200) {
         toast.success("Mã OTP đã được gửi lại đến email của bạn.");
-        setTimeLeft(300); // Reset timer
+        setTimeLeft(300);
         form.reset();
         setUserId(item);
       } else {
