@@ -16,3 +16,15 @@ export interface IService extends IItem {
   status: ServiceStatus;
   feedbacks: IFeedback[];
 }
+
+export interface ICreateService {
+  categoryId: string;
+  name: string;
+  description: string;
+  images: string;
+  status: ServiceStatus;
+}
+
+export interface IUpdateService extends ICreateService {
+  id: string;
+}
