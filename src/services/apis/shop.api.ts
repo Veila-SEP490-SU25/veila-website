@@ -103,7 +103,7 @@ export const shopApi = createApi({
     >({
       query: ({ id, ...body }) => ({
         url: `shops/${id}staff`,
-        method: "POST",
+        method: "PATCH",
         body,
       }),
     }),
