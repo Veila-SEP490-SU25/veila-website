@@ -10,3 +10,4 @@ export * from './milestone.api';
 export * from './order.api';
 export * from './request.api';
 export * from './service.api';
+export * from './shop.api';
