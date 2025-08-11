@@ -1,9 +1,7 @@
 "use client";
 
-import { Image } from "@/components/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/providers/auth.provider";
-import { useGoogleAuthMutation } from "@/services/apis";
 import { useFirebase } from "@/services/firebase";
 import { useCallback } from "react";
 import { toast } from "sonner";
