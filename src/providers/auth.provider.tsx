@@ -1,13 +1,14 @@
 "use client";
 
 import {
+  useGoogleAuthMutation,
   useLazyGetMeQuery,
   useLoginMutation,
   useLogoutMutation,
   useRequestOtpMutation,
   useVerifyOtpMutation,
 } from "@/services/apis";
-import { ILogin, IUser, IVerifyOtp } from "@/services/types";
+import { IGoogleAuth, ILogin, IUser, IVerifyOtp } from "@/services/types";
 import {
   delTokens,
   getAccessToken,
@@ -31,6 +32,7 @@ import { toast } from "sonner";
 
 type AuthContextType = {
   login: (body: ILogin) => Promise<void>;
+  loginGoogle: (body: IGoogleAuth) => Promise<void>;
   logout: () => Promise<void>;
   verifyOtp: (body: IVerifyOtp) => Promise<void>;
   isAuthenticating: boolean;
@@ -89,8 +91,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useVerifyOtpMutation();
   const [logoutMutation, { isLoading: isLogoutLoading }] = useLogoutMutation();
   const [getMeQuery, { isLoading: isGetMeLoading }] = useLazyGetMeQuery();
+  const [loginGoogleMutation, { isLoading: isGoogleLading }] =
+    useGoogleAuthMutation();
 
   const [requestOtpMutation] = useRequestOtpMutation();
+
+  const loginGoogle = useCallback(
+    async (body: IGoogleAuth) => {
+      try {
+        const { item, message, statusCode } = await loginGoogleMutation(
+          body
+        ).unwrap();
+        if (statusCode === 200) {
+          const { accessToken, refreshToken } = item;
+          authCheckRef.current = false;
+          saveTokens(accessToken, refreshToken);
+          setIsAuthenticated(true);
+          setToLocalStorage("isAuthenticated", true);
+          toast.success("Đăng nhập thành công.", {
+            description: "Chào mừng bạn quay trở lại.",
+          });
+          router.push("/");
+          return;
+        } else if (statusCode === 401) {
+          const { item, statusCode, message } = await requestOtpMutation({
+            email: body.email,
+          }).unwrap();
+          if (statusCode === 200) {
+            router.push(`/verify-otp?userId=${item}&email=${body.email}`);
+          } else {
+            toast.error("Đăng nhập thất bại.", {
+              description: message,
+            });
+            return;
+          }
+        } else {
+          toast.error("Đăng nhập thất bại.", {
+            description: message,
+          });
+          return;
+        }
+      } catch (error) {
+        toast.error("Đăng nhập thất bại.", {
+          description:
+            "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
+        });
+        return;
+      }
+    },
+    [loginGoogleMutation, saveTokens, setIsAuthenticated, router]
+  );
 
   const login = useCallback(
     async (body: ILogin) => {
@@ -246,12 +296,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         login,
+        loginGoogle,
         logout,
         verifyOtp,
         isAuthenticating:
           isLoginLoading ||
           isLogoutLoading ||
           isVerifyOtpLoading ||
+          isGoogleLading ||
           isGetMeLoading,
         isAuthenticated,
         currentAccessToken,

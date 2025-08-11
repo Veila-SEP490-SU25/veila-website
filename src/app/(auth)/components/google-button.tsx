@@ -2,8 +2,11 @@
 
 import { Image } from "@/components/image";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/providers/auth.provider";
+import { useGoogleAuthMutation } from "@/services/apis";
 import { useFirebase } from "@/services/firebase";
 import { useCallback } from "react";
+import { toast } from "sonner";
 
 interface GoogleButtonProps {
   variant?: "login" | "signup";
@@ -13,14 +16,23 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
   variant = "login",
 }) => {
   const { auth, signInWithPopup, googleProvider } = useFirebase();
+  const { loginGoogle, isAuthenticating } = useAuth();
 
   const handleGoogleSignIn = useCallback(async () => {
     const { user } = await signInWithPopup(auth, googleProvider);
     const { displayName, email } = user;
-    console.log("Google Sign-In successful:", {
-      displayName,
-      email,
-    });
+    if (!displayName || !email) {
+      toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
+        description:
+          "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
+      });
+      return;
+    } else {
+      await loginGoogle({
+        email,
+        fullname: displayName,
+      });
+    }
   }, [auth, signInWithPopup, googleProvider]);
 
   return (
@@ -28,6 +40,7 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
       variant="outline"
       className="w-full h-11 text-base font-medium border-gray-300 hover:bg-gray-50"
       onClick={handleGoogleSignIn}
+      disabled={isAuthenticating}
     >
       <svg
         className="w-5 h-5 mr-2"

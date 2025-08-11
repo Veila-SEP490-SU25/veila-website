@@ -1,4 +1,4 @@
-import { IItem, IUser } from "@/services/types";
+import { IItem, IPagination, IUser } from "@/services/types";
 
 export enum RequestStatus {
   DRAFT = "DRAFT",
@@ -99,4 +99,8 @@ export interface ICreateRequest {
   coverage: string;
   status: RequestStatus;
   isPrivate: boolean;
+}
+
+export interface IGetUpdateRequest extends IPagination {
+  id: string;
 }

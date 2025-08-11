@@ -5,6 +5,7 @@ import {
   IListResponse,
   IPagination,
   IRequest,
+  IUpdateRequest,
   IUpdateRequestInfo,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
