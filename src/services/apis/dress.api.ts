@@ -14,7 +14,7 @@ export const dressApi = createApi({
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getDresses: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 1, size = 10, sort = "" }) => {
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => {
         return {
           url: "dresses",
           params: { filter, page, size, sort },
@@ -32,7 +32,7 @@ export const dressApi = createApi({
     }),
 
     getMyShopDresses: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 1, size = 10, sort = "" }) => {
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => {
         return {
           url: "dresses/me",
           params: { filter, page, size, sort },

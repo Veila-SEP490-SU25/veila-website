@@ -18,7 +18,7 @@ export const orderApi = createApi({
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getOrders: builder.query<IListResponse<IOrder>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `orders`,
         method: "GET",
         params: {
@@ -59,7 +59,7 @@ export const orderApi = createApi({
       IListResponse<IComplaint>,
       IGetComplaints
     >({
-      query: ({ id, filter = "", page = 1, size = 10, sort = "" }) => ({
+      query: ({ id, filter = "", page = 0, size = 10, sort = "" }) => ({
         url: `orders/${id}/complaints/me`,
         method: "GET",
         params: {
@@ -93,7 +93,7 @@ export const orderApi = createApi({
     }),
 
     getCustomerOrders: builder.query<IListResponse<IOrder>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `orders/customer`,
         method: "GET",
         params: {
@@ -106,7 +106,7 @@ export const orderApi = createApi({
     }),
 
     getShopOrders: builder.query<IListResponse<IOrder>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `orders/shop`,
         method: "GET",
         params: {

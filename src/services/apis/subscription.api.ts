@@ -14,7 +14,7 @@ export const subscriptionApi = createApi({
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getSubscriptions: builder.query<IListResponse<ISubscription>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "subscriptions",
         method: "GET",
         params: { sort, filter, page, size },
@@ -39,7 +39,7 @@ export const subscriptionApi = createApi({
       IListResponse<ISubscription>,
       IPagination
     >({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "subscriptions/staff",
         method: "GET",
         params: { sort, filter, page, size },

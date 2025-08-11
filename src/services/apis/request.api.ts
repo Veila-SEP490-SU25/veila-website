@@ -51,7 +51,7 @@ export const requestApi = createApi({
     }),
 
     getMyRequests: builder.query<IListResponse<IRequest>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `requests/me`,
         method: "GET",
         params: { sort, filter, page, size },
@@ -59,7 +59,7 @@ export const requestApi = createApi({
     }),
 
     shopGetRequests: builder.query<IListResponse<IRequest>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `requests/shop`,
         method: "GET",
         params: { sort, filter, page, size },

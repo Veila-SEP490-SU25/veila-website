@@ -14,7 +14,7 @@ export const complaintApi = createApi({
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getComplaintsStaff: builder.query<IListResponse<IComplaint>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "complaints/staff",
         method: "GET",
         params: {

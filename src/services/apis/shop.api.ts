@@ -21,7 +21,7 @@ export const shopApi = createApi({
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getShops: builder.query<IListResponse<IShop>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "shops",
         method: "GET",
         params: { sort, filter, page, size },
@@ -36,7 +36,7 @@ export const shopApi = createApi({
     }),
 
     getShopAccessories: builder.query<IListResponse<IAccessory>, IGetShopItem>({
-      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `shops/${id}/accessories`,
         method: "GET",
         params: { page, size, sort, filter },
@@ -44,7 +44,7 @@ export const shopApi = createApi({
     }),
 
     getShopBlogs: builder.query<IListResponse<IBlog>, IGetShopItem>({
-      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `shops/${id}/blogs`,
         method: "GET",
         params: { page, size, sort, filter },
@@ -52,7 +52,7 @@ export const shopApi = createApi({
     }),
 
     getShopDresses: builder.query<IListResponse<IDress>, IGetShopItem>({
-      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `shops/${id}/dresses`,
         method: "GET",
         params: { page, size, sort, filter },
@@ -60,7 +60,7 @@ export const shopApi = createApi({
     }),
 
     getShopCategories: builder.query<IListResponse<ICategory>, IGetShopItem>({
-      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `shops/${id}/categories`,
         method: "GET",
         params: { page, size, sort, filter },
@@ -68,7 +68,7 @@ export const shopApi = createApi({
     }),
 
     getShopServices: builder.query<IListResponse<IService>, IGetShopItem>({
-      query: ({ id, sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `shops/${id}/services`,
         method: "GET",
         params: { page, size, sort, filter },
@@ -76,7 +76,7 @@ export const shopApi = createApi({
     }),
 
     staffGetShops: builder.query<IListResponse<IShop>, IPagination>({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => ({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "shops/staff",
         method: "GET",
         params: { sort, filter, page, size },

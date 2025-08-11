@@ -31,7 +31,7 @@ export const accessoryApi = createApi({
       IListResponse<IAccessory>,
       IPagination
     >({
-      query: ({ sort = "", filter = "", page = 1, size = 10 }) => {
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => {
         const params = new URLSearchParams();
         if (sort) params.append("sort", sort);
         if (filter) params.append("filter", filter);
