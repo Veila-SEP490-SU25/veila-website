@@ -5,3 +5,12 @@ export interface ISlide extends IItem {
   description: string | null;
 }
   
+export interface ICreateSlide {
+  title: string;
+  description: string | null;
+  images: string;
+}
+
+export interface IUpdateSlide extends ICreateSlide {
+  id: string;
+}
