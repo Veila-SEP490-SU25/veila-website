@@ -6,3 +6,15 @@ export interface ISubscription extends IItem {
   duration: number;
   amount: number;
 }
+
+export interface ICreateSubscription {
+  name: string;
+  description: string;
+  duration: number;
+  amount: number;
+  images: string;
+}
+
+export interface IUpdateSubscription extends ICreateSubscription{
+  id: string;
+}

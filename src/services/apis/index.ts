@@ -12,3 +12,4 @@ export * from './request.api';
 export * from './service.api';
 export * from './shop.api';
 export * from './single.api';
+export * from './subscription.api';
