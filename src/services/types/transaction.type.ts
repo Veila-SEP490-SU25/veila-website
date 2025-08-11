@@ -1,4 +1,4 @@
-import { IItem, IMembership, IOrder, IWallet } from "@/services/types";
+import { IItem, IMembership, IOrder, IPagination, IWallet } from "@/services/types";
 
 export enum TransactionType {
   DEPOSIT = 'deposit',
@@ -35,4 +35,13 @@ export interface ITransaction extends IItem {
   type: TransactionType;
   status: TransactionStatus;
   note?: string;
+}
+
+export interface IUpdateTransactionStatus {
+  id: string;
+  status: TransactionStatus;
+}
+
+export interface IGetMyTransaction extends IPagination{
+  walletId: string;
 }

@@ -14,6 +14,7 @@ import {
   shopApi,
   singleApi,
   subscriptionApi,
+  transactionApi,
 } from "@/services/apis";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
@@ -35,6 +36,7 @@ const store = configureStore({
     [shopApi.reducerPath]: shopApi.reducer,
     [singleApi.reducerPath]: singleApi.reducer,
     [subscriptionApi.reducerPath]: subscriptionApi.reducer,
+    [transactionApi.reducerPath]: transactionApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -52,7 +54,8 @@ const store = configureStore({
       serviceApi.middleware,
       shopApi.middleware,
       singleApi.middleware,
-      subscriptionApi.middleware
+      subscriptionApi.middleware,
+      transactionApi.middleware
     ),
 });
 
