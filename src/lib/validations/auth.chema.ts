@@ -62,9 +62,7 @@ export const phoneSchema = z.object({
   phoneNumber: z
     .string()
     .min(1, "Số điện thoại là bắt buộc")
-    .min(10, "Số điện thoại phải có 10 số")
-    .max(10, "Số điện thoại phải có 10 số")
-    .regex(/^\d{10}$/, "Số điện thoại không hợp lệ"),
+    .regex(/^(0[3|5|7|8|9])\d{8}$/, "Số điện thoại phải bắt đầu bằng 03, 05, 07, 08, hoặc 09 và có 10 số"),
 });
 
 export const otpSchema = z.object({

@@ -1,28 +1,56 @@
 import { getFirebaseConfig } from "@/utils";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { initializeApp, FirebaseApp } from "firebase/app";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 import {
   getAuth,
+  Auth,
   GoogleAuthProvider,
   signInWithPopup,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
 } from "firebase/auth";
 
-export const useFirebase = () => {
-  const firebaseConfig = getFirebaseConfig();
+let app: FirebaseApp;
+let auth: Auth;
+let firestore: Firestore;
+let storage: FirebaseStorage;
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
-  const storage = getStorage(app);
+const initializeFirebase = () => {
+  if (typeof window === "undefined") {
+    // Return null values during SSR
+    return {
+      app: null,
+      auth: null,
+      firestore: null,
+      storage: null,
+      googleProvider: null,
+      recaptcha: null,
+      signInWithPhoneNumber: null,
+      signInWithPopup: null,
+    };
+  }
+
+  if (!app) {
+    const firebaseConfig = getFirebaseConfig();
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    firestore = getFirestore(app);
+    storage = getStorage(app);
+  }
+
   const googleProvider = new GoogleAuthProvider();
-
   return {
     app,
     auth,
     firestore,
     storage,
     googleProvider,
+    signInWithPhoneNumber,
     signInWithPopup,
   };
+};
+
+export const useFirebase = () => {
+  return initializeFirebase();
 };
