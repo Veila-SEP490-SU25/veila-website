@@ -1,8 +1,8 @@
-import { CTASection } from "@/app/(home)/components/cta-section";
-import { HeroSection } from "@/app/(home)/components/hero-section";
-import { HowItWorkSection } from "@/app/(home)/components/how-it-work-section";
-import { ServiceSection } from "@/app/(home)/components/service-section";
-import { Testimonials } from "@/app/(home)/components/testimonials";
+import { CTASection } from "@/components/home/cta-section";
+import { HeroSection } from "@/components/home/hero-section";
+import { HowItWorkSection } from "@/components/home/how-it-work-section";
+import { ServiceSection } from "@/components/home/service-section";
+import { Testimonials } from "@/components/home/testimonials";
 
 const HomePage = () => {
   return (
