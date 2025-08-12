@@ -17,6 +17,10 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
   const { loginGoogle, isAuthenticating } = useAuth();
 
   const handleGoogleSignIn = useCallback(async () => {
+    if (!auth || !signInWithPopup || !googleProvider) {
+      toast.error("Firebase chưa được khởi tạo. Vui lòng thử lại sau.");
+      return;
+    }
     const { user } = await signInWithPopup(auth, googleProvider);
     const { displayName, email } = user;
     if (!displayName || !email) {
