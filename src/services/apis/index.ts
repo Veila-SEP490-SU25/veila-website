@@ -14,3 +14,4 @@ export * from './shop.api';
 export * from './single.api';
 export * from './subscription.api';
 export * from './transaction.api';
+export * from './user.api';

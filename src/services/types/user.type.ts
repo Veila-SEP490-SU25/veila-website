@@ -36,3 +36,7 @@ export interface IUser extends IItem {
   shop: IShop | null;
   contract: IContract;
 }
+
+export interface IIdentifyUser{
+  phone: string;
+}

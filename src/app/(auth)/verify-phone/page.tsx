@@ -31,8 +31,16 @@ import { useCallback, useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useFirebase } from "@/services/firebase";
 import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
+import { useIdentifyMutation } from "@/services/apis";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function VerifyPhonePage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [returnUrl, setReturnUrl] = useState<string>(
+    searchParams.get("returnUrl") || ""
+  );
   const [result, setResult] = useState<ConfirmationResult>();
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,9 +57,13 @@ export default function VerifyPhonePage() {
     },
   });
 
+  const [identifyUserMutation, { isLoading: isIdentifying }] =
+    useIdentifyMutation();
+
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    setReturnUrl(searchParams.get("returnUrl") || "");
+  }, [searchParams]);
 
   // Countdown timer for rate limiting
   useEffect(() => {
@@ -99,9 +111,13 @@ export default function VerifyPhonePage() {
       const minimumInterval = 60000; // 60 seconds
 
       if (timeSinceLastRequest < minimumInterval && lastRequestTime > 0) {
-        const remainingTime = Math.ceil((minimumInterval - timeSinceLastRequest) / 1000);
+        const remainingTime = Math.ceil(
+          (minimumInterval - timeSinceLastRequest) / 1000
+        );
         setCountdown(remainingTime);
-        setError(`Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`);
+        setError(
+          `Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`
+        );
         return;
       }
 
@@ -149,7 +165,9 @@ export default function VerifyPhonePage() {
         } else if (error.code === "auth/invalid-phone-number") {
           setError("Số điện thoại không hợp lệ. Vui lòng kiểm tra lại.");
         } else if (error.code === "auth/too-many-requests") {
-          setError("Quá nhiều yêu cầu OTP. Vui lòng đợi ít nhất 1 giờ trước khi thử lại hoặc thử từ mạng/thiết bị khác.");
+          setError(
+            "Quá nhiều yêu cầu OTP. Vui lòng đợi ít nhất 1 giờ trước khi thử lại hoặc thử từ mạng/thiết bị khác."
+          );
         } else if (
           error.code === "auth/operation-not-supported-in-this-environment"
         ) {
@@ -174,7 +192,25 @@ export default function VerifyPhonePage() {
     try {
       const credential = await result.confirm(otp);
       console.log("Phone number verified successfully:", credential.user);
-      // Handle successful verification - redirect to next page or show success message
+      const { user } = credential;
+      if (user.phoneNumber?.startsWith("+84")) {
+        // Phone number is in the correct format
+        console.log("Phone number is valid:", user.phoneNumber);
+        const phoneNumber = user.phoneNumber.replace("+84", "0");
+        const { statusCode, message } = await identifyUserMutation({
+          phone: phoneNumber,
+        }).unwrap();
+        if (statusCode === 200) {
+          toast.success("Xaác thực số điện thoại thành công.");
+          if (returnUrl) {
+            router.push(returnUrl);
+          }else{
+            router.push("/");
+          }
+        }
+      } else {
+        console.error("Invalid phone number format:", user.phoneNumber);
+      }
     } catch (error) {
       console.error("Error verifying OTP:", error);
       // Handle error - show error message to user
@@ -328,7 +364,7 @@ export default function VerifyPhonePage() {
               <Button
                 type="button"
                 onClick={handleVerifyOTP}
-                disabled={!result || otp.length !== 6}
+                disabled={!result || otp.length !== 6 || isIdentifying}
                 className="w-fit bg-rose-600 hover:bg-rose-700 h-11 text-base font-medium disabled:opacity-50"
               >
                 Xác Thực
