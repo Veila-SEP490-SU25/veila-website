@@ -30,10 +30,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useFirebase } from "@/services/firebase";
-import { RecaptchaVerifier } from "firebase/auth";
-
-// Import Firebase types dynamically to avoid SSR issues
-type ConfirmationResult = any;
+import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 
 export default function VerifyPhonePage() {
   const [result, setResult] = useState<ConfirmationResult>();
