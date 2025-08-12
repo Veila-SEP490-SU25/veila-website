@@ -24,6 +24,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { UserCard } from "@/components/profile/user-card";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -34,25 +35,7 @@ export default function DashboardPage() {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar */}
         <div className="lg:w-64 space-y-4">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback className="bg-rose-100 text-rose-600">
-                    SJ
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-semibold text-lg">Sarah Johnson</h3>
-                  <p className="text-gray-600">Cô dâu tương lai</p>
-                  <Badge variant="secondary" className="mt-1">
-                    Thành Viên Premium
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <UserCard />
 
           <Card>
             <CardContent className="p-4">
@@ -62,7 +45,7 @@ export default function DashboardPage() {
                   <Wallet className="h-4 w-4 text-gray-400" />
                 </div>
                 <div className="text-2xl font-bold text-gray-900">
-                  30.000.000₫
+                  100.000.000₫
                 </div>
                 <Button
                   size="sm"
