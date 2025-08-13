@@ -77,11 +77,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="#" className="text-black hover-text-gray-500 transition-colors">
-                  Tuyển Dụng
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
                   Báo Chí
                 </Link>
               </li>
@@ -99,18 +94,18 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-rose-600" />
-                <span className="text-black">vaila.studio.mail@</span>
+                <span className="text-black">veila.studio.mail@gmail.com</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-rose-600" />
-                <span className="text-black">+84 (028) 123-4567</span>
+                <span className="text-black">+84 (966) 316-803</span>
               </li>
               <li className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-rose-600 mt-1" />
                 <span className="text-black">
-                  123 Đường Nguyễn Huệ
+                  Nhà văn hoá sinh viên
                   <br />
-                  Quận 1, TP. Hồ Chí Minh
+                  Phường Đông Hoà, TP. Hồ Chí Minh
                 </span>
               </li>
             </ul>
