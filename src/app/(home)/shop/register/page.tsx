@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Store,
@@ -28,53 +27,49 @@ import {
 import Link from "next/link";
 import { ImagesUpload } from "@/components/images-upload";
 import { LocationInput } from "@/components/location-input";
-
-interface ShopData {
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  licenseImages: string;
-}
+import { ICreateShop } from "@/services/types";
+import { useCreateShopMutation } from "@/services/apis";
+import { toast } from "sonner";
 
 export default function ShopRegisterPage() {
-  const [shopData, setShopData] = useState<ShopData>({
+  const [shopData, setShopData] = useState<ICreateShop>({
     name: "",
     phone: "",
     email: "",
     address: "",
     licenseImages: "",
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleInputChange = (field: keyof ShopData, value: string) => {
+  const handleInputChange = (field: keyof ICreateShop, value: string) => {
     setShopData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
+  const [createShop, { isLoading: isSubmitting }] = useCreateShopMutation();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-  };
-
-  const fillSampleData = () => {
-    setShopData({
-      name: "Cửa hàng thời trang ABC",
-      phone: "0901234567",
-      email: "shopABC@gmail.com",
-      address: "123 Đường ABC, Quận 1, TP.HCM",
-      licenseImages: "https://storage.veila.com/shops/license123.jpg",
-    });
+    try {
+      const { statusCode, message } = await createShop(shopData).unwrap();
+      if (statusCode === 201) {
+        setIsSubmitted(true);
+        toast.success("Đăng ký mở shop thành công!", {
+          description: "Chúng tôi sẽ xem xét đơn đăng ký của bạn.",
+        });
+      } else {
+        toast.error("Đăng ký mở shop thất bại. Vui lòng thử lại.", {
+          description: message,
+        });
+      }
+    } catch (error) {
+      toast.error("Đã xảy ra lỗi khi đăng ký mở shop.", {
+        description: "Vui lòng đợi trước khi đăng ký lại.",
+      });
+    }
   };
 
   if (isSubmitted) {
@@ -112,7 +107,7 @@ export default function ShopRegisterPage() {
               </div>
               <div className="flex gap-4 justify-center">
                 <Button asChild className="bg-rose-600 hover:bg-rose-700">
-                  <Link href="/browse">Tiếp tục duyệt</Link>
+                  <Link href="/profile">Về trang cá nhân</Link>
                 </Button>
               </div>
             </div>
@@ -220,7 +215,7 @@ export default function ShopRegisterPage() {
                       onChange={(e) =>
                         handleInputChange("phone", e.target.value)
                       }
-                      placeholder="+84901234567"
+                      placeholder="0901234567"
                       required
                     />
                   </div>
@@ -296,14 +291,6 @@ export default function ShopRegisterPage() {
                         Gửi đăng ký
                       </>
                     )}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={fillSampleData}
-                    className="px-6 bg-transparent"
-                  >
-                    Điền dữ liệu mẫu
                   </Button>
                 </div>
               </form>
