@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart,
@@ -18,13 +17,12 @@ import {
   Calendar,
   MessageCircle,
   Star,
-  Wallet,
-  Plus,
   Clock,
   CheckCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UserCard } from "@/components/profile/user-card";
+import { WalletCard } from "@/components/profile/wallet-card";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -38,29 +36,9 @@ export default function DashboardPage() {
           <UserCard />
         </div>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Số Dư Ví</span>
-                <Wallet className="h-4 w-4 text-gray-400" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900">
-                100.000.000₫
-              </div>
-              <Button
-                size="sm"
-                className="w-full bg-rose-600 hover:bg-rose-700"
-                onClick={() => {
-                  router.push(`/profile/wallet`);
-                }}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Nạp Tiền
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="cols-span-1 w-full h-full">
+          <WalletCard />
+        </div>
       </div>
 
       {/* Main Content */}
