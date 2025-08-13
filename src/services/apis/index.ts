@@ -16,3 +16,4 @@ export * from './subscription.api';
 export * from './transaction.api';
 export * from './user.api';
 export * from './wallet.api';
+export * from './locale.api';

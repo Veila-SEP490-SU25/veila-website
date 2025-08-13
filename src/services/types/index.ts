@@ -20,3 +20,5 @@ export * from './request.type';
 export * from './task.type';
 export * from './feedback.type';
 export * from './complaint.type';
+
+export * from './locale.type';
