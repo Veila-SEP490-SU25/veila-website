@@ -175,7 +175,7 @@ const LoginPage = () => {
               <p className="text-sm text-gray-600">
                 Chưa có tài khoản?{" "}
                 <Link
-                  href="/auth/register"
+                  href="/register"
                   className="text-rose-600 hover:text-rose-700 font-medium hover:underline"
                 >
                   Đăng ký ngay
