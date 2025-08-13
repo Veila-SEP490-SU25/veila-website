@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Store, Phone, Mail, MapPin, Upload, CheckCircle, AlertCircle, Camera, FileText, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { ImagesUpload } from "@/components/images-upload"
 
 interface ShopData {
   name: string
@@ -259,52 +260,12 @@ export default function ShopRegisterPage() {
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
                       <Camera className="h-4 w-4" />
-                      Business License *
+                      Giấy phép kinh doanh *
                     </Label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                      {uploadedImage ? (
-                        <div className="text-center">
-                          <Image
-                            src={uploadedImage || "/placeholder.svg"}
-                            alt="Business License"
-                            width={200}
-                            height={150}
-                            className="mx-auto rounded-lg mb-4"
-                          />
-                          <p className="text-sm text-green-600 mb-2">✓ License uploaded successfully</p>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => document.getElementById("license-upload")?.click()}
-                          >
-                            <Upload className="h-4 w-4 mr-2" />
-                            Change Image
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="text-center">
-                          <Upload className="h-8 w-8 text-gray-400 mx-auto mb-4" />
-                          <p className="text-gray-600 mb-2">Upload your business license or registration document</p>
-                          <p className="text-sm text-gray-500 mb-4">Supported formats: JPG, PNG, PDF (Max 5MB)</p>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => document.getElementById("license-upload")?.click()}
-                          >
-                            <Upload className="h-4 w-4 mr-2" />
-                            Choose File
-                          </Button>
-                        </div>
-                      )}
-                      <input
-                        id="license-upload"
-                        type="file"
-                        accept="image/*,.pdf"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </div>
+                    <ImagesUpload 
+                      imageUrls={shopData.licenseImages}
+                      setImageUrls={(urls) => handleInputChange("licenseImages", urls)}
+                    />
                   </div>
 
                   {/* Submit Button */}

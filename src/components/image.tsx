@@ -1,29 +1,22 @@
-import { cn } from "@/lib/utils";
+import type React from "react"
+import { cn } from "@/lib/utils"
+import { forwardRef } from "react"
 
-interface ImageProps {
-  src: string;
-  alt: string;
-  className?: string;
-  width?: number;
-  height?: number;
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  src: string
+  alt: string
 }
 
-export const Image = ({
-  src,
-  alt,
-  className = "",
-  width = 100,
-  height = 100,
-}: ImageProps) => {
+export const Image = forwardRef<HTMLImageElement, ImageProps>(({ className, src, alt, ...props }, ref) => {
   return (
-    <div className={cn("block", className)}>
-      <img
-        src={src}
-        alt={alt}
-        className="object-cover size-full"
-        width={width}
-        height={height}
-      />
-    </div>
-  );
-};
+    <img
+      ref={ref}
+      src={src || "/placeholder.svg"}
+      alt={alt}
+      className={cn("max-w-full h-auto", className)}
+      {...props}
+    />
+  )
+})
+
+Image.displayName = "Image"
