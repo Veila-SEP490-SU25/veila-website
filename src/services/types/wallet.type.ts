@@ -5,3 +5,13 @@ export interface IWallet extends IItem {
   availableBalance: number;
   lockedBalance: number;
 }
+
+export interface IDeposit {
+  amount: number;
+  note: string;
+}
+
+export interface IWithdraw {
+  amount: number;
+  note: string;
+}
