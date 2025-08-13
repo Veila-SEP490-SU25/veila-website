@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ImagesUpload } from "@/components/images-upload";
+import { LocationInput } from "@/components/location-input";
 
 interface ShopData {
   name: string;
@@ -248,15 +249,11 @@ export default function ShopRegisterPage() {
                     <MapPin className="h-4 w-4" />
                     Địa chỉ kinh doanh *
                   </Label>
-                  <Textarea
-                    id="address"
-                    value={shopData.address}
-                    onChange={(e) =>
-                      handleInputChange("address", e.target.value)
+                  <LocationInput
+                    location={shopData.address}
+                    setLocation={(location) =>
+                      handleInputChange("address", location)
                     }
-                    placeholder="Nhập địa chỉ kinh doanh đầy đủ của bạn"
-                    rows={3}
-                    required
                   />
                 </div>
 
