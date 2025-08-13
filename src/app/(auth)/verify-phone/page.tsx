@@ -201,12 +201,16 @@ export default function VerifyPhonePage() {
           phone: phoneNumber,
         }).unwrap();
         if (statusCode === 200) {
-          toast.success("Xaác thực số điện thoại thành công.");
+          toast.success("Xác thực số điện thoại thành công.");
           if (returnUrl) {
-            router.push(returnUrl);
-          }else{
+            router.push(decodeURI(returnUrl));
+          } else {
             router.push("/");
           }
+        } else {
+          toast.error("Xác thực số điẹn thoại thất bại", {
+            description: message,
+          });
         }
       } else {
         console.error("Invalid phone number format:", user.phoneNumber);

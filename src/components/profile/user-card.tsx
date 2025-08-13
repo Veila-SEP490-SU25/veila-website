@@ -1,28 +1,47 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth.provider";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 export const UserCard = () => {
   const { currentUser } = useAuth();
+  const router = useRouter();
+
+  const goToPhoneVerify = useCallback(() => {
+    const returnUrl = encodeURI(window.location.href);
+    router.push(`/verify-phone?returnUrl=${returnUrl}`);
+  }, [router]);
 
   return currentUser ? (
-    <Card>
+    <Card className="w-full h-full">
       <CardContent className="p-6">
-        <div className="flex items-center space-x-4">
-          <Avatar className="h-16 w-16">
+        <div className="grid items-center space-x-4 grid-cols-5">
+          <Avatar className="w-16 h-16 aspect-square col-span-1">
             <AvatarImage
+              className="aspect-square"
               src={currentUser.avatarUrl || "/placeholder-user.jpg"}
             />
-            <AvatarFallback className="bg-rose-100 text-rose-600">
+            <AvatarFallback className="bg-rose-100 text-rose-600 aspect-square">
               {currentUser.firstName.charAt(0) +
                 currentUser.lastName.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
-          <div>
+          <div className="col-span-4">
             <h3 className="font-semibold text-lg">
               {currentUser.firstName} {currentUser.middleName}{" "}
               {currentUser.lastName}
             </h3>
+            <Badge
+              className="w-fit text-wrap block h-fit cursor-pointer"
+              variant="danger"
+              onClick={goToPhoneVerify}
+            >
+              Vui lòng nhấn vào đây để xác thực số điện thoại.
+            </Badge>
           </div>
         </div>
       </CardContent>
