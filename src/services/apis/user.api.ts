@@ -9,7 +9,7 @@ export const userApi = createApi({
     identify: builder.mutation<IItemResponse<null>, IIdentifyUser>({
       query: (body) => ({
         url: "users/identify",
-        method: "POST",
+        method: "PUT",
         body,
       }),
     }),

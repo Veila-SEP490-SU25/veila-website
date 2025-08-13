@@ -34,6 +34,7 @@ import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import { useIdentifyMutation } from "@/services/apis";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/providers/auth.provider";
 
 export default function VerifyPhonePage() {
   const searchParams = useSearchParams();
@@ -186,6 +187,8 @@ export default function VerifyPhonePage() {
     [signInWithPhoneNumber, auth, setResult]
   );
 
+  const {reloadProfile} = useAuth();
+
   const handleVerifyOTP = useCallback(async () => {
     if (!result || !otp || otp.length !== 6) return;
 
@@ -202,8 +205,9 @@ export default function VerifyPhonePage() {
         }).unwrap();
         if (statusCode === 200) {
           toast.success("Xác thực số điện thoại thành công.");
+          reloadProfile();
           if (returnUrl) {
-            router.push(decodeURI(returnUrl));
+            router.push(decodeURIComponent(returnUrl));
           } else {
             router.push("/");
           }

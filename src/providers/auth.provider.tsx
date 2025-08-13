@@ -35,6 +35,7 @@ type AuthContextType = {
   loginGoogle: (body: IGoogleAuth) => Promise<void>;
   logout: () => Promise<void>;
   verifyOtp: (body: IVerifyOtp) => Promise<void>;
+  reloadProfile: () => void;
   isAuthenticating: boolean;
   isAuthenticated: boolean;
   currentAccessToken: string | null;
@@ -254,6 +255,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCurrentUser,
   ]);
 
+  const reloadProfile = useCallback(() => {
+    authCheckRef.current = false;
+    setIsAuthenticated(false);
+  }, [setIsAuthenticated]);
+
   useEffect(() => {
     if (authCheckRef.current) return;
 
@@ -299,6 +305,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loginGoogle,
         logout,
         verifyOtp,
+        reloadProfile,
         isAuthenticating:
           isLoginLoading ||
           isLogoutLoading ||

@@ -21,6 +21,7 @@ const badgeVariants = cva(
           "border-rose-600 bg-rose-600/10 hover:bg-rose-600 text-rose-600 hover:text-white",
         success:
           "border-green-600 bg-green-600/10 hover:bg-green-600 text-green-600 hover:text-white",
+        info: "border-amber-600 bg-amber-600/10 hover:bg-amber-600 text-amber-600 hover:text-white",
       },
     },
     defaultVariants: {

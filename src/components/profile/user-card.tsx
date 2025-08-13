@@ -12,7 +12,7 @@ export const UserCard = () => {
   const router = useRouter();
 
   const goToPhoneVerify = useCallback(() => {
-    const returnUrl = encodeURI(window.location.href);
+    const returnUrl = encodeURIComponent(window.location.href);
     router.push(`/verify-phone?returnUrl=${returnUrl}`);
   }, [router]);
 
@@ -30,18 +30,30 @@ export const UserCard = () => {
                 currentUser.lastName.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
-          <div className="col-span-4">
-            <h3 className="font-semibold text-lg">
+          <div className="col-span-4 space-y-2">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
               {currentUser.firstName} {currentUser.middleName}{" "}
               {currentUser.lastName}
+              <Badge className="" variant="info">
+                {currentUser.role}
+              </Badge>
             </h3>
-            <Badge
-              className="w-fit text-wrap block h-fit cursor-pointer"
-              variant="danger"
-              onClick={goToPhoneVerify}
-            >
-              Vui lòng nhấn vào đây để xác thực số điện thoại.
-            </Badge>
+            {currentUser.isIdentified ? (
+              <Badge
+                className="w-fit text-wrap block h-fit cursor-pointer"
+                variant="success"
+              >
+                Đã xác minh
+              </Badge>
+            ) : (
+              <Badge
+                className="w-fit text-wrap block h-fit cursor-pointer"
+                variant="danger"
+                onClick={goToPhoneVerify}
+              >
+                Vui lòng nhấn vào đây để xác thực số điện thoại
+              </Badge>
+            )}
           </div>
         </div>
       </CardContent>
