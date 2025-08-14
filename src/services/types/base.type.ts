@@ -7,13 +7,22 @@ export interface IItemResponse<T> {
 export interface IListResponse<T> {
   message: string;
   statusCode: number;
-  pageIndec: number;
+  pageIndex: number;
   pageSize: number;
   totalItems: number;
   totalPages: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
   items: T[];
+}
+
+export interface IPaginationResponse {
+  pageIndex: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
 }
 
 export interface IErrorResponse {

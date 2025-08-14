@@ -1,109 +1,201 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
-  Search,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   MoreHorizontal,
   Eye,
   CheckCircle,
   Ban,
   Edit,
   Trash2,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  TrendingUp,
-  Filter,
-} from "lucide-react"
-
-// Mock data - same as before
-const shops = [
-  {
-    id: 1,
-    name: "Cửa hàng thời trang ABC",
-    owner: "Nguyễn Thị Lan",
-    email: "shopABC@gmail.com",
-    phone: "+84901234567",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-    status: "active",
-    verificationStatus: "verified",
-    joinDate: "2024-01-15",
-    totalOrders: 45,
-    rating: 4.8,
-    revenue: 125000000,
-  },
-  {
-    id: 2,
-    name: "Váy Cưới Hoàng Gia",
-    owner: "Trần Văn Minh",
-    email: "hoanggia@gmail.com",
-    phone: "+84987654321",
-    address: "456 Đường XYZ, Quận 3, TP.HCM",
-    status: "pending",
-    verificationStatus: "pending",
-    joinDate: "2024-02-20",
-    totalOrders: 0,
-    rating: 0,
-    revenue: 0,
-  },
-  {
-    id: 3,
-    name: "Thiết Kế Cô Dâu Elite",
-    owner: "Lê Thị Hương",
-    email: "elite@gmail.com",
-    phone: "+84912345678",
-    address: "789 Đường DEF, Quận 7, TP.HCM",
-    status: "suspended",
-    verificationStatus: "verified",
-    joinDate: "2023-11-10",
-    totalOrders: 23,
-    rating: 4.2,
-    revenue: 67000000,
-  },
-]
+  ShieldCheck,
+  Shield,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
+import {
+  type IPaginationResponse,
+  type IShop,
+  ShopStatus,
+} from "@/services/types";
+import { useLazyStaffGetShopsQuery } from "@/services/apis";
+import { toast } from "sonner";
 
 export default function ShopsManagement() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [selectedShop, setSelectedShop] = useState<any>(null)
+  const [statusFilter, setStatusFilter] = useState<ShopStatus | null>(null);
+  const [paging, setPaging] = useState<IPaginationResponse>({
+    hasNextPage: false,
+    hasPrevPage: false,
+    pageIndex: 0,
+    pageSize: 10,
+    totalItems: 0,
+    totalPages: 0,
+  });
+  const [shops, setShops] = useState<IShop[]>([]);
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    pending: 0,
+    suspended: 0,
+    verified: 0,
+  });
 
-  const getStatusBadge = (status: string) => {
+  const [getShops, { isLoading }] = useLazyStaffGetShopsQuery();
+
+  const getVerificationBadge = (isVerified: boolean) => {
+    return isVerified ? (
+      <Badge className="bg-blue-100 text-blue-700">
+        <ShieldCheck className="h-3 w-3 mr-1" />
+        Đã xác minh
+      </Badge>
+    ) : (
+      <Badge className="bg-gray-100 text-gray-700">
+        <Shield className="h-3 w-3 mr-1" />
+        Chưa xác minh
+      </Badge>
+    );
+  };
+
+  const getStatusBadge = (status: ShopStatus) => {
     const statusConfig = {
-      active: { label: "Hoạt động", className: "bg-green-100 text-green-700" },
-      pending: { label: "Chờ duyệt", className: "bg-yellow-100 text-yellow-700" },
-      suspended: { label: "Tạm khóa", className: "bg-red-100 text-red-700" },
+      [ShopStatus.ACTIVE]: {
+        label: "Hoạt động",
+        className: "bg-green-100 text-green-700",
+      },
+      [ShopStatus.PENDING]: {
+        label: "Chờ duyệt",
+        className: "bg-yellow-100 text-yellow-700",
+      },
+      [ShopStatus.SUSPENDED]: {
+        label: "Tạm khóa",
+        className: "bg-red-100 text-red-700",
+      },
+      [ShopStatus.INACTIVE]: {
+        label: "Tạm ngưng",
+        className: "bg-gray-100 text-gray-700",
+      },
+      [ShopStatus.BANNED]: {
+        label: "Bị cấm",
+        className: "bg-red-200 text-red-800",
+      },
+    };
+    const config = statusConfig[status];
+    return <Badge className={config.className}>{config.label}</Badge>;
+  };
+
+  const getFilterText = (status: ShopStatus | null) => {
+    switch (status) {
+      case ShopStatus.ACTIVE:
+        return "status:eq:ACTIVE";
+      case ShopStatus.PENDING:
+        return "status:eq:PENDING";
+      case ShopStatus.SUSPENDED:
+        return "status:eq:SUSPENDED";
+      case ShopStatus.INACTIVE:
+        return "status:eq:INACTIVE";
+      case ShopStatus.BANNED:
+        return "status:eq:BANNED";
+      default:
+        return "";
     }
-    const config = statusConfig[status as keyof typeof statusConfig]
-    return <Badge className={config.className}>{config.label}</Badge>
-  }
+  };
 
-  const filteredShops = shops.filter((shop) => {
-    const matchesSearch =
-      shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shop.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shop.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchShops = async () => {
+    const filter = getFilterText(statusFilter);
+    try {
+      const { statusCode, items, message, ...pagination } = await getShops({
+        filter,
+        page: paging.pageIndex,
+        size: paging.pageSize,
+        sort: "",
+      }).unwrap();
 
-    const matchesStatus = statusFilter === "all" || shop.status === statusFilter
+      if (statusCode === 200) {
+        setShops(items);
+        setPaging((prev) => ({ ...prev, ...pagination }));
+      }
+    } catch (error) {
+      toast.error("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
+    }
+  };
 
-    return matchesSearch && matchesStatus
-  })
+  const fetchStats = async () => {
+    try {
+      // Fetch all shops to calculate stats
+      const { statusCode, items } = await getShops({
+        filter: "",
+        page: 0,
+        size: 1000, // Large number to get all shops for stats
+        sort: "",
+      }).unwrap();
+
+      if (statusCode === 200) {
+        const total = items.length;
+        const active = items.filter(
+          (s) => s.status === ShopStatus.ACTIVE
+        ).length;
+        const pending = items.filter(
+          (s) => s.status === ShopStatus.PENDING
+        ).length;
+        const suspended = items.filter(
+          (s) => s.status === ShopStatus.SUSPENDED
+        ).length;
+        const verified = items.filter((s) => s.isVerified).length;
+
+        setStats({ total, active, pending, suspended, verified });
+      }
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
+  const handlePageChange = (newPageIndex: number) => {
+    setPaging((prev) => ({
+      ...prev,
+      pageIndex: newPageIndex,
+    }));
+  };
+
+  const handlePageSizeChange = (newPageSize: string) => {
+    const pageSize = Number.parseInt(newPageSize);
+    setPaging((prev) => ({
+      ...prev,
+      pageSize,
+      pageIndex: 0, // Reset to first page when changing page size
+    }));
+  };
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value === "all" ? null : (value as ShopStatus));
+    setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+  };
+
+  useEffect(() => {
+    fetchShops();
+  }, [statusFilter, paging.pageIndex, paging.pageSize]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   return (
     <div className="p-6 space-y-6">
@@ -111,24 +203,22 @@ export default function ShopsManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Quản Lý Cửa Hàng</h1>
-          <p className="text-gray-600 mt-2">Quản lý và theo dõi tất cả cửa hàng trong hệ thống</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-2" />
-            Xuất Dữ Liệu
-          </Button>
+          <p className="text-gray-600 mt-2">
+            Quản lý và theo dõi tất cả cửa hàng trong hệ thống
+          </p>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Tổng Cửa Hàng</p>
-                <p className="text-2xl font-bold text-gray-900">{shops.length}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.total}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -138,7 +228,9 @@ export default function ShopsManagement() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Đang Hoạt Động</p>
-                <p className="text-2xl font-bold text-green-600">{shops.filter((s) => s.status === "active").length}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.active}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -149,7 +241,7 @@ export default function ShopsManagement() {
               <div>
                 <p className="text-sm text-gray-600">Chờ Duyệt</p>
                 <p className="text-2xl font-bold text-yellow-600">
-                  {shops.filter((s) => s.status === "pending").length}
+                  {stats.pending}
                 </p>
               </div>
             </div>
@@ -161,7 +253,19 @@ export default function ShopsManagement() {
               <div>
                 <p className="text-sm text-gray-600">Tạm Khóa</p>
                 <p className="text-2xl font-bold text-red-600">
-                  {shops.filter((s) => s.status === "suspended").length}
+                  {stats.suspended}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Đã Xác Minh</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {stats.verified}
                 </p>
               </div>
             </div>
@@ -170,181 +274,216 @@ export default function ShopsManagement() {
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Tìm kiếm cửa hàng, chủ sở hữu, email..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Lọc theo trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="active">Hoạt động</SelectItem>
-                <SelectItem value="pending">Chờ duyệt</SelectItem>
-                <SelectItem value="suspended">Tạm khóa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col md:flex-row gap-4 justify-end">
+        <Select
+          value={statusFilter || "all"}
+          onValueChange={handleStatusFilterChange}
+        >
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Lọc theo trạng thái" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tất cả trạng thái</SelectItem>
+            <SelectItem value={ShopStatus.ACTIVE}>Hoạt động</SelectItem>
+            <SelectItem value={ShopStatus.PENDING}>Chờ duyệt</SelectItem>
+            <SelectItem value={ShopStatus.SUSPENDED}>Tạm khóa</SelectItem>
+            <SelectItem value={ShopStatus.INACTIVE}>Tạm ngưng</SelectItem>
+            <SelectItem value={ShopStatus.BANNED}>Bị cấm</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select
+          value={paging.pageSize.toString()}
+          onValueChange={handlePageSizeChange}
+        >
+          <SelectTrigger className="w-full md:w-32">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10 / trang</SelectItem>
+            <SelectItem value="20">20 / trang</SelectItem>
+            <SelectItem value="50">50 / trang</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       {/* Shops List */}
       <Card>
         <CardHeader>
-          <CardTitle>Danh Sách Cửa Hàng ({filteredShops.length})</CardTitle>
+          <CardTitle>
+            Danh Sách Cửa Hàng ({paging.totalItems} kết quả)
+            {paging.totalItems > 0 && (
+              <span className="text-sm font-normal text-gray-500 ml-2">
+                (hiển thị {paging.pageIndex * paging.pageSize + 1}-
+                {Math.min(
+                  (paging.pageIndex + 1) * paging.pageSize,
+                  paging.totalItems
+                )}{" "}
+                của {paging.totalItems})
+              </span>
+            )}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {filteredShops.map((shop) => (
-              <div key={shop.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={`/placeholder-icon.png?height=48&width=48&text=${shop.name.charAt(0)}`} />
-                      <AvatarFallback className="bg-rose-100 text-rose-600">{shop.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="font-semibold text-lg">{shop.name}</h3>
-                      <p className="text-gray-600">Chủ sở hữu: {shop.owner}</p>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              <span className="ml-2 text-gray-600">Đang tải dữ liệu...</span>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {shops.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">
+                    Không tìm thấy cửa hàng nào phù hợp với bộ lọc.
+                  </p>
+                </div>
+              ) : (
+                shops.map((shop) => (
+                  <div
+                    key={shop.id}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage
+                            src={
+                              shop.logoUrl ||
+                              `/placeholder.svg?height=48&width=48&text=${
+                                shop.name.charAt(0) || "S"
+                              }`
+                            }
+                          />
+                          <AvatarFallback className="bg-rose-100 text-rose-600">
+                            {shop.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <h3 className="font-semibold text-lg">{shop.name}</h3>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <div className="flex items-center space-x-1">
+                              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                              <span className="text-sm text-gray-600">
+                                {shop.reputation}
+                              </span>
+                            </div>
+                            {getVerificationBadge(shop.isVerified)}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {getStatusBadge(shop.status)}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => {}}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              Xem chi tiết
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Edit className="h-4 w-4 mr-2" />
+                              Chỉnh sửa
+                            </DropdownMenuItem>
+                            {shop.status === ShopStatus.PENDING && (
+                              <DropdownMenuItem>
+                                <CheckCircle className="h-4 w-4 mr-2" />
+                                Phê duyệt
+                              </DropdownMenuItem>
+                            )}
+                            {shop.status === ShopStatus.ACTIVE && (
+                              <DropdownMenuItem>
+                                <Ban className="h-4 w-4 mr-2" />
+                                Tạm khóa
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem className="text-red-600">
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Xóa
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    {getStatusBadge(shop.status)}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setSelectedShop(shop)}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          Xem chi tiết
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Edit className="h-4 w-4 mr-2" />
-                          Chỉnh sửa
-                        </DropdownMenuItem>
-                        {shop.status === "pending" && (
-                          <DropdownMenuItem>
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Phê duyệt
-                          </DropdownMenuItem>
-                        )}
-                        {shop.status === "active" && (
-                          <DropdownMenuItem>
-                            <Ban className="h-4 w-4 mr-2" />
-                            Tạm khóa
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem className="text-red-600">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Xóa
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
+                ))
+              )}
+            </div>
+          )}
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Mail className="h-4 w-4 text-gray-400" />
-                    <span>{shop.email}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Phone className="h-4 w-4 text-gray-400" />
-                    <span>{shop.phone}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <span>Tham gia: {new Date(shop.joinDate).toLocaleDateString("vi-VN")}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <TrendingUp className="h-4 w-4 text-gray-400" />
-                    <span>{shop.totalOrders} đơn hàng</span>
-                  </div>
-                </div>
-
-                <div className="mt-3 flex items-center space-x-2 text-sm text-gray-600">
-                  <MapPin className="h-4 w-4" />
-                  <span>{shop.address}</span>
-                </div>
+          {/* Pagination */}
+          {paging.totalItems > 0 && !isLoading && (
+            <div className="flex items-center justify-between mt-6 pt-4 border-t">
+              <div className="text-sm text-gray-600">
+                Hiển thị {paging.pageIndex * paging.pageSize + 1}-
+                {Math.min(
+                  (paging.pageIndex + 1) * paging.pageSize,
+                  paging.totalItems
+                )}{" "}
+                của {paging.totalItems} kết quả
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(paging.pageIndex - 1)}
+                  disabled={!paging.hasPrevPage || isLoading}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Trước
+                </Button>
 
-      {/* Shop Detail Dialog */}
-      <Dialog open={!!selectedShop} onOpenChange={() => setSelectedShop(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Chi Tiết Cửa Hàng</DialogTitle>
-            <DialogDescription>Thông tin chi tiết về cửa hàng {selectedShop?.name}</DialogDescription>
-          </DialogHeader>
-          {selectedShop && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Tên cửa hàng</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.name}</p>
+                {/* Page numbers */}
+                <div className="flex items-center space-x-1">
+                  {Array.from(
+                    { length: Math.min(5, paging.totalPages) },
+                    (_, i) => {
+                      let pageNum: number;
+                      if (paging.totalPages <= 5) {
+                        pageNum = i;
+                      } else if (paging.pageIndex < 3) {
+                        pageNum = i;
+                      } else if (paging.pageIndex >= paging.totalPages - 3) {
+                        pageNum = paging.totalPages - 5 + i;
+                      } else {
+                        pageNum = paging.pageIndex - 2 + i;
+                      }
+
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={
+                            pageNum === paging.pageIndex ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() => handlePageChange(pageNum)}
+                          disabled={isLoading}
+                          className="w-8 h-8 p-0"
+                        >
+                          {pageNum + 1}
+                        </Button>
+                      );
+                    }
+                  )}
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Chủ sở hữu</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.owner}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Email</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.email}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Số điện thoại</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.phone}</p>
-                </div>
-                <div className="col-span-2">
-                  <Label className="text-sm font-medium">Địa chỉ</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.address}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Trạng thái</Label>
-                  <div className="mt-1">{getStatusBadge(selectedShop.status)}</div>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Ngày tham gia</Label>
-                  <p className="text-sm text-gray-600">{new Date(selectedShop.joinDate).toLocaleDateString("vi-VN")}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Tổng đơn hàng</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.totalOrders}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Đánh giá</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.rating}/5.0</p>
-                </div>
-                <div className="col-span-2">
-                  <Label className="text-sm font-medium">Doanh thu</Label>
-                  <p className="text-sm text-gray-600">{selectedShop.revenue.toLocaleString("vi-VN")}₫</p>
-                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(paging.pageIndex + 1)}
+                  disabled={!paging.hasNextPage || isLoading}
+                >
+                  Sau
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
               </div>
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedShop(null)}>
-              Đóng
-            </Button>
-            <Button className="bg-rose-600 hover:bg-rose-700">Chỉnh Sửa</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }
