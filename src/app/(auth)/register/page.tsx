@@ -192,7 +192,7 @@ export default function RegisterPage() {
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Tạo mật khẩu (ít nhất 6 ký tự, có chữ hoa, thường và số)"
+                            placeholder="Tạo mật khẩu"
                             className="pr-10 h-11"
                             {...field}
                           />

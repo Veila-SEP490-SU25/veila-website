@@ -204,7 +204,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           toast.success("Đăng nhập thành công.", {
             description: "Chào mừng bạn quay trở lại.",
           });
-          if (pathname !== "/") router.push("/");
+          router.push("/");
           return;
         } else {
           toast.error("Đăng nhập thất bại.", {
