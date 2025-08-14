@@ -102,7 +102,7 @@ export const shopApi = createApi({
       IHandleCreateShop
     >({
       query: ({ id, ...body }) => ({
-        url: `shops/${id}staff`,
+        url: `shops/${id}/staff`,
         method: "PATCH",
         body,
       }),

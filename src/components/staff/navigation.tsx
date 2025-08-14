@@ -3,7 +3,7 @@
 import { TextLogo } from "@/components/text-logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/providers/auth.provider";
 import { UserRole } from "@/services/types";
 import {
@@ -11,6 +11,7 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  Menu,
   MessageSquare,
   Settings,
   Store,
@@ -204,6 +205,18 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
         <div className="md:pl-64">
+          <div className="md:hidden flex items-center justify-between flex-1">
+            <SheetTrigger asChild className="">
+              <Button
+                variant="link"
+                size="icon"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <TextLogo />
+          </div>
           <main className="flex-1 md:p-6">{children}</main>
         </div>
       </Sheet>

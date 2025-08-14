@@ -39,6 +39,7 @@ import {
 } from "@/services/types";
 import { useLazyStaffGetShopsQuery } from "@/services/apis";
 import { toast } from "sonner";
+import { ShopDetailDialog } from "@/components/staff/shop/shop-detail-dialog";
 
 export default function ShopsManagement() {
   const [statusFilter, setStatusFilter] = useState<ShopStatus | null>(null);
@@ -197,84 +198,70 @@ export default function ShopsManagement() {
     fetchStats();
   }, []);
 
+  const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
+
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 space-y-6 max-w-full">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản Lý Cửa Hàng</h1>
-          <p className="text-gray-600 mt-2">
-            Quản lý và theo dõi tất cả cửa hàng trong hệ thống
-          </p>
-        </div>
+      <div className="mb-2">
+        <h1 className="text-2xl font-bold text-gray-900">Quản Lý Cửa Hàng</h1>
+        <p className="text-gray-600 mt-1 text-sm">
+          Quản lý và theo dõi tất cả cửa hàng trong hệ thống
+        </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      {/* Stats - mobile first: stack vertically */}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-5 md:gap-6">
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tổng Cửa Hàng</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
-              </div>
+          <CardContent className="p-4">
+            <div>
+              <p className="text-xs text-gray-600">Tổng Cửa Hàng</p>
+              <p className="text-xl font-bold text-gray-900">{stats.total}</p>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Đang Hoạt Động</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.active}
-                </p>
-              </div>
+          <CardContent className="p-4">
+            <div>
+              <p className="text-xs text-gray-600">Đang Hoạt Động</p>
+              <p className="text-xl font-bold text-green-600">{stats.active}</p>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Chờ Duyệt</p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {stats.pending}
-                </p>
-              </div>
+          <CardContent className="p-4">
+            <div>
+              <p className="text-xs text-gray-600">Chờ Duyệt</p>
+              <p className="text-xl font-bold text-yellow-600">
+                {stats.pending}
+              </p>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tạm Khóa</p>
-                <p className="text-2xl font-bold text-red-600">
-                  {stats.suspended}
-                </p>
-              </div>
+          <CardContent className="p-4">
+            <div>
+              <p className="text-xs text-gray-600">Tạm Khóa</p>
+              <p className="text-xl font-bold text-red-600">
+                {stats.suspended}
+              </p>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Đã Xác Minh</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {stats.verified}
-                </p>
-              </div>
+          <CardContent className="p-4">
+            <div>
+              <p className="text-xs text-gray-600">Đã Xác Minh</p>
+              <p className="text-xl font-bold text-blue-600">
+                {stats.verified}
+              </p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 justify-end">
+      {/* Filters - mobile first: stack vertically, full width */}
+      <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-end">
         <Select
           value={statusFilter || "all"}
           onValueChange={handleStatusFilterChange}
@@ -306,13 +293,13 @@ export default function ShopsManagement() {
         </Select>
       </div>
 
-      {/* Shops List */}
-      <Card>
+      {/* Shops List - mobile first: stack, padding, responsive */}
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle>
+          <CardTitle className="text-base md:text-lg">
             Danh Sách Cửa Hàng ({paging.totalItems} kết quả)
             {paging.totalItems > 0 && (
-              <span className="text-sm font-normal text-gray-500 ml-2">
+              <span className="text-xs md:text-sm font-normal text-gray-500 ml-2">
                 (hiển thị {paging.pageIndex * paging.pageSize + 1}-
                 {Math.min(
                   (paging.pageIndex + 1) * paging.pageSize,
@@ -325,9 +312,9 @@ export default function ShopsManagement() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="flex flex-col items-center justify-center py-8">
               <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-              <span className="ml-2 text-gray-600">Đang tải dữ liệu...</span>
+              <span className="mt-2 text-gray-600">Đang tải dữ liệu...</span>
             </div>
           ) : (
             <div className="space-y-4">
@@ -341,11 +328,11 @@ export default function ShopsManagement() {
                 shops.map((shop) => (
                   <div
                     key={shop.id}
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className="border rounded-lg p-3 md:p-4 hover:shadow-md transition-shadow bg-white"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-4">
-                        <Avatar className="h-12 w-12">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-2 md:mb-3">
+                      <div className="flex items-center gap-3 md:gap-4">
+                        <Avatar className="h-10 w-10 md:h-12 md:w-12">
                           <AvatarImage
                             src={
                               shop.logoUrl ||
@@ -359,53 +346,24 @@ export default function ShopsManagement() {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <h3 className="font-semibold text-lg">{shop.name}</h3>
+                          <h3 className="font-semibold text-base md:text-lg">
+                            {shop.name}
+                          </h3>
                           <div className="flex items-center space-x-2 mt-1">
-                            <div className="flex items-center space-x-1">
-                              <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                              <span className="text-sm text-gray-600">
-                                {shop.reputation}
-                              </span>
-                            </div>
                             {getVerificationBadge(shop.isVerified)}
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between gap-2 mt-2 md:mt-0">
                         {getStatusBadge(shop.status)}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => {}}>
-                              <Eye className="h-4 w-4 mr-2" />
-                              Xem chi tiết
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Chỉnh sửa
-                            </DropdownMenuItem>
-                            {shop.status === ShopStatus.PENDING && (
-                              <DropdownMenuItem>
-                                <CheckCircle className="h-4 w-4 mr-2" />
-                                Phê duyệt
-                              </DropdownMenuItem>
-                            )}
-                            {shop.status === ShopStatus.ACTIVE && (
-                              <DropdownMenuItem>
-                                <Ban className="h-4 w-4 mr-2" />
-                                Tạm khóa
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem className="text-red-600">
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Xóa
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedShopId(shop.id)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Xem chi tiết
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -414,10 +372,10 @@ export default function ShopsManagement() {
             </div>
           )}
 
-          {/* Pagination */}
+          {/* Pagination - mobile first: stack, smaller buttons */}
           {paging.totalItems > 0 && !isLoading && (
-            <div className="flex items-center justify-between mt-6 pt-4 border-t">
-              <div className="text-sm text-gray-600">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mt-6 pt-4 border-t">
+              <div className="text-xs md:text-sm text-gray-600">
                 Hiển thị {paging.pageIndex * paging.pageSize + 1}-
                 {Math.min(
                   (paging.pageIndex + 1) * paging.pageSize,
@@ -425,19 +383,19 @@ export default function ShopsManagement() {
                 )}{" "}
                 của {paging.totalItems} kết quả
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handlePageChange(paging.pageIndex - 1)}
                   disabled={!paging.hasPrevPage || isLoading}
+                  className="min-w-[60px]"
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   Trước
                 </Button>
-
                 {/* Page numbers */}
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center gap-1">
                   {Array.from(
                     { length: Math.min(5, paging.totalPages) },
                     (_, i) => {
@@ -451,7 +409,6 @@ export default function ShopsManagement() {
                       } else {
                         pageNum = paging.pageIndex - 2 + i;
                       }
-
                       return (
                         <Button
                           key={pageNum}
@@ -469,12 +426,12 @@ export default function ShopsManagement() {
                     }
                   )}
                 </div>
-
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handlePageChange(paging.pageIndex + 1)}
                   disabled={!paging.hasNextPage || isLoading}
+                  className="min-w-[60px]"
                 >
                   Sau
                   <ChevronRight className="h-4 w-4 ml-1" />
@@ -484,6 +441,17 @@ export default function ShopsManagement() {
           )}
         </CardContent>
       </Card>
+
+      {selectedShopId && (
+        <ShopDetailDialog
+          shopId={selectedShopId}
+          open={!!selectedShopId}
+          setOpen={(open) => {
+            if (!open) setSelectedShopId(null);
+          }}
+          onChange={fetchShops}
+        />
+      )}
     </div>
   );
 }
