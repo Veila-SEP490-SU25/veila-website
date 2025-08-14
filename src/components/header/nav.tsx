@@ -32,7 +32,7 @@ export const Nav: React.FC = () => {
           Giới Thiệu
         </Link>
         <Link
-          href="/shop/register"
+          href="/shops/my"
           className="text-gray-700 hover:text-crimson-700 transition-colors"
         >
           Cửa Hàng Của Tôi
