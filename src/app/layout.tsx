@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/providers/theme.provider";
 import { StoreProvider } from "@/providers/store.provider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/auth.provider";
+import { RouteProvider } from "@/providers/route.aprovider";
 
 export const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -36,7 +37,9 @@ export default function RootLayout({
         >
           <StoreProvider>
             <AuthProvider>
-              {children}
+              <RouteProvider>
+                {children}
+              </RouteProvider>
             </AuthProvider>
           </StoreProvider>
           <Toaster
