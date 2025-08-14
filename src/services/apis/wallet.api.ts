@@ -22,7 +22,7 @@ export const walletApi = createApi({
 
     deposit: builder.mutation<IItemResponse<IWallet>, IDeposit>({
       query: (body) => ({
-        url: "wallet/deposit",
+        url: "wallets/deposit",
         method: "PUT",
         data: body,
       }),
@@ -30,7 +30,7 @@ export const walletApi = createApi({
 
     requestWithdraw: builder.mutation<IItemResponse<IWallet>, IWithdraw>({
       query: (body) => ({
-        url: "wallet/withdraw-request",
+        url: "wallets/withdraw-request",
         method: "PUT",
         data: body,
       }),
@@ -38,7 +38,7 @@ export const walletApi = createApi({
 
     getMyWallet: builder.query<IItemResponse<IWallet>, void>({
       query: () => ({
-        url: "wallet/my-wallet",
+        url: "wallets/my-wallet",
         method: "GET",
       }),
     }),

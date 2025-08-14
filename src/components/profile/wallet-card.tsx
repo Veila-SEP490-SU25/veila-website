@@ -26,6 +26,7 @@ export const WalletCard = () => {
         setBalance(item.availableBalance + item.lockedBalance);
       } else {
         setError(message);
+        setIsError(true);
       }
     } catch (error) {
       console.log("Failed to fetch wallet", error);
@@ -44,7 +45,7 @@ export const WalletCard = () => {
   }, [fetchWallet]);
 
   return isError ? (
-    <Alert variant={"destructive"} className="mb-4">
+    <Alert variant={"destructive"} className="mb-4 h-full">
       <AlertCircleIcon />
       <AlertTitle>Đã có lỗi xảy ra trong quá trình lấy dữ liệu</AlertTitle>
       <AlertDescription>
