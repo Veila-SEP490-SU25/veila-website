@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
@@ -7,6 +7,7 @@ import { StoreProvider } from "@/providers/store.provider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/auth.provider";
 import { RouteProvider } from "@/providers/route.aprovider";
+import { ChatProvider } from "@/providers/chat.provider";
 
 export const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -38,7 +39,7 @@ export default function RootLayout({
           <StoreProvider>
             <AuthProvider>
               <RouteProvider>
-                {children}
+                <ChatProvider>{children}</ChatProvider>
               </RouteProvider>
             </AuthProvider>
           </StoreProvider>

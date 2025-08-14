@@ -17,15 +17,15 @@ export interface Condition {
   value: string | number;
 }
 
-export const useFirstore = (collectionPath: string, condition?: Condition) => {
+export const useFirestore = (collectionPath: string, condition?: Condition) => {
   const [document, setDocument] = useState<any[]>([]);
   const { firestore } = useFirebase();
-  
+
   useEffect(() => {
     if (!firestore) return;
     let collectionRef = query(
       collection(firestore, collectionPath),
-      orderBy("createdAt", "desc")
+      orderBy("updatedAt", "desc")
     );
     if (condition) {
       collectionRef = query(
