@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import { useAuth } from "@/providers/auth.provider";
 import { UserRole } from "@/services/types";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, ReactNode, useContext, useEffect } from "react";
 
-type RouteContextType = {};
+type RouteContextType = unknown;
 
 const RouteContext = createContext<RouteContextType | undefined>(undefined);
 
@@ -18,7 +18,7 @@ export const useRoute = () => {
 };
 
 export const RouteProvider = ({ children }: { children: ReactNode }) => {
-  const {isAuthenticated, isAuthenticating, currentUser} = useAuth();
+  const { isAuthenticated, isAuthenticating, currentUser } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -29,9 +29,9 @@ export const RouteProvider = ({ children }: { children: ReactNode }) => {
     if (!isAuthenticating && isAuthenticated) {
       if (currentUser) {
         if (adminRoles.includes(currentUser.role)) {
-          if (!pathname.startsWith("/staff")){
+          if (!pathname.startsWith("/staff")) {
             router.push("/staff");
-          } else return ;
+          } else return;
         } else {
           if (pathname.startsWith("/staff")) {
             router.push("/");
@@ -41,5 +41,7 @@ export const RouteProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticating, isAuthenticated, pathname, router]);
 
-  return <RouteContext.Provider value={{}}>{children}</RouteContext.Provider>;
+  return (
+    <RouteContext.Provider value={undefined}>{children}</RouteContext.Provider>
+  );
 };

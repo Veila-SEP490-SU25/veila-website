@@ -2,8 +2,9 @@
 
 import { Condition, useFirestore } from "@/hooks/use-firestore";
 import { useAuth } from "@/providers/auth.provider";
+import { useFirebase } from "@/services/firebase";
 import { IChatroom, IMessage, MessageType } from "@/services/types";
-import { addDocument, updateDocument } from "@/utils/chat.util";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import {
   createContext,
   useCallback,
@@ -25,6 +26,24 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const { currentUser } = useAuth();
+  const { firestore } = useFirebase();
+
+  const updateDocument = async (
+    collectionPath: string,
+    docId: string,
+    data: any
+  ) => {
+    if (!firestore) return;
+    const docRef = doc(firestore, collectionPath, docId);
+    await updateDoc(docRef, { ...data, updatedAt: new Date() });
+  };
+
+  const addDocument = async (collectionPath: string, data: any) => {
+    if (!firestore) return;
+    const query = collection(firestore, collectionPath);
+    await addDoc(query, { ...data, createdAt: new Date() });
+  };
+
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
 
   const chatroomCondition = useMemo<Condition>(() => {
