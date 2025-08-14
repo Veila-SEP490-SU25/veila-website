@@ -20,16 +20,10 @@ export const Nav: React.FC = () => {
           Duyệt Váy Cưới
         </Link>
         <Link
-          href="/designers"
+          href="/shops"
           className="text-gray-700 hover:text-crimson-700 transition-colors"
         >
-          Tìm Nhà Thiết Kế
-        </Link>
-        <Link
-          href="/services"
-          className="text-gray-700 hover:text-crimson-700 transition-colors"
-        >
-          Dịch Vụ
+          Tìm Cửa Hàng
         </Link>
         <Link
           href="/about"

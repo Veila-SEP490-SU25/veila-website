@@ -13,21 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  MoreHorizontal,
   Eye,
-  CheckCircle,
-  Ban,
-  Edit,
-  Trash2,
   ShieldCheck,
   Shield,
-  Star,
   ChevronLeft,
   ChevronRight,
   Loader2,
