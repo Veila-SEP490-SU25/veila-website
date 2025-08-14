@@ -288,7 +288,7 @@ export default function ShopPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2 pt-2">
-                    <Link href={`/shops/${shop.id}`} className="flex-1">
+                    <Link href={`/shops/detail/${shop.id}`} className="flex-1">
                       <Button
                         className="w-full bg-rose-600 hover:bg-rose-700"
                         size="sm"
