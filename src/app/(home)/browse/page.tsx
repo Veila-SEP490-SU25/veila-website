@@ -22,7 +22,7 @@ export default function BrowsePage() {
     hasNextPage: false,
     hasPrevPage: false,
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 8,
     totalItems: 0,
     totalPages: 0,
   });
