@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useLazyGetShopDressesQuery } from "@/services/apis";
 import { IDress, IPaginationResponse } from "@/services/types";
-import { Heart, Eye, Badge, Star, ShoppingBag } from "lucide-react";
+import { Heart, Eye, Star, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";

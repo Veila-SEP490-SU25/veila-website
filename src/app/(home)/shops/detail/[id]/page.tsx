@@ -1,5 +1,7 @@
 "use client";
 
+import { ShopAccessories } from "@/components/shops/detail/shop-accessories";
+import { ShopBlogs } from "@/components/shops/detail/shop-blogs";
 import { ShopDresses } from "@/components/shops/detail/shop-dresses";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -264,6 +266,14 @@ const ShopDetailPage = () => {
 
         <TabsContent value="dresses">
           <ShopDresses id={id as string} />
+        </TabsContent>
+
+        <TabsContent value="accessories">
+          <ShopAccessories id={id as string} />
+        </TabsContent>
+
+        <TabsContent value="blogs">
+          <ShopBlogs id={id as string} />
         </TabsContent>
       </Tabs>
     </div>
