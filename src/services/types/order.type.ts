@@ -91,17 +91,17 @@ export interface IUpdateOrderServiceDetail extends IItem {
 }
 
 export interface INewOrder {
-  shopId: string;
   phone: string;
   email: string;
   address: string;
   dueDate: Date;
   returnDate: Date;
+  type: OrderType;
 }
 
 export interface ICreateOrder {
   newOrder: INewOrder;
-  dressDetails: IDressDetails[];
+  dressDetails: IDressDetails;
   accessoriesDetails: IAccessoriesDetail[];
 }
 

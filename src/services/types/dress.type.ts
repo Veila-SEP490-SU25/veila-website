@@ -39,7 +39,7 @@ export interface IUpdateDress extends ICreateDress {
 
 export interface IDressDetails {
   dressId: string;
-  high: number;
+  height: number;
   weight: number;
   bust: number;
   waist: number;
@@ -52,7 +52,4 @@ export interface IDressDetails {
   backLength: number;
   lowerWaist: number;
   waistToFloor: number;
-  description: string;
-  price: number;
-  is_rated: boolean;
 }

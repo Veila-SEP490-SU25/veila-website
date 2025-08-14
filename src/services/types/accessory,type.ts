@@ -49,6 +49,4 @@ export interface ICreateAccessory {
 export interface IAccessoriesDetail {
   accessoryId: string;
   quantity: number;
-  description: string;
-  is_rated: boolean;
 }

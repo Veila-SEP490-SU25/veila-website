@@ -30,6 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { CreateOrderDialog } from "@/components/order/create-order-dialog";
 
 const DressDetailPage = () => {
   const { id } = useParams();
@@ -414,19 +415,15 @@ const DressDetailPage = () => {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Button
-              className="w-full bg-rose-600 hover:bg-rose-700"
-              size="lg"
-              disabled={!selectedOption}
-              onClick={() => {}}
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              {selectedOption === "buy"
-                ? "Đặt mua ngay"
-                : selectedOption === "rent"
-                ? "Đặt thuê ngay"
-                : "Chọn tùy chọn"}
-            </Button>
+            <CreateOrderDialog
+              dress={dress}
+              trigger={
+                <Button className="w-full bg-rose-600 hover:bg-rose-700" size="lg">
+                  <ShoppingBag className="h-4 w-4 mr-2" />
+                  Đặt hàng ngay
+                </Button>
+              }
+            />
             <Button
               variant="outline"
               className="w-full bg-transparent"
