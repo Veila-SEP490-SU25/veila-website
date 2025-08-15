@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateCustomOrderDialog } from "@/components/shops/detail/create-custom-order-dialog";
 import { ShopAccessories } from "@/components/shops/detail/shop-accessories";
 import { ShopBlogs } from "@/components/shops/detail/shop-blogs";
 import { ShopDresses } from "@/components/shops/detail/shop-dresses";
@@ -174,6 +175,28 @@ const ShopDetailPage = () => {
         </TabsList>
 
         {/* About Tab */}
+        <TabsContent value="custom">
+          <Card>
+            <CardHeader>
+              <CardTitle>Đặt may</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center">
+              <p className="text-gray-700 leading-relaxed">
+                Nếu bạn không tìm thấy mẫu váy cưới ưng ý, chúng tôi cung cấp
+                dịch vụ đặt may theo yêu cầu. Hãy cho chúng tôi biết ý tưởng của
+                bạn và chúng tôi sẽ biến nó thành hiện thực.
+              </p>
+              <CreateCustomOrderDialog
+                children={
+                  <Button className="mt-4 bg-rose-600 hover:bg-rose-700">
+                    Đặt may ngay
+                  </Button>
+                }
+                shopId={shop.id}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
         <TabsContent value="about" className="space-y-6">
           <Card>
             <CardHeader>
