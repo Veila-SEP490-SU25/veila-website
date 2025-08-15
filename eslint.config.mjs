@@ -24,6 +24,7 @@ const eslintConfig = [
         },
       ],
       "react/no-unescaped-entities": "off",
+      "react/no-children-prop": "off"
     }
   }
 ];
