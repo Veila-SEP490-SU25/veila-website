@@ -69,3 +69,8 @@ export interface IUpdateMilestoneStatus {
 export interface IRetriveTasks extends IPagination {
   id: string;
 }
+
+export interface ICompleteTask {
+  milestoneId: string;
+  taskId: string;
+}

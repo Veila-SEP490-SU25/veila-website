@@ -59,6 +59,7 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
 
 // Helper function to parse comma-separated images
 const parseImages = (images: string | string[]): string[] => {
@@ -222,16 +223,33 @@ const getMilestoneStatusIcon = (status: MilestoneStatus) => {
   }
 };
 
-const getTaskStatusIcon = (status: TaskStatus) => {
+const getMilestoneStatusText = (status: MilestoneStatus) => {
   switch (status) {
-    case TaskStatus.COMPLETED:
-      return <CheckCircle className="h-4 w-4 text-green-600" />;
-    case TaskStatus.IN_PROGRESS:
-      return <PlayCircle className="h-4 w-4 text-blue-600" />;
-    case TaskStatus.CANCELLED:
-      return <XCircle className="h-4 w-4 text-red-600" />;
+    case MilestoneStatus.COMPLETED:
+      return "Hoàn thành";
+    case MilestoneStatus.IN_PROGRESS:
+      return "Đang thực hiện";
+    case MilestoneStatus.CANCELLED:
+      return "Đã hủy";
+    case MilestoneStatus.PENDING:
+      return "Chờ thực hiện";
     default:
-      return <AlertCircle className="h-4 w-4 text-gray-400" />;
+      return status;
+  }
+};
+
+const getMilestoneStatusColor = (status: MilestoneStatus) => {
+  switch (status) {
+    case MilestoneStatus.COMPLETED:
+      return "bg-green-100 text-green-800 border-green-200";
+    case MilestoneStatus.IN_PROGRESS:
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    case MilestoneStatus.CANCELLED:
+      return "bg-red-100 text-red-800 border-red-200";
+    case MilestoneStatus.PENDING:
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-200";
   }
 };
 
@@ -549,8 +567,14 @@ const ShopOrderDetailPage = () => {
                       </h4>
                       <div className="flex items-start space-x-4 p-4 border rounded-lg bg-gray-50/50">
                         <ImageGallery
-                          images={parseImages(currentOrderDressDetail.dress?.images) || []}
-                          alt={currentOrderDressDetail.dress?.name || "Sản phẩm"}
+                          images={
+                            parseImages(
+                              currentOrderDressDetail.dress?.images
+                            ) || []
+                          }
+                          alt={
+                            currentOrderDressDetail.dress?.name || "Sản phẩm"
+                          }
                         />
                         <div className="flex-1 min-w-0">
                           <h5 className="font-semibold text-lg">
@@ -721,8 +745,13 @@ const ShopOrderDetailPage = () => {
                               </p>
                             </div>
                           </div>
-                          <Badge variant="outline" className="shrink-0">
-                            
+                          <Badge
+                            variant="outline"
+                            className={getMilestoneStatusColor(
+                              milestone.status
+                            )}
+                          >
+                            {getMilestoneStatusText(milestone.status)}
                           </Badge>
                         </CardTitle>
                         {milestone.description && (
@@ -733,34 +762,11 @@ const ShopOrderDetailPage = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
-                          {/* {milestone.tasks.length > 0 ? (
-                            milestone.tasks.map((task) => (
-                              <div
-                                key={task.id}
-                                className="flex items-start justify-between p-3 border rounded-lg"
-                              >
-                                <div className="flex items-start space-x-3">
-                                  {getTaskStatusIcon(task.status)}
-                                  <div className="min-w-0 flex-1">
-                                    <p className="font-medium">{task.title}</p>
-                                    {task.description && (
-                                      <p className="text-sm text-muted-foreground mt-1">
-                                        {task.description}
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="text-sm text-muted-foreground shrink-0 ml-4">
-                                  {formatDateShort(task.dueDate)}
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="text-center py-4 text-muted-foreground">
-                              <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                              <p>Chưa có công việc nào</p>
-                            </div>
-                          )} */}
+                          <MilestoneTask
+                            milestoneId={milestone.id}
+                            milestoneTitle={milestone.title}
+                            onChange={fetchMilestone}
+                          />
                         </div>
                       </CardContent>
                     </Card>

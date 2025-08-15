@@ -1,5 +1,6 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
+  ICompleteTask,
   ICreateMilestone,
   IItemResponse,
   IListResponse,
@@ -63,13 +64,20 @@ export const milestoneApi = createApi({
       }),
     }),
 
-    getMilestoneTasks: builder.query<IListResponse<ITask>, IRetriveTasks >({
-      query: ({id, ...params}) => ({
-        url:`milestones/${id}/tasks`,
+    getMilestoneTasks: builder.query<IListResponse<ITask>, IRetriveTasks>({
+      query: ({ id, ...params }) => ({
+        url: `milestones/${id}/tasks`,
         method: "GET",
-        params
-      })
-    })
+        params,
+      }),
+    }),
+
+    completeCurrentTask: builder.mutation<IItemResponse<null>, ICompleteTask>({
+      query: ({ milestoneId, taskId }) => ({
+        url: `milestones/${milestoneId}/tasks/${taskId}/`,
+        method: "PUT",
+      }),
+    }),
   }),
 });
 
@@ -79,5 +87,6 @@ export const {
   useLazyGetMilestoneQuery,
   useUpdateMilestoneInfoMutation,
   useUpdateMilestoneStatusMutation,
-  useLazyGetMilestoneTasksQuery
+  useLazyGetMilestoneTasksQuery,
+  useCompleteCurrentTaskMutation,
 } = milestoneApi;
