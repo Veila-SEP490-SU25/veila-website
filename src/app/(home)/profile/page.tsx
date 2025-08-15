@@ -23,6 +23,7 @@ import {
 import { useRouter } from "next/navigation";
 import { UserCard } from "@/components/profile/user-card";
 import { WalletCard } from "@/components/profile/wallet-card";
+import { MyOrders } from "@/components/profile/orders/my-orders";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -227,79 +228,7 @@ export default function DashboardPage() {
           </TabsContent>
 
           <TabsContent value="orders" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>My Orders</CardTitle>
-                <CardDescription>
-                  Track your dress orders and rentals
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h4 className="font-medium">Custom Wedding Dress</h4>
-                        <p className="text-sm text-gray-600">
-                          Order #VL-2024-001
-                        </p>
-                      </div>
-                      <Badge className="bg-green-100 text-green-700">
-                        In Progress
-                      </Badge>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <p className="text-gray-600">Designer</p>
-                        <p className="font-medium">Emma Wilson</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Price</p>
-                        <p className="font-medium">$2,500</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Status</p>
-                        <p className="font-medium">Design Approved</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Delivery</p>
-                        <p className="font-medium">March 15, 2024</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h4 className="font-medium">Vintage Lace Rental</h4>
-                        <p className="text-sm text-gray-600">
-                          Order #VL-2024-002
-                        </p>
-                      </div>
-                      <Badge variant="secondary">Completed</Badge>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <p className="text-gray-600">Designer</p>
-                        <p className="font-medium">Sophie Chen</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Price</p>
-                        <p className="font-medium">$300</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Status</p>
-                        <p className="font-medium">Returned</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-600">Rental Period</p>
-                        <p className="font-medium">Jan 10-15, 2024</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <MyOrders />
           </TabsContent>
 
           <TabsContent value="messages" className="space-y-6">
