@@ -36,6 +36,7 @@ import {
   Eye,
   ChevronRight,
   ChevronLeft,
+  Plus,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -56,6 +57,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
+import { CreateMilestoneDialog } from "@/components/shops/detail/order/create-milestone-dialog";
 
 // Helper function to parse comma-separated images
 const parseImages = (images: string | string[]): string[] => {
@@ -362,12 +364,16 @@ const ShopOrderDetailPage = () => {
 
   // Update order when orderDressDetail is fetched
   useEffect(() => {
-    if (order && orderDressDetail.length > 0) {
-      setOrder((prev) =>
-        prev ? { ...prev, orderDressDetail: orderDressDetail[0] || null } : prev
-      );
-    }
-  }, [orderDressDetail, order]);
+  if (
+    order &&
+    orderDressDetail.length > 0 &&
+    order.orderDressDetail !== orderDressDetail[0]
+  ) {
+    setOrder(prev =>
+      prev ? { ...prev, orderDressDetail: orderDressDetail[0] || null } : prev
+    );
+  }
+}, [order, orderDressDetail]);
 
   if (isOrderLoading || isOrderDressDetailLoading) {
     return (
@@ -963,26 +969,24 @@ const ShopOrderDetailPage = () => {
               <CardTitle>Thao tác nhanh</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button
-                className="w-full justify-start bg-transparent"
-                variant="outline"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Cập nhật trạng thái
-              </Button>
+              <CreateMilestoneDialog
+                orderId={order.id}
+                trigger={
+                  <Button
+                    className="w-full justify-start bg-transparent"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Thêm mốc thời gian
+                  </Button>
+                }
+              />
               <Button
                 className="w-full justify-start bg-transparent"
                 variant="outline"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Nhắn tin khách hàng
-              </Button>
-              <Button
-                className="w-full justify-start bg-transparent"
-                variant="outline"
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Cập nhật tiến độ
               </Button>
               <Button
                 className="w-full justify-start bg-transparent"
