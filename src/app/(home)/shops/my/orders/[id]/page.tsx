@@ -12,7 +12,6 @@ import {
   OrderStatus,
   OrderType,
   MilestoneStatus,
-  TaskStatus,
 } from "@/services/types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,15 +26,12 @@ import {
   Package,
   Ruler,
   Settings,
-  CreditCard,
   CheckCircle,
   XCircle,
   AlertCircle,
   PlayCircle,
   MessageSquare,
   Calendar,
-  FileText,
-  DollarSign,
   TrendingUp,
   Eye,
   ChevronRight,
