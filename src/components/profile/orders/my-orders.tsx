@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
+  useCheckoutOrderMutation,
   useLazyGetCustomerOrdersQuery,
   useLazyGetShopOrdersQuery,
 } from "@/services/apis";
@@ -383,7 +384,7 @@ export const MyOrders = () => {
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
-                              router.push(`/shops/my/orders/${order.id}`)
+                              router.push(`/profile/orders/${order.id}`)
                             }
                           >
                             <Eye className="h-4 w-4 mr-2" />

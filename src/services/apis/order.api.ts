@@ -126,6 +126,13 @@ export const orderApi = createApi({
         method: "GET",
       }),
     }),
+
+    checkoutOrder: builder.mutation<IItemResponse<IOrder>, string>({
+      query: (id) => ({
+        url: `orders/${id}/check-out`,
+        method: "PUT",
+      }),
+    }),
   }),
 });
 
@@ -139,4 +146,5 @@ export const {
   useLazyGetShopOrdersQuery,
   useCreateOrderComplaintMutation,
   useLazyGetOrderDressDetailQuery,
+  useCheckoutOrderMutation
 } = orderApi;
