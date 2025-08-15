@@ -7,6 +7,7 @@ import {
   IItemResponse,
   IListResponse,
   IOrder,
+  IOrderDressDetail,
   IPagination,
   IUpdateOrderInfo,
   IUpdateOrderStatus,
@@ -45,15 +46,13 @@ export const orderApi = createApi({
       }),
     }),
 
-    updateOrderInfo: builder.mutation<IItemResponse<IOrder>, IUpdateOrderInfo>(
-      {
-        query: ({ id, ...body }) => ({
-          url: `orders/${id}`,
-          method: "PUT",
-          body,
-        }),
-      }
-    ),
+    updateOrderInfo: builder.mutation<IItemResponse<IOrder>, IUpdateOrderInfo>({
+      query: ({ id, ...body }) => ({
+        url: `orders/${id}`,
+        method: "PUT",
+        body,
+      }),
+    }),
 
     getMyOrderComplaints: builder.query<
       IListResponse<IComplaint>,
@@ -117,6 +116,16 @@ export const orderApi = createApi({
         },
       }),
     }),
+
+    getOrderDressDetail: builder.query<
+      IListResponse<IOrderDressDetail>,
+      string
+    >({
+      query: (id) => ({
+        url: `orders/${id}/order-dress-details`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -129,4 +138,5 @@ export const {
   useLazyGetMyOrderComplaintsQuery,
   useLazyGetShopOrdersQuery,
   useCreateOrderComplaintMutation,
+  useLazyGetOrderDressDetailQuery,
 } = orderApi;

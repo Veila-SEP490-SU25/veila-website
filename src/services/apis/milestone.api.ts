@@ -5,6 +5,8 @@ import {
   IListResponse,
   IMilestone,
   IRetiveMilestone,
+  IRetriveTasks,
+  ITask,
   IUpdateMilestoneInfo,
   IUpdateMilestoneStatus,
 } from "@/services/types";
@@ -60,6 +62,14 @@ export const milestoneApi = createApi({
         method: "PUT",
       }),
     }),
+
+    getMilestoneTasks: builder.query<IListResponse<ITask>, IRetriveTasks >({
+      query: ({id, ...params}) => ({
+        url:`milestones/${id}/tasks`,
+        method: "GET",
+        params
+      })
+    })
   }),
 });
 
@@ -69,4 +79,5 @@ export const {
   useLazyGetMilestoneQuery,
   useUpdateMilestoneInfoMutation,
   useUpdateMilestoneStatusMutation,
+  useLazyGetMilestoneTasksQuery
 } = milestoneApi;

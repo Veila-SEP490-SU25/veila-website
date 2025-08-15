@@ -23,8 +23,9 @@ export interface IMilestone extends IItem {
   tasks: ITask[];
 }
 
-export interface IRetiveMilestone extends IPagination {
+export interface IRetiveMilestone {
   orderId: string;
+  sort: string;
 }
 
 export interface INewMilestone {
@@ -63,4 +64,8 @@ export interface IUpdateMilestoneInfo {
 export interface IUpdateMilestoneStatus {
   id: string;
   status: MilestoneStatus;
+}
+
+export interface IRetriveTasks extends IPagination {
+  id: string;
 }
