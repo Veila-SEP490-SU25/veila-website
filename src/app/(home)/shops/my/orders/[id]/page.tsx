@@ -294,7 +294,7 @@ const ShopOrderDetailPage = () => {
     try {
       const { statusCode, message, items } = await getMilestones({
         orderId: orderId as string,
-        sort: "index",
+        sort: "index:asc",
       }).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
@@ -541,7 +541,7 @@ const ShopOrderDetailPage = () => {
                   </div>
 
                   {/* Product Details */}
-                  {currentOrderDressDetail && (
+                  {currentOrderDressDetail && currentOrderDressDetail.dress && (
                     <div className="space-y-3">
                       <h4 className="font-semibold flex items-center gap-2">
                         <Eye className="h-4 w-4" />
@@ -549,17 +549,15 @@ const ShopOrderDetailPage = () => {
                       </h4>
                       <div className="flex items-start space-x-4 p-4 border rounded-lg bg-gray-50/50">
                         <ImageGallery
-                          images={parseImages(
-                            currentOrderDressDetail.dress.images
-                          )}
-                          alt={currentOrderDressDetail.dress.name}
+                          images={parseImages(currentOrderDressDetail.dress?.images) || []}
+                          alt={currentOrderDressDetail.dress?.name || "Sản phẩm"}
                         />
                         <div className="flex-1 min-w-0">
                           <h5 className="font-semibold text-lg">
-                            {currentOrderDressDetail.dress.name}
+                            {currentOrderDressDetail.dress?.name || ""}
                           </h5>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {currentOrderDressDetail.dress.description}
+                            {currentOrderDressDetail.dress?.description || ""}
                           </p>
                           <p className="font-bold text-lg text-green-600 mt-2">
                             {formatCurrency(currentOrderDressDetail.price)}
@@ -580,7 +578,8 @@ const ShopOrderDetailPage = () => {
                   )}
 
                   {/* Accessories */}
-                  {order.orderAccessoryDetail &&
+                  {/* {order.orderAccessoryDetail &&
+                    Array.isArray(order.orderAccessoryDetail) &&
                     order.orderAccessoryDetail.length > 0 && (
                       <div className="space-y-3">
                         <h4 className="font-semibold flex items-center gap-2">
@@ -594,12 +593,12 @@ const ShopOrderDetailPage = () => {
                               className="flex items-center space-x-4 p-4 border rounded-lg"
                             >
                               <ImageGallery
-                                images={parseImages(accessory.accessory.images)}
-                                alt={accessory.accessory.name}
+                                images={parseImages(accessory.accessory?.images) || []}
+                                alt={accessory.accessory?.name || "Phụ kiện"}
                               />
                               <div className="flex-1 min-w-0">
                                 <h5 className="font-medium">
-                                  {accessory.accessory.name}
+                                  {accessory.accessory?.name || ""}
                                 </h5>
                                 <p className="text-sm text-muted-foreground">
                                   Số lượng: {accessory.quantity}
@@ -612,7 +611,7 @@ const ShopOrderDetailPage = () => {
                           ))}
                         </div>
                       </div>
-                    )}
+                    )} */}
 
                   {/* Services */}
                   {order.orderServiceDetail && (
@@ -723,7 +722,7 @@ const ShopOrderDetailPage = () => {
                             </div>
                           </div>
                           <Badge variant="outline" className="shrink-0">
-                            {milestone.tasks.length} công việc
+                            
                           </Badge>
                         </CardTitle>
                         {milestone.description && (
@@ -734,7 +733,7 @@ const ShopOrderDetailPage = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
-                          {milestone.tasks.length > 0 ? (
+                          {/* {milestone.tasks.length > 0 ? (
                             milestone.tasks.map((task) => (
                               <div
                                 key={task.id}
@@ -761,7 +760,7 @@ const ShopOrderDetailPage = () => {
                               <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
                               <p>Chưa có công việc nào</p>
                             </div>
-                          )}
+                          )} */}
                         </div>
                       </CardContent>
                     </Card>
