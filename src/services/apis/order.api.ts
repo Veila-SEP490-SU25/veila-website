@@ -2,6 +2,7 @@ import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
   IComplaint,
   ICreateComplaint,
+  ICreateCustomOrder,
   ICreateOrder,
   IGetComplaints,
   IItemResponse,
@@ -133,6 +134,14 @@ export const orderApi = createApi({
         method: "PUT",
       }),
     }),
+
+    createCustomOrder: builder.mutation<IItemResponse<IOrder>, ICreateCustomOrder>({
+      query: (body) => ({
+        url: `orders/custom`,
+        method: "POST",
+        body,
+      }),
+    })
   }),
 });
 
@@ -146,5 +155,6 @@ export const {
   useLazyGetShopOrdersQuery,
   useCreateOrderComplaintMutation,
   useLazyGetOrderDressDetailQuery,
-  useCheckoutOrderMutation
+  useCheckoutOrderMutation,
+  useCreateCustomOrderMutation
 } = orderApi;

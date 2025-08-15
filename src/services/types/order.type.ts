@@ -118,3 +118,11 @@ export interface IUpdateOrderStatus {
   id: string;
   status: OrderStatus;
 }
+
+export interface ICreateCustomOrder {
+  phone: string;
+  email: string;
+  address: string;
+  requestId: string;
+  shopId: string;
+}

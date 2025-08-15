@@ -17,7 +17,7 @@ export interface IRequest extends IItem {
   user: IUser;
   title: string;
   description: string;
-  high: number | null;
+  height: number | null;
   weight: number | null;
   bust: number | null;
   waist: number | null;
@@ -77,7 +77,7 @@ export interface ICreateRequest {
   title: string;
   description: string;
   images: string;
-  high: number;
+  height: number;
   weight: number;
   bust: number;
   waist: number;
@@ -90,13 +90,6 @@ export interface ICreateRequest {
   backLength: number;
   lowerWaist: number;
   waistToFloor: number;
-  dressStyle: string;
-  curtainNeckline: string;
-  sleeveStyle: string;
-  material: string;
-  color: string;
-  specialElements: string;
-  coverage: string;
   status: RequestStatus;
   isPrivate: boolean;
 }
