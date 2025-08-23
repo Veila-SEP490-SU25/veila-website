@@ -13,40 +13,59 @@ export const dressApi = createApi({
   reducerPath: "dressApi",
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
+    // PUBLIC
     getDresses: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 0, size = 10, sort = "" }) => {
-        return {
-          url: "dresses",
-          params: { filter, page, size, sort },
-        };
-      },
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
+        url: "dresses",
+        method: "GET",
+        params: { filter, page, size, sort },
+      }),
     }),
 
     getDress: builder.query<IItemResponse<IDress>, string>({
-      query: (id) => {
-        return {
-          url: `dresses/${id}`,
-          method: "GET",
-        };
-      },
+      query: (id) => ({
+        url: `dresses/${id}`,
+        method: "GET",
+      }),
     }),
 
+    // FAVORITES
+    addFavorite: builder.mutation<IItemResponse<null>, string>({
+      query: (id) => ({
+        url: `dresses/${id}/favorites`,
+        method: "POST",
+      }),
+    }),
+
+    removeFavorite: builder.mutation<IItemResponse<null>, string>({
+      query: (id) => ({
+        url: `dresses/${id}/favorites`,
+        method: "DELETE",
+      }),
+    }),
+
+    getFavorites: builder.query<IListResponse<IDress>, IPagination>({
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
+        url: "dresses/favorites",
+        method: "GET",
+        params: { filter, page, size, sort },
+      }),
+    }),
+
+    // SHOP (OWNER)
     getMyShopDresses: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 0, size = 10, sort = "" }) => {
-        return {
-          url: "dresses/me",
-          params: { filter, page, size, sort },
-        };
-      },
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
+        url: "dresses/me",
+        method: "GET",
+        params: { filter, page, size, sort },
+      }),
     }),
 
     getMyShopDress: builder.query<IItemResponse<IDress>, string>({
-      query: (id) => {
-        return {
-          url: `dresses/${id}/me`,
-          method: "GET",
-        };
-      },
+      query: (id) => ({
+        url: `dresses/${id}/me`,
+        method: "GET",
+      }),
     }),
 
     createDress: builder.mutation<IItemResponse<IDress>, ICreateDress>({
@@ -84,9 +103,13 @@ export const dressApi = createApi({
 export const {
   useLazyGetDressesQuery,
   useLazyGetDressQuery,
+  useGetFavoritesQuery,
   useLazyGetMyShopDressQuery,
   useLazyGetMyShopDressesQuery,
   useCreateDressMutation,
   useUpdateDressMutation,
   useDeleteDressMutation,
+  useRestoreDressMutation,
+  useAddFavoriteMutation,
+  useRemoveFavoriteMutation,
 } = dressApi;
