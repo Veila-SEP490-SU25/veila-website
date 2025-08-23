@@ -19,8 +19,18 @@ export const contractApi = createApi({
         method: "GET",
       }),
     }),
+
+    getPlatformContract: builder.query<IItemResponse<IContract>, void>({
+      query: () => ({
+        url: `contracts/platform`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useLazyGetCustomerContractQuery, useLazyGetShopContractQuery } =
-  contractApi;
+export const {
+  useLazyGetCustomerContractQuery,
+  useLazyGetShopContractQuery,
+  useLazyGetPlatformContractQuery,
+} = contractApi;
