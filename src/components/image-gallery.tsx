@@ -1,0 +1,90 @@
+"use client"
+
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+
+interface Props {
+  images: string[];
+  alt: string;
+}
+
+export const ImageGallery = ({ images, alt }: Props) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  if (images.length === 0) {
+    return (
+      <Image
+        src="/placeholder.svg?height=80&width=80"
+        alt={alt}
+        width={80}
+        height={80}
+        className="rounded-lg object-cover shrink-0"
+      />
+    );
+  }
+
+  if (images.length === 1) {
+    return (
+      <Image
+        src={images[0] || "/placeholder.svg"}
+        alt={alt}
+        width={80}
+        height={80}
+        className="rounded-lg object-cover shrink-0"
+      />
+    );
+  }
+
+  return (
+    <div className="relative">
+      <Image
+        src={images[currentIndex] || "/placeholder.svg"}
+        alt={`${alt} - ${currentIndex + 1}`}
+        width={80}
+        height={80}
+        className="rounded-lg object-cover shrink-0"
+      />
+      {images.length > 1 && (
+        <div className="absolute inset-0 flex items-center justify-between p-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+            onClick={() =>
+              setCurrentIndex((prev) =>
+                prev === 0 ? images.length - 1 : prev - 1
+              )
+            }
+          >
+            <ChevronLeft className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+            onClick={() =>
+              setCurrentIndex((prev) =>
+                prev === images.length - 1 ? 0 : prev + 1
+              )
+            }
+          >
+            <ChevronRight className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
+      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
+        {images.map((_, index) => (
+          <div
+            key={index}
+            className={`w-1.5 h-1.5 rounded-full ${
+              index === currentIndex ? "bg-white" : "bg-white/50"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
