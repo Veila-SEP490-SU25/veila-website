@@ -15,6 +15,7 @@ export interface IFeedback extends IItem {
   accessory: IAccessory | null;
   content: string;
   rating: number;
+  images: string | null;
 }
 
 export interface ICreateFeedback {

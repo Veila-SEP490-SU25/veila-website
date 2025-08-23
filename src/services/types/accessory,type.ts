@@ -11,6 +11,7 @@ export interface IAccessory extends IItem {
   category: ICategory | null;
   name: string;
   description: string | null;
+  images: string | null;
   sellPrice: number;
   rentalPrice: number;
   isSellable: boolean;

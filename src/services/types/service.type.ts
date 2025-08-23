@@ -11,6 +11,7 @@ export interface IService extends IItem {
   category: ICategory | null;
   name: string;
   description: string | null;
+  images: string | null;
   ratingAverage: number;
   ratingCount: number;
   status: ServiceStatus;

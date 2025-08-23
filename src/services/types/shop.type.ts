@@ -1,4 +1,4 @@
-import { IItem, ILicense, IPagination, IUser } from "@/services/types";
+import { IContract, IItem, ILicense, IMembership, IPagination, IUser } from "@/services/types";
 
 export enum ShopStatus {
   PENDING = "PENDING", // Đang chờ duyệt
@@ -9,6 +9,7 @@ export enum ShopStatus {
 }
 
 export interface IShop extends IItem {
+  user: IUser;
   name: string;
   phone: string;
   email: string;
@@ -19,9 +20,9 @@ export interface IShop extends IItem {
   status: ShopStatus;
   reputation: number;
   isVerified: boolean;
-  rejectReason: string | null;
+  memberships: IMembership[];
   license: ILicense | null;
-  user: IUser | null;
+  contract: IContract;
 }
 
 export interface IGetShopItem extends IPagination {

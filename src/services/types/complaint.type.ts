@@ -12,6 +12,7 @@ export interface IComplaint extends IItem {
   order: IOrder;
   title: string;
   description: string;
+  images: string | null;
   status: ComplaintStatus;
 }
 

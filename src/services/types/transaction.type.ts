@@ -34,7 +34,7 @@ export interface ITransaction extends IItem {
   amount: number;
   type: TransactionType;
   status: TransactionStatus;
-  note?: string;
+  note: string | null;
 }
 
 export interface IUpdateTransactionStatus {

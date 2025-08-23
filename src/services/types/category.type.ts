@@ -10,7 +10,6 @@ export enum CategoryType {
 export interface ICategory extends IItem {
   user: IUser;
   name: string;
-  description: string | null;
   type: CategoryType;
 }
 

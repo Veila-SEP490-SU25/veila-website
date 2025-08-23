@@ -30,13 +30,12 @@ export interface IRequest extends IItem {
   backLength: number | null;
   lowerWaist: number | null;
   waistToFloor: number | null;
-  dressStyle: string | null;
-  curtainNeckline: string | null;
-  sleeveStyle: string | null;
   material: string | null;
   color: string | null;
-  specialElement: string | null;
-  coverage: string | null;
+  length: string | null;
+  neckline: string | null;
+  sleeve: string | null;
+  images: string | null;
   status: RequestStatus;
   isPrivate: boolean;
   updateRequests: IUpdateRequest[] | null;
@@ -46,7 +45,7 @@ export interface IUpdateRequest extends IItem {
   request: IRequest;
   title: string;
   description: string;
-  high: number | null;
+  height: number | null;
   weight: number | null;
   bust: number | null;
   waist: number | null;
@@ -59,17 +58,16 @@ export interface IUpdateRequest extends IItem {
   backLength: number | null;
   lowerWaist: number | null;
   waistToFloor: number | null;
-  dressStyle: string | null;
-  curtainNeckline: string | null;
-  sleeveStyle: string | null;
   material: string | null;
   color: string | null;
-  specialElement: string | null;
-  coverage: string | null;
+  length: string | null;
+  neckline: string | null;
+  sleeve: string | null;
+  images: string | null;
   status: UpdateRequestStatus;
 }
 
-export interface IUpdateRequestInfo extends ICreateRequest{
+export interface IUpdateRequestInfo extends ICreateRequest {
   id: string;
 }
 

@@ -1,4 +1,4 @@
-import { IItem, IShop } from "@/services/types";
+import { IItem, IShop, IWallet } from "@/services/types";
 import { IContract } from "@/services/types/contract.type";
 
 export enum UserRole {
@@ -19,7 +19,6 @@ export enum UserStatus {
 export interface IUser extends IItem {
   username: string;
   email: string;
-  password: string;
   firstName: string;
   middleName: string | null;
   lastName: string;
@@ -28,6 +27,8 @@ export interface IUser extends IItem {
   birthDate: Date | null;
   avatarUrl: string | null;
   coverUrl: string | null;
+  favDresses: string[] | null;
+  favShops: string[] | null;
   role: UserRole;
   status: UserStatus;
   reputation: number;
@@ -35,6 +36,7 @@ export interface IUser extends IItem {
   isIdentified: boolean;
   shop: IShop | null;
   contract: IContract;
+  wallet: IWallet | null;
 }
 
 export interface IIdentifyUser{

@@ -11,6 +11,15 @@ export interface IDress extends IItem {
   category: ICategory | null;
   name: string;
   description: string | null;
+  images: string | null;
+  bust: number | null;
+  waist: number | null;
+  hip: number | null;
+  material: string | null;
+  color: string | null;
+  length: string | null;
+  neckline: string | null;
+  sleeve: string | null;
   sellPrice: number;
   rentalPrice: number;
   isSellable: boolean;

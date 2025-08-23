@@ -11,6 +11,7 @@ export interface IBlog extends IItem {
   category: ICategory | null;
   title: string;
   content: string;
+  images: string | null;
   isVerified: boolean;
   status: BlogStatus;
 }

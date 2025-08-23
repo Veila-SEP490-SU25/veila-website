@@ -34,7 +34,6 @@ export interface IOrder extends IItem {
   address: string;
   dueDate: Date;
   returnDate: Date | null;
-  isBuyBack: boolean;
   amount: number;
   type: OrderType;
   status: OrderStatus;
@@ -57,7 +56,7 @@ export interface IOrderAccessoryDetail extends IItem {
 export interface IOrderDressDetail extends IItem {
   order: IOrder;
   dress: IDress;
-  high: number | null;
+  height: number | null;
   weight: number | null;
   bust: number | null;
   waist: number | null;

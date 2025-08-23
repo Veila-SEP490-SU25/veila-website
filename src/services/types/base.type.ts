@@ -32,7 +32,6 @@ export interface IErrorResponse {
 
 export interface IItem {
   id: string;
-  images: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
