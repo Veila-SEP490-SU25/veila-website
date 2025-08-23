@@ -1,9 +1,9 @@
 import { ICategory, IItem, IUser } from "@/services/types";
 
 export enum BlogStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  UNPUBLISHED = 'UNPUBLISHED',
+  DRAFT = "DRAFT",
+  PUBLISHED = "PUBLISHED",
+  UNPUBLISHED = "UNPUBLISHED",
 }
 
 export interface IBlog extends IItem {
@@ -16,13 +16,8 @@ export interface IBlog extends IItem {
   status: BlogStatus;
 }
 
-export interface IUpdateBlog{
+export interface IUpdateBlog extends ICreateBlog {
   id: string;
-  categoryId: string;
-  title: string;
-  content: string;
-  images: string;
-  status: BlogStatus;
 }
 
 export interface ICreateBlog {

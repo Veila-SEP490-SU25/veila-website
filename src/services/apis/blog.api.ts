@@ -13,6 +13,7 @@ export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
+    /** GET /api/blogs (customer list) */
     getBlogs: builder.query<IListResponse<IBlog>, IPagination>({
       query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "blogs",
@@ -21,6 +22,7 @@ export const blogApi = createApi({
       }),
     }),
 
+    /** GET /api/blogs/{id} (customer view; only PUBLISHED) */
     getBlog: builder.query<IItemResponse<IBlog>, string>({
       query: (id) => ({
         url: `blogs/${id}`,
@@ -28,6 +30,7 @@ export const blogApi = createApi({
       }),
     }),
 
+    /** GET /api/blogs/me (shop owner list) */
     getMyShopBlogs: builder.query<IListResponse<IBlog>, IPagination>({
       query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
         url: "blogs/me",
@@ -36,6 +39,7 @@ export const blogApi = createApi({
       }),
     }),
 
+    /** GET /api/blogs/{id}/me (shop owner view) */
     getMyShopBlog: builder.query<IItemResponse<IBlog>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
@@ -43,17 +47,25 @@ export const blogApi = createApi({
       }),
     }),
 
-    updateMyShopBlog: builder.mutation<IItemResponse<null>, IUpdateBlog>({
-      query: (body) => {
-        const { id, ...bodyNoId } = body;
-        return {
-          url: `blogs/${id}/me`,
-          method: "PUT",
-          body: bodyNoId,
-        };
-      },
+    /** POST /api/blogs/me (shop owner create) */
+    createMyShopBlog: builder.mutation<IItemResponse<IBlog>, ICreateBlog>({
+      query: (body) => ({
+        url: "blogs/me",
+        method: "POST",
+        body,
+      }),
     }),
 
+    /** PUT /api/blogs/{id}/me (shop owner update) – body must be CUBlogDto */
+    updateMyShopBlog: builder.mutation<IItemResponse<IBlog>, IUpdateBlog>({
+      query: ({ id, ...body }) => ({
+        url: `blogs/${id}/me`,
+        method: "PUT",
+        body,
+      }),
+    }),
+
+    /** DELETE /api/blogs/{id}/me (soft delete) */
     deleteMyShopBlog: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
@@ -61,6 +73,7 @@ export const blogApi = createApi({
       }),
     }),
 
+    /** PATCH /api/blogs/{id}/me (restore) */
     restoreMyShopBlog: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
@@ -68,11 +81,11 @@ export const blogApi = createApi({
       }),
     }),
 
-    createMyShopBlog: builder.mutation<IItemResponse<IBlog>, ICreateBlog>({
-      query: (body) => ({
-        url: `blogs/me`,
-        method: "POST",
-        body,
+    /** PUT /api/blogs/{id}/verify (verify) – NO request body */
+    verifyMyShopBlog: builder.mutation<IItemResponse<IBlog>, string>({
+      query: (id) => ({
+        url: `blogs/${id}/verify`,
+        method: "PUT",
       }),
     }),
   }),
@@ -83,7 +96,9 @@ export const {
   useLazyGetBlogQuery,
   useLazyGetMyShopBlogsQuery,
   useLazyGetMyShopBlogQuery,
+  useCreateMyShopBlogMutation,
   useUpdateMyShopBlogMutation,
   useDeleteMyShopBlogMutation,
-  useCreateMyShopBlogMutation,
+  useRestoreMyShopBlogMutation,
+  useVerifyMyShopBlogMutation,
 } = blogApi;
