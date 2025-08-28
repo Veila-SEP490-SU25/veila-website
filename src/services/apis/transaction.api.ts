@@ -38,6 +38,20 @@ export const transactionApi = createApi({
       }),
     }),
 
+    approveWithdraw: builder.mutation<IItemResponse<ITransaction>, string>({
+      query: (id) => ({
+        url: `transactions/${id}/approve-withdraw`,
+        method: "PUT",
+      }),
+    }),
+
+    cancelWithdraw: builder.mutation<IItemResponse<ITransaction>, string>({
+      query: (id) => ({
+        url: `transactions/${id}/cancel-withdraw`,
+        method: "PUT",
+      }),
+    }),
+
     getMyTransactions: builder.query<
       IListResponse<ITransaction>,
       IGetMyTransaction
@@ -55,5 +69,7 @@ export const {
   useLazyGetTransactionsQuery,
   useLazyGetTransactionQuery,
   useUpdateTransactionStatusMutation,
+  useCancelWithdrawMutation,
+  useApproveWithdrawMutation,
   useLazyGetMyTransactionsQuery,
 } = transactionApi;
