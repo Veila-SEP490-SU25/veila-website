@@ -17,3 +17,4 @@ export * from './transaction.api';
 export * from './user.api';
 export * from './wallet.api';
 export * from './locale.api';
+export * from './membership.api';

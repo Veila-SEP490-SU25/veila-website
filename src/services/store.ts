@@ -8,6 +8,7 @@ import {
   dressApi,
   feedbackApi,
   localeApi,
+  membershipApi,
   milestoneApi,
   orderApi,
   requestApi,
@@ -42,7 +43,8 @@ const store = configureStore({
     [transactionApi.reducerPath]: transactionApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [walletApi.reducerPath]: walletApi.reducer,
-    [localeApi.reducerPath]: localeApi.reducer, 
+    [localeApi.reducerPath]: localeApi.reducer,
+    [membershipApi.reducerPath]: membershipApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -65,6 +67,7 @@ const store = configureStore({
       userApi.middleware,
       walletApi.middleware,
       localeApi.middleware,
+      membershipApi.middleware,
     ),
 });
 

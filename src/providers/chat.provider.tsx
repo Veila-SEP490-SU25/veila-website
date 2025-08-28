@@ -86,7 +86,6 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
       if (!currentRoom && !currentUser) return;
       const newMessage: IMessage = {
         id: v4(),
-        images: "",
         content,
         chatroomId: currentRoomId || "",
         senderId: currentUser?.id || "",

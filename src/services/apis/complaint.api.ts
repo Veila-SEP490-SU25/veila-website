@@ -55,7 +55,7 @@ export const complaintApi = createApi({
       IResponseComplaint
     >({
       query: ({ id, ...body }) => ({
-        url: `complaints/${id}/review/staff`,
+        url: `complaints/${id}/review`,
         method: "POST",
         body,
       }),
