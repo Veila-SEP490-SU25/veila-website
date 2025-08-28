@@ -28,73 +28,51 @@ export const subscriptionApi = createApi({
       }),
     }),
 
-    staffGetSubscription: builder.query<IItemResponse<ISubscription>, string>({
-      query: (id) => ({
-        url: `subscriptions/${id}/staff`,
-        method: "GET",
-      }),
-    }),
-
-    staffGetSubscriptions: builder.query<
-      IListResponse<ISubscription>,
-      IPagination
-    >({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "subscriptions/staff",
-        method: "GET",
-        params: { sort, filter, page, size },
-      }),
-    }),
-
-    staffCreateSubscription: builder.mutation<
+    createSubscription: builder.mutation<
       IItemResponse<ISubscription>,
       ICreateSubscription
     >({
       query: (body) => ({
-        url: "subscriptions/staff",
+        url: "subscriptions",
         method: "POST",
         body,
       }),
     }),
 
-    staffUpdateSubscription: builder.mutation<
+    updateSubscription: builder.mutation<
       IItemResponse<ISubscription>,
       IUpdateSubscription
     >({
       query: ({ id, ...body }) => ({
-        url: `subscriptions/${id}/staff`,
+        url: `subscriptions/${id}`,
         method: "PUT",
         body,
       }),
     }),
 
-    staffDeleteSubscription: builder.mutation<
-      IItemResponse<ISubscription>,
-      string
-    >({
+    deleteSubscription: builder.mutation<IItemResponse<ISubscription>, string>({
       query: (id) => ({
-        url: `subscriptions/${id}/staff`,
+        url: `subscriptions/${id}`,
         method: "DELETE",
       }),
     }),
 
-    staffRestoreSubscription: builder.mutation<
-      IItemResponse<ISubscription>,
-      string
-    >({
-      query: (id) => ({
-        url: `subscriptions/${id}/staff`,
-        method: "PATCH",
-      }),
-    }),
+    restoreSubscription: builder.mutation<IItemResponse<ISubscription>, string>(
+      {
+        query: (id) => ({
+          url: `subscriptions/${id}`,
+          method: "PATCH",
+        }),
+      }
+    ),
   }),
 });
 
 export const {
   useLazyGetSubscriptionQuery,
   useLazyGetSubscriptionsQuery,
-  useStaffCreateSubscriptionMutation,
-  useStaffDeleteSubscriptionMutation,
-  useStaffUpdateSubscriptionMutation,
-  useStaffRestoreSubscriptionMutation,
+  useCreateSubscriptionMutation,
+  useDeleteSubscriptionMutation,
+  useUpdateSubscriptionMutation,
+  useRestoreSubscriptionMutation,
 } = subscriptionApi;
