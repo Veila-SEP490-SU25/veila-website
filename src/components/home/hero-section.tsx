@@ -68,11 +68,11 @@ export const HeroSection = () => {
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/placeholder.svg?height=600&width=500&text=Elegant+Wedding+Dress"
+                  src="/hero.jpg"
                   alt="Beautiful wedding dress"
                   width={500}
                   height={600}
-                  className="w-full h-auto"
+                  className="w-full h-auto aspect-square object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
