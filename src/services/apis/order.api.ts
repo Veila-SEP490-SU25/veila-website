@@ -1,13 +1,58 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
+  ComplaintStatus,
+  IAccessory,
+  IComplaint,
   ICreateCustomOrder,
   ICreateOrder,
+  IDress,
   IItemResponse,
   IListResponse,
+  IMilestone,
   IOrder,
   IPagination,
+  IService,
+  IUpdateOrderStatus,
+  OrderStatus,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
+
+export interface IUpdateOrderInformation {
+  id: string;
+  phone: string;
+  email: string;
+  address: string;
+  dueDate: string;
+  returnDate: string;
+  price: number;
+}
+
+export interface IUpdayeOrderStatus {
+  id: string;
+  status: OrderStatus;
+}
+
+export interface IGetOrderDress {
+  orderId: string;
+  dressId: string;
+}
+
+export interface IGetOrderAccessory {
+  orderId: string;
+  accessoryId: string;
+}
+
+export interface IGetOrderComplaints extends IPagination {
+  orderId: string;
+}
+
+export interface ICreateComplaint {
+  orderId: string;
+  title: string;
+  description: string;
+  images: string;
+  status: ComplaintStatus;
+}
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
@@ -38,13 +83,120 @@ export const orderApi = createApi({
       }),
     }),
 
-    createCustomOrder: builder.mutation<IItemResponse<IOrder>, ICreateCustomOrder>({
+    createCustomOrder: builder.mutation<
+      IItemResponse<IOrder>,
+      ICreateCustomOrder
+    >({
       query: (body) => ({
         url: "orders/custom",
         method: "POST",
         body,
-      }), 
-    })
+      }),
+    }),
+
+    // Update Order
+    updateOrderInformation: builder.mutation<
+      IItemResponse<IOrder>,
+      IUpdateOrderInformation
+    >({
+      query: (body) => ({
+        url: `orders/${body.id}`,
+        method: "PUT",
+        body,
+      }),
+    }),
+
+    updateOrderStatus: builder.mutation<
+      IItemResponse<IOrder>,
+      IUpdateOrderStatus
+    >({
+      query: ({ id, status }) => ({
+        url: `orders/${id}/${status}`,
+        method: "PUT",
+      }),
+    }),
+
+    cancelOrder: builder.mutation<IItemResponse<IOrder>, string>({
+      query: (id) => ({
+        url: `orders/${id}/cancel`,
+        method: "PUT",
+      }),
+    }),
+
+    checkoutOrder: builder.mutation<IItemResponse<IOrder>, string>({
+      query: (id) => ({
+        url: `orders/${id}/check-out`,
+        method: "PUT",
+      }),
+    }),
+
+    // Order Detail
+    getOrderMilestone: builder.query<IListResponse<IMilestone>, string>({
+      query: (id) => ({
+        url: `orders/${id}/milestones`,
+        method: "GET",
+      }),
+    }),
+
+    getOrderAccessories: builder.query<IListResponse<IAccessory>, string>({
+      query: (id) => ({
+        url: `orders/${id}/order-accessories-details`,
+        method: "GET",
+      }),
+    }),
+
+    getOrderAccessory: builder.query<
+      IListResponse<IAccessory>,
+      IGetOrderAccessory
+    >({
+      query: ({ orderId, accessoryId }) => ({
+        url: `orders/${orderId}/order-accessories-details/${accessoryId}`,
+        method: "GET",
+      }),
+    }),
+
+    getOrderDresses: builder.query<IListResponse<IDress>, string>({
+      query: (id) => ({
+        url: `orders/${id}/order-dress-details`,
+        method: "GET",
+      }),
+    }),
+
+    getOrderDress: builder.query<IListResponse<IDress>, IGetOrderDress>({
+      query: ({ orderId, dressId }) => ({
+        url: `orders/${orderId}/order-dress-details/${dressId}`,
+        method: "GET",
+      }),
+    }),
+
+    getOrderService: builder.query<IItemResponse<IService>, string>({
+      query: (id) => ({
+        url: `orders/${id}/order-service-details`,
+        method: "GET",
+      }),
+    }),
+
+    //Order Complaint
+    getOrderComplaints: builder.query<
+      IListResponse<IComplaint>,
+      IGetOrderComplaints
+    >({
+      query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
+        url: `orders/${orderId}/complaints/me`,
+        method: "GET",
+      }),
+    }),
+
+    createOrderComplaint: builder.mutation<
+      IItemResponse<IComplaint>,
+      ICreateComplaint
+    >({
+      query: ({ orderId, ...body }) => ({
+        url: `orders/${orderId}/complaints/me`,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -53,4 +205,16 @@ export const {
   useLazyGetOrderQuery,
   useCreateOrderMutation,
   useCreateCustomOrderMutation,
+  useUpdateOrderInformationMutation,
+  useUpdateOrderStatusMutation,
+  useCancelOrderMutation,
+  useCheckoutOrderMutation,
+  useLazyGetOrderServiceQuery,
+  useLazyGetOrderAccessoriesQuery,
+  useLazyGetOrderAccessoryQuery,
+  useLazyGetOrderDressQuery,
+  useLazyGetOrderDressesQuery,
+  useLazyGetOrderMilestoneQuery,
+  useLazyGetOrderComplaintsQuery,
+  useCreateOrderComplaintMutation,
 } = orderApi;
