@@ -75,18 +75,25 @@ export const shopApi = createApi({
       }),
     }),
 
-    staffGetShops: builder.query<IListResponse<IShop>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "shops/staff",
-        method: "GET",
-        params: { sort, filter, page, size },
+    addFavoriteShop: builder.mutation<IItemResponse<IShop>, string>({
+      query: (id) => ({
+        url: `shops/${id}/favorites`,
+        method: "POST",
       }),
     }),
 
-    staffGetShop: builder.query<IItemResponse<IShop>, string>({
+    removeFavoriteShop: builder.mutation<IItemResponse<IShop>, string>({
       query: (id) => ({
-        url: `shops/${id}/staff`,
+        url: `shops/${id}/favorites`,
+        method: "DELETE",
+      }),
+    }),
+
+    getFavoriteShops: builder.query<IListResponse<IShop>, IPagination>({
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
+        url: "shops/favorites",
         method: "GET",
+        params: { sort, filter, page, size },
       }),
     }),
 
@@ -102,7 +109,7 @@ export const shopApi = createApi({
       IHandleCreateShop
     >({
       query: ({ id, ...body }) => ({
-        url: `shops/${id}/staff`,
+        url: `shops/${id}/review`,
         method: "PATCH",
         body,
       }),
@@ -143,8 +150,11 @@ export const {
   useLazyGetShopServicesQuery,
   useLazyGetShopQuery,
   useLazyGetShopsQuery,
-  useLazyStaffGetShopQuery,
-  useLazyStaffGetShopsQuery,
+
+  useLazyGetFavoriteShopsQuery,
+  useAddFavoriteShopMutation,
+  useRemoveFavoriteShopMutation,
+
   useCreateShopMutation,
   useRecreateShopMutation,
   useUpdateShopInfoMutation,
