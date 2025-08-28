@@ -8,6 +8,8 @@ export enum TaskStatus {
 }
 
 export interface ITask extends IItem {
+  milestoneId: string;
+  
   milestone: IMilestone;
   title: string;
   description: string | null;

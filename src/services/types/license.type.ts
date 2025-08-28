@@ -8,6 +8,8 @@ export enum LicenseStatus {
 }
 
 export interface ILicense extends IItem {
+  shopId: string;
+  
   shop: IShop;
   status: LicenseStatus;
   rejectReason: string | null;

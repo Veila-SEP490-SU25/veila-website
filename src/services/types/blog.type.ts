@@ -7,6 +7,8 @@ export enum BlogStatus {
 }
 
 export interface IBlog extends IItem {
+  userId: string;
+
   user: IUser;
   category: ICategory | null;
   title: string;

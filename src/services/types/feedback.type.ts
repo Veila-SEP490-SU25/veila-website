@@ -8,6 +8,11 @@ import {
 } from "@/services/types";
 
 export interface IFeedback extends IItem {
+  customerId: string;
+  orderId: string;
+  dressId: string | null;
+  accessoryId: string | null;
+  
   customer: IUser;
   order: IOrder;
   dress: IDress | null;

@@ -9,6 +9,8 @@ export enum ShopStatus {
 }
 
 export interface IShop extends IItem {
+  userId: string;
+  
   user: IUser;
   name: string;
   phone: string;

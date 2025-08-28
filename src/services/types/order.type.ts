@@ -27,6 +27,9 @@ export enum OrderType {
 }
 
 export interface IOrder extends IItem {
+  customerId: string;
+  shopId: string;
+  
   customer: IUser;
   shop: IShop;
   phone: string;

@@ -1,6 +1,8 @@
 import { IItem, IUser } from "@/services/types";
 
 export interface IWallet extends IItem {
+  userId: string;
+  
   user: IUser;
   availableBalance: number;
   lockedBalance: number;

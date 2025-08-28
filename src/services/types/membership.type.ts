@@ -6,6 +6,8 @@ export enum MembershipStatus {
 }
 
 export interface IMembership extends IItem {
+  shopId: string;
+  
   shop: IShop;
   subscription: ISubscription;
   transaction: ITransaction;

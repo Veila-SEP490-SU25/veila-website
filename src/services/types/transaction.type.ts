@@ -24,6 +24,9 @@ export enum TypeBalance {
 }
 
 export interface ITransaction extends IItem {
+  walletId: string;
+  orderId: string | null;
+  
   wallet: IWallet;
   order: IOrder | null;
   membership: IMembership | null;

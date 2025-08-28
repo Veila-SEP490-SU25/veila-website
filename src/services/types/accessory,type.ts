@@ -7,6 +7,9 @@ export enum AccessoryStatus {
 }
 
 export interface IAccessory extends IItem {
+  userId: string;
+  categoryId: string | null;
+
   user: IUser;
   category: ICategory | null;
   name: string;

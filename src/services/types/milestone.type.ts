@@ -14,6 +14,8 @@ export enum MilestoneStatus {
 }
 
 export interface IMilestone extends IItem {
+  orderId: string;
+  
   order: IOrder;
   title: string;
   description: string | null;

@@ -7,6 +7,9 @@ export enum ServiceStatus {
 }
 
 export interface IService extends IItem {
+  userId: string;
+  categoryId: string | null;
+  
   user: IUser;
   category: ICategory | null;
   name: string;

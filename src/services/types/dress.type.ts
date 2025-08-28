@@ -7,6 +7,8 @@ export enum DressStatus {
 }
 
 export interface IDress extends IItem {
+  userId: string;
+  
   user: IUser;
   category: ICategory | null;
   name: string;

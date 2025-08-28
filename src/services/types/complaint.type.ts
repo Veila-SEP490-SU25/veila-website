@@ -8,6 +8,9 @@ export enum ComplaintStatus {
 }
 
 export interface IComplaint extends IItem {
+  userId: string;
+  orderId: string;
+  
   sender: IUser;
   order: IOrder;
   title: string;

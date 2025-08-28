@@ -14,6 +14,8 @@ export enum UpdateRequestStatus {
 }
 
 export interface IRequest extends IItem {
+  userId: string;
+  
   user: IUser;
   title: string;
   description: string;
