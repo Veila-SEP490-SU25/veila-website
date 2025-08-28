@@ -5,9 +5,15 @@ import {
   IItemResponse,
   IListResponse,
   IPagination,
+  ITransfer,
   IWallet,
   IWithdraw,
 } from "@/services/types";
+
+export interface IUpdateBankInfo {
+  bin: string;
+  bankNumber: string;
+}
 
 export const walletApi = createApi({
   reducerPath: "walletApi",
@@ -15,12 +21,43 @@ export const walletApi = createApi({
   endpoints: (builder) => ({
     getWallets: builder.query<IListResponse<IWallet>, IPagination>({
       query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "wallet",
+        url: "wallets",
         params: { sort, filter, page, size },
       }),
     }),
 
-    deposit: builder.mutation<IItemResponse<IWallet>, IDeposit>({
+    getWallet: builder.query<IItemResponse<IWallet>, string>({
+      query: (id) => ({
+        url: `wallets/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    updateWalletPIN: builder.mutation<IItemResponse<IWallet>, string>({
+      query: (pin) => ({
+        url: "wallets/update-pin",
+        method: "PUT",
+        body: { pin },
+      }),
+    }),
+
+    updateBankInfo: builder.mutation<IItemResponse<IWallet>, IUpdateBankInfo>({
+      query: (body) => ({
+        url: "wallets/update-bank-information",
+        method: "PUT",
+        body,
+      }),
+    }),
+
+    requestSmartOtp: builder.mutation<IItemResponse<null>, string>({
+      query: (pin) => ({
+        url: "wallets/request-smart-otp",
+        method: "POST",
+        body: { pin },
+      }),
+    }),
+
+    deposit: builder.mutation<IItemResponse<ITransfer>, IDeposit>({
       query: (body) => ({
         url: "wallets/deposit",
         method: "PUT",
@@ -50,4 +87,7 @@ export const {
   useDepositMutation,
   useRequestWithdrawMutation,
   useLazyGetMyWalletQuery,
+  useRequestSmartOtpMutation,
+  useUpdateBankInfoMutation,
+  useUpdateWalletPINMutation,
 } = walletApi;

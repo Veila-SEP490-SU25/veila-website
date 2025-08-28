@@ -2,7 +2,7 @@ import { IItem, IUser } from "@/services/types";
 
 export interface IWallet extends IItem {
   userId: string;
-  
+
   user: IUser;
   availableBalance: number;
   lockedBalance: number;
@@ -18,4 +18,13 @@ export interface IDeposit {
 export interface IWithdraw {
   amount: number;
   note: string | null;
+  otp: string;
+}
+
+export interface ITransfer {
+  transactionId: string;
+  orderCode: string;
+  checkoutUrl: string;
+  qrCode: string;
+  expiredAt: Date;
 }
