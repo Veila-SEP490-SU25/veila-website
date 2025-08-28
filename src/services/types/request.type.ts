@@ -15,7 +15,7 @@ export enum UpdateRequestStatus {
 
 export interface IRequest extends IItem {
   userId: string;
-  
+
   user: IUser;
   title: string;
   description: string;
@@ -44,6 +44,8 @@ export interface IRequest extends IItem {
 }
 
 export interface IUpdateRequest extends IItem {
+  requestId: string;
+
   request: IRequest;
   title: string;
   description: string;
@@ -73,6 +75,32 @@ export interface IUpdateRequestInfo extends ICreateRequest {
   id: string;
 }
 
+export interface ICreateUpdateRequest {
+  id: string;
+  
+  title: string;
+  description: string;
+  images: string;
+  height: number;
+  weight: number;
+  bust: number;
+  waist: number;
+  hip: number;
+  armpit: number;
+  bicep: number;
+  neck: number;
+  shoulderWidth: number;
+  sleeveLength: number;
+  backLength: number;
+  lowerWaist: number;
+  waistToFloor: number;
+  material: string;
+  color: string;
+  length: string;
+  neckline: string;
+  sleeve: string;
+}
+
 export interface ICreateRequest {
   title: string;
   description: string;
@@ -90,6 +118,11 @@ export interface ICreateRequest {
   backLength: number;
   lowerWaist: number;
   waistToFloor: number;
+  material: string;
+  color: string;
+  length: string;
+  neckline: string;
+  sleeve: string;
   status: RequestStatus;
   isPrivate: boolean;
 }
