@@ -130,7 +130,7 @@ const DressDetailPage = () => {
   }
 
   // Get processed image URLs
-  const images = getImageUrls(dress.images);
+  const images = getImageUrls(dress.images || "");
 
   const nextImage = () => {
     setSelectedImageIndex((prev) => (prev + 1) % images.length);
