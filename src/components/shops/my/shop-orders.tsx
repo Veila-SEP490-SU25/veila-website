@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useLazyGetShopOrdersQuery } from "@/services/apis";
+import { useLazyGetOrdersQuery } from "@/services/apis";
 import {
   IOrder,
   IPaginationResponse,
@@ -52,7 +52,7 @@ import { toast } from "sonner";
 
 export const MyShopOrders = () => {
   const router = useRouter();
-  const [getMyShopOrders, { isLoading }] = useLazyGetShopOrdersQuery();
+  const [getMyShopOrders, { isLoading }] = useLazyGetOrdersQuery();
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [paging, setPaging] = useState<IPaginationResponse>({
     hasNextPage: false,

@@ -53,5 +53,4 @@ export interface IUpdateShopInfo {
   description: string;
   logoUrl: string;
   coverUrl: string;
-  images: string;
 }
