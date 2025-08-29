@@ -13,7 +13,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(({ className, src,
       ref={ref}
       src={src || "/placeholder.svg"}
       alt={alt}
-      className={cn("max-w-full h-auto", className)}
+      className={cn("max-w-full h-auto object-cover", className)}
       {...props}
     />
   )

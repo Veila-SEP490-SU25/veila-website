@@ -17,7 +17,7 @@ import {
   removeFromLocalStorage,
   setTokens,
   setToLocalStorage,
-} from "@/utils";
+} from "@/lib/utils/index";
 import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,

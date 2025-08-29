@@ -1,5 +1,5 @@
 import { IItemResponse, IToken } from "@/services/types";
-import { clearLocalStorage, getTokens, getVeilaServerConfig, setTokens } from "@/utils";
+import { clearLocalStorage, getTokens, getVeilaServerConfig, setTokens } from "@/lib/utils/index";
 import {
   BaseQueryFn,
   FetchArgs,

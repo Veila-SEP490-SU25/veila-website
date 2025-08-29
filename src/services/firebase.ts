@@ -1,4 +1,4 @@
-import { getFirebaseConfig } from "@/utils";
+import { getFirebaseConfig } from "@/lib/utils/index";
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getStorage, FirebaseStorage } from "firebase/storage";

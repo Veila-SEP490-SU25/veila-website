@@ -28,7 +28,7 @@ export const DressCard = ({ dress }: DressProps) => {
   const coverImage = dress.images?.split(",")[0] || "/placeholder.svg";
 
   return (
-    <Card className="group hover:shadow-lg transition-shadow overflow-hidden">
+    <Card className="group hover:shadow-lg transition-shadow overflow-hidden pt-0">
       <div className="relative">
         <Image
           src={coverImage}
