@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/auth.provider";
 import { RouteProvider } from "@/providers/route.aprovider";
 import { ChatProvider } from "@/providers/chat.provider";
+import { PagingProvider } from "@/providers/paging.provider";
 
 export const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -39,7 +40,9 @@ export default function RootLayout({
           <StoreProvider>
             <AuthProvider>
               <RouteProvider>
-                <ChatProvider>{children}</ChatProvider>
+                <PagingProvider>
+                  <ChatProvider>{children}</ChatProvider>
+                </PagingProvider>
               </RouteProvider>
             </AuthProvider>
           </StoreProvider>

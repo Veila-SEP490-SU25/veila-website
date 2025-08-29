@@ -13,57 +13,35 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { usePaging } from "@/providers/paging.provider";
+import { PagingComponent } from "@/components/paging-component";
 
 export default function BrowsePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dresses, setDresses] = useState<IDress[]>([]);
   const [getDresses, { isLoading }] = useLazyGetDressesQuery();
-  const [paging, setPaging] = useState<IPaginationResponse>({
-    hasNextPage: false,
-    hasPrevPage: false,
-    pageIndex: 0,
-    pageSize: 8,
-    totalItems: 0,
-    totalPages: 0,
-  });
-
-  const handlePageChange = (newPageIndex: number) => {
-    setPaging((prev) => ({
-      ...prev,
-      pageIndex: newPageIndex,
-    }));
-  };
-
-  const handlePageSizeChange = (newPageSize: string) => {
-    const pageSize = Number.parseInt(newPageSize);
-    setPaging((prev) => ({
-      ...prev,
-      pageSize,
-      pageIndex: 0,
-    }));
-  };
+  const { pageIndex, pageSize, totalItems, setPaging } = usePaging();
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const fetchDresses = async () => {
     try {
       const { statusCode, message, items, ...pagination } = await getDresses({
-        filter: debouncedSearchQuery
-          ? `name:like:${debouncedSearchQuery}`
-          : "",
-        page: paging.pageIndex,
-        size: paging.pageSize,
+        filter: debouncedSearchQuery ? `name:like:${debouncedSearchQuery}` : "",
+        page: pageIndex,
+        size: pageSize,
         sort: "name:asc",
       }).unwrap();
       if (statusCode === 200) {
         setDresses(items);
-        setPaging((prev) => ({
-          ...prev,
-          hasNextPage: pagination.hasNextPage,
-          hasPrevPage: pagination.hasPrevPage,
-          totalItems: pagination.totalItems,
-          totalPages: pagination.totalPages,
-        }));
+        setPaging(
+          pagination.pageIndex,
+          pagination.pageSize,
+          pagination.totalItems,
+          pagination.totalPages,
+          pagination.hasNextPage,
+          pagination.hasPrevPage
+        );
       }
     } catch (error) {}
   };
@@ -81,7 +59,7 @@ export default function BrowsePage() {
 
   useEffect(() => {
     fetchDresses();
-  }, [paging.pageIndex, paging.pageSize, debouncedSearchQuery]);
+  }, [pageIndex, pageSize, debouncedSearchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
@@ -116,7 +94,7 @@ export default function BrowsePage() {
         <p className="text-gray-600">
           {isLoading
             ? "Đang tải..."
-            : `Hiển thị ${dresses.length} trong số ${paging.totalItems} váy cưới`}
+            : `Hiển thị ${dresses.length} trong số ${totalItems} váy cưới`}
         </p>
       </div>
 
@@ -275,57 +253,7 @@ export default function BrowsePage() {
       )}
 
       {/* Pagination */}
-      {!isLoading && paging.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-8">
-          <div className="text-sm text-gray-600">
-            Trang {paging.pageIndex + 1} / {paging.totalPages}
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!paging.hasPrevPage}
-              onClick={() => handlePageChange(paging.pageIndex - 1)}
-            >
-              Trước
-            </Button>
-
-            {/* Page numbers */}
-            <div className="hidden md:flex gap-1">
-              {Array.from(
-                { length: Math.min(5, paging.totalPages) },
-                (_, i) => {
-                  const pageNum = paging.pageIndex - 2 + i;
-                  if (pageNum < 0 || pageNum >= paging.totalPages) return null;
-
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={
-                        pageNum === paging.pageIndex ? "default" : "outline"
-                      }
-                      size="sm"
-                      onClick={() => handlePageChange(pageNum)}
-                      className="w-10"
-                    >
-                      {pageNum + 1}
-                    </Button>
-                  );
-                }
-              )}
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!paging.hasNextPage}
-              onClick={() => handlePageChange(paging.pageIndex + 1)}
-            >
-              Sau
-            </Button>
-          </div>
-        </div>
-      )}
+      {!isLoading && <PagingComponent />}
     </div>
   );
 }
