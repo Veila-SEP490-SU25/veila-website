@@ -1,6 +1,6 @@
 import type React from "react";
 import { cn } from "@/lib/utils";
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import NextImage from "next/image";
 
 interface ImageProps
@@ -14,15 +14,35 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     const [imageSrc, setImageSrc] = useState(src || "/placeholder.svg");
     const [hasError, setHasError] = useState(false);
 
+    const getProcessedSrc = (originalSrc: string) => {
+      if (originalSrc.includes("loremflickr.com")) {
+        const match = originalSrc.match(/loremflickr\.com\/(\d+)\/(\d+)/);
+        if (match) {
+          const [, width, height] = match;
+          return `https://picsum.photos/${width}/${height}?random=${Math.random()}`;
+        }
+        return `https://picsum.photos/400/300?random=${Math.random()}`;
+      }
+      return originalSrc;
+    };
+
     const handleError = () => {
       if (!hasError) {
         setHasError(true);
-        setImageSrc("/placeholder.svg");
+        setImageSrc(`https://picsum.photos/400/300?random=${Math.random()}`);
       }
     };
 
+    useEffect(() => {
+      if (src) {
+        setImageSrc(getProcessedSrc(src));
+        setHasError(false);
+      }
+    }, [src]);
+
     const isExternalImage = Boolean(
-      src && (src.startsWith("http://") || src.startsWith("https://"))
+      imageSrc &&
+        (imageSrc.startsWith("http://") || imageSrc.startsWith("https://"))
     );
 
     return (
