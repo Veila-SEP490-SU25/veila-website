@@ -1,49 +1,61 @@
-"use client";
-import { useFirebase } from "@/services/firebase";
-import {
-  collection,
-  FieldPath,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-  WhereFilterOp,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
+
+"use client"
+
+import { useFirebase } from "@/services/firebase"
+import { collection, onSnapshot, query, where, type WhereFilterOp, type FieldPath } from "firebase/firestore"
+import { useEffect, useState } from "react"
 
 export interface Condition {
-  field: string | FieldPath;
-  operator: WhereFilterOp;
-  value: string | number;
+  field: string | FieldPath
+  operator: WhereFilterOp
+  value: string | number | boolean
 }
 
-export const useFirestore = (collectionPath: string, condition?: Condition) => {
-  const [document, setDocument] = useState<any[]>([]);
-  const { firestore } = useFirebase();
+export function useFirestore(collectionName: string, condition?: Condition) {
+  const [data, setData] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { firestore } = useFirebase()
 
   useEffect(() => {
-    if (!firestore) return;
-    let collectionRef = query(
-      collection(firestore, collectionPath),
-      orderBy("updatedAt", "desc")
-    );
-    if (condition) {
-      collectionRef = query(
-        collectionRef,
-        where(condition.field, condition.operator, condition.value)
-      );
+    if (!firestore) {
+      setLoading(false)
+      return
     }
 
-    const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
-      const data: any[] = [];
-      snapshot.docs.forEach((doc) => {
-        data.push({ ...doc.data(), docId: doc.id });
-      });
-      setDocument(data);
-    });
+    try {
+      const collectionRef = collection(firestore, collectionName)
+      let q = query(collectionRef)
 
-    return () => unsubscribe();
-  }, [collectionPath, condition, firestore]);
+      if (condition) {
+        q = query(collectionRef, where(condition.field, condition.operator, condition.value))
+      }
 
-  return document;
-};
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const documents = snapshot.docs.map((doc) => ({
+            docId: doc.id,
+            ...doc.data(),
+          }))
+          setData(documents)
+          setLoading(false)
+          setError(null)
+        },
+        (err) => {
+          console.error("Firestore error:", err)
+          setError(err.message)
+          setLoading(false)
+        },
+      )
+
+      return unsubscribe
+    } catch (err: any) {
+      console.error("Firestore setup error:", err)
+      setError(err.message)
+      setLoading(false)
+    }
+  }, [firestore, collectionName, condition])
+
+  return { data, loading, error }
+}

@@ -1,9 +1,14 @@
 "use client";
 
-import { Condition, useFirestore } from "@/hooks/use-firestore";
+import type React from "react";
+import { useFirestore, type Condition } from "@/hooks/use-firestore";
 import { useAuth } from "@/providers/auth.provider";
 import { useFirebase } from "@/services/firebase";
-import { IChatroom, IMessage, MessageType } from "@/services/types";
+import type {
+  IChatroom,
+  IMessage,
+  MessageType,
+} from "@/services/types/chat.type";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import {
   createContext,
@@ -15,13 +20,27 @@ import {
 } from "react";
 import { v4 } from "uuid";
 
-type ChatContextType = {
+interface CreateChatroomData {
+  orderId: string | null;
+  requestId: string | null;
+  name: string | null;
+  customerId: string;
+  customerName: string;
+  customerAvatarUrl: string | null;
+  shopId: string;
+  shopName: string;
+  shopAvatarUrl: string | null;
+}
+
+interface ChatContextType {
   chatrooms: IChatroom[];
   currentRoom: IChatroom | null;
   messages: IMessage[];
+  currentUserId: string;
   selectRoom: (id: string) => void;
   sendMessage: (content: string, type: MessageType) => Promise<void>;
-};
+  createChatroom: (data: CreateChatroomData) => Promise<string | null>;
+}
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
@@ -42,18 +61,21 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const addDocument = async (collectionPath: string, data: any) => {
     if (!firestore) return;
     const query = collection(firestore, collectionPath);
-    await addDoc(query, { ...data, createdAt: new Date() });
+    const docRef = await addDoc(query, { ...data, createdAt: new Date() });
+    return docRef.id;
   };
 
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const currentUserId = currentUser?.id || "current-user";
 
+  // Query chatrooms where current user is either customer or shop
   const chatroomCondition = useMemo<Condition>(() => {
     return {
-      field: "memberIds",
+      field: "members",
       operator: "array-contains",
-      value: currentUser?.id || "",
+      value: currentUserId,
     };
-  }, [currentUser]);
+  }, [currentUserId]);
 
   const roomCondition = useMemo<Condition>(() => {
     return {
@@ -71,12 +93,11 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [currentRoomId]);
 
-  const chatrooms = useFirestore("chatrooms", chatroomCondition) as IChatroom[];
-  const currentRoom = useFirestore(
-    "chatrooms",
-    roomCondition
-  )[0] as IChatroom | null;
-  const messages = useFirestore("messages", messageCondition) as IMessage[];
+  const { data: chatrooms } = useFirestore("chatrooms", chatroomCondition);
+  const { data: currentRoomData } = useFirestore("chatrooms", roomCondition);
+  const { data: messages } = useFirestore("messages", messageCondition);
+
+  const currentRoom = currentRoomData[0] as IChatroom | null;
 
   useEffect(() => {
     const handleFirestoreError = (error: any) => {
@@ -95,38 +116,95 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         handleFirestoreError(event.reason);
       }
     });
+
+    return () => {
+      window.removeEventListener("unhandledrejection", handleFirestoreError);
+    };
   }, []);
 
   const selectRoom = (id: string) => {
     setCurrentRoomId(id);
   };
 
+  const createChatroom = useCallback(
+    async (data: CreateChatroomData): Promise<string | null> => {
+      if (!firestore) return null;
+
+      const chatroomId = v4();
+      const newChatroom: Omit<IChatroom, "docId"> = {
+        id: chatroomId,
+        orderId: data.orderId,
+        requestId: data.requestId,
+        name: data.name,
+        messages: [],
+        customerId: data.customerId,
+        customerName: data.customerName,
+        customerAvatarUrl: data.customerAvatarUrl,
+        customerUnreadCount: 0,
+        shopId: data.shopId,
+        shopName: data.shopName,
+        shopAvatarUrl: data.shopAvatarUrl,
+        shopUnreadCount: 0,
+        members: [data.customerId, data.shopId],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      try {
+        const docId = await addDocument("chatrooms", newChatroom);
+        console.log("Chatroom created with ID:", docId);
+        return chatroomId;
+      } catch (error) {
+        console.error("Error creating chatroom:", error);
+        return null;
+      }
+    },
+    [firestore]
+  );
+
   const sendMessage = useCallback(
     async (content: string, type: MessageType) => {
-      if (!currentRoom && !currentUser) return;
+      if (!currentRoom || !currentUserId) return;
+
       const newMessage: IMessage = {
         id: v4(),
         content,
         chatroomId: currentRoomId || "",
-        senderId: currentUser?.id || "",
+        senderId: currentUserId,
         type,
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
       };
-      // Send the message to Firestore
-      await addDocument("messages", newMessage);
-      currentRoom?.messages.push(newMessage);
-      await updateDocument("chatrooms", currentRoom?.docId || "", {
-        messages: currentRoom?.messages || [],
-      });
+
+      try {
+        // Send the message to Firestore
+        await addDocument("messages", newMessage);
+
+        // Update the chatroom with the new message
+        const updatedMessages = [...(currentRoom.messages || []), newMessage];
+        await updateDocument("chatrooms", currentRoom.docId || "", {
+          messages: updatedMessages,
+        });
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     },
-    [currentRoomId, currentUser]
+    [currentRoomId, currentUserId, currentRoom]
   );
 
   return (
     <ChatContext.Provider
-      value={{ chatrooms, currentRoom, messages, selectRoom, sendMessage }}
+      value={{
+        chatrooms: chatrooms as IChatroom[],
+        currentRoom,
+        messages: messages as IMessage[],
+        currentUserId,
+        selectRoom,
+        sendMessage,
+        createChatroom,
+      }}
     >
       {children}
     </ChatContext.Provider>

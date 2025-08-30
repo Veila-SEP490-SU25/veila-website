@@ -1,4 +1,0 @@
-interface ChatInputProps {
-  chatId: string;
-}
-
