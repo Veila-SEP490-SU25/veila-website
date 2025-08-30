@@ -15,7 +15,7 @@ export default function BrowsePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dresses, setDresses] = useState<IDress[]>([]);
   const [getDresses, { isLoading }] = useLazyGetDressesQuery();
-  const { pageIndex, pageSize, totalItems, setPaging } = usePaging();
+  const { pageIndex, pageSize, totalItems, setPaging , resetPaging} = usePaging();
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -40,6 +40,10 @@ export default function BrowsePage() {
       }
     } catch (error) {}
   };
+
+  useEffect(() => {
+    resetPaging();
+  }, [debouncedSearchQuery]);
 
   useEffect(() => {
     fetchDresses();

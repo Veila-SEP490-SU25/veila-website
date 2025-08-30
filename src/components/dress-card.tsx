@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatPrice, getCoverImage } from "@/lib/products-utils";
 import { IDress } from "@/services/types";
 import { Eye, Heart, ShoppingBag, Star } from "lucide-react";
 import Image from "next/image";
@@ -25,13 +26,12 @@ export const DressCard = ({ dress }: DressProps) => {
 
   const availabilityBadge = getAvailabilityBadge(dress);
   const userName = dress.user ? dress.user.shop?.name : "Unknown User";
-  const coverImage = dress.images?.split(",")[0] || "/placeholder.svg";
 
   return (
     <Card className="group hover:shadow-lg transition-shadow overflow-hidden pt-0">
       <div className="relative">
         <Image
-          src={coverImage}
+          src={getCoverImage(dress.images)}
           alt={dress.name}
           width={300}
           height={400}
@@ -86,7 +86,7 @@ export const DressCard = ({ dress }: DressProps) => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <div className="flex items-center">
+            <div className="flex items-center justify-center">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               <span className="text-sm font-medium ml-1">
                 {dress.ratingAverage}
@@ -94,7 +94,7 @@ export const DressCard = ({ dress }: DressProps) => {
             </div>
             <span className="text-gray-400">•</span>
             <span className="text-sm text-gray-600">
-              {dress.ratingCount} đánh giá
+              {(dress.ratingCount || 0)} đánh giá
             </span>
           </div>
 
@@ -102,17 +102,14 @@ export const DressCard = ({ dress }: DressProps) => {
             <div className="space-y-1">
               {dress.isSellable && (
                 <p className="text-lg font-bold text-gray-900">
-                  {dress.sellPrice.toLocaleString("vi-VN")}₫
+                  Bán: {formatPrice(dress.sellPrice)}
                 </p>
               )}
               {dress.isRentable && (
                 <p className="text-sm text-gray-600">
-                  Thuê: {dress.rentalPrice.toLocaleString("vi-VN")}₫
+                  Thuê: {formatPrice(dress.rentalPrice)}
                 </p>
               )}
-              <p className="text-xs text-gray-600">
-                {dress.category?.name || "Chưa phân loại"}
-              </p>
             </div>
             <Link href={`/dress/${dress.id}`}>
               <Button size="sm" className="bg-rose-600 hover:bg-rose-700">

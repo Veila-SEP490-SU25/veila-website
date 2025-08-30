@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   ArrowLeft,
-  Calendar,
   CheckCircle,
   ChevronLeft,
   ChevronRight,
@@ -31,6 +30,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { CreateOrderDialog } from "@/components/order/create-order-dialog";
+import { formatPrice, getImages } from "@/lib/products-utils";
+import { ImageGallery } from "@/components/image-gallery";
 
 const DressDetailPage = () => {
   const { id } = useParams();
@@ -63,23 +64,6 @@ const DressDetailPage = () => {
       fetchDress();
     }
   }, [id]);
-
-  const getImageUrls = (imagesString: string): string[] => {
-    if (!imagesString)
-      return ["/placeholder.svg?height=600&width=400&text=No+Image"];
-
-    const urls = imagesString
-      .split(",")
-      .map((url) => url.trim())
-      .filter((url) => url.length > 0);
-
-    // If no valid URLs found, return placeholder
-    if (urls.length === 0) {
-      return ["/placeholder.svg?height=600&width=400&text=No+Image"];
-    }
-
-    return urls;
-  };
 
   if (isLoading) {
     return (
@@ -130,7 +114,7 @@ const DressDetailPage = () => {
   }
 
   // Get processed image URLs
-  const images = getImageUrls(dress.images || "");
+  const images = getImages(dress.images);
 
   const nextImage = () => {
     setSelectedImageIndex((prev) => (prev + 1) % images.length);
@@ -158,13 +142,6 @@ const DressDetailPage = () => {
     }
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
   const userName = dress.user ? dress.user.shop?.name : "Unknown User";
 
   return (
@@ -177,109 +154,7 @@ const DressDetailPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Image Gallery */}
-        <div className="space-y-4">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100">
-            <Image
-              src={images[selectedImageIndex] || "/placeholder.svg"}
-              alt={`${dress.name} - Ảnh ${selectedImageIndex + 1}`}
-              fill
-              className="object-cover"
-              priority
-              onError={(e) => {
-                // Fallback to placeholder if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.src =
-                  "/placeholder.svg?height=600&width=400&text=Image+Error";
-              }}
-            />
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all"
-                  aria-label="Ảnh trước"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all"
-                  aria-label="Ảnh tiếp theo"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </>
-            )}
-            {images.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {images.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      selectedImageIndex === index ? "bg-white" : "bg-white/50"
-                    }`}
-                    aria-label={`Xem ảnh ${index + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-            {/* Image counter */}
-            <div className="absolute top-4 left-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
-              {selectedImageIndex + 1} / {images.length}
-            </div>
-          </div>
-
-          {/* Thumbnail Gallery */}
-          {images.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
-              {images.slice(0, 4).map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImageIndex(index)}
-                  className={`aspect-square overflow-hidden rounded-md border-2 transition-all ${
-                    selectedImageIndex === index
-                      ? "border-rose-500"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                  aria-label={`Xem ảnh ${index + 1}`}
-                >
-                  <Image
-                    src={image || "/placeholder.svg"}
-                    alt={`${dress.name} - Thumbnail ${index + 1}`}
-                    width={100}
-                    height={100}
-                    className="object-cover w-full h-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src =
-                        "/placeholder.svg?height=100&width=100&text=Error";
-                    }}
-                  />
-                  {images.length > 4 && index === 3 && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-sm font-medium">
-                      +{images.length - 4}
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* View All Images Button */}
-          {images.length > 4 && (
-            <Button
-              variant="outline"
-              className="w-full bg-transparent"
-              onClick={() => {
-                // Could open a modal or gallery view
-                toast.info("Tính năng xem tất cả ảnh sẽ được cập nhật sớm!");
-              }}
-            >
-              Xem tất cả {images.length} ảnh
-            </Button>
-          )}
-        </div>
+        <ImageGallery images={images} alt={dress.name} />
 
         {/* Product Details */}
         <div className="space-y-6">
@@ -418,7 +293,10 @@ const DressDetailPage = () => {
             <CreateOrderDialog
               dress={dress}
               trigger={
-                <Button className="w-full bg-rose-600 hover:bg-rose-700" size="lg">
+                <Button
+                  className="w-full bg-rose-600 hover:bg-rose-700"
+                  size="lg"
+                >
                   <ShoppingBag className="h-4 w-4 mr-2" />
                   Đặt hàng ngay
                 </Button>

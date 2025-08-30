@@ -200,10 +200,10 @@ const ShopOrderDetailPage = () => {
       if (statusCode === 200) {
         setOrder(item);
       } else {
-        toast.error("Không thể l��y dữ liệu thông tin đơn hàng", {
+        toast.error("Không thể lấy dữ liệu thông tin đơn hàng", {
           description: message,
         });
-        router.push("/shops/orders");
+        router.push("/shops/my");
       }
     } catch (error) {
       toast.error("Có lỗi xảy ra khi tải thông tin đơn hàng");
@@ -332,7 +332,7 @@ const ShopOrderDetailPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <Link href="/shops/orders">
+          <Link href="/shops/my">
             <Button variant="ghost" size="sm" className="shrink-0">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Quay lại
