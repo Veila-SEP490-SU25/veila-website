@@ -53,7 +53,6 @@ export const Nav: React.FC = () => {
           href="/chat"
           className="text-gray-700 hover:text-crimson-700 transition-colors relative"
         >
-          <MessageCircle className="h-4 w-4 inline mr-1" />
           Tin Nhắn
           <UnreadBadge />
         </Link>
