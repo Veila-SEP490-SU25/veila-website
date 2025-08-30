@@ -39,7 +39,7 @@ export interface IUpdateAccessory {
 }
 
 export interface ICreateAccessory {
-  categoryId: string;
+  categoryId: string | null;
   images: string;
   name: string;
   description: string;

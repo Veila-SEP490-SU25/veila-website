@@ -8,7 +8,8 @@ export enum DressStatus {
 
 export interface IDress extends IItem {
   userId: string;
-  
+  categoryId: string | null;
+
   user: IUser;
   category: ICategory | null;
   name: string;
@@ -33,7 +34,7 @@ export interface IDress extends IItem {
 }
 
 export interface ICreateDress {
-  categoryId: string;
+  categoryId: string | null;
   name: string;
   description: string;
   sellPrice: number;

@@ -58,7 +58,6 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({
   const handleDeleteImage = async (url: string, index: number) => {
     setUploadingIndex(index);
     try {
-      await deleteFile(url);
       const imgUrls = images.filter((img) => img !== url).join(",");
       setImageUrls(imgUrls);
       toast.success("Ảnh đã được xóa thành công!");
