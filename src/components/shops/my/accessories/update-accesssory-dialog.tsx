@@ -17,44 +17,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Plus, Loader2, Save } from "lucide-react";
+import { X, Plus, Loader2, Save, Edit } from "lucide-react";
 import {
   useCreateAccessoryMutation,
+  useUpdateAccessoryMutation,
 } from "@/services/apis";
 import {
   AccessoryStatus,
+  IAccessory,
   ICreateAccessory,
+  IUpdateAccessory,
 } from "@/services/types";
 import { toast } from "sonner";
 import { ImagesUpload } from "@/components/images-upload";
 
-interface CreateAccessoryDialogProps {
+interface UpdateAccessoryDialogProps {
   trigger?: React.ReactNode;
   onSuccess?: () => void;
+  accessory: IAccessory;
 }
 
-export function CreateAccessoryDialog({
+export function UpdateAccessoryDialog({
   trigger,
   onSuccess,
-}: CreateAccessoryDialogProps) {
+  accessory,
+}: UpdateAccessoryDialogProps) {
   const [open, setOpen] = useState(false);
-  const [createAccessory, { isLoading }] = useCreateAccessoryMutation();
+  const [updateAccessory, { isLoading }] = useUpdateAccessoryMutation();
 
-  const [accessoryData, setAccessoryData] = useState<ICreateAccessory>({
-    categoryId: null,
-    name: "",
-    description: "",
-    sellPrice: 0,
-    rentalPrice: 0,
-    isSellable: true,
-    isRentable: true,
+  const [accessoryData, setAccessoryData] = useState<IUpdateAccessory>({
+    id: accessory.id,
+    categoryId: accessory.categoryId || "",
+    name: accessory.name,
+    description: accessory.description || "",
+    sellPrice: parseInt(accessory.sellPrice.toString()),
+    rentalPrice: parseInt(accessory.rentalPrice.toString()),
+    isSellable: accessory.isSellable,
+    isRentable: accessory.isRentable,
     status: AccessoryStatus.AVAILABLE,
-    images: "",
+    images: accessory.images || "",
   });
 
-  const [imageUrls, setImageUrls] = useState<string>("");
+  const [imageUrls, setImageUrls] = useState<string>(accessory.images || "");
 
-  const handleInputChange = (field: keyof ICreateAccessory, value: any) => {
+  const handleInputChange = (field: keyof IUpdateAccessory, value: any) => {
     setAccessoryData((prev) => ({
       ...prev,
       [field]: value,
@@ -63,34 +69,35 @@ export function CreateAccessoryDialog({
 
   const resetForm = () => {
     setAccessoryData({
-      categoryId: null,
-      name: "",
-      description: "",
-      sellPrice: 0,
-      rentalPrice: 0,
-      isSellable: true,
-      isRentable: true,
+      id: accessory.id,
+      categoryId: accessory.categoryId || "",
+      name: accessory.name,
+      description: accessory.description || "",
+      sellPrice: parseInt(accessory.sellPrice.toString()),
+      rentalPrice: parseInt(accessory.rentalPrice.toString()),
+      isSellable: accessory.isSellable,
+      isRentable: accessory.isRentable,
       status: AccessoryStatus.AVAILABLE,
-      images: "",
+      images: accessory.images || "",
     });
-    setImageUrls("");
+    setImageUrls(accessory.images || "");
   };
 
   const handleSubmit = async () => {
     try {
-      const { statusCode, message } = await createAccessory(
+      const { statusCode, message } = await updateAccessory(
         accessoryData
       ).unwrap();
-      if (statusCode === 201 || statusCode == 200) {
-        toast.success("Tạo phụ kiện thành công!");
+      if (statusCode === 204) {
+        toast.success("Cập nhật phụ kiện thành công!");
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi tạo phụ kiện");
+        toast.error(message || "Có lỗi xảy ra khi cập nhật phụ kiện");
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi tạo phụ kiện");
+      toast.error("Có lỗi xảy ra khi cập nhật phụ kiện");
     }
   };
 
@@ -105,8 +112,8 @@ export function CreateAccessoryDialog({
 
   const defaultTrigger = (
     <Button className="bg-rose-600 hover:bg-rose-700">
-      <Plus className="h-4 w-4 mr-2" />
-      Thêm váy mới
+      <Edit className="h-4 w-4 mr-2" />
+      Chỉnh sửa phụ kiện
     </Button>
   );
 
@@ -115,7 +122,9 @@ export function CreateAccessoryDialog({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Tạo váy mới</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            Chỉnh sửa phụ kiện
+          </DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">
@@ -258,7 +267,7 @@ export function CreateAccessoryDialog({
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Tạo phụ kiện
+                Lưu phụ kiện
               </>
             )}
           </Button>

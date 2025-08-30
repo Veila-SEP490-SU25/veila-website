@@ -4,6 +4,7 @@ import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
 import { AccessoryDetailDialog } from "@/components/shops/my/accessories/accessory-detail-dialog";
 import { CreateAccessoryDialog } from "@/components/shops/my/accessories/create-accessosy-dialog";
+import { UpdateAccessoryDialog } from "@/components/shops/my/accessories/update-accesssory-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -234,7 +235,7 @@ export const ShopAccessoriesTabs = () => {
                                 accessory={accessory}
                                 trigger={
                                   <Button
-                                    className="flex items-center cursor-pointer"
+                                    className="flex items-center cursor-pointer w-full justify-start"
                                     variant="ghost"
                                   >
                                     <Eye className="h-4 w-4 mr-2" />
@@ -243,9 +244,20 @@ export const ShopAccessoriesTabs = () => {
                                 }
                               />
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Chỉnh sửa
+                            <DropdownMenuItem asChild>
+                              <UpdateAccessoryDialog
+                                accessory={accessory}
+                                trigger={
+                                  <Button
+                                    className="flex items-center cursor-pointer w-full justify-start"
+                                    variant="ghost"
+                                  >
+                                    <Edit className="h-4 w-4 mr-2" />
+                                    Chỉnh sửa
+                                  </Button>
+                                }
+                                onSuccess={fetchAccessories}
+                              />
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Trash2 className="h-4 w-4 mr-2" />
