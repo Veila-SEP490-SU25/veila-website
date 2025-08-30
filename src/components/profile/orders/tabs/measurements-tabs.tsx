@@ -39,7 +39,7 @@ export const MeasurementsTab = ({
   const measurements = [
     {
       label: "Chiều cao",
-      value: currentOrderDressDetail.high,
+      value: currentOrderDressDetail.height,
       unit: "cm",
       icon: <Ruler className="h-4 w-4 text-blue-500" />,
     },

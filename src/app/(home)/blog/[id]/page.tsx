@@ -278,7 +278,7 @@ export default function BlogDetailPage() {
                     img: ({ src, alt }) => (
                       <div className="my-6">
                         <Image
-                          src={src || ""}
+                          src={(src as string) || ""}
                           alt={alt || ""}
                           width={800}
                           height={400}

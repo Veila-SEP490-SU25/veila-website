@@ -110,15 +110,15 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
         "Vui lòng đăng nhập với tài khoản quản trị viên để truy cập trang này."
       );
       router.push("/");
-    } else if (!allowedRoles.includes(currentUser.role)) {
+    } else if (currentUser.role && !allowedRoles.includes(currentUser.role)) {
       toast.error("Bạn không có quyền truy cập vào trang này.");
       router.push("/");
-    } else if (currentUser.role === UserRole.STAFF) {
+    } else if (currentUser.role && currentUser.role === UserRole.STAFF) {
       setRoutes(staffRoutes);
     } else {
       setRoutes(adminRoutes);
     }
-  }, [currentUser, router]);
+  }, [currentUser, router, isAuthenticated]);
 
   return (
     <div className="min-h-screen">
@@ -180,7 +180,7 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/placeholder-user.jpg" />
                   <AvatarFallback className="bg-rose-100 text-rose-600">
-                    {currentUser?.firstName.charAt(0)}
+                    {currentUser?.firstName?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">

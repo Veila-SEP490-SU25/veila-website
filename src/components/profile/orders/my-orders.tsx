@@ -20,11 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  useCheckoutOrderMutation,
-  useLazyGetCustomerOrdersQuery,
-  useLazyGetShopOrdersQuery,
-} from "@/services/apis";
+import { useLazyGetOrdersQuery } from "@/services/apis";
 import {
   IOrder,
   IPaginationResponse,
@@ -38,7 +34,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  Download,
   Edit,
   Eye,
   Mail,
@@ -51,12 +46,12 @@ import {
   XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const MyOrders = () => {
   const router = useRouter();
-  const [getMyOrders, { isLoading }] = useLazyGetCustomerOrdersQuery();
+  const [getMyOrders, { isLoading }] = useLazyGetOrdersQuery();
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [paging, setPaging] = useState<IPaginationResponse>({
     hasNextPage: false,
@@ -66,16 +61,16 @@ export const MyOrders = () => {
     totalItems: 0,
     totalPages: 0,
   });
-  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
+
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  const buildFilterString = () => {
+  const buildFilterString = useCallback(() => {
     if (debouncedSearchTerm) {
       return `email:like:${debouncedSearchTerm}`;
     }
     return "";
-  };
+  }, [debouncedSearchTerm]);
 
   const handlePageChange = (newPageIndex: number) => {
     setPaging((prev) => ({
@@ -93,7 +88,7 @@ export const MyOrders = () => {
     }));
   };
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const { statusCode, message, items, ...pagination } = await getMyOrders({
         page: paging.pageIndex,
@@ -120,11 +115,11 @@ export const MyOrders = () => {
       console.error("Error fetching orders:", error);
       toast.error("Đã xảy ra lỗi khi tải danh sách đơn hàng");
     }
-  };
+  }, [getMyOrders, paging.pageIndex, paging.pageSize, buildFilterString]);
 
   useEffect(() => {
     fetchOrders();
-  }, [paging.pageIndex, paging.pageSize, debouncedSearchTerm]);
+  }, [paging.pageIndex, paging.pageSize, debouncedSearchTerm, fetchOrders]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -199,11 +194,6 @@ export const MyOrders = () => {
       default:
         return <AlertCircle className="h-4 w-4 text-gray-600" />;
     }
-  };
-
-  const handleStatusUpdate = (orderId: string, newStatus: OrderStatus) => {
-    // TODO: Implement status update API call
-    toast.success(`Đã cập nhật trạng thái đơn hàng #${orderId}`);
   };
 
   if (isLoading && orders.length === 0) {
@@ -308,7 +298,7 @@ export const MyOrders = () => {
                               }
                             />
                             <AvatarFallback>
-                              {order.customer.firstName.charAt(0)}
+                              {order.customer.firstName?.charAt(0) || "U"}
                             </AvatarFallback>
                           </Avatar>
                           <div>

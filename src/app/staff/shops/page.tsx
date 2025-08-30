@@ -25,7 +25,7 @@ import {
   type IShop,
   ShopStatus,
 } from "@/services/types";
-import { useLazyStaffGetShopsQuery } from "@/services/apis";
+import { useLazyGetShopsQuery } from "@/services/apis";
 import { toast } from "sonner";
 import { ShopDetailDialog } from "@/components/staff/shop/shop-detail-dialog";
 
@@ -48,7 +48,7 @@ export default function ShopsManagement() {
     verified: 0,
   });
 
-  const [getShops, { isLoading }] = useLazyStaffGetShopsQuery();
+  const [getShops, { isLoading }] = useLazyGetShopsQuery();
 
   const getVerificationBadge = (isVerified: boolean) => {
     return isVerified ? (

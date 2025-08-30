@@ -74,7 +74,8 @@ export const OrderDetailsTab = ({
               <div className="flex items-start space-x-4 p-4 border rounded-lg bg-gray-50/50">
                 <ImageGallery
                   images={
-                    parseImages(currentOrderDressDetail.dress?.images) || []
+                    parseImages(currentOrderDressDetail.dress?.images || "") ||
+                    []
                   }
                   alt={currentOrderDressDetail.dress?.name || "Sản phẩm"}
                 />

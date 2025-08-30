@@ -94,23 +94,10 @@ export function CreateMilestoneDialog({
 
   const onSubmit = async (data: CreateMilestoneFormData) => {
     try {
-      const payload: ICreateMilestone = {
-        newMilestone: {
-          orderId,
-          title: data.title,
-          description: data.description,
-          index: milestoneCount + 1,
-          status: MilestoneStatus.PENDING,
-          dueDate: new Date(data.dueDate),
-        },
-        tasks: data.tasks.map((task, index) => ({
-          milestoneId: "", // This will be set by the backend
-          title: task.title,
-          description: task.description,
-          index: index + 1,
-          status: TaskStatus.PENDING,
-          dueDate: new Date(task.dueDate),
-        })),
+      const payload = {
+        name: data.title,
+        description: data.description,
+        dueDate: new Date(data.dueDate).toISOString(),
       };
 
       const response = await createMilestone(payload).unwrap();

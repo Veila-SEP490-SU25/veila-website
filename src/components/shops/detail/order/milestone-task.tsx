@@ -1,9 +1,12 @@
-"use client"
+"use client";
 
-import { useCompleteCurrentTaskMutation, useLazyGetMilestoneTasksQuery } from "@/services/apis"
-import { type ITask, TaskStatus } from "@/services/types"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
+import {
+  useCompleteTaskMutation,
+  useLazyGetMilestoneTasksQuery,
+} from "@/services/apis";
+import { type ITask, TaskStatus } from "@/services/types";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   CheckCircle,
   XCircle,
@@ -15,148 +18,163 @@ import {
   ChevronDown,
   ChevronRight,
   Check,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Progress } from "@/components/ui/progress";
 
 interface Props {
-  milestoneId: string
-  milestoneTitle?: string
-  autoExpand?: boolean
+  milestoneId: string;
+  milestoneTitle?: string;
+  autoExpand?: boolean;
   onChange: () => Promise<void>;
 }
 
 const getTaskStatusIcon = (status: TaskStatus) => {
   switch (status) {
     case TaskStatus.COMPLETED:
-      return <CheckCircle className="h-4 w-4 text-green-600" />
+      return <CheckCircle className="h-4 w-4 text-green-600" />;
     case TaskStatus.IN_PROGRESS:
-      return <PlayCircle className="h-4 w-4 text-blue-600" />
+      return <PlayCircle className="h-4 w-4 text-blue-600" />;
     case TaskStatus.CANCELLED:
-      return <XCircle className="h-4 w-4 text-red-600" />
+      return <XCircle className="h-4 w-4 text-red-600" />;
     default:
-      return <AlertCircle className="h-4 w-4 text-gray-400" />
+      return <AlertCircle className="h-4 w-4 text-gray-400" />;
   }
-}
+};
 
 const getTaskStatusText = (status: TaskStatus) => {
   switch (status) {
     case TaskStatus.COMPLETED:
-      return "Hoàn thành"
+      return "Hoàn thành";
     case TaskStatus.IN_PROGRESS:
-      return "Đang thực hiện"
+      return "Đang thực hiện";
     case TaskStatus.CANCELLED:
-      return "Đã hủy"
+      return "Đã hủy";
     case TaskStatus.PENDING:
-      return "Chờ thực hiện"
+      return "Chờ thực hiện";
     default:
-      return status
+      return status;
   }
-}
+};
 
 const getTaskStatusColor = (status: TaskStatus) => {
   switch (status) {
     case TaskStatus.COMPLETED:
-      return "bg-green-100 text-green-800 border-green-200"
+      return "bg-green-100 text-green-800 border-green-200";
     case TaskStatus.IN_PROGRESS:
-      return "bg-blue-100 text-blue-800 border-blue-200"
+      return "bg-blue-100 text-blue-800 border-blue-200";
     case TaskStatus.CANCELLED:
-      return "bg-red-100 text-red-800 border-red-200"
+      return "bg-red-100 text-red-800 border-red-200";
     case TaskStatus.PENDING:
-      return "bg-yellow-100 text-yellow-800 border-yellow-200"
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200"
+      return "bg-gray-100 text-gray-800 border-gray-200";
   }
-}
+};
 
 const formatDate = (date: Date | string) => {
   return new Intl.DateTimeFormat("vi-VN", {
     year: "numeric",
     month: "short",
     day: "numeric",
-  }).format(new Date(date))
-}
+  }).format(new Date(date));
+};
 
-const formatDateTime = (date: Date | string) => {
+const _formatDateTime = (date: Date | string) => {
   return new Intl.DateTimeFormat("vi-VN", {
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(date))
-}
+  }).format(new Date(date));
+};
 
-export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false }: Props) => {
-  const [tasks, setTasks] = useState<ITask[]>([])
-  const [isOpen, setIsOpen] = useState(autoExpand)
-  const [getMilestoneTasks, { isLoading }] = useLazyGetMilestoneTasksQuery()
+export const MilestoneTask = ({
+  milestoneId,
+  milestoneTitle,
+  autoExpand = false,
+}: Props) => {
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [isOpen, setIsOpen] = useState(autoExpand);
+  const [getMilestoneTasks, { isLoading }] = useLazyGetMilestoneTasksQuery();
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const response = await getMilestoneTasks({
         id: milestoneId,
         sort: "index:asc",
-        filter: "",
         page: 0,
         size: 1000,
-      }).unwrap()
+      }).unwrap();
       if (response.statusCode === 200) {
-        setTasks(response.items)
+        setTasks(response.items);
       } else {
         toast.error("Không thể tải danh sách công việc", {
           description: response.message,
-        })
+        });
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi tải công việc")
-      console.error("Error fetching tasks:", error)
+      toast.error("Có lỗi xảy ra khi tải công việc");
+      console.error("Error fetching tasks:", error);
     }
-  }
+  }, [getMilestoneTasks, milestoneId]);
 
-  const [completeTask, {isLoading: isUpdating}] = useCompleteCurrentTaskMutation();
+  const [completeTask, { isLoading: isUpdating }] = useCompleteTaskMutation();
 
   const handleMarkComplete = async (taskId: string) => {
     try {
-      const response = await completeTask({ milestoneId, taskId }).unwrap()
+      const response = await completeTask({ milestoneId, taskId }).unwrap();
       if (response.statusCode === 200) {
-        toast.success("Công việc đã được đánh dấu hoàn thành")
-        fetchTasks()
+        toast.success("Công việc đã được đánh dấu hoàn thành");
+        fetchTasks();
       } else {
         toast.error("Không thể cập nhật công việc", {
           description: response.message,
-        })
+        });
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi cập nhật công việc")
-      console.error("Error completing task:", error)
+      toast.error("Có lỗi xảy ra khi cập nhật công việc");
+      console.error("Error completing task:", error);
     }
-  }
+  };
 
   useEffect(() => {
     if (isOpen && tasks.length === 0) {
-      fetchTasks()
+      fetchTasks();
     }
-  }, [isOpen, milestoneId])
+  }, [isOpen, milestoneId, fetchTasks, tasks.length]);
 
   // Calculate task statistics
-  const completedTasks = tasks.filter((task) => task.status === TaskStatus.COMPLETED).length
-  const inProgressTasks = tasks.filter((task) => task.status === TaskStatus.IN_PROGRESS).length
-  const pendingTasks = tasks.filter((task) => task.status === TaskStatus.PENDING).length
-  const cancelledTasks = tasks.filter((task) => task.status === TaskStatus.CANCELLED).length
-  const totalTasks = tasks.length
-  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
+  const completedTasks = tasks.filter(
+    (task) => task.status === TaskStatus.COMPLETED
+  ).length;
+  const inProgressTasks = tasks.filter(
+    (task) => task.status === TaskStatus.IN_PROGRESS
+  ).length;
+  const pendingTasks = tasks.filter(
+    (task) => task.status === TaskStatus.PENDING
+  ).length;
+  const cancelledTasks = tasks.filter(
+    (task) => task.status === TaskStatus.CANCELLED
+  ).length;
+  const totalTasks = tasks.length;
+  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   // Sort tasks by index and status priority
   const sortedTasks = [...tasks].sort((a, b) => {
     // First sort by index
     if (a.index !== b.index) {
-      return a.index - b.index
+      return a.index - b.index;
     }
     // Then by status priority (in progress > pending > completed > cancelled)
     const statusPriority = {
@@ -164,9 +182,9 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
       [TaskStatus.PENDING]: 2,
       [TaskStatus.COMPLETED]: 3,
       [TaskStatus.CANCELLED]: 4,
-    }
-    return statusPriority[a.status] - statusPriority[b.status]
-  })
+    };
+    return statusPriority[a.status] - statusPriority[b.status];
+  });
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -174,10 +192,15 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
         <Button variant="ghost" className="w-full justify-between p-0 h-auto">
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-1">
-              {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              {isOpen ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
               <FileText className="h-4 w-4" />
               <span className="font-medium">
-                Công việc {milestoneTitle ? `- ${milestoneTitle}` : ""} ({totalTasks})
+                Công việc {milestoneTitle ? `- ${milestoneTitle}` : ""} (
+                {totalTasks})
               </span>
             </div>
           </div>
@@ -198,7 +221,10 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center space-x-3 p-3 border rounded-lg">
+              <div
+                key={i}
+                className="flex items-center space-x-3 p-3 border rounded-lg"
+              >
                 <Skeleton className="h-4 w-4 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4" />
@@ -216,21 +242,27 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <div>
                   <p className="text-xs text-green-600">Hoàn thành</p>
-                  <p className="font-semibold text-green-800">{completedTasks}</p>
+                  <p className="font-semibold text-green-800">
+                    {completedTasks}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                 <PlayCircle className="h-4 w-4 text-blue-600" />
                 <div>
                   <p className="text-xs text-blue-600">Đang làm</p>
-                  <p className="font-semibold text-blue-800">{inProgressTasks}</p>
+                  <p className="font-semibold text-blue-800">
+                    {inProgressTasks}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <Clock className="h-4 w-4 text-yellow-600" />
                 <div>
                   <p className="text-xs text-yellow-600">Chờ làm</p>
-                  <p className="font-semibold text-yellow-800">{pendingTasks}</p>
+                  <p className="font-semibold text-yellow-800">
+                    {pendingTasks}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center space-x-2 p-2 bg-red-50 border border-red-200 rounded-lg">
@@ -244,7 +276,7 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
 
             {/* Task List */}
             <div className="space-y-2">
-              {sortedTasks.map((task, index) => (
+              {sortedTasks.map((task, _index) => (
                 <Card key={task.id} className="border-l-4 border-l-blue-200">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
@@ -256,9 +288,13 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
                           {getTaskStatusIcon(task.status)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-base leading-tight">{task.title}</h4>
+                          <h4 className="font-medium text-base leading-tight">
+                            {task.title}
+                          </h4>
                           {task.description && (
-                            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{task.description}</p>
+                            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                              {task.description}
+                            </p>
                           )}
                           <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
                             <div className="flex items-center space-x-1">
@@ -273,12 +309,17 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
                         </div>
                       </div>
                       <div className="flex flex-col items-end space-y-2 ml-4">
-                        <Badge variant="outline" className={getTaskStatusColor(task.status)}>
+                        <Badge
+                          variant="outline"
+                          className={getTaskStatusColor(task.status)}
+                        >
                           {getTaskStatusText(task.status)}
                         </Badge>
                         {task.status === TaskStatus.IN_PROGRESS && (
                           <div className="flex flex-col items-end space-y-2">
-                            <div className="text-xs text-blue-600 font-medium">Đang thực hiện</div>
+                            <div className="text-xs text-blue-600 font-medium">
+                              Đang thực hiện
+                            </div>
                             <Button
                               size="sm"
                               onClick={() => handleMarkComplete(task.id)}
@@ -291,7 +332,9 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
                           </div>
                         )}
                         {task.status === TaskStatus.COMPLETED && (
-                          <div className="text-xs text-green-600">Hoàn thành: {formatDate(task.updatedAt)}</div>
+                          <div className="text-xs text-green-600">
+                            Hoàn thành: {formatDate(task.updatedAt)}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -305,7 +348,9 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">Tiến độ tổng thể</span>
-                  <span className="text-sm font-semibold">{Math.round(progress)}%</span>
+                  <span className="text-sm font-semibold">
+                    {Math.round(progress)}%
+                  </span>
                 </div>
                 <Progress value={progress} className="h-2" />
                 <div className="flex justify-between text-xs text-muted-foreground mt-2">
@@ -320,11 +365,13 @@ export const MilestoneTask = ({ milestoneId, milestoneTitle, autoExpand = false 
             <CardContent className="text-center py-8">
               <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
               <h3 className="text-lg font-semibold mb-2">Chưa có công việc</h3>
-              <p className="text-muted-foreground">Chưa có công việc nào được tạo cho giai đoạn này.</p>
+              <p className="text-muted-foreground">
+                Chưa có công việc nào được tạo cho giai đoạn này.
+              </p>
             </CardContent>
           </Card>
         )}
       </CollapsibleContent>
     </Collapsible>
-  )
-}
+  );
+};

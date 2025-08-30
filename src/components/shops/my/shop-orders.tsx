@@ -305,7 +305,7 @@ export const MyShopOrders = () => {
                               }
                             />
                             <AvatarFallback>
-                              {order.customer.firstName.charAt(0)}
+                              {order.customer.firstName?.charAt(0) || "U"}
                             </AvatarFallback>
                           </Avatar>
                           <div>

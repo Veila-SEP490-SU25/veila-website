@@ -21,7 +21,7 @@ export const CustomerInfoCard = ({ customer }: CustomerInfoCardProps) => {
           <Avatar className="h-12 w-12">
             <AvatarImage src={customer.avatarUrl || ""} />
             <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
-              {customer.firstName.charAt(0)}
+              {customer.firstName?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">

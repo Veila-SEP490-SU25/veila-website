@@ -193,7 +193,7 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
                     {/* Content Preview */}
                     <p
                       className="text-gray-600 text-sm line-clamp-3"
-                      dangerouslySetInnerHTML={{ __html: blog.content }}
+                      dangerouslySetInnerHTML={{ __html: blog.content || "" }}
                     />
 
                     {/* Author and Date */}

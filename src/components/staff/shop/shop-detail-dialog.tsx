@@ -12,15 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useLazyStaffGetShopQuery } from "@/services/apis";
+import { useLazyGetShopQuery } from "@/services/apis";
 import { IShop, ShopStatus } from "@/services/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
   AlertTriangle,
   Ban,
-  Building,
   Calendar,
-  CheckCircle,
   Loader2,
   Mail,
   MapPin,
@@ -28,10 +26,10 @@ import {
   Shield,
   ShieldCheck,
   Star,
-  Trash2,
   User,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { toast } from "sonner";
 
 interface ShopDetailDialogProps {
@@ -47,10 +45,10 @@ export const ShopDetailDialog = ({
   setOpen,
   onChange,
 }: ShopDetailDialogProps) => {
-  const [getShop, { isLoading }] = useLazyStaffGetShopQuery();
+  const [getShop, { isLoading }] = useLazyGetShopQuery();
   const [shop, setShop] = useState<IShop | null>(null);
 
-  const fetchShop = async () => {
+  const fetchShop = useCallback(async () => {
     try {
       const { statusCode, message, item } = await getShop(shopId).unwrap();
       if (statusCode === 200) {
@@ -60,17 +58,17 @@ export const ShopDetailDialog = ({
           description: message,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("Đã có lỗi xảy ra khi lấy thông tin của hàng.");
       setOpen(false);
     }
-  };
+  }, [getShop, shopId, setOpen]);
 
   useEffect(() => {
     if (open && shopId) {
       fetchShop();
     }
-  }, [open, shopId]);
+  }, [open, shopId, fetchShop]);
 
   const getVerificationBadge = (isVerified: boolean) => {
     return isVerified ? (
@@ -246,14 +244,14 @@ export const ShopDetailDialog = ({
               <Separator />
 
               {/* License Images - full size, responsive, clickable */}
-              {shop.license?.images && (
+              {(shop.license as any)?.images && (
                 <>
                   <div>
                     <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3">
                       Ảnh Giấy Phép
                     </h3>
                     <div className="flex flex-col gap-4">
-                      {String(shop.license.images)
+                      {String((shop.license as any).images)
                         .split(",")
                         .map((image, index) => (
                           <div
@@ -265,9 +263,11 @@ export const ShopDetailDialog = ({
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              <img
+                              <Image
                                 src={image || "/placeholder.svg"}
                                 alt={`${shop.name} license ${index + 1}`}
+                                width={800}
+                                height={600}
                                 className="w-full h-auto object-contain max-h-[60vh]"
                               />
                             </a>
@@ -304,9 +304,11 @@ export const ShopDetailDialog = ({
                       Ảnh Bìa
                     </h3>
                     <div className="rounded-lg overflow-hidden border">
-                      <img
+                      <Image
                         src={shop.coverUrl || "/placeholder.svg"}
                         alt={`${shop.name} cover`}
+                        width={800}
+                        height={192}
                         className="w-full h-48 object-cover"
                       />
                     </div>
@@ -316,32 +318,36 @@ export const ShopDetailDialog = ({
               )}
 
               {/* Additional Images */}
-              {shop.images && (
+              {(shop as any).images && (
                 <>
                   <div>
                     <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-3">
                       Hình Ảnh Khác
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {typeof shop.images === "string" ? (
+                      {typeof (shop as any).images === "string" ? (
                         <div className="rounded-lg overflow-hidden border">
-                          <img
-                            src={shop.images || "/placeholder.svg"}
+                          <Image
+                            src={(shop as any).images || "/placeholder.svg"}
                             alt={`${shop.name} image`}
+                            width={400}
+                            height={96}
                             className="w-full h-24 object-cover"
                           />
                         </div>
                       ) : (
-                        String(shop.images)
+                        String((shop as any).images)
                           .split(",")
                           .map((image, index) => (
                             <div
                               key={index}
                               className="rounded-lg overflow-hidden border"
                             >
-                              <img
+                              <Image
                                 src={image || "/placeholder.svg"}
                                 alt={`${shop.name} image ${index + 1}`}
+                                width={400}
+                                height={96}
                                 className="w-full h-24 object-cover"
                               />
                             </div>
@@ -354,7 +360,7 @@ export const ShopDetailDialog = ({
               )}
 
               {/* Reject Reason */}
-              {shop.rejectReason && (
+              {(shop as any).rejectReason && (
                 <>
                   <div>
                     <h3 className="text-lg md:text-xl font-semibold text-red-700 mb-3 flex items-center">
@@ -362,7 +368,9 @@ export const ShopDetailDialog = ({
                       Lý Do Từ Chối
                     </h3>
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <p className="text-red-700">{shop.rejectReason}</p>
+                      <p className="text-red-700">
+                        {(shop as any).rejectReason}
+                      </p>
                     </div>
                   </div>
                   <Separator />

@@ -7,7 +7,6 @@ import {
   Auth,
   GoogleAuthProvider,
   signInWithPopup,
-  RecaptchaVerifier,
   signInWithPhoneNumber,
 } from "firebase/auth";
 

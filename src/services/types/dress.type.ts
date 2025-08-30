@@ -42,6 +42,14 @@ export interface ICreateDress {
   isRentable: boolean;
   status: DressStatus;
   images: string;
+  bust?: number;
+  waist?: number;
+  hip?: number;
+  material?: string;
+  color?: string;
+  length?: string;
+  neckline?: string;
+  sleeve?: string;
 }
 
 export interface IUpdateDress extends ICreateDress {

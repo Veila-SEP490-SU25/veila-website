@@ -3,7 +3,13 @@
 import { useAuth } from "@/providers/auth.provider";
 import { UserRole } from "@/services/types";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, ReactNode, useContext, useEffect } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 
 type RouteContextType = unknown;
 
@@ -22,12 +28,15 @@ export const RouteProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const normalRoles = [UserRole.CUSTOMER, UserRole.SHOP];
-  const adminRoles = [UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.STAFF];
+  const _normalRoles = [UserRole.CUSTOMER, UserRole.SHOP];
+  const adminRoles = useMemo(
+    () => [UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.STAFF],
+    []
+  );
 
   useEffect(() => {
     if (!isAuthenticating && isAuthenticated) {
-      if (currentUser) {
+      if (currentUser && currentUser.role) {
         if (adminRoles.includes(currentUser.role)) {
           if (!pathname.startsWith("/staff")) {
             router.push("/staff");
@@ -39,7 +48,14 @@ export const RouteProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     }
-  }, [isAuthenticating, isAuthenticated, pathname, router]);
+  }, [
+    isAuthenticating,
+    isAuthenticated,
+    pathname,
+    router,
+    adminRoles,
+    currentUser,
+  ]);
 
   return (
     <RouteContext.Provider value={undefined}>{children}</RouteContext.Provider>

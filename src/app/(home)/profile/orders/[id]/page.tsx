@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -9,11 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Package } from "lucide-react";
-import { IMilestone, IOrder, IOrderDressDetail, MilestoneStatus } from "@/services/types";
+import { IDress, IMilestone, IOrder, MilestoneStatus } from "@/services/types";
 import {
   useCheckoutOrderMutation,
-  useLazyGetMilestonesQuery,
-  useLazyGetOrderDressDetailQuery,
+  useLazyGetOrderMilestoneQuery,
+  useLazyGetOrderDressesQuery,
   useLazyGetOrderQuery,
 } from "@/services/apis";
 import {
@@ -38,21 +38,19 @@ const OrderDetailPage = () => {
   // State management
   const [order, setOrder] = useState<IOrder>();
   const [milestones, setMilestones] = useState<IMilestone[]>([]);
-  const [orderDressDetail, setOrderDressDetail] = useState<IOrderDressDetail[]>(
-    []
-  );
+  const [_orderDresses, setOrderDresses] = useState<IDress[]>([]);
 
   // API hooks
   const [getOrder, { isLoading: isOrderLoading }] = useLazyGetOrderQuery();
   const [getMilestones, { isLoading: isMilestonesLoading }] =
-    useLazyGetMilestonesQuery();
+    useLazyGetOrderMilestoneQuery();
   const [getOrderDressDetail, { isLoading: isOrderDressDetailLoading }] =
-    useLazyGetOrderDressDetailQuery();
+    useLazyGetOrderDressesQuery();
   const [checkoutOrder, { isLoading: isCheckingOut }] =
     useCheckoutOrderMutation();
 
   // Fetch functions
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const { statusCode, message, item } = await getOrder(
         orderId as string
@@ -65,18 +63,16 @@ const OrderDetailPage = () => {
         });
         router.push("/profile");
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi tải thông tin đơn hàng");
-      console.error("Error fetching order:", error);
     }
-  };
+  }, [getOrder, orderId, router]);
 
-  const fetchMilestone = async () => {
+  const fetchMilestone = useCallback(async () => {
     try {
-      const { statusCode, message, items } = await getMilestones({
-        orderId: orderId as string,
-        sort: "index:asc",
-      }).unwrap();
+      const { statusCode, message, items } = await getMilestones(
+        orderId as string
+      ).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
       } else {
@@ -84,34 +80,27 @@ const OrderDetailPage = () => {
           description: message,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("Không thể lấy dữ liệu thông tin milestones");
-      console.error("Error fetching milestones:", error);
     }
-  };
+  }, [getMilestones, orderId]);
 
-  const fetchOrderDressDetail = async () => {
+  const fetchOrderDressDetail = useCallback(async () => {
     try {
       const { statusCode, message, items } = await getOrderDressDetail(
         orderId as string
       ).unwrap();
       if (statusCode === 200) {
-        setOrderDressDetail(items);
-        if (order) {
-          setOrder((prev) =>
-            prev ? { ...prev, orderDressDetail: items[0] || null } : prev
-          );
-        }
+        setOrderDresses(items);
       } else {
         toast.error("Không thể lấy dữ liệu thông tin dress details", {
           description: message,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("Không thể lấy dữ liệu thông tin dress details");
-      console.error("Error fetching order dress detail:", error);
     }
-  };
+  }, [getOrderDressDetail, orderId]);
 
   const handleCheckout = async () => {
     try {
@@ -124,7 +113,7 @@ const OrderDetailPage = () => {
       } else {
         toast.error("Đã xảy ra lỗi khi đặt hàng", { description: message });
       }
-    } catch (error) {
+    } catch {
       toast.error("Đã xảy ra lỗi khi đặt hàng");
     }
   };
@@ -136,19 +125,9 @@ const OrderDetailPage = () => {
       fetchMilestone();
       fetchOrderDressDetail();
     }
-  }, [orderId]);
+  }, [orderId, fetchOrder, fetchMilestone, fetchOrderDressDetail]);
 
-  useEffect(() => {
-    if (
-      order &&
-      orderDressDetail.length > 0 &&
-      order.orderDressDetail !== orderDressDetail[0]
-    ) {
-      setOrder((prev) =>
-        prev ? { ...prev, orderDressDetail: orderDressDetail[0] || null } : prev
-      );
-    }
-  }, [order, orderDressDetail]);
+  // Note: Không cần update order.orderDressDetail nữa vì orderDresses và order.orderDressDetail có kiểu khác nhau
 
   // Loading state
   if (isOrderLoading || isOrderDressDetailLoading) {
@@ -208,9 +187,8 @@ const OrderDetailPage = () => {
   const progress =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
-  // Get current order dress detail
-  const currentOrderDressDetail =
-    orderDressDetail.length > 0 ? orderDressDetail[0] : order.orderDressDetail;
+  // Get current order dress detail - chỉ sử dụng order.orderDressDetail vì có đúng type
+  const currentOrderDressDetail = order?.orderDressDetail;
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">

@@ -26,8 +26,8 @@ export const UserCard = () => {
               src={currentUser.avatarUrl || "/placeholder-user.jpg"}
             />
             <AvatarFallback className="bg-rose-100 text-rose-600 aspect-square">
-              {currentUser.firstName.charAt(0) +
-                currentUser.lastName.charAt(0) || "U"}
+              {(currentUser.firstName?.charAt(0) || "") +
+                (currentUser.lastName?.charAt(0) || "") || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="col-span-4 space-y-2">

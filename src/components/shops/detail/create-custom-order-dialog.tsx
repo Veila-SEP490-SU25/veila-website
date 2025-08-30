@@ -99,6 +99,11 @@ export function CreateCustomOrderDialog({
     backLength: 40,
     lowerWaist: 85,
     waistToFloor: 100,
+    material: "",
+    color: "",
+    length: "",
+    neckline: "",
+    sleeve: "",
     status: RequestStatus.SUBMIT,
     isPrivate: false,
   });
@@ -308,6 +313,11 @@ export function CreateCustomOrderDialog({
       backLength: 40,
       lowerWaist: 85,
       waistToFloor: 100,
+      material: "",
+      color: "",
+      length: "",
+      neckline: "",
+      sleeve: "",
       status: RequestStatus.SUBMIT,
       isPrivate: false,
     });

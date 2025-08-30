@@ -1,6 +1,14 @@
-import { TextLogo } from "@/components/text-logo"
-import { Heart, Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react"
-import Link from "next/link"
+import { TextLogo } from "@/components/text-logo";
+import {
+  Heart,
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -13,17 +21,26 @@ export default function Footer() {
               <TextLogo />
             </div>
             <p className="text-black leading-relaxed">
-              Kết nối cô dâu với các nhà thiết kế chuyên nghiệp để tạo ra chiếc váy cưới hoàn hảo cho ngày đặc biệt của
-              họ.
+              Kết nối cô dâu với các nhà thiết kế chuyên nghiệp để tạo ra chiếc
+              váy cưới hoàn hảo cho ngày đặc biệt của họ.
             </p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-black hover:text-rose-600 transition-colors">
+              <Link
+                href="#"
+                className="text-black hover:text-rose-600 transition-colors"
+              >
                 <Facebook className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-black hover:text-rose-600 transition-colors">
+              <Link
+                href="#"
+                className="text-black hover:text-rose-600 transition-colors"
+              >
                 <Instagram className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-black hover:text-rose-600 transition-colors">
+              <Link
+                href="#"
+                className="text-black hover:text-rose-600 transition-colors"
+              >
                 <Twitter className="h-5 w-5" />
               </Link>
             </div>
@@ -34,27 +51,42 @@ export default function Footer() {
             <h3 className="text-lg font-semibold">Dịch Vụ</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Thiết Kế Riêng
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Cho Thuê Váy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Mua & Bán
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Tư Vấn
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Chỉnh Sửa
                 </Link>
               </li>
@@ -66,22 +98,34 @@ export default function Footer() {
             <h3 className="text-lg font-semibold">Công Ty</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Về Chúng Tôi
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Nhà Thiết Kế
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Báo Chí
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-black hover-text-gray-500 transition-colors">
+                <Link
+                  href="#"
+                  className="text-black hover-text-gray-500 transition-colors"
+                >
                   Blog
                 </Link>
               </li>
@@ -114,15 +158,26 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-black text-sm">© {new Date().getFullYear()} Veila. Tất cả quyền được bảo lưu.</p>
+            <p className="text-black text-sm">
+              © {new Date().getFullYear()} Veila. Tất cả quyền được bảo lưu.
+            </p>
             <div className="flex space-x-6">
-              <Link href="#" className="text-black hover-text-gray-500 text-sm transition-colors">
+              <Link
+                href="#"
+                className="text-black hover-text-gray-500 text-sm transition-colors"
+              >
                 Chính Sách Bảo Mật
               </Link>
-              <Link href="#" className="text-black hover-text-gray-500 text-sm transition-colors">
+              <Link
+                href="#"
+                className="text-black hover-text-gray-500 text-sm transition-colors"
+              >
                 Điều Khoản Dịch Vụ
               </Link>
-              <Link href="#" className="text-black hover-text-gray-500 text-sm transition-colors">
+              <Link
+                href="#"
+                className="text-black hover-text-gray-500 text-sm transition-colors"
+              >
                 Chính Sách Cookie
               </Link>
             </div>
@@ -130,5 +185,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

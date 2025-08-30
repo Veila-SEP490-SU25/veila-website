@@ -56,7 +56,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const pathname = usePathname();
+  const _pathname = usePathname();
 
   // Clean up any corrupt tokens on component mount
   useEffect(() => {
@@ -138,7 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           });
           return;
         }
-      } catch (error) {
+      } catch {
         toast.error("Đăng nhập thất bại.", {
           description:
             "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
@@ -146,7 +146,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
     },
-    [loginGoogleMutation, saveTokens, setIsAuthenticated, router]
+    [
+      loginGoogleMutation,
+      saveTokens,
+      setIsAuthenticated,
+      router,
+      requestOtpMutation,
+    ]
   );
 
   const login = useCallback(
@@ -184,7 +190,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           });
           return;
         }
-      } catch (error) {
+      } catch {
         toast.error("Đăng nhập thất bại.", {
           description:
             "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
@@ -192,7 +198,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
     },
-    [loginMutation, saveTokens, setIsAuthenticated, router]
+    [loginMutation, saveTokens, setIsAuthenticated, router, requestOtpMutation]
   );
 
   const verifyOtp = useCallback(
@@ -218,7 +224,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           });
           return;
         }
-      } catch (error) {
+      } catch {
         toast.error("Đăng nhập thất bại.", {
           description:
             "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
@@ -226,7 +232,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
     },
-    [verifyOtpMutation, saveTokens, setIsAuthenticated]
+    [verifyOtpMutation, saveTokens, setIsAuthenticated, router]
   );
 
   const logout = useCallback(async () => {
@@ -246,20 +252,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: message,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("Đăng xuất thất bại.", {
         description:
           "Có lỗi xảy ra trong quá tình đăng xuất. Vui lòng thử lại sau ít phút.",
       });
     }
-  }, [
-    logoutMutation,
-    pathname,
-    router,
-    revokeTokens,
-    setIsAuthenticated,
-    setCurrentUser,
-  ]);
+  }, [logoutMutation, revokeTokens, setIsAuthenticated, setCurrentUser]);
 
   const reloadProfile = useCallback(() => {
     authCheckRef.current = false;
@@ -290,7 +289,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           authCheckRef.current = false;
           await logout();
         }
-      } catch (error) {
+      } catch {
         toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
           description:
             "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
@@ -302,7 +301,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (currentAccessToken || isAuthenticated) {
       checkAuth();
     }
-  }, [currentAccessToken, currentRefreshToken, isAuthenticated, currentUser]);
+  }, [
+    currentAccessToken,
+    currentRefreshToken,
+    isAuthenticated,
+    currentUser,
+    getMeQuery,
+    logout,
+  ]);
 
   return (
     <AuthContext.Provider

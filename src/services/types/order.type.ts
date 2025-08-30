@@ -29,7 +29,7 @@ export enum OrderType {
 export interface IOrder extends IItem {
   customerId: string;
   shopId: string;
-  
+
   customer: IUser;
   shop: IShop;
   phone: string;
@@ -45,6 +45,7 @@ export interface IOrder extends IItem {
   orderDressDetail: IOrderDressDetail | null;
   orderServiceDetail: IOrderServiceDetail | null;
   transaction: ITransaction[];
+  isBuyBack?: boolean;
 }
 
 export interface IOrderAccessoryDetail extends IItem {

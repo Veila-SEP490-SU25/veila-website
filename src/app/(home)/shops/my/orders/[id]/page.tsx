@@ -1,20 +1,20 @@
 "use client";
 
 import {
-  useLazyGetMilestonesQuery,
+  useLazyGetOrderMilestoneQuery,
   useLazyGetOrderQuery,
-  useLazyGetOrderDressDetailQuery,
+  useLazyGetOrderDressesQuery,
 } from "@/services/apis";
 import {
+  type IDress,
   type IMilestone,
   type IOrder,
-  type IOrderDressDetail,
   OrderStatus,
   OrderType,
   MilestoneStatus,
 } from "@/services/types";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -31,15 +31,11 @@ import {
   AlertCircle,
   PlayCircle,
   MessageSquare,
-  Calendar,
   TrendingUp,
   Eye,
-  ChevronRight,
-  ChevronLeft,
   Plus,
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -60,8 +56,9 @@ import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
 import { CreateMilestoneDialog } from "@/components/shops/detail/order/create-milestone-dialog";
 import { ImageGallery } from "@/components/image-gallery";
 
-// Helper function to parse comma-separated images
-const parseImages = (images: string | string[]): string[] => {
+const parseImages = (
+  images: string | string[] | null | undefined
+): string[] => {
   if (Array.isArray(images)) {
     return images;
   }
@@ -73,9 +70,6 @@ const parseImages = (images: string | string[]): string[] => {
   }
   return [];
 };
-
-// Image Gallery Component
-
 
 const getStatusColor = (status: OrderStatus) => {
   switch (status) {
@@ -183,16 +177,6 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-const formatDate = (date: Date | string) => {
-  return new Intl.DateTimeFormat("vi-VN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
-};
-
 const formatDateShort = (date: Date | string) => {
   return new Intl.DateTimeFormat("vi-VN", {
     year: "numeric",
@@ -208,7 +192,7 @@ const ShopOrderDetailPage = () => {
   const [getOrder, { isLoading: isOrderLoading }] = useLazyGetOrderQuery();
   const [order, setOrder] = useState<IOrder>();
 
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const { statusCode, message, item } = await getOrder(
         orderId as string
@@ -225,18 +209,17 @@ const ShopOrderDetailPage = () => {
       toast.error("Có lỗi xảy ra khi tải thông tin đơn hàng");
       console.error("Error fetching order:", error);
     }
-  };
+  }, [getOrder, orderId, router]);
 
   const [milestones, setMilestones] = useState<IMilestone[]>([]);
   const [getMilestones, { isLoading: isMilestonesLoading }] =
-    useLazyGetMilestonesQuery();
+    useLazyGetOrderMilestoneQuery();
 
-  const fetchMilestone = async () => {
+  const fetchMilestone = useCallback(async () => {
     try {
-      const { statusCode, message, items } = await getMilestones({
-        orderId: orderId as string,
-        sort: "index:asc",
-      }).unwrap();
+      const { statusCode, message, items } = await getMilestones(
+        orderId as string
+      ).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
       } else {
@@ -248,26 +231,19 @@ const ShopOrderDetailPage = () => {
       toast.error("Không thể lấy dữ liệu thông tin milestones");
       console.error("Error fetching milestones:", error);
     }
-  };
+  }, [getMilestones, orderId]);
 
   const [getOrderDressDetail, { isLoading: isOrderDressDetailLoading }] =
-    useLazyGetOrderDressDetailQuery();
-  const [orderDressDetail, setOrderDressDetail] = useState<IOrderDressDetail[]>(
-    []
-  );
+    useLazyGetOrderDressesQuery();
+  const [orderDresses, setOrderDresses] = useState<IDress[]>([]);
 
-  const fetchOrderDressDetail = async () => {
+  const fetchOrderDressDetail = useCallback(async () => {
     try {
       const { statusCode, message, items } = await getOrderDressDetail(
         orderId as string
       ).unwrap();
       if (statusCode === 200) {
-        setOrderDressDetail(items);
-        if (order) {
-          setOrder((prev) =>
-            prev ? { ...prev, orderDressDetail: items[0] || null } : prev
-          );
-        }
+        setOrderDresses(items);
       } else {
         toast.error("Không thể lấy dữ liệu thông tin dress details", {
           description: message,
@@ -277,7 +253,7 @@ const ShopOrderDetailPage = () => {
       toast.error("Không thể lấy dữ liệu thông tin dress details");
       console.error("Error fetching order dress detail:", error);
     }
-  };
+  }, [getOrderDressDetail, orderId]);
 
   useEffect(() => {
     if (orderId) {
@@ -285,20 +261,10 @@ const ShopOrderDetailPage = () => {
       fetchMilestone();
       fetchOrderDressDetail();
     }
-  }, [orderId]);
+  }, [orderId, fetchOrder, fetchMilestone, fetchOrderDressDetail]);
 
-  // Update order when orderDressDetail is fetched
-  useEffect(() => {
-  if (
-    order &&
-    orderDressDetail.length > 0 &&
-    order.orderDressDetail !== orderDressDetail[0]
-  ) {
-    setOrder(prev =>
-      prev ? { ...prev, orderDressDetail: orderDressDetail[0] || null } : prev
-    );
-  }
-}, [order, orderDressDetail]);
+  // Update order when orderDresses is fetched
+  // Note: Since API returns IDress[] instead of IOrderDressDetail[], we skip this update
 
   if (isOrderLoading || isOrderDressDetailLoading) {
     return (
@@ -357,9 +323,9 @@ const ShopOrderDetailPage = () => {
 
   // Calculate payment information
 
-  // Use the fetched orderDressDetail or fallback to order.orderDressDetail
-  const currentOrderDressDetail =
-    orderDressDetail.length > 0 ? orderDressDetail[0] : order.orderDressDetail;
+  // Use the fetched orderDresses or fallback to order.orderDressDetail
+  const currentDress = orderDresses.length > 0 ? orderDresses[0] : null;
+  const currentOrderDressDetail = order.orderDressDetail;
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
@@ -486,7 +452,9 @@ const ShopOrderDetailPage = () => {
                   </div>
 
                   {/* Product Details */}
-                  {currentOrderDressDetail && currentOrderDressDetail.dress && (
+                  {(currentDress ||
+                    (currentOrderDressDetail &&
+                      currentOrderDressDetail.dress)) && (
                     <div className="space-y-3">
                       <h4 className="font-semibold flex items-center gap-2">
                         <Eye className="h-4 w-4" />
@@ -496,32 +464,41 @@ const ShopOrderDetailPage = () => {
                         <ImageGallery
                           images={
                             parseImages(
-                              currentOrderDressDetail.dress?.images
+                              currentDress?.images ||
+                                currentOrderDressDetail?.dress?.images
                             ) || []
                           }
                           alt={
-                            currentOrderDressDetail.dress?.name || "Sản phẩm"
+                            currentDress?.name ||
+                            currentOrderDressDetail?.dress?.name ||
+                            "Sản phẩm"
                           }
                         />
                         <div className="flex-1 min-w-0">
                           <h5 className="font-semibold text-lg">
-                            {currentOrderDressDetail.dress?.name || ""}
+                            {currentDress?.name ||
+                              currentOrderDressDetail?.dress?.name ||
+                              ""}
                           </h5>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {currentOrderDressDetail.dress?.description || ""}
+                            {currentDress?.description ||
+                              currentOrderDressDetail?.dress?.description ||
+                              ""}
                           </p>
                           <p className="font-bold text-lg text-green-600 mt-2">
-                            {formatCurrency(currentOrderDressDetail.price)}
+                            {formatCurrency(
+                              currentOrderDressDetail?.price || 0
+                            )}
                           </p>
                         </div>
                       </div>
-                      {currentOrderDressDetail.description && (
+                      {currentOrderDressDetail?.description && (
                         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                           <label className="text-sm font-semibold text-blue-800 block mb-1">
                             Yêu cầu đặc biệt
                           </label>
                           <p className="text-sm text-blue-700">
-                            {currentOrderDressDetail.description}
+                            {currentOrderDressDetail?.description}
                           </p>
                         </div>
                       )}
@@ -657,7 +634,7 @@ const ShopOrderDetailPage = () => {
                 </div>
               ) : milestones.length > 0 ? (
                 <div className="space-y-4">
-                  {milestones.map((milestone, index) => (
+                  {milestones.map((milestone) => (
                     <Card key={milestone.id} className="relative">
                       <CardHeader>
                         <CardTitle className="flex items-center justify-between">
@@ -731,79 +708,79 @@ const ShopOrderDetailPage = () => {
                       {[
                         {
                           label: "Chiều cao",
-                          value: currentOrderDressDetail.high,
+                          value: currentOrderDressDetail?.height,
                           unit: "cm",
                           icon: "📏",
                         },
                         {
                           label: "Cân nặng",
-                          value: currentOrderDressDetail.weight,
+                          value: currentOrderDressDetail?.weight,
                           unit: "kg",
                           icon: "⚖️",
                         },
                         {
                           label: "Vòng ngực",
-                          value: currentOrderDressDetail.bust,
+                          value: currentOrderDressDetail?.bust,
                           unit: "cm",
                           icon: "👗",
                         },
                         {
                           label: "Vòng eo",
-                          value: currentOrderDressDetail.waist,
+                          value: currentOrderDressDetail?.waist,
                           unit: "cm",
                           icon: "👗",
                         },
                         {
                           label: "Vòng hông",
-                          value: currentOrderDressDetail.hip,
+                          value: currentOrderDressDetail?.hip,
                           unit: "cm",
                           icon: "👗",
                         },
                         {
                           label: "Nách",
-                          value: currentOrderDressDetail.armpit,
+                          value: currentOrderDressDetail?.armpit,
                           unit: "cm",
                           icon: "👕",
                         },
                         {
                           label: "Bắp tay",
-                          value: currentOrderDressDetail.bicep,
+                          value: currentOrderDressDetail?.bicep,
                           unit: "cm",
                           icon: "💪",
                         },
                         {
                           label: "Cổ",
-                          value: currentOrderDressDetail.neck,
+                          value: currentOrderDressDetail?.neck,
                           unit: "cm",
                           icon: "👔",
                         },
                         {
                           label: "Vai",
-                          value: currentOrderDressDetail.shoulderWidth,
+                          value: currentOrderDressDetail?.shoulderWidth,
                           unit: "cm",
                           icon: "👕",
                         },
                         {
                           label: "Tay áo",
-                          value: currentOrderDressDetail.sleeveLength,
+                          value: currentOrderDressDetail?.sleeveLength,
                           unit: "cm",
                           icon: "👕",
                         },
                         {
                           label: "Dài lưng",
-                          value: currentOrderDressDetail.backLength,
+                          value: currentOrderDressDetail?.backLength,
                           unit: "cm",
                           icon: "👗",
                         },
                         {
                           label: "Eo thấp",
-                          value: currentOrderDressDetail.lowerWaist,
+                          value: currentOrderDressDetail?.lowerWaist,
                           unit: "cm",
                           icon: "📐",
                         },
                         {
                           label: "Eo xuống sàn",
-                          value: currentOrderDressDetail.waistToFloor,
+                          value: currentOrderDressDetail?.waistToFloor,
                           unit: "cm",
                           icon: "📐",
                         },
@@ -869,7 +846,7 @@ const ShopOrderDetailPage = () => {
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={order.customer.avatarUrl || ""} />
                   <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
-                    {order.customer.firstName.charAt(0)}
+                    {order.customer.firstName?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
