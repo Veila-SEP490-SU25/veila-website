@@ -12,6 +12,7 @@ import {
   IOrder,
   IPagination,
   IService,
+  ITransaction,
   IUpdateOrderStatus,
   OrderStatus,
 } from "@/services/types";
@@ -43,6 +44,10 @@ export interface IGetOrderAccessory {
 }
 
 export interface IGetOrderComplaints extends IPagination {
+  orderId: string;
+}
+
+export interface IGetOrderTransactions extends IPagination {
   orderId: string;
 }
 
@@ -176,6 +181,17 @@ export const orderApi = createApi({
       }),
     }),
 
+    getOrderTransactions: builder.query<
+      IListResponse<ITransaction>,
+      IGetOrderTransactions
+    >({
+      query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
+        url: `orders/${orderId}/transactions`,
+        method: "GET",
+        params: { page, size, sort, filter },
+      }),
+    }),
+
     //Order Complaint
     getOrderComplaints: builder.query<
       IListResponse<IComplaint>,
@@ -215,6 +231,7 @@ export const {
   useLazyGetOrderDressQuery,
   useLazyGetOrderDressesQuery,
   useLazyGetOrderMilestoneQuery,
+  useLazyGetOrderTransactionsQuery,
   useLazyGetOrderComplaintsQuery,
   useCreateOrderComplaintMutation,
 } = orderApi;
