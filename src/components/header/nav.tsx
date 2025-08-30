@@ -38,10 +38,10 @@ export const Nav: React.FC = () => {
           Tìm Cửa Hàng
         </Link>
         <Link
-          href="/about"
+          href="/blog"
           className="text-gray-700 hover:text-crimson-700 transition-colors"
         >
-          Giới Thiệu
+          Bài Viết
         </Link>
         <Link
           href="/shops/my"
@@ -89,10 +89,10 @@ export const Nav: React.FC = () => {
                 Tìm Cửa Hàng
               </Link>
               <Link
-                href="/about"
+                href="/blog"
                 className="text-gray-700 hover:text-crimson-700 transition-colors"
               >
-                Giới Thiệu
+                Bài Viết
               </Link>
               <Link
                 href="/shops/my"
