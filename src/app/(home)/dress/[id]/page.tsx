@@ -38,6 +38,7 @@ import { formatPrice, getImages } from "@/lib/products-utils";
 import { ImageGallery } from "@/components/image-gallery";
 import { DressDescriptionTabs } from "@/components/dress/detail/dress-description-tabs";
 import { DressFeedbackTabs } from "@/components/dress/detail/dress-feedbacks-tabs";
+import { CreateChatButton } from "@/components/chat/create-chat-button";
 
 const DressDetailPage = () => {
   const { id } = useParams();
@@ -318,14 +319,12 @@ const DressDetailPage = () => {
                 </Button>
               }
             />
-            <Button
-              variant="outline"
+            <CreateChatButton
+              shopId={dress.user?.shop?.id || ""}
+              shopName={dress.user?.shop?.name || ""}
+              shopAvatarUrl={dress.user?.shop?.logoUrl || ""}
               className="w-full bg-transparent"
-              size="lg"
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Nhắn tin với cửa hàng
-            </Button>
+            />
           </div>
 
           {/* Service Features */}
