@@ -3,7 +3,7 @@
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
 import { AccessoryDetailDialog } from "@/components/shops/my/accessories/accessory-detail-dialog";
-import { CreateAccessoryDialog } from "@/components/shops/my/accessories/create-accosy-dialog";
+import { CreateAccessoryDialog } from "@/components/shops/my/accessories/create-accessosy-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

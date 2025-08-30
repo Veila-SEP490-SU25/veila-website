@@ -20,13 +20,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Plus, Loader2, Save } from "lucide-react";
 import {
   useCreateAccessoryMutation,
-  useCreateDressMutation,
 } from "@/services/apis";
 import {
   AccessoryStatus,
-  DressStatus,
   ICreateAccessory,
-  type ICreateDress,
 } from "@/services/types";
 import { toast } from "sonner";
 import { ImagesUpload } from "@/components/images-upload";
