@@ -1,9 +1,13 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IDress } from "@/services/types";
-import { useLazyGetDressQuery } from "@/services/apis";
+import {
+  useAddFavoriteMutation,
+  useLazyGetDressQuery,
+  useRemoveFavoriteMutation,
+} from "@/services/apis";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -32,15 +36,14 @@ import { Separator } from "@/components/ui/separator";
 import { CreateOrderDialog } from "@/components/order/create-order-dialog";
 import { formatPrice, getImages } from "@/lib/products-utils";
 import { ImageGallery } from "@/components/image-gallery";
+import { DressDescriptionTabs } from "@/components/dress/detail/dress-description-tabs";
 
 const DressDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<"buy" | "rent" | null>(
     null
   );
-  const [isFavorite, setIsFavorite] = useState(false);
   const [dress, setDress] = useState<IDress | null>(null);
   const [getDress, { isLoading }] = useLazyGetDressQuery();
 
@@ -58,6 +61,39 @@ const DressDetailPage = () => {
       console.error("Failed to fetch dress:", error);
     }
   };
+
+  const [favorDress, { isLoading: isFavoriting }] = useAddFavoriteMutation();
+  const [unfavorDress, { isLoading: isUnfavoriting }] =
+    useRemoveFavoriteMutation();
+  const toggleFavorite = useCallback(async () => {
+    if (dress) {
+      if (dress.isFavorite) {
+        try {
+          const { statusCode, message } = await unfavorDress(dress.id).unwrap();
+          if (statusCode === 200) {
+            toast.success("Đã bỏ yêu thích váy cưới!");
+            fetchDress();
+          } else {
+            console.error("Failed to unfavorite dress:", message);
+          }
+        } catch (error) {
+          console.log("Failed to unfavorite dress:", error);
+        }
+      } else {
+        try {
+          const { statusCode, message } = await favorDress(dress.id).unwrap();
+          if (statusCode === 200) {
+            toast.success("Đã thêm yêu thích váy cưới!");
+            fetchDress();
+          } else {
+            console.error("Failed to favorite dress:", message);
+          }
+        } catch (error) {
+          console.log("Failed to favorite dress:", error);
+        }
+      }
+    }
+  }, [dress, favorDress, unfavorDress, fetchDress]);
 
   useEffect(() => {
     if (id) {
@@ -116,30 +152,9 @@ const DressDetailPage = () => {
   // Get processed image URLs
   const images = getImages(dress.images);
 
-  const nextImage = () => {
-    setSelectedImageIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const prevImage = () => {
-    setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
-
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: dress.name,
-          text: `Xem váy cưới ${dress.name} tại Veila`,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log("Error sharing:", error);
-      }
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      toast.success("Đã sao chép liên kết!");
-    }
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Đã sao chép liên kết!");
   };
 
   const userName = dress.user ? dress.user.shop?.name : "Unknown User";
@@ -153,7 +168,6 @@ const DressDetailPage = () => {
       </Button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Image Gallery */}
         <ImageGallery images={images} alt={dress.name} />
 
         {/* Product Details */}
@@ -178,23 +192,24 @@ const DressDetailPage = () => {
                       Thiết kế bởi {userName}
                     </span>
                   </div>
-                  {dress.category && (
-                    <Badge variant="outline">{dress.category.name}</Badge>
-                  )}
                 </div>
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setIsFavorite(!isFavorite)}
-                  className={isFavorite ? "text-rose-500 border-rose-500" : ""}
+                  onClick={toggleFavorite}
+                  className={
+                    dress.isFavorite ? "text-rose-500 border-rose-500" : ""
+                  }
                   aria-label={
-                    isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"
+                    dress.isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"
                   }
                 >
                   <Heart
-                    className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`}
+                    className={`h-4 w-4 ${
+                      dress.isFavorite ? "fill-current" : ""
+                    }`}
                   />
                 </Button>
                 <Button
@@ -342,63 +357,7 @@ const DressDetailPage = () => {
         </TabsList>
 
         <TabsContent value="description" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Mô tả sản phẩm</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                <p className="text-gray-700 leading-relaxed">
-                  {dress.description ||
-                    "Không có mô tả chi tiết cho sản phẩm này."}
-                </p>
-              </div>
-              <Separator className="my-6" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold mb-3">Thông tin sản phẩm</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Danh mục:</span>
-                      <span>{dress.category?.name || "Chưa phân loại"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Trạng thái:</span>
-                      <Badge variant="outline">{dress.status}</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Có thể mua:</span>
-                      <span>{dress.isSellable ? "Có" : "Không"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Có thể thuê:</span>
-                      <span>{dress.isRentable ? "Có" : "Không"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Số lượng ảnh:</span>
-                      <span>{images.length}</span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3">Đánh giá</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Điểm trung bình:</span>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span>{dress.ratingAverage}</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Số lượt đánh giá:</span>
-                      <span>{dress.ratingCount}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <DressDescriptionTabs dress={dress} />
         </TabsContent>
 
         <TabsContent value="reviews" className="space-y-6">

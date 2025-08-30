@@ -31,6 +31,7 @@ export interface IDress extends IItem {
   ratingCount: number;
   status: DressStatus;
   feedbacks: IFeedback[];
+  isFavorite: boolean | null;
 }
 
 export interface ICreateDress {
