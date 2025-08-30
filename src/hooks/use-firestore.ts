@@ -43,7 +43,7 @@ export const useFirestore = (collectionPath: string, condition?: Condition) => {
     });
 
     return () => unsubscribe();
-  }, [collectionPath, condition]);
+  }, [collectionPath, condition, firestore]);
 
   return document;
 };
