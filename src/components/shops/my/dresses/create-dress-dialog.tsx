@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -106,6 +106,10 @@ export function CreateDressDialog({
       toast.error("Có lỗi xảy ra khi tạo váy");
     }
   };
+
+  useEffect(() => {
+    handleInputChange("images", imageUrls);
+  }, [imageUrls]);
 
   const handleCancel = () => {
     setOpen(false);

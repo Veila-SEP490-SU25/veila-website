@@ -3,6 +3,7 @@
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
 import { AccessoryDetailDialog } from "@/components/shops/my/accessories/accessory-detail-dialog";
+import { CreateAccessoryDialog } from "@/components/shops/my/accessories/create-accosy-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +40,7 @@ import {
   Eye,
   MoreHorizontal,
   Package,
+  Plus,
   Search,
   Star,
   Trash2,
@@ -104,7 +106,7 @@ export const ShopAccessoriesTabs = () => {
     <Card>
       <CardHeader>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-1 items-center space-x-2">
+          <div className="flex flex-1 items-center justify-between space-x-2">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -114,6 +116,15 @@ export const ShopAccessoriesTabs = () => {
                 className="pl-8"
               />
             </div>
+            <CreateAccessoryDialog
+              trigger={
+                <Button className="bg-rose-600 hover:bg-rose-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Thêm phụ kiện mới
+                </Button>
+              }
+              onSuccess={fetchAccessories}
+            />
           </div>
         </div>
       </CardHeader>
