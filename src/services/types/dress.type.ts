@@ -8,7 +8,8 @@ export enum DressStatus {
 
 export interface IDress extends IItem {
   userId: string;
-  
+  categoryId: string | null;
+
   user: IUser;
   category: ICategory | null;
   name: string;

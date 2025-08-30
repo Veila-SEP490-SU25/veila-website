@@ -3,6 +3,7 @@
 import { LoadingItem } from "@/components/loading-item";
 import { CreateDressDialog } from "@/components/shops/my/dresses/create-dress-dialog";
 import { DressDetailDialog } from "@/components/shops/my/dresses/dress-detail-dialog";
+import { UpdateDressDialog } from "@/components/shops/my/dresses/update-dress-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -152,7 +153,9 @@ export const ShopDressesTabs = () => {
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-12 w-12 rounded-lg">
                           <AvatarImage
-                            src={getCoverImage(dress.images) || "/placeholder.svg"}
+                            src={
+                              getCoverImage(dress.images) || "/placeholder.svg"
+                            }
                             alt={dress.name}
                           />
                           <AvatarFallback className="rounded-lg">
@@ -225,16 +228,30 @@ export const ShopDressesTabs = () => {
                             <DressDetailDialog
                               dress={dress}
                               trigger={
-                                <Button className="flex items-center cursor-pointer" variant="ghost">
+                                <Button
+                                  className="flex items-center cursor-pointer"
+                                  variant="ghost"
+                                >
                                   <Eye className="h-4 w-4 mr-2" />
                                   Xem chi tiết
                                 </Button>
                               }
                             />
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {}}>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Chỉnh sửa
+                          <DropdownMenuItem asChild>
+                            <UpdateDressDialog
+                              dress={dress}
+                              trigger={
+                                <Button
+                                  className="flex items-center cursor-pointer"
+                                  variant="ghost"
+                                >
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Chỉnh sửa
+                                </Button>
+                              }
+                              onSuccess={fetchDresses}
+                            />
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => {}}

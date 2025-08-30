@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -51,7 +51,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+            className="h-10 w-10 p-0 bg-black/50 hover:bg-black/70 text-white text-3xl"
             onClick={() =>
               setCurrentIndex((prev) =>
                 prev === 0 ? images.length - 1 : prev - 1
@@ -63,7 +63,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+            className="h-10 w-10 p-0 bg-black/50 hover:bg-black/70 text-white text-3xl"
             onClick={() =>
               setCurrentIndex((prev) =>
                 prev === images.length - 1 ? 0 : prev + 1
@@ -78,8 +78,10 @@ export const ImageGallery = ({ images, alt }: Props) => {
         {images.map((_, index) => (
           <div
             key={index}
-            className={`w-1.5 h-1.5 rounded-full ${
-              index === currentIndex ? "bg-white" : "bg-white/50"
+            className={`w-2 h-2 rounded-full border-1 ${
+              index === currentIndex
+                ? "bg-white border-gray-100 "
+                : "bg-white/50 border-gray-300/50"
             }`}
           />
         ))}
@@ -87,4 +89,3 @@ export const ImageGallery = ({ images, alt }: Props) => {
     </div>
   );
 };
-

@@ -48,7 +48,6 @@ export function DressDetailDialog({
 }: DressDetailDialogProps) {
   const [open, setOpen] = useState(false);
   const [dressImages, setDressImages] = useState<string[]>(getImages(dress.images));
-
   useEffect(() => {
     setDressImages(getImages(dress.images));
   }, [dress]);
