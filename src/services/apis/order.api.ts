@@ -200,6 +200,7 @@ export const orderApi = createApi({
       query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
         url: `orders/${orderId}/complaints/me`,
         method: "GET",
+        params: { page, size, sort, filter },
       }),
     }),
 

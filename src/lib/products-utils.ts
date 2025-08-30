@@ -1,5 +1,3 @@
-import { IDress } from "@/services/types";
-
 export const formatPrice = (price: number) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
