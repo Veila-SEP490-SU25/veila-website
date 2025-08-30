@@ -8,7 +8,8 @@ export enum MessageType {
 
 export interface IChatroom extends IItem{
   docId?: string;
-  orderId: string;
+  orderId: string | null;
+  requestId: string | null;
   name: string;
   memberIds: string[];
   messages: IMessage[];
