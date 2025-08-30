@@ -322,24 +322,6 @@ export function Chatroom({
                     msg.chatRoomId === currentRoom?.docId
                 );
 
-                // Temporary debug for message order
-                if (roomMessages.length > 0) {
-                  console.log("=== MESSAGE ORDER CHECK ===");
-                  console.log("Room messages count:", roomMessages.length);
-                  console.log("First message:", {
-                    content: roomMessages[0]?.content?.substring(0, 30),
-                    timestamp: roomMessages[0]?.timestamp,
-                    sender: roomMessages[0]?.senderName,
-                  });
-                  console.log("Last message:", {
-                    content: roomMessages[
-                      roomMessages.length - 1
-                    ]?.content?.substring(0, 30),
-                    timestamp: roomMessages[roomMessages.length - 1]?.timestamp,
-                    sender: roomMessages[roomMessages.length - 1]?.senderName,
-                  });
-                }
-
                 if (roomMessages.length === 0) {
                   return (
                     <div className="text-center text-muted-foreground py-8">

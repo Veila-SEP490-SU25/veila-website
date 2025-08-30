@@ -58,7 +58,6 @@ export const useChatData = () => {
 
   const chatroomCondition = useMemo<Condition | undefined>(() => {
     if (!currentUserId || !isAuthenticated || !firestore) return undefined;
-    console.log("Creating chatroom condition for user:", currentUserId);
     return {
       field: FIREBASE_FIELDS.CUSTOMER_ID, // Use customerId instead of members
       operator: "==",
@@ -68,7 +67,6 @@ export const useChatData = () => {
 
   const roomCondition = useMemo<Condition | undefined>(() => {
     if (!currentRoomId) return undefined;
-    console.log("Creating room condition for roomId:", currentRoomId);
     return {
       field: "id",
       operator: "==",
@@ -77,13 +75,13 @@ export const useChatData = () => {
   }, [currentRoomId]);
 
   const messageCondition = useMemo<Condition | undefined>(() => {
-    // Temporarily remove condition to get all messages for debugging
-    console.log("=== MESSAGE CONDITION DEBUG ===");
-    console.log("Getting ALL messages for debugging");
-    console.log("Current room ID:", currentRoomId);
+    if (!currentRoomId) return undefined;
 
-    // Return undefined to get all messages
-    return undefined;
+    return {
+      field: FIREBASE_FIELDS.CHATROOM_ID,
+      operator: "==" as const,
+      value: currentRoomId,
+    };
   }, [currentRoomId]);
 
   const { data: rawChatrooms, error: chatroomsError } = useFirestore(
