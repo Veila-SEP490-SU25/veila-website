@@ -23,6 +23,7 @@ import {
   Ruler,
   Palette,
   Shirt,
+  Star,
 } from "lucide-react";
 import type { IDress } from "@/services/types";
 import {
@@ -47,7 +48,9 @@ export function DressDetailDialog({
   onDelete,
 }: DressDetailDialogProps) {
   const [open, setOpen] = useState(false);
-  const [dressImages, setDressImages] = useState<string[]>(getImages(dress.images));
+  const [dressImages, setDressImages] = useState<string[]>(
+    getImages(dress.images)
+  );
   useEffect(() => {
     setDressImages(getImages(dress.images));
   }, [dress]);
@@ -63,7 +66,13 @@ export function DressDetailDialog({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">{dress.name}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            {dress.name}
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Star className="mr-2 text-yellow-300" />
+              {dress.ratingAverage} • {dress.ratingCount} bài đánh giá
+            </div>
+          </DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">

@@ -15,10 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Eye,
-  DollarSign,
-} from "lucide-react";
+import { Eye, DollarSign, Star } from "lucide-react";
 import type { IAccessory } from "@/services/types";
 import { ImageGallery } from "@/components/image-gallery";
 import {
@@ -51,7 +48,11 @@ export function AccessoryDetailDialog({
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
-            {accessory.name}
+            {accessory.name}{" "}
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Star className="mr-2 text-yellow-300" />
+              {accessory.ratingAverage} • {accessory.ratingCount} bài đánh giá
+            </div>
           </DialogTitle>
         </DialogHeader>
 
