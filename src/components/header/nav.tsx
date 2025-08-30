@@ -3,9 +3,10 @@
 import { UserNav } from "@/components/header/user-nav";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { UnreadBadge } from "@/components/chat/unread-badge";
 
 export const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +48,14 @@ export const Nav: React.FC = () => {
           className="text-gray-700 hover:text-crimson-700 transition-colors"
         >
           Cửa Hàng Của Tôi
+        </Link>
+        <Link
+          href="/chat"
+          className="text-gray-700 hover:text-crimson-700 transition-colors relative"
+        >
+          <MessageCircle className="h-4 w-4 inline mr-1" />
+          Tin Nhắn
+          <UnreadBadge />
         </Link>
       </nav>
 
@@ -91,6 +100,14 @@ export const Nav: React.FC = () => {
                 className="text-gray-700 hover:text-crimson-700 transition-colors"
               >
                 Cửa Hàng Của Tôi
+              </Link>
+              <Link
+                href="/chat"
+                className="text-gray-700 hover:text-crimson-700 transition-colors relative"
+              >
+                <MessageCircle className="h-4 w-4 inline mr-1" />
+                Tin Nhắn
+                <UnreadBadge />
               </Link>
               <UserNav />
             </div>

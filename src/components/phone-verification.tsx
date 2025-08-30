@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { useFirebase } from "@/services/firebase";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIdentifyUserMutation } from "@/services/apis/auth.api";
 import { toast } from "sonner";
-import { Phone, CheckCircle, AlertCircle } from "lucide-react";
+import { Phone, CheckCircle } from "lucide-react";
 
 interface PhoneVerificationProps {
   phone: string;
@@ -22,7 +22,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   onSuccess,
   onCancel,
 }) => {
-  const [verificationId, setVerificationId] = useState<string>("");
+  const [_verificationId, setVerificationId] = useState<string>("");
   const [verificationCode, setVerificationCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -33,30 +33,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   const [identifyUser] = useIdentifyUserMutation();
   const { auth } = useFirebase();
 
-  useEffect(() => {
-    // Initialize reCAPTCHA
-    if (typeof window !== "undefined" && !recaptchaVerifier && auth) {
-      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "normal",
-        callback: () => {
-          // reCAPTCHA solved, allow sending SMS
-          sendVerificationCode();
-        },
-        "expired-callback": () => {
-          toast.error("reCAPTCHA đã hết hạn. Vui lòng thử lại!");
-        },
-      });
-      setRecaptchaVerifier(verifier);
-    }
-
-    return () => {
-      if (recaptchaVerifier) {
-        recaptchaVerifier.clear();
-      }
-    };
-  }, [auth]);
-
-  const sendVerificationCode = async () => {
+  const sendVerificationCode = useCallback(async () => {
     if (!phone) {
       toast.error("Vui lòng nhập số điện thoại!");
       return;
@@ -99,7 +76,30 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [phone, auth, recaptchaVerifier]);
+
+  useEffect(() => {
+    // Initialize reCAPTCHA
+    if (typeof window !== "undefined" && !recaptchaVerifier && auth) {
+      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+        size: "normal",
+        callback: () => {
+          // reCAPTCHA solved, allow sending SMS
+          sendVerificationCode();
+        },
+        "expired-callback": () => {
+          toast.error("reCAPTCHA đã hết hạn. Vui lòng thử lại!");
+        },
+      });
+      setRecaptchaVerifier(verifier);
+    }
+
+    return () => {
+      if (recaptchaVerifier) {
+        recaptchaVerifier.clear();
+      }
+    };
+  }, [auth, recaptchaVerifier, sendVerificationCode]);
 
   const verifyCode = async () => {
     if (!verificationCode || verificationCode.length !== 6) {
@@ -194,13 +194,9 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         {!isCodeSent ? (
           <div className="space-y-4">
             <div id="recaptcha-container"></div>
-            <Button
-              onClick={sendVerificationCode}
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? "Đang gửi..." : "Gửi mã xác thực"}
-            </Button>
+            <p className="text-sm text-gray-600">
+              Nhấn vào reCAPTCHA để gửi mã xác thực
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -219,9 +215,6 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 maxLength={6}
                 className="text-center text-lg tracking-widest"
               />
-              <p className="text-sm text-gray-500">
-                Mã xác thực đã được gửi đến {phone}
-              </p>
             </div>
 
             <div className="flex gap-2">
@@ -230,16 +223,28 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 disabled={isLoading || verificationCode.length !== 6}
                 className="flex-1"
               >
-                {isLoading ? "Đang xác thực..." : "Xác thực"}
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Đang xác thực...
+                  </>
+                ) : (
+                  "Xác thực"
+                )}
               </Button>
               <Button
                 variant="outline"
                 onClick={resendCode}
                 disabled={isLoading}
+                className="flex-1"
               >
                 Gửi lại
               </Button>
             </div>
+
+            <p className="text-sm text-gray-600">
+              Mã xác thực đã được gửi đến {phone}
+            </p>
           </div>
         )}
 

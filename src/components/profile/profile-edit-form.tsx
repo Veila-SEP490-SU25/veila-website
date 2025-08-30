@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Image } from "@/components/image";
 import { useAuth } from "@/providers/auth.provider";
@@ -100,7 +100,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
             toast.error("Ngày sinh không hợp lệ!");
             return;
           }
-        } catch (error) {
+        } catch {
           toast.error("Ngày sinh không hợp lệ!");
           return;
         }

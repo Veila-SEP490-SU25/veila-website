@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Search, X, Check, Building2, Map, Home } from "lucide-react";
+import { MapPin, X, Check, Building2, Map, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Province {
