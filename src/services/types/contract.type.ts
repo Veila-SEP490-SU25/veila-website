@@ -3,6 +3,7 @@ import { IItem } from "@/services/types/base.type";
 export enum ContractType {
   SHOP = "SHOP",
   CUSTOMER = "CUSTOMER",
+  PLATFORM = "PLATFORM",
 }
 
 export enum ContractStatus {
