@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -20,14 +19,13 @@ import {
   Clock,
   CheckCircle,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { UserCard } from "@/components/profile/user-card";
 import { WalletCard } from "@/components/profile/wallet-card";
 import { MyOrders } from "@/components/profile/orders/my-orders";
+import { ProfileEditForm } from "@/components/profile/profile-edit-form";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
-  const router = useRouter();
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
@@ -110,8 +108,9 @@ export default function DashboardPage() {
           onValueChange={setActiveTab}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Tổng Quan</TabsTrigger>
+            <TabsTrigger value="profile">Thông tin cá nhân</TabsTrigger>
             <TabsTrigger value="orders">Đơn Hàng</TabsTrigger>
             <TabsTrigger value="messages">Tin Nhắn</TabsTrigger>
           </TabsList>
@@ -225,6 +224,10 @@ export default function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="profile" className="space-y-6">
+            <ProfileEditForm />
           </TabsContent>
 
           <TabsContent value="orders" className="space-y-6">

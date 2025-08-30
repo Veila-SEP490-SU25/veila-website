@@ -8,13 +8,34 @@ export const UserNav: React.FC = () => {
   const { currentUser, isAuthenticating, isAuthenticated, logout } = useAuth();
   const router = useRouter();
 
+  if (isAuthenticating) {
+    return (
+      <div className="flex items-center space-x-1">
+        <div className="h-8 w-20 animate-pulse bg-gray-200 rounded-full"></div>
+      </div>
+    );
+  }
+
   return isAuthenticated && currentUser ? (
     <div className="flex items-center space-x-1">
-      <Button variant="link" className="hover:cursor-pointer" onClick={() => router.push("/profile")}>
+      <Button
+        variant="link"
+        className="hover:cursor-pointer"
+        onClick={() => router.push("/profile")}
+      >
         <User2 className="h-5 w-5 text-gray-700" />
-        <span className="inline-block">{`${currentUser.firstName} ${currentUser.middleName} ${currentUser.lastName}`}</span>
+        <span className="inline-block">
+          {[currentUser.firstName, currentUser.middleName, currentUser.lastName]
+            .filter(Boolean)
+            .join(" ") || "User"}
+        </span>
       </Button>
-      <Button variant="link" size="icon" onClick={logout} className="hover:cursor-pointer hover:text-red-600">
+      <Button
+        variant="link"
+        size="icon"
+        onClick={logout}
+        className="hover:cursor-pointer hover:text-red-600"
+      >
         <LogOut className="h-5 w-5" />
       </Button>
     </div>

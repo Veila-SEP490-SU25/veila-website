@@ -42,3 +42,13 @@ export interface IUser extends IItem {
 export interface IIdentifyUser {
   phone: string;
 }
+
+export interface IUpdateProfile {
+  firstName?: string;
+  middleName?: string | null;
+  lastName?: string;
+  address?: string | null;
+  birthDate?: string | null;
+  avatarUrl?: string | null;
+  coverUrl?: string | null;
+}

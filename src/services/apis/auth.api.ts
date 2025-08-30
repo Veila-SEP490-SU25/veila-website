@@ -9,6 +9,7 @@ import {
   IResetPassword,
   IToken,
   IUser,
+  IUpdateProfile,
   IVerifyOtp,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
@@ -97,6 +98,14 @@ export const authApi = createApi({
         body,
       }),
     }),
+
+    updateProfile: builder.mutation<IItemResponse<IUser>, IUpdateProfile>({
+      query: (body) => ({
+        url: "auth/me",
+        method: "PUT",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -111,4 +120,5 @@ export const {
   useChangePasswordMutation,
   useResetPasswordMutation,
   useGoogleAuthMutation,
+  useUpdateProfileMutation,
 } = authApi;
