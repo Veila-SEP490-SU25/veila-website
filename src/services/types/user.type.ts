@@ -17,28 +17,28 @@ export enum UserStatus {
 }
 
 export interface IUser extends IItem {
-  username: string;
-  email: string;
-  firstName: string;
-  middleName: string | null;
-  lastName: string;
-  phone: string | null;
-  address: string | null;
-  birthDate: Date | null;
-  avatarUrl: string | null;
-  coverUrl: string | null;
-  favDresses: string[] | null;
-  favShops: string[] | null;
-  role: UserRole;
-  status: UserStatus;
-  reputation: number;
-  isVerified: boolean;
-  isIdentified: boolean;
-  shop: IShop | null;
-  contract: IContract;
-  wallet: IWallet | null;
+  username?: string;
+  email?: string;
+  firstName?: string;
+  middleName?: string | null;
+  lastName?: string;
+  phone?: string | null;
+  address?: string | null;
+  birthDate?: Date | null;
+  avatarUrl?: string | null;
+  coverUrl?: string | null;
+  favDresses?: string[] | null;
+  favShops?: string[] | null;
+  role?: UserRole;
+  status?: UserStatus;
+  reputation?: number;
+  isVerified?: boolean;
+  isIdentified?: boolean;
+  shop?: IShop | null;
+  contract?: IContract;
+  wallet?: IWallet | null;
 }
 
-export interface IIdentifyUser{
+export interface IIdentifyUser {
   phone: string;
 }

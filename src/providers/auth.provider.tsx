@@ -17,6 +17,7 @@ import {
   removeFromLocalStorage,
   setTokens,
   setToLocalStorage,
+  cleanupCorruptTokens,
 } from "@/lib/utils/index";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -56,6 +57,11 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
+
+  // Clean up any corrupt tokens on component mount
+  useEffect(() => {
+    cleanupCorruptTokens();
+  }, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     getFromLocalStorage<boolean>("isAuthenticated") || false

@@ -12,7 +12,7 @@ export interface IBlog extends IItem {
   user: IUser;
   category: ICategory | null;
   title: string;
-  content: string;
+  content?: string;
   images: string | null;
   isVerified: boolean;
   status: BlogStatus;
