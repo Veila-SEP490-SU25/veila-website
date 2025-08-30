@@ -234,7 +234,7 @@ export default function ShopPage() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute top-4 right-4 flex gap-2">
-                  <Link href={`/shops/${shop.id}`}>
+                  <Link href={`/shops/detail/${shop.id}`}>
                     <Button
                       size="sm"
                       variant="secondary"
