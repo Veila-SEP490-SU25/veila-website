@@ -238,18 +238,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       const { message, statusCode } = await logoutMutation().unwrap();
+      revokeTokens();
+      setIsAuthenticated(false);
+      removeFromLocalStorage("isAuthenticated");
+      setCurrentUser(null);
+      removeFromLocalStorage("user");
+
       if (statusCode === 200) {
-        revokeTokens();
-        setIsAuthenticated(false);
-        removeFromLocalStorage("isAuthenticated");
-        setCurrentUser(null);
-        removeFromLocalStorage("user");
         toast.success("Đăng xuất thành công.", {
           description: "Hẹn gặp lại bạn lần sau.",
         });
       } else {
-        toast.error("Đăng xuất thất bại.", {
-          description: message,
+        toast.success("Đăng xuất thành công.", {
+          description: "Phiên đăng nhập đã hết hạn.",
         });
       }
     } catch (error) {
@@ -259,9 +260,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       removeFromLocalStorage("isAuthenticated");
       setCurrentUser(null);
       removeFromLocalStorage("user");
-      toast.error("Đăng xuất thất bại.", {
-        description:
-          "Có lỗi xảy ra trong quá tình đăng xuất. Vui lòng thử lại sau ít phút.",
+      toast.success("Đăng xuất thành công.", {
+        description: "Phiên đăng nhập đã được kết thúc.",
       });
     }
   }, [logoutMutation, revokeTokens, setIsAuthenticated, setCurrentUser]);
@@ -288,11 +288,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setIsAuthenticated(true);
           authCheckRef.current = true;
         } else {
-          toast.error("Xác thực thất bại.", {
-            description: message,
-          });
           authCheckRef.current = false;
-          await logout();
+          revokeTokens();
+          setIsAuthenticated(false);
+          removeFromLocalStorage("isAuthenticated");
+          setCurrentUser(null);
+          removeFromLocalStorage("user");
         }
       } catch (error) {
         console.error("Auth check error:", error);
