@@ -17,15 +17,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Plus, Loader2, Save, Edit } from "lucide-react";
+import { X, Loader2, Save, Edit } from "lucide-react";
 import {
-  useCreateAccessoryMutation,
   useUpdateAccessoryMutation,
 } from "@/services/apis";
 import {
   AccessoryStatus,
   IAccessory,
-  ICreateAccessory,
   IUpdateAccessory,
 } from "@/services/types";
 import { toast } from "sonner";
