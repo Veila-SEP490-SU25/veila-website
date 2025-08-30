@@ -14,6 +14,12 @@ export const Nav: React.FC = () => {
     <div className="font-playfair">
       <nav className="hidden md:flex items-center space-x-8">
         <Link
+          href="/"
+          className="text-gray-700 hover:text-crimson-700 transition-colors"
+        >
+          Trang chủ
+        </Link>
+        <Link
           href="/browse"
           className="text-gray-700 hover:text-crimson-700 transition-colors"
         >
@@ -45,8 +51,18 @@ export const Nav: React.FC = () => {
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-[300px] sm:w-[400px] font-playfair">
+        <SheetContent
+          side="right"
+          className="w-[300px] sm:w-[400px] font-playfair"
+        >
           <div className="flex flex-col space-y-4 mt-8 p-3">
+            <Link
+              href="/"
+              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Trang chủ
+            </Link>
             <Link
               href="/browse"
               className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"

@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/select";
 import { useLazyGetShopBlogsQuery } from "@/services/apis";
 import { IBlog, IPaginationResponse } from "@/services/types";
-import { BookOpen, Calendar, CheckCircle, Eye, Share2 } from "lucide-react";
+import { BookOpen, Calendar, Eye, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -50,7 +50,7 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
     }));
   };
 
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
       const { statusCode, message, items, ...pagination } = await getBlogs({
         filter: "",
@@ -69,8 +69,14 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
           totalPages: pagination.totalPages,
         }));
       }
-    } catch (error) {}
-  };
+    } catch {}
+  }, [getBlogs, id, paging.pageIndex, paging.pageSize]);
+
+  useEffect(() => {
+    if (id) {
+      fetchBlogs();
+    }
+  }, [fetchBlogs, id]);
 
   const formatDate = (date: string) => {
     return new Intl.DateTimeFormat("vi-VN", {
@@ -80,11 +86,6 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
     }).format(new Date(date));
   };
 
-  useEffect(() => {
-    if (id) {
-      fetchBlogs();
-    }
-  }, [id, paging.pageIndex, paging.pageSize]);
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -137,7 +138,6 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
         </div>
       )}
 
-      {/* Blogs Grid */}
       {!isLoading && blogs.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => {
@@ -176,24 +176,29 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
 
                 <CardContent className="p-6">
                   <div className="space-y-3">
-                    {/* Category */}
                     {blog.category && (
                       <Badge variant="outline" className="text-xs">
                         {blog.category.name}
                       </Badge>
                     )}
 
-                    {/* Title */}
                     <Link href={`/blog/${blog.id}`}>
                       <h3 className="font-bold text-lg group-hover:text-rose-600 transition-colors cursor-pointer line-clamp-2">
                         {blog.title}
                       </h3>
                     </Link>
 
-                    {/* Content Preview */}
                     <p
                       className="text-gray-600 text-sm line-clamp-3"
-                      dangerouslySetInnerHTML={{ __html: blog.content || "" }}
+                      dangerouslySetInnerHTML={{
+                        __html: (blog.content || "")
+                          .replace(/<[^>]*>/g, '') // Remove all HTML tags
+                          .replace(/&/g, '&amp;')
+                          .replace(/</g, '&lt;')
+                          .replace(/>/g, '&gt;')
+                          .replace(/"/g, '&quot;')
+                          .replace(/'/g, '&#x27;')
+                      }}
                     />
 
                     {/* Author and Date */}

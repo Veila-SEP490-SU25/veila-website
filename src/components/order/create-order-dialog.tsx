@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { id, vi } from "date-fns/locale";
+import { vi } from "date-fns/locale";
 import {
   CalendarIcon,
   ShoppingBag,
@@ -58,6 +58,7 @@ import {
 import { useAuth } from "@/providers/auth.provider";
 import { LocationInput } from "@/components/location-input";
 import { useCreateOrderMutation } from "@/services/apis";
+import { Image } from "@/components/image";
 
 interface CreateOrderDialogProps {
   dress?: IDress;
@@ -173,7 +174,7 @@ export function CreateOrderDialog({
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const [createOrder, { isLoading: _isLoading }] = useCreateOrderMutation();
 
   const handleSubmit = async () => {
     if (!validateStep(currentStep)) {
@@ -568,7 +569,7 @@ export function CreateOrderDialog({
                             key={accessory.id}
                             className="flex items-center gap-4 p-4 border rounded-lg"
                           >
-                            <img
+                            <Image
                               src={
                                 accessory.images?.split(",")[0] ||
                                 "/placeholder.svg"
@@ -685,13 +686,12 @@ export function CreateOrderDialog({
                     </div>
                   </div>
 
-                  {/* Order Items */}
                   <div>
                     <h4 className="font-medium mb-2">Sản phẩm đặt hàng</h4>
                     <div className="space-y-3">
                       {dress && (
                         <div className="flex items-center gap-4 p-4 border rounded-lg">
-                          <img
+                          <Image
                             src={
                               dress.images?.split(",")[0] || "/placeholder.svg"
                             }
@@ -734,7 +734,7 @@ export function CreateOrderDialog({
                               key={item.accessoryId}
                               className="flex items-center gap-4 p-4 border rounded-lg"
                             >
-                              <img
+                              <Image
                                 src={
                                   accessory.images?.split(",")[0] ||
                                   "/placeholder.svg"

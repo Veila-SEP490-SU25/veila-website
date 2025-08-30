@@ -252,7 +252,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: message,
         });
       }
-    } catch {
+    } catch (error) {
+      console.error("Logout error:", error);
+      revokeTokens();
+      setIsAuthenticated(false);
+      removeFromLocalStorage("isAuthenticated");
+      setCurrentUser(null);
+      removeFromLocalStorage("user");
       toast.error("Đăng xuất thất bại.", {
         description:
           "Có lỗi xảy ra trong quá tình đăng xuất. Vui lòng thử lại sau ít phút.",
@@ -281,7 +287,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setToLocalStorage("isAuthenticated", true);
           setIsAuthenticated(true);
           authCheckRef.current = true;
-          // Process routing here
         } else {
           toast.error("Xác thực thất bại.", {
             description: message,
@@ -289,12 +294,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           authCheckRef.current = false;
           await logout();
         }
-      } catch {
+      } catch (error) {
+        console.error("Auth check error:", error);
         toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
           description:
             "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
         });
-        await logout();
+        revokeTokens();
+        setIsAuthenticated(false);
+        removeFromLocalStorage("isAuthenticated");
+        setCurrentUser(null);
+        removeFromLocalStorage("user");
       }
     };
 
@@ -308,6 +318,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     currentUser,
     getMeQuery,
     logout,
+    revokeTokens,
   ]);
 
   return (

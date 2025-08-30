@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/auth.provider";
 import { IMessage, MessageType } from "@/services/types";
+import { Image } from "@/components/image";
 
 interface MessageProps {
   message: IMessage;
@@ -24,7 +25,7 @@ export const Message = ({ message, className }: MessageProps) => {
       {message.type === MessageType.TEXT ? (
         message.content
       ) : message.type === MessageType.IMAGE ? (
-        <img
+        <Image
           src={message.content}
           alt="Image"
           className="w-full h-auto object-cover"

@@ -11,6 +11,7 @@ import {
   useContext,
   useMemo,
   useState,
+  useEffect,
 } from "react";
 import { v4 } from "uuid";
 
@@ -76,6 +77,25 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     roomCondition
   )[0] as IChatroom | null;
   const messages = useFirestore("messages", messageCondition) as IMessage[];
+
+  useEffect(() => {
+    const handleFirestoreError = (error: any) => {
+      console.warn("Firestore query error:", error);
+      if (error.code === "failed-precondition") {
+        console.info(
+          "Firestore index required. Please create the required indexes."
+        );
+      }
+    };
+
+    // Add global error handler for unhandled promise rejections
+    window.addEventListener("unhandledrejection", (event) => {
+      if (event.reason?.code === "failed-precondition") {
+        event.preventDefault();
+        handleFirestoreError(event.reason);
+      }
+    });
+  }, []);
 
   const selectRoom = (id: string) => {
     setCurrentRoomId(id);

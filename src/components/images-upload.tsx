@@ -3,6 +3,7 @@ import { useStorage } from "@/hooks/use-storage";
 import { cn } from "@/lib/utils";
 import { Loader2, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Image } from "@/components/image";
 import { toast } from "sonner";
 
 interface ImagesUploadProps {
@@ -43,7 +44,7 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({
             setImageUrls(imgUrls);
             toast.success("Ảnh đã được tải lên thành công!");
           }
-        } catch (error) {
+        } catch {
           toast.error("Tải ảnh lên thất bại. Vui lòng thử lại.");
         } finally {
           setIsUploading(false);
@@ -61,7 +62,7 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({
       const imgUrls = images.filter((img) => img !== url).join(",");
       setImageUrls(imgUrls);
       toast.success("Ảnh đã được xóa thành công!");
-    } catch (error) {
+    } catch {
       toast.error("Xóa ảnh thất bại. Vui lòng thử lại.");
     } finally {
       setUploadingIndex(null);
@@ -118,19 +119,17 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({
           />
         </div>
 
-        {/* Image Grid */}
         {images.map((url, index) => (
           <div
             key={index}
             className="relative group aspect-square rounded-lg overflow-hidden border-2 border-muted"
           >
-            <img
+            <Image
               alt={`Upload ${index + 1}`}
               src={url || "/placeholder.svg"}
               className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
             />
 
-            {/* Delete Button Overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
 
             <Button
