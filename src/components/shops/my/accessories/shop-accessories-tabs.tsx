@@ -2,6 +2,7 @@
 
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
+import { AccessoryDetailDialog } from "@/components/shops/my/accessories/accessory-detail-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -218,21 +219,24 @@ export const ShopAccessoriesTabs = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                              {/* <AccessoryDetailDialog
-                            accessory={accessory}
-                            trigger={
-                              <Button className="flex items-center cursor-pointer">
-                                <Eye className="h-4 w-4 mr-2" />
-                                Xem chi tiết
-                              </Button>
-                            }
-                          /> */}
+                              <AccessoryDetailDialog
+                                accessory={accessory}
+                                trigger={
+                                  <Button
+                                    className="flex items-center cursor-pointer"
+                                    variant="ghost"
+                                  >
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    Xem chi tiết
+                                  </Button>
+                                }
+                              />
                             </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
+                            <DropdownMenuItem>
                               <Edit className="h-4 w-4 mr-2" />
                               Chỉnh sửa
                             </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
+                            <DropdownMenuItem>
                               <Trash2 className="h-4 w-4 mr-2" />
                               Xóa
                             </DropdownMenuItem>
