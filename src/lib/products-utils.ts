@@ -36,3 +36,17 @@ export const getImages = (images: string | null) => {
   }
   return images.split(",").map((image) => image.trim());
 };
+
+export const accessoryStatusColors = {
+  AVAILABLE: "bg-green-100 text-green-800",
+  OUT_OF_STOCK: "bg-red-100 text-red-800",
+  DISCONTINUED: "bg-gray-100 text-gray-800",
+  MAINTENANCE: "bg-yellow-100 text-yellow-800",
+};
+
+export const accessoryStatusLabels = {
+  AVAILABLE: "Có sẵn",
+  OUT_OF_STOCK: "Hết hàng",
+  DISCONTINUED: "Ngừng kinh doanh",
+  MAINTENANCE: "Bảo trì",
+};

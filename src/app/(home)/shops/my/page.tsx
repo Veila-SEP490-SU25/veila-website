@@ -11,6 +11,7 @@ import { MyShopOrders } from "@/components/shops/my/shop-orders";
 import { ShopOverview } from "@/components/shops/my/shop-overview";
 import { ShopInformation } from "@/components/shops/my/shop-information";
 import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
+import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
 
 export default function MyShopPage() {
   const router = useRouter();
@@ -118,6 +119,11 @@ export default function MyShopPage() {
         {/* Products Tab */}
         <TabsContent value="dresses" className="space-y-6">
           <ShopDressesTabs />
+        </TabsContent>
+
+        {/* Accessories Tab */}
+        <TabsContent value="accessories" className="space-y-6">
+          <ShopAccessoriesTabs />
         </TabsContent>
 
         {/* Analytics Tab */}
