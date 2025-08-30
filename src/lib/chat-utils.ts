@@ -1,7 +1,5 @@
-import { MessageType } from "@/services/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { vi } from "date-fns/locale";
-import { ImageIcon, Video } from "lucide-react";
 
 export const formatMessageTime = (date: Date) => {
   if (isToday(date)) {

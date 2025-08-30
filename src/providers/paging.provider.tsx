@@ -28,6 +28,7 @@ type PagingContextType = {
     hasNext: boolean,
     hasPrevious: boolean
   ) => void;
+  resetPaging: () => void;
 };
 
 const PagingContext = createContext<PagingContextType | undefined>(undefined);
@@ -49,21 +50,47 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
   const [hasNext, setHasNext] = useState(false);
   const [hasPrevious, setHasPrevious] = useState(false);
 
-  const setPaging = (
-    pageIndex: number,
-    pageSize: number,
-    totalItems: number,
-    totalPages: number,
-    hasNext: boolean,
-    hasPrevious: boolean
-  ) => {
-    setPageIndex(pageIndex);
-    setPageSize(pageSize);
-    setTotalItems(totalItems);
-    setTotalPages(totalPages);
-    setHasNext(hasNext);
-    setHasPrevious(hasPrevious);
-  };
+  const setPaging = useCallback(
+    (
+      pageIndex: number,
+      pageSize: number,
+      totalItems: number,
+      totalPages: number,
+      hasNext: boolean,
+      hasPrevious: boolean
+    ) => {
+      setPageIndex(pageIndex);
+      setPageSize(pageSize);
+      setTotalItems(totalItems);
+      setTotalPages(totalPages);
+      setHasNext(hasNext);
+      setHasPrevious(hasPrevious);
+    },
+    [
+      setHasNext,
+      setHasPrevious,
+      setPageIndex,
+      setPageSize,
+      setTotalItems,
+      setTotalPages,
+    ]
+  );
+
+  const resetPaging = useCallback(() => {
+    setPageIndex(0);
+    setPageSize(10);
+    setTotalItems(0);
+    setTotalPages(0);
+    setHasNext(false);
+    setHasPrevious(false);
+  }, [
+    setHasNext,
+    setHasPrevious,
+    setPageIndex,
+    setPageSize,
+    setTotalItems,
+    setTotalPages,
+  ]);
 
   const goNext = useCallback(() => {
     if (hasNext) {
@@ -108,6 +135,7 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
         hasPrevious,
         setPaging,
         gotoPage,
+        resetPaging,
       }}
     >
       {children}
