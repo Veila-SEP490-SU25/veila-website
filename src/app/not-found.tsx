@@ -3,7 +3,7 @@
 import { TextLogo } from "@/components/text-logo"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Home, Search, ArrowLeft, Heart } from "lucide-react"
+import { Home, Search, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 

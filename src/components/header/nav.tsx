@@ -58,43 +58,31 @@ export const Nav: React.FC = () => {
           <div className="flex flex-col space-y-4 mt-8 p-3">
             <Link
               href="/"
-              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              onClick={() => setIsOpen(false)}
+              className="text-gray-700 hover:text-crimson-700 transition-colors"
             >
               Trang chủ
             </Link>
             <Link
               href="/browse"
-              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              onClick={() => setIsOpen(false)}
+              className="text-gray-700 hover:text-crimson-700 transition-colors"
             >
               Duyệt Váy Cưới
             </Link>
             <Link
-              href="/designers"
-              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              onClick={() => setIsOpen(false)}
+              href="/shops"
+              className="text-gray-700 hover:text-crimson-700 transition-colors"
             >
-              Tìm Nhà Thiết Kế
-            </Link>
-            <Link
-              href="/services"
-              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Dịch Vụ
+              Tìm Cửa Hàng
             </Link>
             <Link
               href="/about"
-              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              onClick={() => setIsOpen(false)}
+              className="text-gray-700 hover:text-crimson-700 transition-colors"
             >
               Giới Thiệu
             </Link>
             <Link
-              href="/shop/register"
-              className="text-lg font-medium text-gray-700 hover:text-rose-600 transition-colors"
-              onClick={() => setIsOpen(false)}
+              href="/shops/my"
+              className="text-gray-700 hover:text-crimson-700 transition-colors"
             >
               Cửa Hàng Của Tôi
             </Link>
