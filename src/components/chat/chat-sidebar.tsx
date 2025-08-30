@@ -192,7 +192,7 @@ export function ChatSidebar() {
                           {participant.name}
                         </h3>
                         {participant.unreadCount > 0 && (
-                          <Badge variant="destructive" className="ml-2">
+                          <Badge variant="destructive" className="ml-2 rounded-full">
                             {participant.unreadCount}
                           </Badge>
                         )}
