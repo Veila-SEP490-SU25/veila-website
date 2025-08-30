@@ -1,8 +1,8 @@
 "use client";
 
 import { LoadingItem } from "@/components/loading-item";
-import { CreateDressDialog } from "@/components/shops/my/products/create-dress-dialog";
-import { DressDetailDialog } from "@/components/shops/my/products/dress-detail-dialog";
+import { CreateDressDialog } from "@/components/shops/my/dresses/create-dress-dialog";
+import { DressDetailDialog } from "@/components/shops/my/dresses/dress-detail-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -112,7 +112,7 @@ export const ShopDressesTabs = () => {
                 className="pl-8"
               />
             </div>
-            <CreateDressDialog />
+            <CreateDressDialog onSuccess={fetchDresses} />
           </div>
         </div>
       </CardHeader>
@@ -152,7 +152,7 @@ export const ShopDressesTabs = () => {
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-12 w-12 rounded-lg">
                           <AvatarImage
-                            src={getCoverImage(dress) || "/placeholder.svg"}
+                            src={getCoverImage(dress.images) || "/placeholder.svg"}
                             alt={dress.name}
                           />
                           <AvatarFallback className="rounded-lg">
@@ -225,10 +225,10 @@ export const ShopDressesTabs = () => {
                             <DressDetailDialog
                               dress={dress}
                               trigger={
-                                <div className="flex items-center cursor-pointer">
+                                <Button className="flex items-center cursor-pointer" variant="ghost">
                                   <Eye className="h-4 w-4 mr-2" />
                                   Xem chi tiết
-                                </div>
+                                </Button>
                               }
                             />
                           </DropdownMenuItem>

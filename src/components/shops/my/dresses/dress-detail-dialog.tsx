@@ -47,10 +47,10 @@ export function DressDetailDialog({
   onDelete,
 }: DressDetailDialogProps) {
   const [open, setOpen] = useState(false);
-  const [dressImages, setDressImages] = useState<string[]>(getImages(dress));
+  const [dressImages, setDressImages] = useState<string[]>(getImages(dress.images));
 
   useEffect(() => {
-    setDressImages(getImages(dress));
+    setDressImages(getImages(dress.images));
   }, [dress]);
 
   const formatPrice = (price: number) => {
@@ -69,15 +69,15 @@ export function DressDetailDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">{dress.name}</DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[75vh] pr-4">
+        <ScrollArea className="max-h-[70vh] pr-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Images Section */}
-            <div className="space-y-4">
+            <div className="space-y-4 w-full h-auto">
               <ImageGallery images={dressImages} alt={dress.name} />
             </div>
 

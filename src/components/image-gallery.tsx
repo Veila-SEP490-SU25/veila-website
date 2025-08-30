@@ -20,7 +20,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
         alt={alt}
         width={80}
         height={80}
-        className="rounded-lg object-cover shrink-0"
+        className="rounded-lg object-cover shrink-0 w-full h-full"
       />
     );
   }
@@ -32,7 +32,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
         alt={alt}
         width={80}
         height={80}
-        className="rounded-lg object-cover shrink-0"
+        className="rounded-lg object-cover shrink-0 w-full h-full"
       />
     );
   }
@@ -44,7 +44,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
         alt={`${alt} - ${currentIndex + 1}`}
         width={80}
         height={80}
-        className="rounded-lg object-cover shrink-0"
+        className="rounded-lg object-cover shrink-0 w-full h-full"
       />
       {images.length > 1 && (
         <div className="absolute inset-0 flex items-center justify-between p-1">

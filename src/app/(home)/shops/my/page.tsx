@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { MyShopOrders } from "@/components/shops/my/shop-orders";
 import { ShopOverview } from "@/components/shops/my/shop-overview";
 import { ShopInformation } from "@/components/shops/my/shop-information";
-import { ShopDressesTabs } from "@/components/shops/my/products/shop-dresses-tabs";
+import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
 
 export default function MyShopPage() {
   const router = useRouter();

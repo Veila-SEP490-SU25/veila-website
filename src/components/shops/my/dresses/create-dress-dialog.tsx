@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,24 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Plus, Loader2, Save } from "lucide-react";
-import Image from "next/image";
 import {
   useCreateDressMutation,
-  useLazyGetMyShopCategoriesQuery,
 } from "@/services/apis";
 import { DressStatus, type ICreateDress } from "@/services/types";
 import { toast } from "sonner";
+import { ImagesUpload } from "@/components/images-upload";
 
 interface CreateDressDialogProps {
   trigger?: React.ReactNode;
@@ -44,11 +36,9 @@ export function CreateDressDialog({
 }: CreateDressDialogProps) {
   const [open, setOpen] = useState(false);
   const [createDress, { isLoading }] = useCreateDressMutation();
-  const [getCategories, { data: categoriesResponse }] =
-    useLazyGetMyShopCategoriesQuery();
 
   const [dressData, setDressData] = useState<ICreateDress>({
-    categoryId: "",
+    categoryId: null,
     name: "",
     description: "",
     sellPrice: 0,
@@ -67,16 +57,7 @@ export function CreateDressDialog({
     sleeve: "",
   });
 
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [newImageUrl, setNewImageUrl] = useState("");
-
-  const categories = categoriesResponse?.items || [];
-
-  useEffect(() => {
-    if (open) {
-      getCategories({ page: 0, size: 100, filter: "", sort: "" });
-    }
-  }, [open, getCategories]);
+  const [imageUrls, setImageUrls] = useState<string>("");
 
   const handleInputChange = (field: keyof ICreateDress, value: any) => {
     setDressData((prev) => ({
@@ -85,30 +66,9 @@ export function CreateDressDialog({
     }));
   };
 
-  const addImageUrl = () => {
-    if (newImageUrl.trim() && !imageUrls.includes(newImageUrl.trim())) {
-      const updatedUrls = [...imageUrls, newImageUrl.trim()];
-      setImageUrls(updatedUrls);
-      setDressData((prev) => ({
-        ...prev,
-        images: updatedUrls.join(","),
-      }));
-      setNewImageUrl("");
-    }
-  };
-
-  const removeImageUrl = (urlToRemove: string) => {
-    const updatedUrls = imageUrls.filter((url) => url !== urlToRemove);
-    setImageUrls(updatedUrls);
-    setDressData((prev) => ({
-      ...prev,
-      images: updatedUrls.join(","),
-    }));
-  };
-
   const resetForm = () => {
     setDressData({
-      categoryId: "",
+      categoryId: null,
       name: "",
       description: "",
       sellPrice: 0,
@@ -126,36 +86,24 @@ export function CreateDressDialog({
       neckline: "",
       sleeve: "",
     });
-    setImageUrls([]);
-    setNewImageUrl("");
+    setImageUrls("");
   };
 
   const handleSubmit = async () => {
     try {
-      // Basic validation
-      if (!dressData.categoryId || !dressData.name || !dressData.description) {
-        toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
-        return;
+      const { statusCode, message } = await createDress(
+        dressData
+      ).unwrap();
+      if (statusCode === 201 || statusCode == 200) {
+        toast.success("Tạo váy thành công!");
+        setOpen(false);
+        resetForm();
+        onSuccess?.();
+      } else {
+        toast.error(message || "Có lỗi xảy ra khi tạo váy");
       }
-
-      if (dressData.isSellable && dressData.sellPrice <= 0) {
-        toast.error("Giá bán phải lớn hơn 0");
-        return;
-      }
-
-      if (dressData.isRentable && dressData.rentalPrice <= 0) {
-        toast.error("Giá thuê phải lớn hơn 0");
-        return;
-      }
-
-      await createDress(dressData).unwrap();
-      toast.success("Tạo váy thành công!");
-      setOpen(false);
-      resetForm();
-      onSuccess?.();
     } catch (error) {
       toast.error("Có lỗi xảy ra khi tạo váy");
-      console.error("Error creating dress:", error);
     }
   };
 
@@ -174,40 +122,18 @@ export function CreateDressDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">Tạo váy mới</DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[75vh] pr-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <ScrollArea className="max-h-[70vh] pr-4">
+          <div className="grid grid-cols-1 gap-6">
             {/* Main Information */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-1 space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Thông tin cơ bản</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Danh mục *</Label>
-                    <Select
-                      value={dressData.categoryId}
-                      onValueChange={(value) =>
-                        handleInputChange("categoryId", value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn danh mục" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="name">Tên váy *</Label>
@@ -238,7 +164,7 @@ export function CreateDressDialog({
                 <h3 className="text-lg font-semibold">Giá cả</h3>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label>Có thể bán</Label>
+                    <Label>Có thể bán *</Label>
                     <p className="text-sm text-muted-foreground">
                       Cho phép khách hàng mua váy này
                     </p>
@@ -253,7 +179,7 @@ export function CreateDressDialog({
 
                 {dressData.isSellable && (
                   <div className="space-y-2">
-                    <Label htmlFor="sellPrice">Giá bán (VNĐ)</Label>
+                    <Label htmlFor="sellPrice">Giá bán (VNĐ) *</Label>
                     <Input
                       id="sellPrice"
                       type="number"
@@ -273,7 +199,7 @@ export function CreateDressDialog({
 
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label>Có thể thuê</Label>
+                    <Label>Có thể thuê *</Label>
                     <p className="text-sm text-muted-foreground">
                       Cho phép khách hàng thuê váy này
                     </p>
@@ -288,7 +214,7 @@ export function CreateDressDialog({
 
                 {dressData.isRentable && (
                   <div className="space-y-2">
-                    <Label htmlFor="rentalPrice">Giá thuê (VNĐ)</Label>
+                    <Label htmlFor="rentalPrice">Giá thuê (VNĐ) *</Label>
                     <Input
                       id="rentalPrice"
                       type="number"
@@ -310,7 +236,7 @@ export function CreateDressDialog({
                 <h3 className="text-lg font-semibold">Số đo (cm)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="bust">Ngực</Label>
+                    <Label htmlFor="bust">Ngực *</Label>
                     <Input
                       id="bust"
                       type="number"
@@ -325,7 +251,7 @@ export function CreateDressDialog({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="waist">Eo</Label>
+                    <Label htmlFor="waist">Eo *</Label>
                     <Input
                       id="waist"
                       type="number"
@@ -340,7 +266,7 @@ export function CreateDressDialog({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="hip">Hông</Label>
+                    <Label htmlFor="hip">Hông *</Label>
                     <Input
                       id="hip"
                       type="number"
@@ -364,7 +290,7 @@ export function CreateDressDialog({
                 <h3 className="text-lg font-semibold">Chi tiết</h3>
                 <div className="space-y-3">
                   <div className="space-y-2">
-                    <Label htmlFor="material">Chất liệu</Label>
+                    <Label htmlFor="material">Chất liệu *</Label>
                     <Input
                       id="material"
                       placeholder="Ví dụ: Cotton, Lụa, Voan..."
@@ -376,7 +302,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="color">Màu sắc</Label>
+                    <Label htmlFor="color">Màu sắc *</Label>
                     <Input
                       id="color"
                       placeholder="Ví dụ: Đỏ, Xanh, Trắng..."
@@ -388,7 +314,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="length">Độ dài</Label>
+                    <Label htmlFor="length">Độ dài *</Label>
                     <Input
                       id="length"
                       placeholder="Ví dụ: Ngắn, Dài, Midi..."
@@ -400,7 +326,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="neckline">Cổ áo</Label>
+                    <Label htmlFor="neckline">Cổ áo *</Label>
                     <Input
                       id="neckline"
                       placeholder="Ví dụ: Cổ tròn, Cổ V, Cổ vuông..."
@@ -412,7 +338,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="sleeve">Tay áo</Label>
+                    <Label htmlFor="sleeve">Tay áo *</Label>
                     <Input
                       id="sleeve"
                       placeholder="Ví dụ: Tay ngắn, Tay dài, Không tay..."
@@ -430,57 +356,13 @@ export function CreateDressDialog({
             <div className="space-y-6">
               {/* Images */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Hình ảnh</h3>
+                <h3 className="text-lg font-semibold">Hình ảnh *</h3>
                 <div className="flex gap-2">
-                  <Input
-                    placeholder="Nhập URL hình ảnh"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && addImageUrl()}
+                  <ImagesUpload
+                    imageUrls={imageUrls}
+                    setImageUrls={(urls) => setImageUrls(urls)}
                   />
-                  <Button
-                    type="button"
-                    size="icon"
-                    onClick={addImageUrl}
-                    disabled={!newImageUrl.trim()}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
                 </div>
-
-                {imageUrls.length > 0 && (
-                  <div className="space-y-2">
-                    <Label>Hình ảnh đã thêm:</Label>
-                    <div className="space-y-2">
-                      {imageUrls.map((url, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-2 p-2 border rounded"
-                        >
-                          <Image
-                            src={url || "/placeholder.svg"}
-                            alt={`Preview ${index + 1}`}
-                            width={48}
-                            height={48}
-                            className="w-12 h-12 object-cover rounded"
-                            onError={(e) => {
-                              e.currentTarget.src = "/placeholder-icon.png";
-                            }}
-                          />
-                          <div className="flex-1 text-sm truncate">{url}</div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeImageUrl(url)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Details */}
@@ -500,7 +382,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="color">Màu sắc</Label>
+                    <Label htmlFor="color">Màu sắc *</Label>
                     <Input
                       id="color"
                       placeholder="Ví dụ: Đỏ, Xanh, Trắng..."
@@ -512,7 +394,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="length">Độ dài</Label>
+                    <Label htmlFor="length">Độ dài *</Label>
                     <Input
                       id="length"
                       placeholder="Ví dụ: Ngắn, Dài, Midi..."
@@ -524,7 +406,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="neckline">Cổ áo</Label>
+                    <Label htmlFor="neckline">Cổ áo *</Label>
                     <Input
                       id="neckline"
                       placeholder="Ví dụ: Cổ tròn, Cổ V, Cổ vuông..."
@@ -536,7 +418,7 @@ export function CreateDressDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="sleeve">Tay áo</Label>
+                    <Label htmlFor="sleeve">Tay áo *</Label>
                     <Input
                       id="sleeve"
                       placeholder="Ví dụ: Tay ngắn, Tay dài, Không tay..."

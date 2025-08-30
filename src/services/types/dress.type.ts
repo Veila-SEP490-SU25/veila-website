@@ -33,7 +33,7 @@ export interface IDress extends IItem {
 }
 
 export interface ICreateDress {
-  categoryId: string;
+  categoryId: string | null;
   name: string;
   description: string;
   sellPrice: number;

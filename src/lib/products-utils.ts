@@ -23,16 +23,16 @@ export const dressStatusLabels = {
   UNAVAILABLE: "Không có sẵn",
 };
 
-export const getCoverImage = (dress: IDress) => {
-  if (!dress.images) {
+export const getCoverImage = (images: string | null) => {
+  if (!images) {
     return "/placeholder.svg?height=400&width=400";
   }
-  return dress.images.split(",")[0];
+  return images.split(",")[0];
 };
 
-export const getImages = (dress: IDress) => {
-  if (!dress.images) {
+export const getImages = (images: string | null) => {
+  if (!images) {
     return ["/placeholder.svg?height=400&width=400"];
   }
-  return dress.images.split(",").map((image) => image.trim());
+  return images.split(",").map((image) => image.trim());
 };
