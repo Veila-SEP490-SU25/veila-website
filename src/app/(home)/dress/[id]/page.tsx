@@ -37,6 +37,7 @@ import { CreateOrderDialog } from "@/components/order/create-order-dialog";
 import { formatPrice, getImages } from "@/lib/products-utils";
 import { ImageGallery } from "@/components/image-gallery";
 import { DressDescriptionTabs } from "@/components/dress/detail/dress-description-tabs";
+import { DressFeedbackTabs } from "@/components/dress/detail/dress-feedbacks-tabs";
 
 const DressDetailPage = () => {
   const { id } = useParams();
@@ -361,65 +362,7 @@ const DressDetailPage = () => {
         </TabsContent>
 
         <TabsContent value="reviews" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Đánh giá từ khách hàng</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {dress.feedbacks && dress.feedbacks.length > 0 ? (
-                <div className="space-y-6">
-                  {dress.feedbacks.map((feedback) => (
-                    <div
-                      key={feedback.id}
-                      className="border-b pb-6 last:border-b-0"
-                    >
-                      <div className="flex items-start gap-4">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage
-                            src={
-                              feedback.customer.firstName || "/placeholder.svg"
-                            }
-                          />
-                          <AvatarFallback>
-                            {feedback.customer.firstName?.charAt(0) || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="font-medium">
-                              {feedback.customer.firstName ||
-                                "Người dùng ẩn danh"}
-                            </span>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < feedback.rating
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <p className="text-gray-700 mb-2">
-                            {feedback.content}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    Chưa có đánh giá nào cho sản phẩm này.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <DressFeedbackTabs dress={dress} />
         </TabsContent>
 
         <TabsContent value="designer" className="space-y-6">

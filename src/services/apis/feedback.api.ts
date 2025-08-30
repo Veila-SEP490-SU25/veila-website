@@ -28,5 +28,5 @@ export const feedbackApi = createApi({
 
 export const {
   useCreateFeedbackMutation,
-  useGetFeedbackQuery,
+  useLazyGetFeedbackQuery,
 } = feedbackApi;
