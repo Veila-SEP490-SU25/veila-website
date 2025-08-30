@@ -58,23 +58,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const _pathname = usePathname();
 
-  // Clean up any corrupt tokens on component mount
+  // Initialize auth state from localStorage after component mount
   useEffect(() => {
-    cleanupCorruptTokens();
+    const initAuth = () => {
+      cleanupCorruptTokens();
+
+      const storedIsAuthenticated =
+        getFromLocalStorage<boolean>("isAuthenticated") || false;
+      const storedUser = getFromLocalStorage<IUser>("user");
+      const storedAccessToken = getAccessToken();
+      const storedRefreshToken = getRefreshToken();
+
+      setIsAuthenticated(storedIsAuthenticated);
+      setCurrentUser(storedUser);
+      setCurrentAccessToken(storedAccessToken);
+      setCurrentRefreshToken(storedRefreshToken);
+      setIsInitialized(true);
+    };
+
+    initAuth();
   }, []);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    getFromLocalStorage<boolean>("isAuthenticated") || false
-  );
-  const [currentUser, setCurrentUser] = useState<IUser | null>(
-    getFromLocalStorage<IUser>("user")
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(
-    getAccessToken()
+    null
   );
   const [currentRefreshToken, setCurrentRefreshToken] = useState<string | null>(
-    getRefreshToken()
+    null
   );
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const authCheckRef = useRef(false);
 
@@ -106,9 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginGoogle = useCallback(
     async (body: IGoogleAuth) => {
       try {
-        const { item, message, statusCode } = await loginGoogleMutation(
-          body
-        ).unwrap();
+        const { item, statusCode } = await loginGoogleMutation(body).unwrap();
         if (statusCode === 200) {
           const { accessToken, refreshToken } = item;
           authCheckRef.current = false;
@@ -121,20 +132,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           router.push("/");
           return;
         } else if (statusCode === 401) {
-          const { item, statusCode, message } = await requestOtpMutation({
+          const { item, statusCode } = await requestOtpMutation({
             email: body.email,
           }).unwrap();
           if (statusCode === 200) {
             router.push(`/verify-otp?userId=${item}&email=${body.email}`);
           } else {
             toast.error("Đăng nhập thất bại.", {
-              description: message,
+              description: "Có lỗi xảy ra trong quá trình đăng nhập.",
             });
             return;
           }
         } else {
           toast.error("Đăng nhập thất bại.", {
-            description: message,
+            description: "Có lỗi xảy ra trong quá trình đăng nhập.",
           });
           return;
         }
@@ -158,9 +169,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(
     async (body: ILogin) => {
       try {
-        const { item, message, statusCode } = await loginMutation(
-          body
-        ).unwrap();
+        const { item, statusCode } = await loginMutation(body).unwrap();
         if (statusCode === 200) {
           const { accessToken, refreshToken } = item;
           authCheckRef.current = false;
@@ -173,20 +182,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           router.push("/");
           return;
         } else if (statusCode === 401) {
-          const { item, statusCode, message } = await requestOtpMutation({
+          const { item, statusCode } = await requestOtpMutation({
             email: body.email,
           }).unwrap();
           if (statusCode === 200) {
             router.push(`/verify-otp?userId=${item}&email=${body.email}`);
           } else {
             toast.error("Đăng nhập thất bại.", {
-              description: message,
+              description: "Có lỗi xảy ra trong quá trình đăng nhập.",
             });
             return;
           }
         } else {
           toast.error("Đăng nhập thất bại.", {
-            description: message,
+            description: "Có lỗi xảy ra trong quá trình đăng nhập.",
           });
           return;
         }
@@ -204,9 +213,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const verifyOtp = useCallback(
     async (body: IVerifyOtp) => {
       try {
-        const { item, message, statusCode } = await verifyOtpMutation(
-          body
-        ).unwrap();
+        const { item, statusCode } = await verifyOtpMutation(body).unwrap();
         if (statusCode === 200) {
           const { accessToken, refreshToken } = item;
           authCheckRef.current = false;
@@ -220,7 +227,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return;
         } else {
           toast.error("Đăng nhập thất bại.", {
-            description: message,
+            description: "Có lỗi xảy ra trong quá trình đăng nhập.",
           });
           return;
         }
@@ -237,7 +244,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(async () => {
     try {
-      const { message, statusCode } = await logoutMutation().unwrap();
+      const { statusCode } = await logoutMutation().unwrap();
       revokeTokens();
       setIsAuthenticated(false);
       removeFromLocalStorage("isAuthenticated");
@@ -280,7 +287,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       try {
-        const { item, message, statusCode } = await getMeQuery().unwrap();
+        const { item, statusCode } = await getMeQuery().unwrap();
         if (statusCode === 200) {
           setCurrentUser(item);
           setToLocalStorage("user", item);
@@ -331,6 +338,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         verifyOtp,
         reloadProfile,
         isAuthenticating:
+          !isInitialized ||
           isLoginLoading ||
           isLogoutLoading ||
           isVerifyOtpLoading ||

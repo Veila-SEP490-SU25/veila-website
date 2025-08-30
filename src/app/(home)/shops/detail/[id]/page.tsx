@@ -4,6 +4,7 @@ import { CreateCustomOrderDialog } from "@/components/shops/detail/create-custom
 import { ShopAccessories } from "@/components/shops/detail/shop-accessories";
 import { ShopBlogs } from "@/components/shops/detail/shop-blogs";
 import { ShopDresses } from "@/components/shops/detail/shop-dresses";
+import { ShopChatButton } from "@/components/shops/chat-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -151,10 +152,12 @@ const ShopDetailPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button className="bg-rose-600 hover:bg-rose-700">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Nhắn tin
-            </Button>
+            <ShopChatButton
+              shopId={shop.id}
+              shopName={shop.name}
+              shopAvatarUrl={shop.logoUrl}
+              className="bg-rose-600 hover:bg-rose-700 text-white border-rose-600"
+            />
           </div>
         </div>
       </div>

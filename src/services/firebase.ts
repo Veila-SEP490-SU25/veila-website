@@ -17,7 +17,6 @@ let storage: FirebaseStorage;
 
 const initializeFirebase = () => {
   if (typeof window === "undefined") {
-    // Return null values during SSR
     return {
       app: null,
       auth: null,
