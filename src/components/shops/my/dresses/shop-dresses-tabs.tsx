@@ -2,6 +2,7 @@
 
 import { LoadingItem } from "@/components/loading-item";
 import { CreateDressDialog } from "@/components/shops/my/dresses/create-dress-dialog";
+import { DeleteDressDialog } from "@/components/shops/my/dresses/delete-dress-dialog";
 import { DressDetailDialog } from "@/components/shops/my/dresses/dress-detail-dialog";
 import { UpdateDressDialog } from "@/components/shops/my/dresses/update-dress-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -229,7 +230,7 @@ export const ShopDressesTabs = () => {
                               dress={dress}
                               trigger={
                                 <Button
-                                  className="flex items-center cursor-pointer"
+                                  className="flex items-center cursor-pointer w-full justify-start"
                                   variant="ghost"
                                 >
                                   <Eye className="h-4 w-4 mr-2" />
@@ -243,7 +244,7 @@ export const ShopDressesTabs = () => {
                               dress={dress}
                               trigger={
                                 <Button
-                                  className="flex items-center cursor-pointer"
+                                  className="flex items-center cursor-pointer w-full justify-start"
                                   variant="ghost"
                                 >
                                   <Edit className="h-4 w-4 mr-2" />
@@ -254,11 +255,21 @@ export const ShopDressesTabs = () => {
                             />
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => {}}
-                            className="text-red-600"
+                            asChild
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Xóa
+                            <DeleteDressDialog
+                              dress={dress}
+                              onSuccess={fetchDresses}
+                              trigger={
+                                <Button
+                                  variant="ghost"
+                                  className="flex items-center cursor-pointer w-full text-red-600 justify-start"
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Xóa
+                                </Button>
+                              }
+                            />
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

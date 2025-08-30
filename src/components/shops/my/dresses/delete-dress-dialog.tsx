@@ -32,25 +32,44 @@ import {
   getImages,
 } from "@/lib/products-utils";
 import { ImageGallery } from "@/components/image-gallery";
+import { ConfirmDialog } from "@/components/confirm-dialog.tsx";
+import { useDeleteDressMutation } from "@/services/apis";
+import { toast } from "sonner";
 
-interface DressDetailDialogProps {
+interface DeleteDressDialogProps {
   dress: IDress;
   trigger?: React.ReactNode;
-  onEdit?: (dress: IDress) => void;
-  onDelete?: (dressId: string) => void;
+  onSuccess?: () => void;
 }
 
-export function DressDetailDialog({
+export function DeleteDressDialog({
   dress,
   trigger,
-  onEdit,
-  onDelete,
-}: DressDetailDialogProps) {
+  onSuccess,
+}: DeleteDressDialogProps) {
   const [open, setOpen] = useState(false);
-  const [dressImages, setDressImages] = useState<string[]>(getImages(dress.images));
+  const [dressImages, setDressImages] = useState<string[]>(
+    getImages(dress.images)
+  );
   useEffect(() => {
     setDressImages(getImages(dress.images));
   }, [dress]);
+
+  const [deleteDress, { isLoading }] = useDeleteDressMutation();
+
+  const handleDelete = async () => {
+    try {
+      const { statusCode, message } = await deleteDress(dress.id).unwrap();
+      if (statusCode === 204) {
+        toast.success(message);
+        onSuccess?.();
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi xóa sản phẩm");
+    }
+  };
 
   const defaultTrigger = (
     <Button variant="ghost" size="sm">
@@ -242,30 +261,19 @@ export function DressDetailDialog({
           <Button variant="outline" onClick={() => setOpen(false)}>
             Đóng
           </Button>
-          {onEdit && (
-            <Button
-              onClick={() => {
-                onEdit(dress);
-                setOpen(false);
-              }}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              Chỉnh sửa
-            </Button>
-          )}
-          {onDelete && (
-            <Button
-              variant="destructive"
-              onClick={() => {
-                onDelete(dress.id);
-                setOpen(false);
-              }}
-            >
+          <ConfirmDialog
+            title="Xác nhận xóa"
+            description={`Bạn có chắc chắn muốn xóa ${dress.name}?`}
+            onConfirm={() => {
+              handleDelete();
+              setOpen(false);
+            }}
+          >
+            <Button variant="destructive" disabled={isLoading}>
               <Trash2 className="h-4 w-4 mr-2" />
-              Xóa
+              {isLoading ? "Đang xóa..." : "Xóa"}
             </Button>
-          )}
+          </ConfirmDialog>
         </div>
       </DialogContent>
     </Dialog>
