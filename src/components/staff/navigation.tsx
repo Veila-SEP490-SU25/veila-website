@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Settings,
   Store,
+  TrendingUpDown,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -62,6 +63,11 @@ const adminRoutes = [
     name: "Quản Lý Cửa Hàng",
     href: "/staff/shops",
     icon: Store,
+  },
+  {
+    name: "Quản Lý Giao Dịch",
+    href: "/staff/transactions",
+    icon: TrendingUpDown,
   },
   {
     name: "Quản Lý Blog",

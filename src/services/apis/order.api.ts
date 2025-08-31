@@ -64,8 +64,12 @@ export interface ICheckoutOrder {
   otp: string;
 }
 
-export interface IGetOrderMilestone extends IPagination{
+export interface IGetOrderMilestone extends IPagination {
   orderId: string;
+}
+
+export interface IGetOrdersOfShop extends IPagination {
+  shopId: string;
 }
 
 export const orderApi = createApi({
@@ -146,7 +150,10 @@ export const orderApi = createApi({
     }),
 
     // Order Detail
-    getOrderMilestone: builder.query<IListResponse<IMilestone>, IGetOrderMilestone>({
+    getOrderMilestone: builder.query<
+      IListResponse<IMilestone>,
+      IGetOrderMilestone
+    >({
       query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
         url: `orders/${orderId}/milestones`,
         method: "GET",
@@ -225,6 +232,14 @@ export const orderApi = createApi({
         body,
       }),
     }),
+
+    getOrderOfShop: builder.query<IListResponse<IOrder>, IGetOrdersOfShop>({
+      query: ({ shopId, sort = "", filter = "", page = 0, size = 10 }) => ({
+        url: `shops/${shopId}/orders`,
+        method: "GET",
+        params: { page, size, sort, filter },
+      }),
+    }),
   }),
 });
 
@@ -246,4 +261,5 @@ export const {
   useLazyGetOrderTransactionsQuery,
   useLazyGetOrderComplaintsQuery,
   useCreateOrderComplaintMutation,
+  useLazyGetOrderOfShopQuery,
 } = orderApi;
