@@ -35,7 +35,7 @@ import {
   getImages,
   parseNumber,
   formatRating,
-} from "@/lib/utils";
+} from "@/lib/products-utils";
 import { ImageGallery } from "@/components/image-gallery";
 import { DressDescriptionTabs } from "@/components/dress/detail/dress-description-tabs";
 import { DressFeedbackTabs } from "@/components/dress/detail/dress-feedbacks-tabs";

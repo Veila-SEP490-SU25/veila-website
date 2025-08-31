@@ -6,7 +6,7 @@ import {
   formatDateShort,
   getTypeColor,
   getTypeText,
-} from "@/lib/utils";
+} from "@/lib/order-util";
 import { IOrder } from "@/services/types";
 
 interface OrderSummaryCardProps {

@@ -32,7 +32,7 @@ import {
   accessoryStatusLabels,
   formatPrice,
   getCoverImage,
-} from "@/lib/utils";
+} from "@/lib/products-utils";
 import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetMyShopAccessoriesQuery } from "@/services/apis";
 import { IAccessory } from "@/services/types";

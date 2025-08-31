@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { IDress } from "@/services/types";
 import { useLazyGetDressesQuery } from "@/services/apis";
-import { formatPrice, parseNumber } from "@/lib/utils";
+import { formatPrice, parseNumber } from "@/lib/products-utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { usePaging } from "@/providers/paging.provider";
 import { PagingComponent } from "@/components/paging-component";
@@ -134,7 +134,7 @@ export default function BrowsePage() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
               Duyệt Váy Cưới
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">

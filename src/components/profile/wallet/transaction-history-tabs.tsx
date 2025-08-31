@@ -14,7 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatDateShort, formatPrice } from "@/lib/utils";
+import { formatDateShort } from "@/lib/order-util";
+import { formatPrice } from "@/lib/products-utils";
 import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetMyTransactionsQuery } from "@/services/apis";
 import {

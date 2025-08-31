@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { getPlaceholderImage } from "@/lib/utils";
+import { getPlaceholderImage } from "@/lib/products-utils";
 
 interface ImageWithFallbackProps {
   src: string;

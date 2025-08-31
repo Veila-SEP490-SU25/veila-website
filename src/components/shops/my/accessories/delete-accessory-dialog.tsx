@@ -23,7 +23,7 @@ import {
   accessoryStatusLabels,
   formatPrice,
   getImages,
-} from "@/lib/utils";
+} from "@/lib/products-utils";
 import { useDeleteAccessoryMutation } from "@/services/apis";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/confirm-dialog.tsx";

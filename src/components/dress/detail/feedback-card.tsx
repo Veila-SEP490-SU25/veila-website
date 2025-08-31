@@ -3,7 +3,7 @@
 import { LoadingItem } from "@/components/loading-item";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getImages } from "@/lib/utils";
+import { getImages } from "@/lib/products-utils";
 import { useLazyGetFeedbackQuery } from "@/services/apis";
 import { IFeedback } from "@/services/types";
 import { Star } from "lucide-react";

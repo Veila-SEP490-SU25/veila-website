@@ -7,7 +7,7 @@ import {
   formatDateShort,
   getTypeText,
   parseImages,
-} from "@/lib/utils";
+} from "@/lib/order-util";
 import { ImageGallery } from "@/components/image-gallery";
 
 interface OrderDetailsTabProps {
