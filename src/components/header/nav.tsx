@@ -7,17 +7,24 @@ import { Menu, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { UnreadBadge } from "@/components/chat/unread-badge";
+import { useAuth } from "@/providers/auth.provider";
+import { UserRole } from "@/services/types/user.type";
 
 export const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  const isCustomer = currentUser?.role === UserRole.CUSTOMER;
+  const isShop = currentUser?.role === UserRole.SHOP;
+  const isAuthenticated = !!currentUser;
+
   return (
-    <div className="font-playfair">
+    <div className="font-cormorant font-medium">
       <nav className="hidden md:flex items-center space-x-8">
         <Link
           href="/"
@@ -29,7 +36,7 @@ export const Nav: React.FC = () => {
           href="/browse"
           className="text-gray-700 hover:text-crimson-700 transition-colors"
         >
-          Duyệt Váy Cưới
+          Khám phá Váy Cưới
         </Link>
         <Link
           href="/shops"
@@ -43,19 +50,34 @@ export const Nav: React.FC = () => {
         >
           Bài Viết
         </Link>
-        <Link
-          href="/shops/my"
-          className="text-gray-700 hover:text-crimson-700 transition-colors"
-        >
-          Cửa Hàng Của Tôi
-        </Link>
-        <Link
-          href="/chat"
-          className="text-gray-700 hover:text-crimson-700 transition-colors relative"
-        >
-          Tin Nhắn
-          <UnreadBadge />
-        </Link>
+        {isAuthenticated && (
+          <>
+            {isCustomer ? (
+              <Link
+                href="/shops/register"
+                className="text-gray-700 hover:text-crimson-700 transition-colors"
+              >
+                Đăng Ký Cửa Hàng
+              </Link>
+            ) : isShop ? (
+              <Link
+                href="/shops/my"
+                className="text-gray-700 hover:text-crimson-700 transition-colors"
+              >
+                Cửa Hàng Của Tôi
+              </Link>
+            ) : null}
+          </>
+        )}
+        {isAuthenticated && (
+          <Link
+            href="/chat"
+            className="text-gray-700 hover:text-crimson-700 transition-colors relative"
+          >
+            Tin Nhắn
+            <UnreadBadge />
+          </Link>
+        )}
       </nav>
 
       {isMounted ? (
@@ -67,7 +89,7 @@ export const Nav: React.FC = () => {
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="w-[300px] sm:w-[400px] font-playfair"
+            className="w-[300px] sm:w-[400px] font-cormorant font-medium"
           >
             <div className="flex flex-col space-y-4 mt-8 p-3">
               <Link
@@ -94,20 +116,35 @@ export const Nav: React.FC = () => {
               >
                 Bài Viết
               </Link>
-              <Link
-                href="/shops/my"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
-              >
-                Cửa Hàng Của Tôi
-              </Link>
-              <Link
-                href="/chat"
-                className="text-gray-700 hover:text-crimson-700 transition-colors relative"
-              >
-                <MessageCircle className="h-4 w-4 inline mr-1" />
-                Tin Nhắn
-                <UnreadBadge />
-              </Link>
+              {isAuthenticated && (
+                <>
+                  {isCustomer ? (
+                    <Link
+                      href="/shops/register"
+                      className="text-gray-700 hover:text-crimson-700 transition-colors"
+                    >
+                      Đăng Ký Cửa Hàng
+                    </Link>
+                  ) : isShop ? (
+                    <Link
+                      href="/shops/my"
+                      className="text-gray-700 hover:text-crimson-700 transition-colors"
+                    >
+                      Cửa Hàng Của Tôi
+                    </Link>
+                  ) : null}
+                </>
+              )}
+              {isAuthenticated && (
+                <Link
+                  href="/chat"
+                  className="text-gray-700 hover:text-crimson-700 transition-colors relative"
+                >
+                  <MessageCircle className="h-4 w-4 inline mr-1" />
+                  Tin Nhắn
+                  <UnreadBadge />
+                </Link>
+              )}
               <UserNav />
             </div>
           </SheetContent>

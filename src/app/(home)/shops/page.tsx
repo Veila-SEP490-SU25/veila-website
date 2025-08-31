@@ -29,6 +29,7 @@ import { Image } from "@/components/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RequireAuth } from "@/components/auth/require-auth";
 
 export default function ShopPage() {
   const router = useRouter();
@@ -155,195 +156,202 @@ export default function ShopPage() {
   }, [statusFilter, paging.pageIndex, paging.pageSize]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Cửa Hàng Váy Cưới
-        </h1>
-        <p className="text-gray-600">
-          Khám phá các cửa hàng váy cưới uy tín và chất lượng
-        </p>
-      </div>
-
-      {/* Filters and Controls */}
-      <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">
-            Hiển thị {shops.length} trong số {paging.totalItems} cửa hàng
-          </span>
+    <RequireAuth>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Cửa Hàng Váy Cưới
+          </h1>
+          <p className="text-gray-600">
+            Khám phá các cửa hàng váy cưới uy tín và chất lượng
+          </p>
         </div>
-        <div className="flex flex-col gap-3 md:flex-row md:gap-4">
-          <Select
-            value={paging.pageSize.toString()}
-            onValueChange={handlePageSizeChange}
-          >
-            <SelectTrigger className="w-full md:w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="10">10 / trang</SelectItem>
-              <SelectItem value="20">20 / trang</SelectItem>
-              <SelectItem value="50">50 / trang</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, index) => (
-            <Card key={index} className="overflow-hidden">
-              <div className="h-48 bg-gray-200 animate-pulse" />
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="h-12 w-12 bg-gray-200 rounded-full animate-pulse -mt-8 relative z-10" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                      <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-3 bg-gray-200 rounded animate-pulse" />
-                    <div className="h-3 bg-gray-200 rounded animate-pulse" />
-                    <div className="h-3 bg-gray-200 rounded animate-pulse" />
-                  </div>
-                  <div className="h-8 bg-gray-200 rounded animate-pulse" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {/* Shop Grid */}
-      {!isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {shops.map((shop) => (
-            <Card
-              key={shop.id}
-              className="group hover:shadow-lg transition-shadow overflow-hidden"
+        {/* Filters and Controls */}
+        <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">
+              Hiển thị {shops.length} trong số {paging.totalItems} cửa hàng
+            </span>
+          </div>
+          <div className="flex flex-col gap-3 md:flex-row md:gap-4">
+            <Select
+              value={paging.pageSize.toString()}
+              onValueChange={handlePageSizeChange}
             >
-              {/* Cover Image */}
-              <div className="relative h-48">
-                <Image
-                  src={shop.coverUrl || "/placeholder.svg"}
-                  alt={shop.name}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <Link href={`/shops/detail/${shop.id}`}>
+              <SelectTrigger className="w-full md:w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10">10 / trang</SelectItem>
+                <SelectItem value="20">20 / trang</SelectItem>
+                <SelectItem value="50">50 / trang</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <Card key={index} className="overflow-hidden">
+                <div className="h-48 bg-gray-200 animate-pulse" />
+                <CardContent className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="h-12 w-12 bg-gray-200 rounded-full animate-pulse -mt-8 relative z-10" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-3 bg-gray-200 rounded animate-pulse" />
+                      <div className="h-3 bg-gray-200 rounded animate-pulse" />
+                    </div>
+                    <div className="h-8 bg-gray-200 rounded animate-pulse" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Shop Grid */}
+        {!isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {shops.map((shop) => (
+              <Card
+                key={shop.id}
+                className="group hover:shadow-lg transition-shadow overflow-hidden"
+              >
+                {/* Cover Image */}
+                <div className="relative h-48">
+                  <Image
+                    src={shop.coverUrl || "/placeholder.svg"}
+                    alt={shop.name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <Link href={`/shops/detail/${shop.id}`}>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
                     <Button
                       size="sm"
                       variant="secondary"
                       className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
                     >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  {/* Shop Info */}
-                  <div className="flex items-center gap-3 h-fit justify-start">
-                    <Avatar className="h-12 w-12 border-2 border-white -mt-8 relative z-10 flex-shrink-0">
-                      <AvatarImage src={shop.logoUrl || "/placeholder.svg"} />
-                      <AvatarFallback>{shop.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0 h-full flex items-center">
-                      <Link href={`/shops/detail/${shop.id}`}>
-                        <h3 className="font-semibold text-lg group-hover:text-rose-600 transition-colors cursor-pointer truncate">
-                          {shop.name}
-                        </h3>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Contact Info */}
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{shop.address}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 flex-shrink-0" />
-                      <span>{shop.phone}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{shop.email}</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 pt-2">
-                    <Link href={`/shops/detail/${shop.id}`} className="flex-1">
-                      <Button
-                        className="w-full bg-rose-600 hover:bg-rose-700"
-                        size="sm"
-                      >
-                        Xem cửa hàng
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-transparent"
-                    >
                       <MessageCircle className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
 
-      {/* Empty State */}
-      {!isLoading && shops.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Không tìm thấy cửa hàng nào.</p>
-        </div>
-      )}
+                <CardContent className="p-4">
+                  <div className="space-y-3">
+                    {/* Shop Info */}
+                    <div className="flex items-center gap-3 h-fit justify-start">
+                      <Avatar className="h-12 w-12 border-2 border-white -mt-8 relative z-10 flex-shrink-0">
+                        <AvatarImage src={shop.logoUrl || "/placeholder.svg"} />
+                        <AvatarFallback>{shop.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0 h-full flex items-center">
+                        <Link href={`/shops/detail/${shop.id}`}>
+                          <h3 className="font-semibold text-lg group-hover:text-rose-600 transition-colors cursor-pointer truncate">
+                            {shop.name}
+                          </h3>
+                        </Link>
+                      </div>
+                    </div>
 
-      {/* Pagination */}
-      {!isLoading && paging.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-8">
-          <div className="text-sm text-gray-600">
-            Trang {paging.pageIndex + 1} / {paging.totalPages}
+                    {/* Contact Info */}
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{shop.address}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 flex-shrink-0" />
+                        <span>{shop.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{shop.email}</span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 pt-2">
+                      <Link
+                        href={`/shops/detail/${shop.id}`}
+                        className="flex-1"
+                      >
+                        <Button
+                          className="w-full bg-rose-600 hover:bg-rose-700"
+                          size="sm"
+                        >
+                          Xem cửa hàng
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-transparent"
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!paging.hasPrevPage}
-              onClick={() => handlePageChange(paging.pageIndex - 1)}
-            >
-              Trước
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!paging.hasNextPage}
-              onClick={() => handlePageChange(paging.pageIndex + 1)}
-            >
-              Sau
-            </Button>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && shops.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">
+              Không tìm thấy cửa hàng nào.
+            </p>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+
+        {/* Pagination */}
+        {!isLoading && paging.totalPages > 1 && (
+          <div className="flex items-center justify-between mt-8">
+            <div className="text-sm text-gray-600">
+              Trang {paging.pageIndex + 1} / {paging.totalPages}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!paging.hasPrevPage}
+                onClick={() => handlePageChange(paging.pageIndex - 1)}
+              >
+                Trước
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!paging.hasNextPage}
+                onClick={() => handlePageChange(paging.pageIndex + 1)}
+              >
+                Sau
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </RequireAuth>
   );
 }

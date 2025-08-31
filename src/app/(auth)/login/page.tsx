@@ -49,16 +49,13 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <TextLogo />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Đăng Nhập</h1>
           <p className="text-gray-600 text-sm">
             Chào mừng trở lại! Vui lòng đăng nhập vào tài khoản của bạn.
           </p>
         </div>
 
-        {/* Login Form */}
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl text-center">

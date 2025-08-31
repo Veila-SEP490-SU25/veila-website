@@ -1,6 +1,6 @@
 "use client";
 
-import { Playfair_Display, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme.provider";
 import { StoreProvider } from "@/providers/store.provider";
@@ -10,9 +10,10 @@ import { RouteProvider } from "@/providers/route.aprovider";
 import { ChatProvider } from "@/providers/chat.provider";
 import { PagingProvider } from "@/providers/paging.provider";
 
-export const playfair = Playfair_Display({
-  variable: "--font-playfair",
+export const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const inter = Inter({
@@ -30,7 +31,7 @@ export default function RootLayout({
       <head>
         <title>Veila</title>
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${cormorant.className} ${inter.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

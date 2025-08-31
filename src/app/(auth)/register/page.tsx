@@ -72,18 +72,14 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
-        {/* Header */}
         <div className="text-center mb-8">
           <TextLogo />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Tạo Tài Khoản
-          </h1>
+
           <p className="text-gray-600 text-sm">
             Tham gia Veila và bắt đầu tìm kiếm váy cưới của bạn
           </p>
         </div>
 
-        {/* Register Form */}
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl text-center">
