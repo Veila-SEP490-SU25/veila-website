@@ -17,7 +17,8 @@ export const getFirebaseConfig = () => {
     !appId ||
     !measurementId
   ) {
-    throw new Error("Missing Firebase configuration in environment variables");
+    console.error("Missing Firebase configuration in environment variables");
+    return null;
   }
 
   return {
@@ -39,4 +40,18 @@ export const getVeilaServerConfig = (): string => {
   }
 
   return apiUrl;
+};
+
+export const getVietQRConfig = () => {
+  const clientId = process.env.NEXT_PUBLIC_VIETQR_CLIENT_ID;
+  const apiKey = process.env.NEXT_PUBLIC_VIETQR_API_KEY;
+
+  if (!clientId || !apiKey) {
+    throw new Error("Missing VietQR configuration in environment variables");
+  }
+
+  return {
+    clientId,
+    apiKey,
+  };
 };

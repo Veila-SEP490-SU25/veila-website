@@ -9,6 +9,8 @@ import { AuthProvider } from "@/providers/auth.provider";
 import { RouteProvider } from "@/providers/route.aprovider";
 import { ChatProvider } from "@/providers/chat.provider";
 import { PagingProvider } from "@/providers/paging.provider";
+import { VerifyPhonePopupProvider } from "@/hooks/use-verify-phone-popup";
+import { GoogleAuthHandler } from "@/app/(auth)/components/google-auth-handler";
 
 export const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -41,7 +43,12 @@ export default function RootLayout({
             <AuthProvider>
               <RouteProvider>
                 <PagingProvider>
-                  <ChatProvider>{children}</ChatProvider>
+                  <ChatProvider>
+                    <VerifyPhonePopupProvider>
+                      {children}
+                      <GoogleAuthHandler />
+                    </VerifyPhonePopupProvider>
+                  </ChatProvider>
                 </PagingProvider>
               </RouteProvider>
             </AuthProvider>

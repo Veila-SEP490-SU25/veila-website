@@ -260,8 +260,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: "Phiên đăng nhập đã hết hạn.",
         });
       }
-    } catch (error) {
-      console.error("Logout error:", error);
+
+      router.push("/");
+    } catch {
       revokeTokens();
       setIsAuthenticated(false);
       removeFromLocalStorage("isAuthenticated");
@@ -270,8 +271,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast.success("Đăng xuất thành công.", {
         description: "Phiên đăng nhập đã được kết thúc.",
       });
+
+      router.push("/");
     }
-  }, [logoutMutation, revokeTokens, setIsAuthenticated, setCurrentUser]);
+  }, [
+    logoutMutation,
+    revokeTokens,
+    setIsAuthenticated,
+    setCurrentUser,
+    router,
+  ]);
 
   const reloadProfile = useCallback(() => {
     authCheckRef.current = false;
