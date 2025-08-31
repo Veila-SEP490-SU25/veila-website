@@ -195,7 +195,8 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
                 successMessage="Đã mở khoá cửa hàng"
               />
             ) : (
-              shop.status !== ShopStatus.PENDING && shop.status !== ShopStatus.INACTIVE && (
+              shop.status !== ShopStatus.PENDING &&
+              shop.status !== ShopStatus.INACTIVE && (
                 <UpdateShopStatusDialog
                   onConfirm={async () =>
                     await handleUpdateStatus(ShopStatus.SUSPENDED)
@@ -217,30 +218,55 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
                 />
               )
             )}
-            {shop.status !== ShopStatus.BANNED && shop.status !== ShopStatus.PENDING && (
-              <UpdateShopStatusDialog
-                onConfirm={async () =>
-                  await handleUpdateStatus(ShopStatus.BANNED)
-                }
-                trigger={
-                  <Button
-                    className={cn(
-                      "flex items-center justify-start gap-2 border-rose-500 bg-rose-500/10 text-rose-500",
-                      "hover:bg-rose-500 hover:text-white"
-                    )}
-                    variant="outline"
-                    disabled={isLoading}
-                  >
-                    <Ban className="size-4" />
-                    Cấm hoạt động
-                  </Button>
-                }
-                title="Xác nhận cấm hoạt động cửa hàng"
-                message="Bạn có chắc chắn muốn cấm hoạt động cửa hàng này không?"
-                errorMessage="Cấm hoạt động cửa hàng thất bại. Vui lòng thử lại sau ít phút."
-                successMessage="Đã cấm hoạt động cửa hàng"
-              />
-            )}
+            {shop.status !== ShopStatus.BANNED
+              ? shop.status !== ShopStatus.PENDING && (
+                  <UpdateShopStatusDialog
+                    onConfirm={async () =>
+                      await handleUpdateStatus(ShopStatus.BANNED)
+                    }
+                    trigger={
+                      <Button
+                        className={cn(
+                          "flex items-center justify-start gap-2 border-rose-500 bg-rose-500/10 text-rose-500",
+                          "hover:bg-rose-500 hover:text-white"
+                        )}
+                        variant="outline"
+                        disabled={isLoading}
+                      >
+                        <Ban className="size-4" />
+                        Cấm hoạt động
+                      </Button>
+                    }
+                    title="Xác nhận cấm hoạt động cửa hàng"
+                    message="Bạn có chắc chắn muốn cấm hoạt động cửa hàng này không?"
+                    errorMessage="Cấm hoạt động cửa hàng thất bại. Vui lòng thử lại sau ít phút."
+                    successMessage="Đã cấm hoạt động cửa hàng"
+                  />
+                )
+              : (
+                  <UpdateShopStatusDialog
+                    onConfirm={async () =>
+                      await handleUpdateStatus(ShopStatus.BANNED)
+                    }
+                    trigger={
+                      <Button
+                        className={cn(
+                          "flex items-center justify-start gap-2 border-green-500 bg-green-500/10 text-green-500",
+                          "hover:bg-green-500 hover:text-white"
+                        )}
+                        variant="outline"
+                        disabled={isLoading}
+                      >
+                        <Ban className="size-4" />
+                        Mở hoạt động
+                      </Button>
+                    }
+                    title="Xác nhận mở hoạt động cửa hàng"
+                    message="Bạn có chắc chắn muốn mở hoạt động cửa hàng này không?"
+                    errorMessage="Mở hoạt động cửa hàng thất bại. Vui lòng thử lại sau ít phút."
+                    successMessage="Đã mở hoạt động cửa hàng"
+                  />
+                )}
           </div>
         </div>
       </CardContent>

@@ -57,11 +57,11 @@ export const UpdateShopStatusDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-      <DialogContent className="w-xl max-w[90xw] flex flex-col items-center gap-2">
+      <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader>
           <DialogTitle>{title || "Cập nhật trạng thái cửa hàng"}</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="p-9">
+        <DialogDescription className="p-9 text-center">
           {message || "Bạn có chắc chắn muốn cập nhật trạng thái cửa hàng này?"}
         </DialogDescription>
         <DialogFooter>
