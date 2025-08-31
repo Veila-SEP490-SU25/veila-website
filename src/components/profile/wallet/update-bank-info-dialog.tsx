@@ -119,7 +119,7 @@ export const UpdateBankInfoDialog = ({
                     <div className="flex items-center gap-2">
                       <Image
                         src={bank.logo}
-                        alt={bank.name}
+                        alt={bank.shortName}
                         width={24}
                         height={24}
                         className="w-14 h-14 object-contain"
@@ -130,7 +130,7 @@ export const UpdateBankInfoDialog = ({
                         </span>
                         -
                         <span className="text-sm text-gray-600">
-                          {bank.name}
+                          {bank.shortName}
                         </span>
                       </div>
                     </div>

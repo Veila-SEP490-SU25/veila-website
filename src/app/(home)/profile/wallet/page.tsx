@@ -29,6 +29,7 @@ import {
   Calendar,
   DollarSign,
   CreditCard,
+  Edit,
 } from "lucide-react";
 import { IWallet } from "@/services/types";
 import { useLazyGetMyWalletQuery } from "@/services/apis";
@@ -36,6 +37,7 @@ import { useVietQR } from "@/hooks/use-vietqr";
 import { IBank } from "@/services/types/bank.type";
 import { formatPrice } from "@/lib/products-utils";
 import { UpdateBankInfoDialog } from "@/components/profile/wallet/update-bank-info-dialog";
+import Image from "next/image";
 
 export default function WalletPage() {
   const [wallet, setWallet] = useState<IWallet>();
@@ -87,8 +89,8 @@ export default function WalletPage() {
         {/* Balance Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="bg-gradient-to-r from-rose-600 to-rose-700 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+            <CardContent className="p-6 flex items-center h-full">
+              <div className="flex items-center justify-between w-full">
                 <div>
                   <p className="text-rose-100 text-sm">Số Dư Khả Dụng</p>
                   <p className="text-3xl font-bold">
@@ -101,8 +103,8 @@ export default function WalletPage() {
           </Card>
 
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+            <CardContent className="p-6 flex items-center h-full">
+              <div className="flex items-center justify-between w-full">
                 <div>
                   <p className="text-gray-600 text-sm">Đang Chờ Xử Lý</p>
                   <p className="text-2xl font-bold text-gray-900">
@@ -121,8 +123,33 @@ export default function WalletPage() {
                   <p className="text-gray-600 text-sm">Thông tin ngân hàng</p>
                   {userBank ? (
                     <div className="space-y-1">
-                      <p className="text-gray-900">{userBank.name}</p>
-                      <p className="text-gray-900">{wallet.bankNumber}</p>
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src={userBank.logo}
+                          alt={userBank.shortName}
+                          width={24}
+                          height={24}
+                          className="w-14 h-14 object-contain"
+                        />
+                        <div className="flex-1 gap-2">
+                          <p className="text-lg text-gray-600 font-semibold">
+                            {userBank.shortName}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {wallet.bankNumber}
+                          </p>
+                        </div>
+                      </div>
+                      <UpdateBankInfoDialog
+                        onSuccess={fetchMyWallet}
+                        wallet={wallet}
+                        trigger={
+                          <Button className="cursor-pointer w-max" variant="outline">
+                            <Edit className="h-4 w-4 mr-2" />
+                            Thay đổi ngân hàng
+                          </Button>
+                        }
+                      />
                     </div>
                   ) : (
                     <div className="space-y-2">
