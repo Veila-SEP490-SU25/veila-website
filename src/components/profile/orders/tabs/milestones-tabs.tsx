@@ -21,7 +21,7 @@ import {
   formatDateShort,
   getMilestoneStatusColor,
   getMilestoneStatusText,
-} from "@/lib/order-util";
+} from "@/lib/utils";
 import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
 
 interface MilestonesTabProps {

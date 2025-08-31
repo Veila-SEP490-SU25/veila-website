@@ -2,45 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Wallet,
-  Plus,
-  Minus,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Calendar,
-  DollarSign,
-  CreditCard,
-  Edit,
-  History,
-} from "lucide-react";
+import { Wallet, Calendar, Edit } from "lucide-react";
 import { IWallet } from "@/services/types";
 import { useLazyGetMyWalletQuery } from "@/services/apis";
 import { useVietQR } from "@/hooks/use-vietqr";
 import { IBank } from "@/services/types/bank.type";
-import { formatPrice } from "@/lib/products-utils";
+import { formatPrice, formatDateShort } from "@/lib/utils";
 import { UpdateBankInfoDialog } from "@/components/profile/wallet/update-bank-info-dialog";
 import Image from "next/image";
 import { useAuth } from "@/providers/auth.provider";
-import { formatDate, formatDateShort } from "@/lib/order-util";
 import { CreateWalletPINDialog } from "@/components/profile/wallet/create-wallet-pin-dialog";
 import { UpdateWalletPINDialog } from "@/components/profile/wallet/update-wallet-pin-dialog";
 import { TransactionHistoryTabs } from "@/components/profile/wallet/transaction-history-tabs";

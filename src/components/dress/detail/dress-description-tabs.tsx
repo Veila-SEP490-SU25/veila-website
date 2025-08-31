@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getImages } from "@/lib/products-utils";
+import { getImages } from "@/lib/utils";
 import { IDress } from "@/services/types";
 
 interface DressDescriptionTabsProps {

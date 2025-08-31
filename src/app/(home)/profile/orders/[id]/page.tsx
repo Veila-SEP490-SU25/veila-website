@@ -22,7 +22,7 @@ import {
   getStatusText,
   getTypeColor,
   getTypeText,
-} from "@/lib/order-util";
+} from "@/lib/utils";
 import { OrderProgressCard } from "@/components/profile/orders/order-progress-card";
 import { OrderDetailsTab } from "@/components/profile/orders/tabs/order-details-tabs";
 import { MilestonesTab } from "@/components/profile/orders/tabs/milestones-tabs";

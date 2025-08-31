@@ -7,7 +7,7 @@ import {
   getCoverImage,
   parseNumber,
   formatRating,
-} from "@/lib/products-utils";
+} from "@/lib/utils";
 import { IDress } from "@/services/types";
 import { Eye, ShoppingBag, Star, MapPin, Clock } from "lucide-react";
 import Link from "next/link";
@@ -49,7 +49,7 @@ export const DressCard = ({ dress }: DressProps) => {
   const shopLocation = dress.user?.shop?.address || "Chưa có địa chỉ";
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden bg-white border-0 shadow-md hover:shadow-2xl">
+    <Card className="group transition-all duration-300 overflow-hidden bg-white border-0 shadow-md hover:shadow-2xl">
       <div className="relative aspect-[3/4] overflow-hidden">
         <ImageWithFallback
           src={getCoverImage(dress.images)}

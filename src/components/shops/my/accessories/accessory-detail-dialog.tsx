@@ -23,7 +23,7 @@ import {
   accessoryStatusLabels,
   formatPrice,
   getImages,
-} from "@/lib/products-utils";
+} from "@/lib/utils";
 
 interface AccessoryDetailDialogProps {
   accessory: IAccessory;

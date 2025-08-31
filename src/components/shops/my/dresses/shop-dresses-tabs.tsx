@@ -32,7 +32,7 @@ import {
   dressStatusLabels,
   formatPrice,
   getCoverImage,
-} from "@/lib/products-utils";
+} from "@/lib/utils";
 import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetMyShopDressesQuery } from "@/services/apis";
 import { IDress } from "@/services/types";

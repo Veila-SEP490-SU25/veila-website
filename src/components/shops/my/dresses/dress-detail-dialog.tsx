@@ -31,7 +31,7 @@ import {
   dressStatusLabels,
   formatPrice,
   getImages,
-} from "@/lib/products-utils";
+} from "@/lib/utils";
 import { ImageGallery } from "@/components/image-gallery";
 
 interface DressDetailDialogProps {

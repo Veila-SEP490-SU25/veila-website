@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatPrice } from "@/lib/products-utils";
+import { formatPrice } from "@/lib/utils";
 import { useRequestWithdrawMutation } from "@/services/apis";
 import { IWallet } from "@/services/types";
 import { AlertCircleIcon, Minus } from "lucide-react";
