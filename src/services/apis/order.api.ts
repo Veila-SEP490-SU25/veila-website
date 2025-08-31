@@ -59,6 +59,15 @@ export interface ICreateComplaint {
   status: ComplaintStatus;
 }
 
+export interface ICheckoutOrder {
+  orderId: string;
+  otp: string;
+}
+
+export interface IGetOrderMilestone extends IPagination{
+  orderId: string;
+}
+
 export const orderApi = createApi({
   reducerPath: "orderApi",
   baseQuery: baseQueryWithRefresh,
@@ -128,18 +137,20 @@ export const orderApi = createApi({
       }),
     }),
 
-    checkoutOrder: builder.mutation<IItemResponse<IOrder>, string>({
-      query: (id) => ({
-        url: `orders/${id}/check-out`,
+    checkoutOrder: builder.mutation<IItemResponse<IOrder>, ICheckoutOrder>({
+      query: ({ orderId, otp }) => ({
+        url: `orders/${orderId}/check-out`,
         method: "PUT",
+        body: { otp },
       }),
     }),
 
     // Order Detail
-    getOrderMilestone: builder.query<IListResponse<IMilestone>, string>({
-      query: (id) => ({
-        url: `orders/${id}/milestones`,
+    getOrderMilestone: builder.query<IListResponse<IMilestone>, IGetOrderMilestone>({
+      query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
+        url: `orders/${orderId}/milestones`,
         method: "GET",
+        params: { page, size, sort, filter },
       }),
     }),
 

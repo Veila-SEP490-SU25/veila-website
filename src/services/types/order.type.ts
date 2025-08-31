@@ -14,10 +14,11 @@ import {
 } from "@/services/types";
 
 export enum OrderStatus {
-  PENDING = "PENDING",
-  IN_PROCESS = "IN_PROCESS",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
+  PENDING = 'PENDING',
+  PAYING = 'PAYING',
+  IN_PROCESS = 'IN_PROCESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum OrderType {

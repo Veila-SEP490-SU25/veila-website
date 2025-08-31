@@ -4,7 +4,7 @@ import {
   useCompleteTaskMutation,
   useLazyGetMilestoneTasksQuery,
 } from "@/services/apis";
-import { type ITask, TaskStatus } from "@/services/types";
+import { type ITask, TaskStatus, UserRole } from "@/services/types";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -18,6 +18,7 @@ import {
   ChevronDown,
   ChevronRight,
   Check,
+  Plus,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
+import { CreateTaskDialog } from "@/components/shops/detail/order/create-task-dialog";
+import { useAuth } from "@/providers/auth.provider";
 
 interface Props {
   milestoneId: string;
@@ -107,6 +110,7 @@ export const MilestoneTask = ({
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [isOpen, setIsOpen] = useState(autoExpand);
   const [getMilestoneTasks, { isLoading }] = useLazyGetMilestoneTasksQuery();
+  const { currentUser } = useAuth();
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -343,6 +347,22 @@ export const MilestoneTask = ({
               ))}
             </div>
 
+            {currentUser?.role === UserRole.SHOP && (
+              <CreateTaskDialog
+                milestoneId={milestoneId}
+                trigger={
+                  <Button
+                    className="w-full justify-start bg-transparent"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Thêm công việc
+                  </Button>
+                }
+                onSuccess={fetchTasks}
+              />
+            )}
+
             {/* Progress Summary */}
             <Card className="bg-gray-50/50">
               <CardContent className="p-4">
@@ -361,7 +381,22 @@ export const MilestoneTask = ({
             </Card>
           </div>
         ) : (
-          <Card>
+          <Card className="flex items-center justify-center">
+            {currentUser?.role === UserRole.SHOP && (
+              <CreateTaskDialog
+                milestoneId={milestoneId}
+                trigger={
+                  <Button
+                    className="w-fit justify-start bg-transparent"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Thêm công việc
+                  </Button>
+                }
+                onSuccess={fetchTasks}
+              />
+            )}
             <CardContent className="text-center py-8">
               <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
               <h3 className="text-lg font-semibold mb-2">Chưa có công việc</h3>
