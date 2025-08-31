@@ -341,7 +341,7 @@ export default function WalletPage() {
           </TabsContent>
 
           <TabsContent value="withdraw">
-            <WithdrawTabs wallet={wallet} />
+            <WithdrawTabs wallet={wallet} onWithdrawSuccess={fetchMyWallet} />
           </TabsContent>
         </Tabs>
       </div>
