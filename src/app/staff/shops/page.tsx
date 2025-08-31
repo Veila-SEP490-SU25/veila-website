@@ -68,7 +68,7 @@ export default function ShopsManagement() {
         filter,
         page: pageIndex,
         size: pageSize,
-        sort: "",
+        sort: "updatedAt:desc",
       }).unwrap();
       if (isSuccess(statusCode)) {
         setShops(items);

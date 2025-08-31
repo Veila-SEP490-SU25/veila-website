@@ -13,10 +13,14 @@ import {
   IService,
   IShop,
   IUpdateShopInfo,
+  ShopStatus,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
-
+export interface IUpdateShopStatus {
+  shopId: string;
+  status: ShopStatus;
+}
 
 export const shopApi = createApi({
   reducerPath: "shopApi",
@@ -141,7 +145,12 @@ export const shopApi = createApi({
       }),
     }),
 
-    
+    updateShopStatus: builder.mutation<IItemResponse<null>, IUpdateShopStatus>({
+      query: ({ shopId, status }) => ({
+        url: `shops/${shopId}/${status}`,
+        method: "PUT",
+      }),
+    }),
   }),
 });
 
@@ -163,4 +172,5 @@ export const {
   useRecreateShopMutation,
   useUpdateShopInfoMutation,
   useStaffHandleCreateShopMutation,
+  useUpdateShopStatusMutation,
 } = shopApi;
