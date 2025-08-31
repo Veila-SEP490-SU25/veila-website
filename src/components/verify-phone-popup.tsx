@@ -42,7 +42,7 @@ declare global {
 }
 
 export function VerifyPhonePopup() {
-  const { isOpen, returnUrl, closePopup } = useVerifyPhonePopup();
+  const { isOpen, closePopup } = useVerifyPhonePopup();
   const [result, setResult] = useState<ConfirmationResult>();
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -115,7 +115,7 @@ export function VerifyPhonePopup() {
       if (recaptchaVerifierRef.current) {
         try {
           recaptchaVerifierRef.current.clear();
-        } catch (clearError) {}
+        } catch {}
         recaptchaVerifierRef.current = null;
       }
 
@@ -383,7 +383,7 @@ export function VerifyPhonePopup() {
       } else {
         toast.error("Số điện thoại không hợp lệ.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi xác thực OTP.");
     }
   }, [result, otp, reloadProfile, closePopup]);

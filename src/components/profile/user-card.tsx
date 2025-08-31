@@ -6,18 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth.provider";
 import { useVerifyPhonePopup } from "@/hooks/use-verify-phone-popup";
 import { useCallback } from "react";
-
-export const UserCard = () => {
-  const { currentUser, isAuthenticated } = useAuth();
-  const router = useRouter();
-=======
-import { Skeleton } from "@/components/ui/skeleton";
 import { VerifyPhonePopup } from "@/components/verify-phone-popup";
 
 export const UserCard = () => {
-  const { currentUser, isAuthenticated } = useAuth();
+  const { currentUser } = useAuth();
   const { openPopup } = useVerifyPhonePopup();
->>>>>>> Stashed changes
 
   const goToPhoneVerify = useCallback(() => {
     openPopup();

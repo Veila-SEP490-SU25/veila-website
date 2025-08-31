@@ -26,7 +26,6 @@ export const getCoverImage = (images: string | null) => {
     return getPlaceholderImage(400, 600, "Veila Dress");
   }
   const imageUrl = images.split(",")[0];
-  // Check if it's a valid image URL
   if (!isValidImageUrl(imageUrl)) {
     return getPlaceholderImage(400, 600, "Veila Dress");
   }
@@ -92,13 +91,25 @@ export const getPlaceholderImage = (
   )}`;
 };
 
-/**
- * Check if image URL is valid and accessible
- */
 export const isValidImageUrl = (url: string): boolean => {
   if (!url) return false;
 
-  // Check for problematic domains
-  const problematicDomains = ["loremflickr.com", "picsum.photos"];
+  const problematicDomains = ["loremflickr.com"];
+
+  if (url.includes("picsum.photos")) {
+    return true;
+  }
+
   return !problematicDomains.some((domain) => url.includes(domain));
+};
+
+export const getFallbackImage = (width = 400, height = 300, index = 0) => {
+  const services = [
+    `https://via.placeholder.com/${width}x${height}/f3f4f6/9ca3af?text=Image`,
+    `https://picsum.photos/${width}/${height}?random=${Math.random()}`,
+    `https://dummyimage.com/${width}x${height}/f3f4f6/9ca3af&text=Image`,
+    `https://placehold.co/${width}x${height}/f3f4f6/9ca3af?text=Image`,
+  ];
+
+  return services[index] || services[0];
 };

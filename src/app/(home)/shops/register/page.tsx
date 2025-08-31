@@ -509,74 +509,6 @@ export default function ShopRegisterPage() {
     );
   }
 
-<<<<<<< Updated upstream
-=======
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "PENDING":
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-            <Clock className="h-3 w-3 mr-1" />
-            Đang xem xét
-          </Badge>
-        );
-      case "ACTIVE":
-        return (
-          <Badge className="bg-green-100 text-green-800 border-green-200">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Đang hoạt động
-          </Badge>
-        );
-      case "INACTIVE":
-        return (
-          <Badge className="bg-red-100 text-red-800 border-red-200">
-            <AlertCircle className="h-3 w-3 mr-1" />
-            Tạm ngưng hoạt động
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-gray-100 text-gray-800 border-gray-200">
-            <Clock className="h-3 w-3 mr-1" />
-            {status}
-          </Badge>
-        );
-    }
-  };
-
-  const getLicenseStatusBadge = (status: string) => {
-    switch (status) {
-      case "PENDING":
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-            <Clock className="h-3 w-3 mr-1" />
-            Đang xem xét
-          </Badge>
-        );
-      case "ACTIVE":
-        return (
-          <Badge className="bg-green-100 text-green-800 border-green-200">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Đang hoạt động
-          </Badge>
-        );
-      case "REJECTED":
-        return (
-          <Badge className="bg-red-100 text-red-800 border-red-200">
-            <AlertCircle className="h-3 w-3 mr-1" />
-            Bị từ chối
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-            <Clock className="h-3 w-3 mr-1" />
-            {status}
-          </Badge>
-        );
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
@@ -885,7 +817,6 @@ export default function ShopRegisterPage() {
     );
   }
 
->>>>>>> Stashed changes
   if (isSubmitted) {
     return (
       <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8 py-16">
