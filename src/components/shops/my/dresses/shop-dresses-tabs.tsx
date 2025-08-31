@@ -177,7 +177,11 @@ export const ShopDressesTabs = () => {
                       <TableCell>
                         {dress.isSellable && dress.sellPrice ? (
                           <span className="font-medium">
-                            {formatPrice(dress.sellPrice)}
+                            {formatPrice(
+                              typeof dress.sellPrice === "string"
+                                ? parseFloat(dress.sellPrice) || 0
+                                : dress.sellPrice || 0
+                            )}
                           </span>
                         ) : (
                           <span className="text-muted-foreground">
@@ -188,7 +192,11 @@ export const ShopDressesTabs = () => {
                       <TableCell>
                         {dress.isRentable && dress.rentalPrice ? (
                           <span className="font-medium">
-                            {formatPrice(dress.rentalPrice)}
+                            {formatPrice(
+                              typeof dress.rentalPrice === "string"
+                                ? parseFloat(dress.rentalPrice) || 0
+                                : dress.rentalPrice || 0
+                            )}
                           </span>
                         ) : (
                           <span className="text-muted-foreground">

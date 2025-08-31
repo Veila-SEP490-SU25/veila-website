@@ -15,7 +15,7 @@ import {
   useLazyGetWardsQuery,
 } from "@/services/apis";
 import type { IDistrict, IProvince, IWard } from "@/services/types";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 interface LocationInputProps {
   location: string;
@@ -34,141 +34,17 @@ export const LocationInput = ({
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>("");
   const [selectedDistrictId, setSelectedDistrictId] = useState<string>("");
   const [selectedWardId, setSelectedWardId] = useState<string>("");
-  const [isInitialized, setIsInitialized] = useState(false);
-  const isParsingRef = useRef(false);
+  const [isLoadingProvinces, setIsLoadingProvinces] = useState(false);
+  const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
+  const [isLoadingWards, setIsLoadingWards] = useState(false);
+
+  // Use ref to store setLocation function to avoid infinite loop
+  const setLocationRef = useRef(setLocation);
+  setLocationRef.current = setLocation;
 
   const [fetchProvinces] = useLazyGetProvincesQuery();
   const [fetchDistricts] = useLazyGetDistrictsQuery();
   const [fetchWards] = useLazyGetWardsQuery();
-
-  // Parse existing location when component mounts (chỉ chạy 1 lần)
-  useEffect(() => {
-    if (isParsingRef.current || !location || provinces.length === 0) return;
-
-    isParsingRef.current = true;
-
-    try {
-      // Tìm province từ location hiện tại
-      const province = provinces.find((p) => location.includes(p.name));
-      if (province) {
-        setSelectedProvinceId(province.id);
-      }
-    } finally {
-      // Đánh dấu đã initialized sau khi parse xong
-      setIsInitialized(true);
-    }
-  }, [location, provinces]);
-
-  // Parse district khi province được chọn
-  useEffect(() => {
-    if (!selectedProvinceId || districts.length === 0) return;
-
-    const district = districts.find((d) => location?.includes(d.name));
-    if (district) {
-      setSelectedDistrictId(district.id);
-    }
-  }, [selectedProvinceId, districts, location]);
-
-  // Parse ward khi district được chọn
-  useEffect(() => {
-    if (!selectedDistrictId || wards.length === 0) return;
-
-    const ward = wards.find((w) => location?.includes(w.name));
-    if (ward) {
-      setSelectedWardId(ward.id);
-    }
-  }, [selectedDistrictId, wards, location]);
-
-  // Parse detail address khi tất cả đã được set
-  useEffect(() => {
-    if (
-      !selectedProvinceId ||
-      !selectedDistrictId ||
-      !selectedWardId ||
-      isParsingRef.current
-    )
-      return;
-
-    const province =
-      provinces.find((p) => p.id === selectedProvinceId)?.name || "";
-    const district =
-      districts.find((d) => d.id === selectedDistrictId)?.name || "";
-    const ward = wards.find((w) => w.id === selectedWardId)?.name || "";
-
-    if (province && district && ward && location) {
-      let detailAddr = location;
-
-      if (province) {
-        detailAddr = detailAddr
-          .replace(
-            new RegExp(province.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-            ""
-          )
-          .trim();
-      }
-      if (district) {
-        detailAddr = detailAddr
-          .replace(
-            new RegExp(district.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-            ""
-          )
-          .trim();
-      }
-      if (ward) {
-        detailAddr = detailAddr
-          .replace(
-            new RegExp(ward.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-            ""
-          )
-          .trim();
-      }
-
-      // Loại bỏ dấu phẩy thừa và khoảng trắng
-      detailAddr = detailAddr.replace(/^[,,\s]+/, "").replace(/[,,\s]+$/, "");
-      detailAddr = detailAddr.replace(/,\s*,/g, ",").trim();
-
-      // Chỉ set nếu detail address có ý nghĩa và không phải là chuỗi rỗng hoặc chỉ có dấu phẩy
-      if (
-        detailAddr &&
-        detailAddr.length > 2 &&
-        detailAddr !== detailAddress &&
-        !/^[,,\s]+$/.test(detailAddr)
-      ) {
-        setDetailAddress(detailAddr);
-      }
-    }
-  }, [
-    selectedProvinceId,
-    selectedDistrictId,
-    selectedWardId,
-    provinces,
-    districts,
-    wards,
-    location,
-    detailAddress,
-  ]);
-
-  const handleSelectProvinceId = (provinceId: string) => {
-    setSelectedProvinceId(provinceId);
-    setSelectedDistrictId("");
-    setSelectedWardId("");
-    setDistricts([]);
-    setWards([]);
-    setDetailAddress(""); // Reset detail address
-    // Reset parsing flag khi user chọn thủ công
-    isParsingRef.current = false;
-  };
-
-  const handleSelectDistrictId = (districtId: string) => {
-    setSelectedDistrictId(districtId);
-    setSelectedWardId("");
-    setWards([]);
-    setDetailAddress(""); // Reset detail address
-    // Reset parsing flag khi user chọn thủ công
-    isParsingRef.current = false;
-  };
-
-  const [isLoadingProvinces, setIsLoadingProvinces] = useState(false);
 
   // Load provinces on mount
   useEffect(() => {
@@ -181,23 +57,14 @@ export const LocationInput = ({
           query: "",
         }).unwrap();
         setProvinces(data);
-
-        // Nếu không có location, set initialized ngay
-        if (!location) {
-          setIsInitialized(true);
-        }
       } catch (error) {
         console.error("Failed to load provinces:", error);
-        // Vẫn set initialized để tránh infinite loop
-        setIsInitialized(true);
       } finally {
         setIsLoadingProvinces(false);
       }
     };
     loadProvinces();
-  }, [fetchProvinces, location]);
-
-  const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
+  }, [fetchProvinces]);
 
   // Load districts when province changes
   useEffect(() => {
@@ -222,8 +89,6 @@ export const LocationInput = ({
     loadDistricts();
   }, [selectedProvinceId, fetchDistricts]);
 
-  const [isLoadingWards, setIsLoadingWards] = useState(false);
-
   // Load wards when district changes
   useEffect(() => {
     const loadWards = async () => {
@@ -247,10 +112,8 @@ export const LocationInput = ({
     loadWards();
   }, [selectedDistrictId, fetchWards]);
 
-  // Update location when any field changes (chỉ khi đã initialized và không đang parse)
-  useEffect(() => {
-    if (!isInitialized || isParsingRef.current) return;
-
+  // Update location when any field changes
+  const updateLocation = useCallback(() => {
     const province = selectedProvinceId
       ? provinces.find((p) => p.id === selectedProvinceId)?.name
       : "";
@@ -264,8 +127,8 @@ export const LocationInput = ({
     const parts = [detailAddress, ward, district, province].filter(Boolean);
     const fullAddress = parts.join(", ");
 
-    if (fullAddress && fullAddress !== location) {
-      setLocation(fullAddress);
+    if (fullAddress) {
+      setLocationRef.current(fullAddress);
     }
   }, [
     detailAddress,
@@ -275,10 +138,35 @@ export const LocationInput = ({
     provinces,
     districts,
     wards,
-    location,
-    isInitialized,
-    setLocation,
   ]);
+
+  useEffect(() => {
+    updateLocation();
+  }, [updateLocation]);
+
+  const handleSelectProvinceId = (provinceId: string) => {
+    setSelectedProvinceId(provinceId);
+    setSelectedDistrictId("");
+    setSelectedWardId("");
+    setDistricts([]);
+    setWards([]);
+    setDetailAddress("");
+  };
+
+  const handleSelectDistrictId = (districtId: string) => {
+    setSelectedDistrictId(districtId);
+    setSelectedWardId("");
+    setWards([]);
+    setDetailAddress("");
+  };
+
+  const handleSelectWardId = (wardId: string) => {
+    setSelectedWardId(wardId);
+  };
+
+  const handleDetailAddressChange = (value: string) => {
+    setDetailAddress(value);
+  };
 
   return (
     <div className="w-full space-y-6">
@@ -356,11 +244,7 @@ export const LocationInput = ({
           </Label>
           <Select
             value={selectedWardId}
-            onValueChange={(wardId) => {
-              setSelectedWardId(wardId);
-              // Reset parsing flag khi user chọn thủ công
-              isParsingRef.current = false;
-            }}
+            onValueChange={handleSelectWardId}
             disabled={!selectedDistrictId}
           >
             <SelectTrigger className="w-full disabled:opacity-50 disabled:cursor-not-allowed">
@@ -395,11 +279,7 @@ export const LocationInput = ({
             placeholder="Số nhà, tên đường..."
             value={detailAddress}
             disabled={!selectedWardId}
-            onChange={(e) => {
-              setDetailAddress(e.target.value);
-              // Reset parsing flag khi user thay đổi detail address
-              isParsingRef.current = true; // Disable parse khi user đang nhập
-            }}
+            onChange={(e) => handleDetailAddressChange(e.target.value)}
           />
         </div>
       </div>

@@ -134,7 +134,7 @@ export function DeleteDressDialog({
                           Giá bán
                         </div>
                         <div className="text-xl font-bold text-green-600">
-                          {formatPrice(dress.sellPrice)}
+                          {formatPrice(typeof dress.sellPrice === 'string' ? parseFloat(dress.sellPrice) || 0 : dress.sellPrice || 0)}
                         </div>
                       </CardContent>
                     </Card>
@@ -146,7 +146,7 @@ export function DeleteDressDialog({
                           Giá thuê
                         </div>
                         <div className="text-xl font-bold text-blue-600">
-                          {formatPrice(dress.rentalPrice)}
+                          {formatPrice(typeof dress.rentalPrice === 'string' ? parseFloat(dress.rentalPrice) || 0 : dress.rentalPrice || 0)}
                         </div>
                       </CardContent>
                     </Card>

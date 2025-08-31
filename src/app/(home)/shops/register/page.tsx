@@ -33,7 +33,11 @@ import Image from "next/image";
 import { ImagesUpload } from "@/components/images-upload";
 import { LocationInput } from "@/components/location-input";
 import { ICreateShop, IShop } from "@/services/types";
-import { useCreateShopMutation, useLazyGetMyShopQuery } from "@/services/apis";
+import {
+  useCreateShopMutation,
+  useRecreateShopMutation,
+  useLazyGetMyShopQuery,
+} from "@/services/apis";
 import { toast } from "sonner";
 
 export default function ShopRegisterPage() {
@@ -47,11 +51,12 @@ export default function ShopRegisterPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [shopInfo, setShopInfo] = useState<IShop | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   const [createShop, { isLoading: isSubmitting }] = useCreateShopMutation();
+  const [recreateShop, { isLoading: isRecreating }] = useRecreateShopMutation();
   const [getMyShop] = useLazyGetMyShopQuery();
 
-  // Check shop status on component mount
   useEffect(() => {
     const checkShopStatus = async () => {
       try {
@@ -60,7 +65,6 @@ export default function ShopRegisterPage() {
           setShopInfo(item);
         }
       } catch {
-        // 404 is expected when no shop exists
       } finally {
         setIsLoading(false);
       }
@@ -80,25 +84,53 @@ export default function ShopRegisterPage() {
     e.preventDefault();
 
     try {
-      const { statusCode, message } = await createShop(shopData).unwrap();
-      if (statusCode === 201) {
+      const isRejected = shopInfo?.license?.status === "REJECTED";
+
+      const response = isRejected
+        ? await recreateShop(shopData).unwrap()
+        : await createShop(shopData).unwrap();
+
+      if (
+        response &&
+        (response.statusCode === 202 ||
+          response.statusCode === 200 ||
+          response.statusCode === 201)
+      ) {
         setIsSubmitted(true);
-        toast.success("Đăng ký mở shop thành công!", {
-          description: "Chúng tôi sẽ xem xét đơn đăng ký của bạn.",
-        });
-        // Refresh shop info after successful registration
-        const { statusCode: refreshStatus, item } = await getMyShop().unwrap();
-        if (refreshStatus === 200 && item) {
-          setShopInfo(item);
+        setIsEditing(false);
+
+        toast.success(
+          isRejected
+            ? "Cập nhật đơn đăng ký thành công!"
+            : "Đăng ký mở shop thành công!",
+          {
+            description: "Chúng tôi sẽ xem xét đơn đăng ký của bạn.",
+          }
+        );
+
+        try {
+          const refreshResponse = await getMyShop().unwrap();
+          if (refreshResponse.statusCode === 200 && refreshResponse.item) {
+            setShopInfo(refreshResponse.item);
+          }
+        } catch (refreshError) {
+          console.error("Failed to refresh shop info:", refreshError);
         }
       } else {
-        toast.error("Đăng ký mở shop thất bại. Vui lòng thử lại.", {
-          description: message,
-        });
+        const errorMessage = response?.message || "Không xác định được lỗi";
+        toast.error(
+          isRejected
+            ? "Cập nhật đơn đăng ký thất bại. Vui lòng thử lại."
+            : "Đăng ký mở shop thất bại. Vui lòng thử lại.",
+          {
+            description: errorMessage,
+          }
+        );
       }
     } catch (error) {
-      toast.error("Đã xảy ra lỗi khi đăng ký mở shop.", {
-        description: "Vui lòng đợi trước khi đăng ký lại.",
+      console.error("Submit error:", error);
+      toast.error("Đã xảy ra lỗi khi gửi đơn đăng ký.", {
+        description: "Vui lòng đợi trước khi thử lại.",
       });
     }
   };
@@ -161,7 +193,7 @@ export default function ShopRegisterPage() {
         );
       default:
         return (
-          <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
             <Clock className="h-3 w-3 mr-1" />
             {status}
           </Badge>
@@ -189,7 +221,7 @@ export default function ShopRegisterPage() {
     );
   }
 
-  if (shopInfo) {
+  if (shopInfo && !isEditing) {
     return (
       <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -261,7 +293,6 @@ export default function ShopRegisterPage() {
               </CardContent>
             </Card>
 
-            {/* License Information */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -330,12 +361,6 @@ export default function ShopRegisterPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-rose-600">
-                      {shopInfo.reputation}
-                    </div>
-                    <div className="text-sm text-gray-600">Điểm uy tín</div>
-                  </div>
-                  <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">
                       {shopInfo.isVerified ? "Đã xác minh" : "Chưa xác minh"}
                     </div>
@@ -354,9 +379,7 @@ export default function ShopRegisterPage() {
             </Card>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Status Information */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Trạng thái hiện tại</CardTitle>
@@ -420,7 +443,6 @@ export default function ShopRegisterPage() {
               </CardContent>
             </Card>
 
-            {/* Actions */}
             {shopInfo.status === "ACTIVE" && (
               <Card>
                 <CardHeader>
@@ -432,6 +454,35 @@ export default function ShopRegisterPage() {
                     className="w-full bg-rose-600 hover:bg-rose-700"
                   >
                     <Link href="/shops/my">Quản lý cửa hàng</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href="/profile">Về trang cá nhân</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {shopInfo.license?.status === "REJECTED" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Hành động</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setShopData({
+                        name: shopInfo.name,
+                        phone: shopInfo.phone,
+                        email: shopInfo.email,
+                        address: shopInfo.address,
+                        licenseImages: (shopInfo.license as any)?.images || "",
+                      });
+                      console.log("isEditing set to true");
+                    }}
+                    className="w-full bg-rose-600 hover:bg-rose-700"
+                  >
+                    Chỉnh sửa đơn đăng ký
                   </Button>
                   <Button asChild variant="outline" className="w-full">
                     <Link href="/profile">Về trang cá nhân</Link>
@@ -458,7 +509,6 @@ export default function ShopRegisterPage() {
     );
   }
 
-  // Show registration form if no shop exists
   if (isSubmitted) {
     return (
       <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8 py-16">
@@ -468,12 +518,14 @@ export default function ShopRegisterPage() {
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              Đăng ký cửa hàng thành công!
+              {isEditing
+                ? "Cập nhật đơn đăng ký thành công!"
+                : "Đăng ký cửa hàng thành công!"}
             </h1>
             <p className="text-gray-600 mb-8">
-              Đăng ký cửa hàng của bạn đã được gửi thành công. Đội ngũ của chúng
-              tôi sẽ xem xét đơn đăng ký và phản hồi cho bạn trong vòng 2-3 ngày
-              làm việc.
+              {isEditing
+                ? "Đơn đăng ký của bạn đã được cập nhật thành công. Đội ngũ của chúng tôi sẽ xem xét lại và phản hồi cho bạn trong vòng 2-3 ngày làm việc."
+                : "Đăng ký cửa hàng của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xem xét đơn đăng ký và phản hồi cho bạn trong vòng 2-3 ngày làm việc."}
             </p>
             <div className="space-y-4">
               <div className="bg-gray-50 rounded-lg p-4">
@@ -506,60 +558,92 @@ export default function ShopRegisterPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-      {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4"></div>
+        <div className="flex items-center gap-4 mb-4">
+          {isEditing && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditing(false);
+                setShopData({
+                  name: "",
+                  phone: "",
+                  email: "",
+                  address: "",
+                  licenseImages: "",
+                });
+              }}
+              className="flex items-center gap-2"
+            >
+              ← Quay lại
+            </Button>
+          )}
+        </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Đăng ký cửa hàng của bạn
+          {isEditing
+            ? "Cập nhật đơn đăng ký cửa hàng"
+            : "Đăng ký cửa hàng của bạn"}
         </h1>
         <p className="text-gray-600">
-          Tham gia Veila với tư cách là nhà cung cấp và bắt đầu cung cấp dịch vụ
-          váy cưới cho các cô dâu trên toàn thế giới
+          {isEditing
+            ? "Cập nhật thông tin đơn đăng ký và gửi lại để được xem xét"
+            : "Tham gia Veila với tư cách là nhà cung cấp và bắt đầu cung cấp dịch vụ váy cưới cho các cô dâu trên toàn thế giới"}
         </p>
       </div>
 
-      {/* Benefits Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="border-rose-200 bg-rose-50">
-          <CardContent className="p-6 text-center">
-            <Store className="h-8 w-8 text-rose-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">
-              Mở rộng tầm với
-            </h3>
-            <p className="text-sm text-gray-600">
-              Kết nối với các cô dâu từ khắp nơi trên thế giới
-            </p>
-          </CardContent>
-        </Card>
+      {!isEditing && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="border-rose-200 bg-rose-50">
+            <CardContent className="p-6 text-center">
+              <Store className="h-8 w-8 text-rose-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Mở rộng tầm với
+              </h3>
+              <p className="text-sm text-gray-600">
+                Kết nối với các cô dâu từ khắp nơi trên thế giới
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card className="border-blue-200 bg-blue-50">
-          <CardContent className="p-6 text-center">
-            <FileText className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">
-              Quản lý dễ dàng
-            </h3>
-            <p className="text-sm text-gray-600">
-              Quản lý đơn hàng, kho hàng và khách hàng tại một nơi
-            </p>
-          </CardContent>
-        </Card>
+          <Card className="border-blue-200 bg-blue-50">
+            <CardContent className="p-6 text-center">
+              <FileText className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Quản lý dễ dàng
+              </h3>
+              <p className="text-sm text-gray-600">
+                Quản lý đơn hàng, kho hàng và khách hàng tại một nơi
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card className="border-green-200 bg-green-50">
-          <CardContent className="p-6 text-center">
-            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-2">
-              Nền tảng đáng tin cậy
-            </h3>
-            <p className="text-sm text-gray-600">
-              Tham gia mạng lưới các nhà cung cấp chất lượng đã được xác minh
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+          <Card className="border-green-200 bg-green-50">
+            <CardContent className="p-6 text-center">
+              <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Nền tảng đáng tin cậy
+              </h3>
+              <p className="text-sm text-gray-600">
+                Tham gia mạng lưới các nhà cung cấp chất lượng đã được xác minh
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Form */}
         <div className="lg:col-span-2">
+          {isEditing &&
+            shopInfo &&
+            (shopInfo as IShop).license?.rejectReason && (
+              <Alert className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>Lý do từ chối:</strong>{" "}
+                  {(shopInfo as IShop).license?.rejectReason}
+                </AlertDescription>
+              </Alert>
+            )}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -573,7 +657,6 @@ export default function ShopRegisterPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Shop Name */}
                 <div className="space-y-2">
                   <Label htmlFor="name" className="flex items-center gap-2">
                     <Store className="h-4 w-4" />
@@ -588,7 +671,6 @@ export default function ShopRegisterPage() {
                   />
                 </div>
 
-                {/* Contact Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="flex items-center gap-2">
@@ -625,7 +707,6 @@ export default function ShopRegisterPage() {
                   </div>
                 </div>
 
-                {/* Address */}
                 <div className="space-y-2">
                   <Label htmlFor="address" className="flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
@@ -639,7 +720,6 @@ export default function ShopRegisterPage() {
                   />
                 </div>
 
-                {/* License Upload */}
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <Camera className="h-4 w-4" />
@@ -653,12 +733,12 @@ export default function ShopRegisterPage() {
                   />
                 </div>
 
-                {/* Submit Button */}
                 <div className="flex gap-4">
                   <Button
                     type="submit"
                     disabled={
                       isSubmitting ||
+                      isRecreating ||
                       !shopData.name ||
                       !shopData.phone ||
                       !shopData.email ||
@@ -667,7 +747,7 @@ export default function ShopRegisterPage() {
                     }
                     className="flex-1 bg-rose-600 hover:bg-rose-700"
                   >
-                    {isSubmitting ? (
+                    {isSubmitting || isRecreating ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Đang gửi...
@@ -675,19 +755,36 @@ export default function ShopRegisterPage() {
                     ) : (
                       <>
                         <CheckCircle className="h-4 w-4 mr-2" />
-                        Gửi đăng ký
+                        {isEditing ? "Cập nhật đơn đăng ký" : "Gửi đăng ký"}
                       </>
                     )}
                   </Button>
+                  {isEditing && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setShopData({
+                          name: "",
+                          phone: "",
+                          email: "",
+                          address: "",
+                          licenseImages: "",
+                        });
+                      }}
+                      className="px-6"
+                    >
+                      Hủy chỉnh sửa
+                    </Button>
+                  )}
                 </div>
               </form>
             </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Requirements */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Yêu cầu</CardTitle>
@@ -725,7 +822,6 @@ export default function ShopRegisterPage() {
             </CardContent>
           </Card>
 
-          {/* Process Timeline */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Quy trình phê duyệt</CardTitle>
@@ -761,7 +857,6 @@ export default function ShopRegisterPage() {
             </CardContent>
           </Card>
 
-          {/* Support */}
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
