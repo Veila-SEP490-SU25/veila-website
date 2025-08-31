@@ -40,3 +40,18 @@ export const getVeilaServerConfig = (): string => {
 
   return apiUrl;
 };
+
+
+export const getVietQRConfig = () => {
+  const clientId = process.env.NEXT_PUBLIC_VIETQR_CLIENT_ID;
+  const apiKey = process.env.NEXT_PUBLIC_VIETQR_API_KEY;
+
+  if (!clientId || !apiKey) {
+    throw new Error("Missing VietQR configuration in environment variables");
+  }
+
+  return {
+    clientId,
+    apiKey,
+  };
+};
