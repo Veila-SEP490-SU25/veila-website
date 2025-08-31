@@ -67,7 +67,7 @@ const store = configureStore({
       userApi.middleware,
       walletApi.middleware,
       localeApi.middleware,
-      membershipApi.middleware,
+      membershipApi.middleware
     ),
 });
 

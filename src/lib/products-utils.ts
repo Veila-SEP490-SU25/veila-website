@@ -23,16 +23,28 @@ export const dressStatusLabels = {
 
 export const getCoverImage = (images: string | null) => {
   if (!images) {
-    return "/placeholder.svg?height=400&width=400";
+    return getPlaceholderImage(400, 600, "Veila Dress");
   }
-  return images.split(",")[0];
+  const imageUrl = images.split(",")[0];
+  // Check if it's a valid image URL
+  if (!isValidImageUrl(imageUrl)) {
+    return getPlaceholderImage(400, 600, "Veila Dress");
+  }
+  return imageUrl;
 };
 
 export const getImages = (images: string | null) => {
   if (!images) {
-    return ["/placeholder.svg?height=400&width=400"];
+    return [getPlaceholderImage(400, 600, "Veila Dress")];
   }
-  return images.split(",").map((image) => image.trim());
+  return images.split(",").map((image) => {
+    const trimmedImage = image.trim();
+    // Check if it's a valid image URL
+    if (!isValidImageUrl(trimmedImage)) {
+      return getPlaceholderImage(400, 600, "Veila Dress");
+    }
+    return trimmedImage;
+  });
 };
 
 export const accessoryStatusColors = {
@@ -47,4 +59,46 @@ export const accessoryStatusLabels = {
   OUT_OF_STOCK: "Hết hàng",
   DISCONTINUED: "Ngừng kinh doanh",
   MAINTENANCE: "Bảo trì",
+};
+
+export const parseNumber = (
+  value: number | string | null | undefined
+): number => {
+  if (value === null || value === undefined) return 0;
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  return 0;
+};
+
+export const formatRating = (
+  rating: number | string | null | undefined
+): string => {
+  return parseNumber(rating).toFixed(1);
+};
+
+/**
+ * Generate placeholder image URL with custom dimensions
+ */
+export const getPlaceholderImage = (
+  width: number = 400,
+  height: number = 600,
+  text: string = "Veila+Dress"
+) => {
+  return `https://via.placeholder.com/${width}x${height}/f3f4f6/9ca3af?text=${encodeURIComponent(
+    text
+  )}`;
+};
+
+/**
+ * Check if image URL is valid and accessible
+ */
+export const isValidImageUrl = (url: string): boolean => {
+  if (!url) return false;
+
+  // Check for problematic domains
+  const problematicDomains = ["loremflickr.com", "picsum.photos"];
+  return !problematicDomains.some((domain) => url.includes(domain));
 };

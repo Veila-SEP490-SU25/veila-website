@@ -23,11 +23,11 @@ export interface IDress extends IItem {
   length: string | null;
   neckline: string | null;
   sleeve: string | null;
-  sellPrice: number;
-  rentalPrice: number;
+  sellPrice: number | string;
+  rentalPrice: number | string;
   isSellable: boolean;
   isRentable: boolean;
-  ratingAverage: number;
+  ratingAverage: number | string;
   ratingCount: number;
   status: DressStatus;
   feedbacks: IFeedback[];

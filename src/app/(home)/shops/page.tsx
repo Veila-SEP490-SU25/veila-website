@@ -30,6 +30,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RequireAuth } from "@/components/auth/require-auth";
+import { ShopCardSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function ShopPage() {
   const router = useRouter();

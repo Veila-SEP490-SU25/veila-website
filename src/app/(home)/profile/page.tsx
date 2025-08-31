@@ -23,9 +23,27 @@ import { UserCard } from "@/components/profile/user-card";
 import { WalletCard } from "@/components/profile/wallet-card";
 import { MyOrders } from "@/components/profile/orders/my-orders";
 import { ProfileEditForm } from "@/components/profile/profile-edit-form";
+import { ProfileStatsSkeleton } from "@/components/ui/loading-skeleton";
+import { useAuth } from "@/providers/auth.provider";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { isAuthenticated } = useAuth();
+
+  // Loading state
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        <ProfileStatsSkeleton />
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="h-32 bg-gray-100 rounded-lg animate-pulse" />
+            <div className="h-32 bg-gray-100 rounded-lg animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">

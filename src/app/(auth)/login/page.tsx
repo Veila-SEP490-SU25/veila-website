@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginSchema, LoginSchema } from "@/lib/validations";
 import { useAuth } from "@/providers/auth.provider";
-import { Mail, EyeOff, Eye, Lock } from "lucide-react";
+import { Mail, EyeOff, Eye, Lock, ArrowLeft } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,6 +48,16 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
+      <Link href="/" className="absolute top-6 left-6">
+        <Button
+          variant="ghost"
+          className="text-gray-600 hover:text-gray-800 hover:bg-white/50"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Quay về trang chủ
+        </Button>
+      </Link>
+
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <TextLogo />

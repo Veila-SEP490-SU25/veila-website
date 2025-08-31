@@ -4,9 +4,7 @@ import { usePaging } from "@/providers/paging.provider";
 export const PagingComponent = () => {
   const {
     pageIndex,
-    pageSize,
     totalPages,
-    totalItems,
     hasNext,
     hasPrevious,
     goNext,
@@ -29,7 +27,6 @@ export const PagingComponent = () => {
           Trước
         </Button>
 
-        {/* Page numbers */}
         <div className="hidden md:flex gap-1">
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             const pageNum = pageIndex - 2 + i;

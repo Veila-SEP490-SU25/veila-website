@@ -28,25 +28,25 @@ export const Nav: React.FC = () => {
       <nav className="hidden md:flex items-center space-x-8">
         <Link
           href="/"
-          className="text-gray-700 hover:text-crimson-700 transition-colors"
+          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
         >
           Trang chủ
         </Link>
         <Link
           href="/browse"
-          className="text-gray-700 hover:text-crimson-700 transition-colors"
+          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
         >
           Khám phá Váy Cưới
         </Link>
         <Link
           href="/shops"
-          className="text-gray-700 hover:text-crimson-700 transition-colors"
+          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
         >
           Tìm Cửa Hàng
         </Link>
         <Link
           href="/blog"
-          className="text-gray-700 hover:text-crimson-700 transition-colors"
+          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
         >
           Bài Viết
         </Link>
@@ -55,14 +55,14 @@ export const Nav: React.FC = () => {
             {isCustomer ? (
               <Link
                 href="/shops/register"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
+                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
                 Đăng Ký Cửa Hàng
               </Link>
             ) : isShop ? (
               <Link
                 href="/shops/my"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
+                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
                 Cửa Hàng Của Tôi
               </Link>
@@ -72,7 +72,7 @@ export const Nav: React.FC = () => {
         {isAuthenticated && (
           <Link
             href="/chat"
-            className="text-gray-700 hover:text-crimson-700 transition-colors relative"
+            className="text-gray-700 hover:text-crimson-700 transition-colors relative text-lg font-semibold"
           >
             Tin Nhắn
             <UnreadBadge />
@@ -94,25 +94,25 @@ export const Nav: React.FC = () => {
             <div className="flex flex-col space-y-4 mt-8 p-3">
               <Link
                 href="/"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
+                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
                 Trang chủ
               </Link>
               <Link
                 href="/browse"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
+                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
                 Duyệt Váy Cưới
               </Link>
               <Link
                 href="/shops"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
+                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
                 Tìm Cửa Hàng
               </Link>
               <Link
                 href="/blog"
-                className="text-gray-700 hover:text-crimson-700 transition-colors"
+                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
                 Bài Viết
               </Link>
@@ -121,14 +121,14 @@ export const Nav: React.FC = () => {
                   {isCustomer ? (
                     <Link
                       href="/shops/register"
-                      className="text-gray-700 hover:text-crimson-700 transition-colors"
+                      className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
                     >
                       Đăng Ký Cửa Hàng
                     </Link>
                   ) : isShop ? (
                     <Link
                       href="/shops/my"
-                      className="text-gray-700 hover:text-crimson-700 transition-colors"
+                      className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
                     >
                       Cửa Hàng Của Tôi
                     </Link>
@@ -138,7 +138,7 @@ export const Nav: React.FC = () => {
               {isAuthenticated && (
                 <Link
                   href="/chat"
-                  className="text-gray-700 hover:text-crimson-700 transition-colors relative"
+                  className="text-gray-700 hover:text-crimson-700 transition-colors relative text-lg font-semibold"
                 >
                   <MessageCircle className="h-4 w-4 inline mr-1" />
                   Tin Nhắn

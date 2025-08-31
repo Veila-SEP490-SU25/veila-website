@@ -6,15 +6,32 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth.provider";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const UserCard = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
   const router = useRouter();
 
   const goToPhoneVerify = useCallback(() => {
     const returnUrl = encodeURIComponent(window.location.href);
     router.push(`/verify-phone?returnUrl=${returnUrl}`);
   }, [router]);
+
+  if (!isAuthenticated) {
+    return (
+      <Card className="w-full h-full">
+        <CardContent className="p-6">
+          <div className="grid items-center space-x-4 grid-cols-5">
+            <Skeleton className="w-16 h-16 rounded-full col-span-1" />
+            <div className="col-span-4 space-y-2">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return currentUser ? (
     <Card className="w-full h-full">

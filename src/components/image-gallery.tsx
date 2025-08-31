@@ -21,6 +21,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
         width={80}
         height={80}
         className="rounded-lg object-cover shrink-0 w-full h-full"
+        style={{ height: "auto" }}
       />
     );
   }
@@ -33,6 +34,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
         width={80}
         height={80}
         className="rounded-lg object-cover shrink-0 w-full h-full"
+        style={{ height: "auto" }}
       />
     );
   }
@@ -45,6 +47,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
         width={80}
         height={80}
         className="rounded-lg object-cover shrink-0 w-full h-full"
+        style={{ height: "auto" }}
       />
       {images.length > 1 && (
         <div className="absolute inset-0 flex items-center justify-between p-1">
