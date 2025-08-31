@@ -38,8 +38,14 @@ import { IBank } from "@/services/types/bank.type";
 import { formatPrice } from "@/lib/products-utils";
 import { UpdateBankInfoDialog } from "@/components/profile/wallet/update-bank-info-dialog";
 import Image from "next/image";
+import { useAuth } from "@/providers/auth.provider";
+import { formatDate, formatDateShort } from "@/lib/order-util";
+import { CreateWalletPINDialog } from "@/components/profile/wallet/create-wallet-pin-dialog";
+import { UpdateWalletPINDialog } from "@/components/profile/wallet/update-wallet-pin-dialog";
 
 export default function WalletPage() {
+  const { currentUser } = useAuth();
+
   const [wallet, setWallet] = useState<IWallet>();
   const [userBank, setUserBank] = useState<IBank | null>(null);
   const [trigger, { isLoading }] = useLazyGetMyWalletQuery();
@@ -87,87 +93,157 @@ export default function WalletPage() {
         </div>
 
         {/* Balance Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-gradient-to-r from-rose-600 to-rose-700 text-white">
-            <CardContent className="p-6 flex items-center h-full">
-              <div className="flex items-center justify-between w-full">
-                <div>
-                  <p className="text-rose-100 text-sm">Số Dư Khả Dụng</p>
-                  <p className="text-3xl font-bold">
-                    {formatPrice(wallet.availableBalance)}
-                  </p>
-                </div>
-                <Wallet className="h-8 w-8 text-rose-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6 flex items-center h-full">
-              <div className="flex items-center justify-between w-full">
-                <div>
-                  <p className="text-gray-600 text-sm">Đang Chờ Xử Lý</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {formatPrice(wallet.lockedBalance)}
-                  </p>
-                </div>
-                <Calendar className="h-8 w-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-gray-600 text-sm">Thông tin ngân hàng</p>
-                  {userBank ? (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Image
-                          src={userBank.logo}
-                          alt={userBank.shortName}
-                          width={24}
-                          height={24}
-                          className="w-14 h-14 object-contain"
-                        />
-                        <div className="flex-1 gap-2">
-                          <p className="text-lg text-gray-600 font-semibold">
-                            {userBank.shortName}
+        <Card className="mb-4">
+          <CardContent className="">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="cols-span-1 w-full space-y-2">
+                <div className="grid grid-cols-1 gap-6 mb-8">
+                  <Card className="bg-gradient-to-r from-rose-600 to-rose-700 text-white">
+                    <CardContent className="p-6 flex items-center h-full">
+                      <div className="flex items-center justify-between w-full">
+                        <div>
+                          <p className="text-rose-100 text-sm">
+                            Số Dư Khả Dụng
                           </p>
-                          <p className="text-sm text-gray-600">
-                            {wallet.bankNumber}
+                          <p className="text-3xl font-bold">
+                            {formatPrice(wallet.availableBalance)}
                           </p>
                         </div>
+                        <Wallet className="h-8 w-8 text-rose-200" />
                       </div>
-                      <UpdateBankInfoDialog
-                        onSuccess={fetchMyWallet}
-                        wallet={wallet}
-                        trigger={
-                          <Button className="cursor-pointer w-max" variant="outline">
-                            <Edit className="h-4 w-4 mr-2" />
-                            Thay đổi ngân hàng
-                          </Button>
-                        }
-                      />
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <p className="text-gray-900">
-                        Không có thông tin ngân hàng
-                      </p>
-                      <UpdateBankInfoDialog
-                        onSuccess={fetchMyWallet}
-                        wallet={wallet}
-                      />
-                    </div>
-                  )}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6 flex items-center h-full">
+                      <div className="flex items-center justify-between w-full">
+                        <div>
+                          <p className="text-gray-600 text-sm">
+                            Đang Chờ Xử Lý
+                          </p>
+                          <p className="text-2xl font-bold text-gray-900">
+                            {formatPrice(wallet.lockedBalance)}
+                          </p>
+                        </div>
+                        <Calendar className="h-8 w-8 text-yellow-600" />
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-                <CreditCard className="h-8 w-8 text-green-300" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="cols-span-1 w-full">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-8 w-full">
+                    <CardTitle className="text-gray-600 text-sm">
+                      Thông tin ngân hàng
+                    </CardTitle>
+                    {userBank ? (
+                      <div className="space-y-1 flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          <Image
+                            src={userBank.logo}
+                            alt={userBank.shortName}
+                            width={24}
+                            height={24}
+                            className="w-14 h-14 object-contain"
+                          />
+                          <div className="flex-1 gap-2">
+                            <p className="text-lg text-gray-600 font-semibold">
+                              {userBank.shortName}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {wallet.bankNumber}
+                            </p>
+                          </div>
+                        </div>
+                        <UpdateBankInfoDialog
+                          onSuccess={fetchMyWallet}
+                          wallet={wallet}
+                          trigger={
+                            <Button
+                              className="cursor-pointer w-max"
+                              variant="outline"
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Thay đổi ngân hàng
+                            </Button>
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="text-gray-900">
+                          Không có thông tin ngân hàng
+                        </p>
+                        <UpdateBankInfoDialog
+                          onSuccess={fetchMyWallet}
+                          wallet={wallet}
+                        />
+                      </div>
+                    )}
+                    {currentUser && (
+                      <div className="space-y-2">
+                        <CardTitle className="text-gray-600 text-sm">
+                          Thông tin cá nhân
+                        </CardTitle>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Họ và tên:</span>
+                          <span>
+                            {currentUser.firstName} {currentUser.middleName}{" "}
+                            {currentUser.lastName}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Ngày sinh:</span>
+                          <span>
+                            {formatDateShort(currentUser.birthDate || "")}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Địa chỉ:</span>
+                          <span>{currentUser.address || ""}</span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm">
+                      <CardTitle className="text-gray-600 text-sm">
+                        Mã khoá Ví
+                      </CardTitle>
+                      {wallet.pin ? (
+                        <UpdateWalletPINDialog
+                          onSuccess={fetchMyWallet}
+                          trigger={
+                            <Button
+                              className="cursor-pointer w-max"
+                              variant="outline"
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Thay đổi mã PIN
+                            </Button>
+                          }
+                        />
+                      ) : (
+                        <CreateWalletPINDialog
+                          onSuccess={fetchMyWallet}
+                          trigger={
+                            <Button
+                              className="cursor-pointer w-max"
+                              variant="outline"
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Tạo mã PIN
+                            </Button>
+                          }
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* <Tabs defaultValue="deposit" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="deposit">Nạp Tiền</TabsTrigger>

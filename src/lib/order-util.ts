@@ -130,9 +130,10 @@ export const formatDate = (date: Date | string) => {
 };
 
 export const formatDateShort = (date: Date | string) => {
+  if (!date) return "";
   return new Intl.DateTimeFormat("vi-VN", {
     year: "numeric",
-    month: "short",
+    month: "numeric",
     day: "numeric",
   }).format(new Date(date));
 };

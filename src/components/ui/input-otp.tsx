@@ -39,9 +39,11 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
 function InputOTPSlot({
   index,
   className,
+  type = "text",
   ...props
 }: React.ComponentProps<"div"> & {
   index: number
+  type?: "text" | "password"
 }) {
   const inputOTPContext = React.useContext(OTPInputContext)
   const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {}
@@ -56,7 +58,7 @@ function InputOTPSlot({
       )}
       {...props}
     >
-      {char}
+      {type === "text" ? char : "●"}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="animate-caret-blink bg-foreground h-4 w-px duration-1000" />
