@@ -44,6 +44,7 @@ import { formatDate, formatDateShort } from "@/lib/order-util";
 import { CreateWalletPINDialog } from "@/components/profile/wallet/create-wallet-pin-dialog";
 import { UpdateWalletPINDialog } from "@/components/profile/wallet/update-wallet-pin-dialog";
 import { TransactionHistoryTabs } from "@/components/profile/wallet/transaction-history-tabs";
+import { WithdrawTabs } from "@/components/profile/wallet/withdraw-tabs";
 
 export default function WalletPage() {
   const { currentUser } = useAuth();
@@ -340,65 +341,7 @@ export default function WalletPage() {
           </TabsContent>
 
           <TabsContent value="withdraw">
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Minus className="h-5 w-5 text-red-600" />
-                  Rút Tiền Từ Ví
-                </CardTitle>
-                <CardDescription>
-                  Chuyển tiền về tài khoản ngân hàng của bạn
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="withdrawAmount">Số Tiền</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-3 text-sm text-gray-400">
-                      ₫
-                    </span>
-                    <Input
-                      id="withdrawAmount"
-                      type="number"
-                      placeholder="0"
-                      value={withdrawAmount}
-                      onChange={(e) => setWithdrawAmount(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-600">
-                    Khả dụng: {(currentBalance * 25000).toLocaleString("vi-VN")}
-                    ₫
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Phương Thức Rút Tiền</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn phương thức rút tiền" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bank">
-                        Chuyển Khoản Ngân Hàng
-                      </SelectItem>
-                      <SelectItem value="momo">MoMo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                  <p className="text-sm text-yellow-800">
-                    Việc rút tiền thường mất 3-5 ngày làm việc để xử lý.
-                  </p>
-                </div>
-
-                <Button className="w-full bg-red-600 hover:bg-red-700">
-                  <Minus className="h-4 w-4 mr-2" />
-                  Yêu Cầu Rút Tiền
-                </Button>
-              </CardContent>
-            </Card> */}
+            <WithdrawTabs wallet={wallet} />
           </TabsContent>
         </Tabs>
       </div>

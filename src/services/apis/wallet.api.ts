@@ -60,7 +60,7 @@ export const walletApi = createApi({
       }),
     }),
 
-    requestSmartOtp: builder.mutation<IItemResponse<null>, string>({
+    requestSmartOtp: builder.mutation<IItemResponse<string>, string>({
       query: (pin) => ({
         url: "wallets/request-smart-otp",
         method: "POST",
@@ -80,7 +80,7 @@ export const walletApi = createApi({
       query: (body) => ({
         url: "wallets/withdraw-request",
         method: "PUT",
-        data: body,
+        body,
       }),
     }),
 
