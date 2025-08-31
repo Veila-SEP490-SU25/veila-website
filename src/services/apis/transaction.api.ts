@@ -1,6 +1,5 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
-  IGetMyTransaction,
   IItemResponse,
   IListResponse,
   IPagination,
@@ -54,10 +53,10 @@ export const transactionApi = createApi({
 
     getMyTransactions: builder.query<
       IListResponse<ITransaction>,
-      IGetMyTransaction
+      IPagination
     >({
-      query: ({ walletId, sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: `transactions/${walletId}/my-transaction`,
+      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
+        url: `transactions/my-transaction`,
         method: "GET",
         params: { sort, filter, page, size },
       }),

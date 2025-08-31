@@ -30,6 +30,7 @@ import {
   DollarSign,
   CreditCard,
   Edit,
+  History,
 } from "lucide-react";
 import { IWallet } from "@/services/types";
 import { useLazyGetMyWalletQuery } from "@/services/apis";
@@ -42,6 +43,7 @@ import { useAuth } from "@/providers/auth.provider";
 import { formatDate, formatDateShort } from "@/lib/order-util";
 import { CreateWalletPINDialog } from "@/components/profile/wallet/create-wallet-pin-dialog";
 import { UpdateWalletPINDialog } from "@/components/profile/wallet/update-wallet-pin-dialog";
+import { TransactionHistoryTabs } from "@/components/profile/wallet/transaction-history-tabs";
 
 export default function WalletPage() {
   const { currentUser } = useAuth();
@@ -244,14 +246,19 @@ export default function WalletPage() {
           </CardContent>
         </Card>
 
-        {/* <Tabs defaultValue="deposit" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue="transaction" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="transaction">Lịch Sử Giao Dịch</TabsTrigger>
             <TabsTrigger value="deposit">Nạp Tiền</TabsTrigger>
             <TabsTrigger value="withdraw">Rút Tiền</TabsTrigger>
           </TabsList>
 
+          <TabsContent value="transaction">
+            <TransactionHistoryTabs />
+          </TabsContent>
+
           <TabsContent value="deposit">
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Plus className="h-5 w-5 text-green-600" />
@@ -329,11 +336,11 @@ export default function WalletPage() {
                   Nạp Tiền
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </TabsContent>
 
           <TabsContent value="withdraw">
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Minus className="h-5 w-5 text-red-600" />
@@ -391,108 +398,9 @@ export default function WalletPage() {
                   Yêu Cầu Rút Tiền
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </TabsContent>
-        </Tabs> */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1 space-y-6"></div>
-
-          <div className="lg:col-span-2">
-            {/* <Card>
-            <CardHeader>
-              <CardTitle>Lịch Sử Giao Dịch</CardTitle>
-              <CardDescription>Xem tất cả giao dịch ví của bạn</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {transactions.map((transaction) => (
-                  <div
-                    key={transaction.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`p-2 rounded-full ${
-                          transaction.type === "deposit"
-                            ? "bg-green-100"
-                            : transaction.type === "payment"
-                            ? "bg-blue-100"
-                            : "bg-red-100"
-                        }`}
-                      >
-                        {transaction.type === "deposit" ? (
-                          <ArrowDownLeft
-                            className={`h-4 w-4 ${
-                              transaction.type === "deposit"
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          />
-                        ) : (
-                          <ArrowUpRight
-                            className={`h-4 w-4 ${
-                              transaction.type === "payment"
-                                ? "text-blue-600"
-                                : "text-red-600"
-                            }`}
-                          />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {getVietnameseTransactionDescription(
-                            transaction.description
-                          )}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {new Date(transaction.date).toLocaleDateString(
-                            "vi-VN"
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p
-                        className={`font-semibold ${
-                          transaction.amount > 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {transaction.amount > 0 ? "+" : ""}
-                        {(Math.abs(transaction.amount) * 25000).toLocaleString(
-                          "vi-VN"
-                        )}
-                        ₫
-                      </p>
-                      <Badge
-                        variant={
-                          transaction.status === "completed"
-                            ? "default"
-                            : "secondary"
-                        }
-                        className={
-                          transaction.status === "completed"
-                            ? "bg-green-100 text-green-700"
-                            : ""
-                        }
-                      >
-                        {transaction.status === "completed"
-                          ? "Hoàn thành"
-                          : "Đang chờ"}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="text-center mt-6">
-                <Button variant="outline">Xem Thêm Giao Dịch</Button>
-              </div>
-            </CardContent>
-          </Card> */}
-          </div>
-        </div>
+        </Tabs>
       </div>
     )
   );
