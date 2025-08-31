@@ -6,6 +6,7 @@ import {
   IListResponse,
   IPagination,
   ITransfer,
+  IUpdateWalletPIN,
   IWallet,
   IWithdraw,
 } from "@/services/types";
@@ -33,9 +34,19 @@ export const walletApi = createApi({
       }),
     }),
 
-    updateWalletPIN: builder.mutation<IItemResponse<IWallet>, string>({
+    updateWalletPIN: builder.mutation<IItemResponse<IWallet>, IUpdateWalletPIN>(
+      {
+        query: (body) => ({
+          url: "wallets/my-wallet/update-pin",
+          method: "PUT",
+          body,
+        }),
+      }
+    ),
+
+    createWalletPIN: builder.mutation<IItemResponse<IWallet>, string>({
       query: (pin) => ({
-        url: "wallets/update-pin",
+        url: "wallets/my-wallet/create-pin",
         method: "PUT",
         body: { pin },
       }),
@@ -49,7 +60,7 @@ export const walletApi = createApi({
       }),
     }),
 
-    requestSmartOtp: builder.mutation<IItemResponse<null>, string>({
+    requestSmartOtp: builder.mutation<IItemResponse<string>, string>({
       query: (pin) => ({
         url: "wallets/request-smart-otp",
         method: "POST",
@@ -69,7 +80,7 @@ export const walletApi = createApi({
       query: (body) => ({
         url: "wallets/withdraw-request",
         method: "PUT",
-        data: body,
+        body,
       }),
     }),
 
@@ -90,4 +101,5 @@ export const {
   useRequestSmartOtpMutation,
   useUpdateBankInfoMutation,
   useUpdateWalletPINMutation,
+  useCreateWalletPINMutation,
 } = walletApi;

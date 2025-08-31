@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginSchema, LoginSchema } from "@/lib/validations";
 import { useAuth } from "@/providers/auth.provider";
-import { Mail, EyeOff, Eye, Lock } from "lucide-react";
+import { Mail, EyeOff, Eye, Lock, ArrowLeft } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,17 +48,24 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
+      <Link href="/" className="absolute top-6 left-6">
+        <Button
+          variant="ghost"
+          className="text-gray-600 hover:text-gray-800 hover:bg-white/50"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Quay về trang chủ
+        </Button>
+      </Link>
+
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <TextLogo />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Đăng Nhập</h1>
           <p className="text-gray-600 text-sm">
             Chào mừng trở lại! Vui lòng đăng nhập vào tài khoản của bạn.
           </p>
         </div>
 
-        {/* Login Form */}
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl text-center">

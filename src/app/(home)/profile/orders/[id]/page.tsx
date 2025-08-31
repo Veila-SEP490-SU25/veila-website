@@ -71,7 +71,13 @@ const OrderDetailPage = () => {
   const fetchMilestone = useCallback(async () => {
     try {
       const { statusCode, message, items } = await getMilestones(
-        orderId as string
+        {
+          orderId: orderId as string,
+          page: 0,
+          size: 10,
+          sort: "index:asc",
+          filter: "",
+        }
       ).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
@@ -102,19 +108,23 @@ const OrderDetailPage = () => {
     }
   }, [getOrderDressDetail, orderId]);
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (otp: string) => {
     try {
-      const { statusCode, message } = await checkoutOrder(
-        orderId as string
-      ).unwrap();
+      const { statusCode, message } = await checkoutOrder({
+        orderId: orderId as string,
+        otp,
+      }).unwrap();
       if (statusCode === 200) {
         toast.success("Đặt hàng thành công");
         router.push("/profile");
+        return true;
       } else {
         toast.error("Đã xảy ra lỗi khi đặt hàng", { description: message });
+        return false;
       }
     } catch {
       toast.error("Đã xảy ra lỗi khi đặt hàng");
+      return false;
     }
   };
 

@@ -6,10 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth.provider";
 import { useVerifyPhonePopup } from "@/hooks/use-verify-phone-popup";
 import { useCallback } from "react";
-<<<<<<< Updated upstream
 
 export const UserCard = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
   const router = useRouter();
 =======
 import { Skeleton } from "@/components/ui/skeleton";

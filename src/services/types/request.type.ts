@@ -77,7 +77,7 @@ export interface IUpdateRequestInfo extends ICreateRequest {
 
 export interface ICreateUpdateRequest {
   id: string;
-  
+
   title: string;
   description: string;
   images: string;
@@ -129,4 +129,86 @@ export interface ICreateRequest {
 
 export interface IGetUpdateRequest extends IPagination {
   id: string;
+}
+
+export interface ICustomOrderRequest {
+  id?: string;
+  title: string;
+  description: string;
+  images: string;
+  height: number;
+  weight: number;
+  bust: number;
+  waist: number;
+  hip: number;
+  armpit: number;
+  bicep: number;
+  neck: number;
+  shoulderWidth: number;
+  sleeveLength: number;
+  backLength: number;
+  lowerWaist: number;
+  waistToFloor: number;
+  material: string;
+  color: string;
+  length: string;
+  neckline: string;
+  sleeve: string;
+  status: RequestStatus;
+  isPrivate: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ICreateCustomOrderRequest {
+  title: string;
+  description: string;
+  images: string;
+  height: number;
+  weight: number;
+  bust: number;
+  waist: number;
+  hip: number;
+  armpit: number;
+  bicep: number;
+  neck: number;
+  shoulderWidth: number;
+  sleeveLength: number;
+  backLength: number;
+  lowerWaist: number;
+  waistToFloor: number;
+  material: string;
+  color: string;
+  length: string;
+  neckline: string;
+  sleeve: string;
+  status: RequestStatus;
+  isPrivate: boolean;
+}
+
+export interface IUpdateCustomOrderRequest {
+  id: string;
+  title?: string;
+  description?: string;
+  images?: string;
+  height?: number;
+  weight?: number;
+  bust?: number;
+  waist?: number;
+  hip?: number;
+  armpit?: number;
+  bicep?: number;
+  neck?: number;
+  shoulderWidth?: number;
+  sleeveLength?: number;
+  backLength?: number;
+  lowerWaist?: number;
+  waistToFloor?: number;
+  material?: string;
+  color?: string;
+  length?: string;
+  neckline?: string;
+  sleeve?: string;
+  status?: RequestStatus;
+  isPrivate?: boolean;
 }

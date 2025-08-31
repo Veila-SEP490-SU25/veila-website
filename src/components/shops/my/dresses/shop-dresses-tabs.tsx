@@ -55,7 +55,8 @@ export const ShopDressesTabs = () => {
   const [error, setError] = useState<string>("");
 
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
-  const { setPaging, pageSize, pageIndex, resetPaging } = usePaging();
+  const { setPaging, pageSize, pageIndex, totalItems, resetPaging } =
+    usePaging();
 
   const fetchDresses = useCallback(async () => {
     try {
@@ -79,7 +80,7 @@ export const ShopDressesTabs = () => {
         setIsError(true);
         setError(message);
       }
-    } catch {
+    } catch (error) {
       toast.error("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
     }
   }, [
@@ -89,17 +90,16 @@ export const ShopDressesTabs = () => {
     setPaging,
     setIsError,
     setError,
-    trigger,
   ]);
 
   useEffect(() => {
     resetPaging();
     fetchDresses();
-  }, [debouncedSearchTerm, fetchDresses, resetPaging]);
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     fetchDresses();
-  }, [debouncedSearchTerm, fetchDresses, pageIndex, pageSize]);
+  }, [debouncedSearchTerm, pageIndex, pageSize]);
 
   return (
     <Card>

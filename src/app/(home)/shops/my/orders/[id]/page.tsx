@@ -53,8 +53,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
-import { CreateMilestoneDialog } from "@/components/shops/detail/order/create-milestone-dialog";
 import { ImageGallery } from "@/components/image-gallery";
+import { ChangeOrderStatusButton } from "@/components/shops/detail/order/change-order-status-button";
 
 const parseImages = (
   images: string | string[] | null | undefined
@@ -75,6 +75,8 @@ const getStatusColor = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.PENDING:
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case OrderStatus.PAYING:
+      return "bg-orange-100 text-orange-800 border-orange-200";
     case OrderStatus.IN_PROCESS:
       return "bg-blue-100 text-blue-800 border-blue-200";
     case OrderStatus.COMPLETED:
@@ -90,6 +92,8 @@ const getStatusText = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.PENDING:
       return "Chờ xử lý";
+    case OrderStatus.PAYING:
+      return "Chờ thanh toán";
     case OrderStatus.IN_PROCESS:
       return "Đang xử lý";
     case OrderStatus.COMPLETED:
@@ -200,10 +204,10 @@ const ShopOrderDetailPage = () => {
       if (statusCode === 200) {
         setOrder(item);
       } else {
-        toast.error("Không thể l��y dữ liệu thông tin đơn hàng", {
+        toast.error("Không thể lấy dữ liệu thông tin đơn hàng", {
           description: message,
         });
-        router.push("/shops/orders");
+        router.push("/shops/my");
       }
     } catch (error) {
       toast.error("Có lỗi xảy ra khi tải thông tin đơn hàng");
@@ -217,9 +221,13 @@ const ShopOrderDetailPage = () => {
 
   const fetchMilestone = useCallback(async () => {
     try {
-      const { statusCode, message, items } = await getMilestones(
-        orderId as string
-      ).unwrap();
+      const { statusCode, message, items } = await getMilestones({
+        filter: "",
+        orderId: orderId as string,
+        page: 0,
+        size: 10,
+        sort: "index:asc",
+      }).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
       } else {
@@ -332,7 +340,7 @@ const ShopOrderDetailPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <Link href="/shops/orders">
+          <Link href="/shops/my">
             <Button variant="ghost" size="sm" className="shrink-0">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Quay lại
@@ -871,21 +879,24 @@ const ShopOrderDetailPage = () => {
               <CardTitle>Thao tác nhanh</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <CreateMilestoneDialog
-                orderId={order.id}
-                trigger={
-                  <Button
-                    className="w-full justify-start bg-transparent"
-                    variant="outline"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Thêm mốc thời gian
-                  </Button>
-                }
-              />
+              {order.status === OrderStatus.PENDING && (
+                <ChangeOrderStatusButton
+                  message="Xác nhận đơn hàng"
+                  orderId={order.id}
+                  status={OrderStatus.PAYING}
+                  onSuccess={() => {
+                    fetchOrder();
+                    fetchMilestone();
+                    fetchOrderDressDetail();
+                  }}
+                />
+              )}
               <Button
                 className="w-full justify-start bg-transparent"
                 variant="outline"
+                onClick={() => {
+                  router.push("/chat");
+                }}
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Nhắn tin khách hàng

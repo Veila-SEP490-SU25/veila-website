@@ -1,17 +1,18 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IDress } from "@/services/types";
-import { useLazyGetDressQuery } from "@/services/apis";
+import {
+  useAddFavoriteMutation,
+  useLazyGetDressQuery,
+  useRemoveFavoriteMutation,
+} from "@/services/apis";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   ArrowLeft,
-  Calendar,
   CheckCircle,
-  ChevronLeft,
-  ChevronRight,
   Heart,
   Info,
   Mail,
@@ -23,27 +24,33 @@ import {
   Star,
   Truck,
 } from "lucide-react";
-import Image from "next/image";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { CreateOrderDialog } from "@/components/order/create-order-dialog";
+import {
+  formatPrice,
+  getImages,
+  parseNumber,
+  formatRating,
+} from "@/lib/products-utils";
+import { ImageGallery } from "@/components/image-gallery";
+import { DressDescriptionTabs } from "@/components/dress/detail/dress-description-tabs";
+import { DressFeedbackTabs } from "@/components/dress/detail/dress-feedbacks-tabs";
+import { CreateChatButton } from "@/components/chat/create-chat-button";
 
 const DressDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<"buy" | "rent" | null>(
     null
   );
-  const [isFavorite, setIsFavorite] = useState(false);
   const [dress, setDress] = useState<IDress | null>(null);
   const [getDress, { isLoading }] = useLazyGetDressQuery();
 
-  const fetchDress = async () => {
+  const fetchDress = useCallback(async () => {
     try {
       const { statusCode, message, item } = await getDress(
         id as string
@@ -56,72 +63,151 @@ const DressDetailPage = () => {
     } catch (error) {
       console.error("Failed to fetch dress:", error);
     }
-  };
+  }, [getDress, id]);
+
+  const [favorDress, { isLoading: isFavoriting }] = useAddFavoriteMutation();
+  const [unfavorDress, { isLoading: isUnfavoriting }] =
+    useRemoveFavoriteMutation();
+  const toggleFavorite = useCallback(async () => {
+    if (dress) {
+      try {
+        if (dress.isFavorite) {
+          const { statusCode, message } = await unfavorDress(dress.id).unwrap();
+          if (statusCode === 200) {
+            toast.success("Đã bỏ yêu thích váy cưới!");
+            setDress((prev) => (prev ? { ...prev, isFavorite: false } : null));
+          } else {
+            toast.error("Không thể bỏ yêu thích: " + message);
+          }
+        } else {
+          const { statusCode, message } = await favorDress(dress.id).unwrap();
+          if (statusCode === 200) {
+            toast.success("Đã thêm yêu thích váy cưới!");
+            setDress((prev) => (prev ? { ...prev, isFavorite: true } : null));
+          } else {
+            toast.error("Không thể thêm yêu thích: " + message);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to toggle favorite:", error);
+        toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+      }
+    }
+  }, [dress, favorDress, unfavorDress]);
 
   useEffect(() => {
     if (id) {
       fetchDress();
     }
-  }, [id]);
-
-  const getImageUrls = (imagesString: string): string[] => {
-    if (!imagesString)
-      return ["/placeholder.svg?height=600&width=400&text=No+Image"];
-
-    const urls = imagesString
-      .split(",")
-      .map((url) => url.trim())
-      .filter((url) => url.length > 0);
-
-    // If no valid URLs found, return placeholder
-    if (urls.length === 0) {
-      return ["/placeholder.svg?height=600&width=400&text=No+Image"];
-    }
-
-    return urls;
-  };
+  }, [fetchDress, id]);
 
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-24 mb-6"></div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="mb-6">
+          <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div className="space-y-4">
+            <div className="aspect-[3/4] bg-gray-200 rounded-lg animate-pulse"></div>
+            <div className="grid grid-cols-4 gap-2">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-square bg-gray-200 rounded-md animate-pulse"
+                ></div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-6">
             <div className="space-y-4">
-              <div className="aspect-[3/4] bg-gray-200 rounded-lg"></div>
-              <div className="grid grid-cols-4 gap-2">
-                {[...Array(4)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-square bg-gray-200 rounded-md"
-                  ></div>
-                ))}
+              <div className="flex items-start justify-between">
+                <div className="flex-1 space-y-2">
+                  <div className="h-8 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-10 w-10 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-10 w-10 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-4 w-4 bg-gray-200 rounded animate-pulse"
+                    ></div>
+                  ))}
+                </div>
+                <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
               </div>
             </div>
-            <div className="space-y-6">
-              <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-              <div className="space-y-4">
-                <div className="h-20 bg-gray-200 rounded"></div>
-                <div className="h-20 bg-gray-200 rounded"></div>
+
+            <div className="space-y-4">
+              <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
+              <div className="space-y-3">
+                <div className="h-20 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-20 bg-gray-200 rounded animate-pulse"></div>
               </div>
-              <div className="h-12 bg-gray-200 rounded"></div>
             </div>
+
+            <div className="space-y-3">
+              <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-12 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+
+            <div className="grid grid-cols-4 gap-4 pt-4 border-t">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="text-center space-y-2">
+                  <div className="h-6 w-6 bg-gray-200 rounded mx-auto animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="grid grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="h-10 bg-gray-200 rounded animate-pulse"
+              ></div>
+            ))}
+          </div>
+          <div className="space-y-4">
+            <div className="h-32 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-32 bg-gray-200 rounded animate-pulse"></div>
           </div>
         </div>
       </div>
     );
   }
 
-  if (!dress) {
+  if (!dress && !isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center">
+          <div className="mx-auto w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <ShoppingBag className="h-16 w-16 text-gray-400" />
+          </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Không tìm thấy váy cưới
           </h1>
-          <Button onClick={() => router.push("/browse")}>
+          <p className="text-gray-600 mb-6">
+            Váy cưới bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
+          </p>
+          <Button
+            onClick={() => router.push("/browse")}
+            className="bg-rose-600 hover:bg-rose-700"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại danh sách
           </Button>
         </div>
@@ -129,166 +215,44 @@ const DressDetailPage = () => {
     );
   }
 
-  // Get processed image URLs
-  const images = getImageUrls(dress.images || "");
-
-  const nextImage = () => {
-    setSelectedImageIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const prevImage = () => {
-    setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
+  const images = getImages(dress?.images || "");
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: dress.name,
-          text: `Xem váy cưới ${dress.name} tại Veila`,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log("Error sharing:", error);
-      }
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      toast.success("Đã sao chép liên kết!");
-    }
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Đã sao chép liên kết!");
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
+  const userName = dress?.user ? dress.user.shop?.name : "Unknown User";
 
-  const userName = dress.user ? dress.user.shop?.name : "Unknown User";
+  if (!dress) {
+    return null;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-      {/* Back Button */}
       <Button variant="ghost" onClick={() => router.back()} className="mb-6">
         <ArrowLeft className="h-4 w-4 mr-2" />
         Quay lại
       </Button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Image Gallery */}
-        <div className="space-y-4">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100">
-            <Image
-              src={images[selectedImageIndex] || "/placeholder.svg"}
-              alt={`${dress.name} - Ảnh ${selectedImageIndex + 1}`}
-              fill
-              className="object-cover"
-              priority
-              onError={(e) => {
-                // Fallback to placeholder if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.src =
-                  "/placeholder.svg?height=600&width=400&text=Image+Error";
-              }}
-            />
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all"
-                  aria-label="Ảnh trước"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md transition-all"
-                  aria-label="Ảnh tiếp theo"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </>
-            )}
-            {images.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {images.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      selectedImageIndex === index ? "bg-white" : "bg-white/50"
-                    }`}
-                    aria-label={`Xem ảnh ${index + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-            {/* Image counter */}
-            <div className="absolute top-4 left-4 bg-black/50 text-white px-2 py-1 rounded text-sm">
-              {selectedImageIndex + 1} / {images.length}
-            </div>
-          </div>
+        <ImageGallery images={images} alt={dress.name} />
 
-          {/* Thumbnail Gallery */}
-          {images.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
-              {images.slice(0, 4).map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImageIndex(index)}
-                  className={`aspect-square overflow-hidden rounded-md border-2 transition-all ${
-                    selectedImageIndex === index
-                      ? "border-rose-500"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                  aria-label={`Xem ảnh ${index + 1}`}
-                >
-                  <Image
-                    src={image || "/placeholder.svg"}
-                    alt={`${dress.name} - Thumbnail ${index + 1}`}
-                    width={100}
-                    height={100}
-                    className="object-cover w-full h-full"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src =
-                        "/placeholder.svg?height=100&width=100&text=Error";
-                    }}
-                  />
-                  {images.length > 4 && index === 3 && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-sm font-medium">
-                      +{images.length - 4}
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* View All Images Button */}
-          {images.length > 4 && (
-            <Button
-              variant="outline"
-              className="w-full bg-transparent"
-              onClick={() => {
-                // Could open a modal or gallery view
-                toast.info("Tính năng xem tất cả ảnh sẽ được cập nhật sớm!");
-              }}
-            >
-              Xem tất cả {images.length} ảnh
-            </Button>
-          )}
-        </div>
-
-        {/* Product Details */}
         <div className="space-y-6">
           <div>
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {dress.name}
-                </h1>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    {dress.name}
+                  </h1>
+                  {dress.isFavorite && (
+                    <Badge className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
+                      <Heart className="h-3 w-3 mr-1 fill-current" />
+                      Yêu thích
+                    </Badge>
+                  )}
+                </div>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
@@ -303,30 +267,43 @@ const DressDetailPage = () => {
                       Thiết kế bởi {userName}
                     </span>
                   </div>
-                  {dress.category && (
-                    <Badge variant="outline">{dress.category.name}</Badge>
-                  )}
                 </div>
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setIsFavorite(!isFavorite)}
-                  className={isFavorite ? "text-rose-500 border-rose-500" : ""}
+                  onClick={toggleFavorite}
+                  disabled={isFavoriting || isUnfavoriting}
+                  className={`transition-all duration-200 group relative ${
+                    dress.isFavorite
+                      ? "text-rose-500 border-rose-500 bg-rose-50 hover:bg-rose-100"
+                      : "hover:border-rose-300 hover:text-rose-500"
+                  }`}
                   aria-label={
-                    isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"
+                    dress.isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"
                   }
                 >
-                  <Heart
-                    className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`}
-                  />
+                  {isFavoriting || isUnfavoriting ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-rose-500"></div>
+                  ) : (
+                    <Heart
+                      className={`h-4 w-4 transition-all duration-200 ${
+                        dress.isFavorite ? "fill-current" : ""
+                      }`}
+                    />
+                  )}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                    {dress.isFavorite ? "Bỏ yêu thích" : "Thêm yêu thích"}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={handleShare}
                   aria-label="Chia sẻ"
+                  className="hover:border-blue-300 hover:text-blue-500"
                 >
                   <Share2 className="h-4 w-4" />
                 </Button>
@@ -339,21 +316,22 @@ const DressDetailPage = () => {
                   <Star
                     key={i}
                     className={`h-4 w-4 ${
-                      i < Math.floor(dress.ratingAverage)
+                      i < Math.floor(parseNumber(dress.ratingAverage))
                         ? "fill-yellow-400 text-yellow-400"
                         : "text-gray-300"
                     }`}
                   />
                 ))}
               </div>
-              <span className="font-medium">{dress.ratingAverage}</span>
+              <span className="font-medium">
+                {formatRating(dress.ratingAverage)}
+              </span>
               <span className="text-gray-600">
                 ({dress.ratingCount} đánh giá)
               </span>
             </div>
           </div>
 
-          {/* Pricing Options */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Tùy chọn mua hàng</h3>
 
@@ -376,7 +354,7 @@ const DressDetailPage = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-gray-900">
-                        {formatPrice(dress.sellPrice)}
+                        {formatPrice(parseNumber(dress.sellPrice))}
                       </p>
                     </div>
                   </div>
@@ -403,7 +381,7 @@ const DressDetailPage = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-gray-900">
-                        {formatPrice(dress.rentalPrice)}
+                        {formatPrice(parseNumber(dress.rentalPrice))}
                       </p>
                       <p className="text-sm text-gray-600">/ lần thuê</p>
                     </div>
@@ -413,29 +391,33 @@ const DressDetailPage = () => {
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="space-y-3">
             <CreateOrderDialog
               dress={dress}
               trigger={
-                <Button className="w-full bg-rose-600 hover:bg-rose-700" size="lg">
-                  <ShoppingBag className="h-4 w-4 mr-2" />
-                  Đặt hàng ngay
+                <Button
+                  className="w-full bg-rose-600 hover:bg-rose-700"
+                  size="lg"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2"></div>
+                  ) : (
+                    <ShoppingBag className="h-4 w-4 mr-2" />
+                  )}
+                  {isLoading ? "Đang tải..." : "Đặt hàng ngay"}
                 </Button>
               }
             />
-            <Button
-              variant="outline"
+            <CreateChatButton
+              shopId={dress.user?.shop?.id || ""}
+              shopName={dress.user?.shop?.name || ""}
+              shopAvatarUrl={dress.user?.shop?.logoUrl || ""}
               className="w-full bg-transparent"
-              size="lg"
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Nhắn tin với cửa hàng
-            </Button>
+            />
           </div>
 
-          {/* Service Features */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+          <div className="grid grid-cols-4 gap-4 pt-4 border-t">
             <div className="text-center">
               <Shield className="h-6 w-6 mx-auto mb-2 text-rose-600" />
               <p className="text-xs text-gray-600">Bảo hành chất lượng</p>
@@ -448,141 +430,40 @@ const DressDetailPage = () => {
               <RotateCcw className="h-6 w-6 mx-auto mb-2 text-rose-600" />
               <p className="text-xs text-gray-600">Đổi trả 7 ngày</p>
             </div>
+            <div className="text-center">
+              <Heart className="h-6 w-6 mx-auto mb-2 text-rose-600" />
+              <p className="text-xs text-gray-600">
+                {dress.isFavorite ? "Đã yêu thích" : "Thêm yêu thích"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Detailed Information Tabs */}
       <Tabs defaultValue="description" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="description">Mô tả</TabsTrigger>
-          <TabsTrigger value="reviews">
-            Đánh giá ({dress.feedbacks?.length || 0})
+          <TabsTrigger value="description" disabled={isLoading}>
+            {isLoading ? "Đang tải..." : "Mô tả"}
           </TabsTrigger>
-          <TabsTrigger value="designer">Nhà thiết kế</TabsTrigger>
-          <TabsTrigger value="care">Hướng dẫn</TabsTrigger>
+          <TabsTrigger value="reviews" disabled={isLoading}>
+            {isLoading
+              ? "Đang tải..."
+              : `Đánh giá (${dress.feedbacks?.length || 0})`}
+          </TabsTrigger>
+          <TabsTrigger value="designer" disabled={isLoading}>
+            {isLoading ? "Đang tải..." : "Nhà thiết kế"}
+          </TabsTrigger>
+          <TabsTrigger value="care" disabled={isLoading}>
+            {isLoading ? "Đang tải..." : "Hướng dẫn"}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="description" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Mô tả sản phẩm</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                <p className="text-gray-700 leading-relaxed">
-                  {dress.description ||
-                    "Không có mô tả chi tiết cho sản phẩm này."}
-                </p>
-              </div>
-              <Separator className="my-6" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold mb-3">Thông tin sản phẩm</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Danh mục:</span>
-                      <span>{dress.category?.name || "Chưa phân loại"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Trạng thái:</span>
-                      <Badge variant="outline">{dress.status}</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Có thể mua:</span>
-                      <span>{dress.isSellable ? "Có" : "Không"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Có thể thuê:</span>
-                      <span>{dress.isRentable ? "Có" : "Không"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Số lượng ảnh:</span>
-                      <span>{images.length}</span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3">Đánh giá</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Điểm trung bình:</span>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span>{dress.ratingAverage}</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Số lượt đánh giá:</span>
-                      <span>{dress.ratingCount}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <DressDescriptionTabs dress={dress} />
         </TabsContent>
 
         <TabsContent value="reviews" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Đánh giá từ khách hàng</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {dress.feedbacks && dress.feedbacks.length > 0 ? (
-                <div className="space-y-6">
-                  {dress.feedbacks.map((feedback) => (
-                    <div
-                      key={feedback.id}
-                      className="border-b pb-6 last:border-b-0"
-                    >
-                      <div className="flex items-start gap-4">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage
-                            src={
-                              feedback.customer.firstName || "/placeholder.svg"
-                            }
-                          />
-                          <AvatarFallback>
-                            {feedback.customer.firstName?.charAt(0) || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="font-medium">
-                              {feedback.customer.firstName ||
-                                "Người dùng ẩn danh"}
-                            </span>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < feedback.rating
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <p className="text-gray-700 mb-2">
-                            {feedback.content}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">
-                    Chưa có đánh giá nào cho sản phẩm này.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <DressFeedbackTabs dress={dress} />
         </TabsContent>
 
         <TabsContent value="designer" className="space-y-6">

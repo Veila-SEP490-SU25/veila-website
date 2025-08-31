@@ -17,6 +17,8 @@ export const getStatusColor = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.PENDING:
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case OrderStatus.PAYING:
+      return "bg-orange-100 text-orange-800 border-orange-200";
     case OrderStatus.IN_PROCESS:
       return "bg-blue-100 text-blue-800 border-blue-200";
     case OrderStatus.COMPLETED:
@@ -32,6 +34,8 @@ export const getStatusText = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.PENDING:
       return "Chờ xử lý";
+    case OrderStatus.PAYING:
+      return "Chờ thanh toán";
     case OrderStatus.IN_PROCESS:
       return "Đang xử lý";
     case OrderStatus.COMPLETED:
@@ -130,9 +134,10 @@ export const formatDate = (date: Date | string) => {
 };
 
 export const formatDateShort = (date: Date | string) => {
+  if (!date) return "";
   return new Intl.DateTimeFormat("vi-VN", {
     year: "numeric",
-    month: "short",
+    month: "numeric",
     day: "numeric",
   }).format(new Date(date));
 };

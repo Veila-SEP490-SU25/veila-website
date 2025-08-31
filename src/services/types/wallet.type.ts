@@ -8,6 +8,7 @@ export interface IWallet extends IItem {
   lockedBalance: number;
   bin: string | null;
   bankNumber: string | null;
+  pin: string | null;
 }
 
 export interface IDeposit {
@@ -27,4 +28,9 @@ export interface ITransfer {
   checkoutUrl: string;
   qrCode: string;
   expiredAt: Date;
+}
+
+export interface IUpdateWalletPIN {
+  oldPin: string;
+  pin: string;
 }

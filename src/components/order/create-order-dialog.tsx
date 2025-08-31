@@ -219,7 +219,12 @@ export function CreateOrderDialog({
   const calculateTotal = () => {
     let total = 0;
     if (dress) {
-      total += orderData.type === "SELL" ? dress.sellPrice : dress.rentalPrice;
+      const dressPrice =
+        orderData.type === "SELL" ? dress.sellPrice : dress.rentalPrice;
+      total +=
+        typeof dressPrice === "string"
+          ? parseFloat(dressPrice) || 0
+          : dressPrice || 0;
     }
     accessoriesDetails.forEach((item) => {
       const accessory = accessories.find((acc) => acc.id === item.accessoryId);
@@ -228,7 +233,9 @@ export function CreateOrderDialog({
           orderData.type === "SELL"
             ? accessory.sellPrice
             : accessory.rentalPrice;
-        total += price * item.quantity;
+        const numericPrice =
+          typeof price === "string" ? parseFloat(price) || 0 : price || 0;
+        total += numericPrice * item.quantity;
       }
     });
     return total;
@@ -707,9 +714,15 @@ export function CreateOrderDialog({
                           <div className="text-right">
                             <p className="font-bold text-rose-600">
                               {formatPrice(
-                                orderData.type === "SELL"
-                                  ? dress.sellPrice
-                                  : dress.rentalPrice
+                                (() => {
+                                  const price =
+                                    orderData.type === "SELL"
+                                      ? dress.sellPrice
+                                      : dress.rentalPrice;
+                                  return typeof price === "string"
+                                    ? parseFloat(price) || 0
+                                    : price || 0;
+                                })()
                               )}
                             </p>
                           </div>
@@ -752,7 +765,11 @@ export function CreateOrderDialog({
                               </div>
                               <div className="text-right">
                                 <p className="font-bold text-rose-600">
-                                  {formatPrice(price * item.quantity)}
+                                  {formatPrice(
+                                    (typeof price === "string"
+                                      ? parseFloat(price) || 0
+                                      : price || 0) * item.quantity
+                                  )}
                                 </p>
                               </div>
                             </div>

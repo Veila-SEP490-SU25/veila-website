@@ -30,6 +30,7 @@ import {
   Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function BlogListPage() {
   const router = useRouter();
@@ -185,6 +186,7 @@ export default function BlogListPage() {
               width={400}
               height={192}
               className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+              style={{ height: "auto" }}
             />
           ) : (
             <div className="w-full h-48 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
@@ -257,6 +259,7 @@ export default function BlogListPage() {
                 width={192}
                 height={128}
                 className="w-full h-full object-cover"
+                style={{ height: "auto" }}
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">

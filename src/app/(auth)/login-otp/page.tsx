@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -53,13 +53,13 @@ export default function LoginOTPPage() {
             description: message,
           });
         }
-      } catch (error) {
+      } catch {
         toast.error(
           "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
         );
       }
     },
-    [router, useRequestOtpMutation]
+    [requestOtpMutation, router]
   );
 
   return (
@@ -74,7 +74,6 @@ export default function LoginOTPPage() {
           <p className="text-gray-600">Nhập email để nhận mã xác thực OTP</p>
         </div>
 
-        {/* OTP Form */}
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl text-center">
