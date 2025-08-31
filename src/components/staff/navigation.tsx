@@ -32,12 +32,12 @@ const staffRoutes = [
     icon: LayoutDashboard,
   },
   {
-    name: "Quản Lý Cửa Hàng",
+    name: "Cửa Hàng",
     href: "/staff/shops",
     icon: Store,
   },
   {
-    name: "Quản Lý Blog",
+    name: "Blog",
     href: "/staff/blogs",
     icon: FileText,
   },
@@ -60,17 +60,17 @@ const adminRoutes = [
     icon: LayoutDashboard,
   },
   {
-    name: "Quản Lý Cửa Hàng",
+    name: "Cửa Hàng",
     href: "/staff/shops",
     icon: Store,
   },
   {
-    name: "Quản Lý Giao Dịch",
+    name: "Giao Dịch",
     href: "/staff/transactions",
     icon: TrendingUpDown,
   },
   {
-    name: "Quản Lý Blog",
+    name: "Blog",
     href: "/staff/blogs",
     icon: FileText,
   },
@@ -111,20 +111,24 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    if (!isAuthenticated || !currentUser) {
-      toast.error(
-        "Vui lòng đăng nhập với tài khoản quản trị viên để truy cập trang này."
-      );
-      router.push("/");
-    } else if (currentUser.role && !allowedRoles.includes(currentUser.role)) {
-      toast.error("Bạn không có quyền truy cập vào trang này.");
-      router.push("/");
-    } else if (currentUser.role && currentUser.role === UserRole.STAFF) {
-      setRoutes(staffRoutes);
-    } else {
-      setRoutes(adminRoutes);
-    }
-  }, [currentUser, router, isAuthenticated]);
+  // Wait for auth to be loaded
+  if (!isAuthenticated || !currentUser) return;
+
+  // Block non-admin/staff users
+  if (!allowedRoles.includes(currentUser.role)) {
+    toast.error("Bạn không có quyền truy cập vào trang này.");
+    router.replace("/"); // ✅ Use replace to avoid stacking history
+    return;
+  }
+
+  // Set sidebar routes based on role
+  if (currentUser.role === UserRole.STAFF) {
+    setRoutes(staffRoutes);
+  } else {
+    setRoutes(adminRoutes);
+  }
+}, [currentUser, router, isAuthenticated]);
+
 
   return (
     <div className="min-h-screen">
@@ -184,7 +188,7 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
             <div className="p-4 border-t">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder-user.jpg" />
+                  <AvatarImage src="/placeholder.svg" />
                   <AvatarFallback className="bg-rose-100 text-rose-600">
                     {currentUser?.firstName?.charAt(0) || "U"}
                   </AvatarFallback>

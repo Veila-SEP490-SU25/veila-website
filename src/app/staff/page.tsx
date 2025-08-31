@@ -316,7 +316,7 @@ export default function StaffDashboard() {
                     #{index + 1}
                   </div>
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={`/placeholder-icon.png?height=40&width=40&text=${shop.name.charAt(0)}`} />
+                    <AvatarImage src={`/placeholder.svg?height=40&width=40&text=${shop.name.charAt(0)}`} />
                     <AvatarFallback className="bg-gray-100">{shop.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>

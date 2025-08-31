@@ -40,7 +40,7 @@ export const UserCard = () => {
           <Avatar className="w-16 h-16 aspect-square col-span-1">
             <AvatarImage
               className="aspect-square"
-              src={currentUser.avatarUrl || "/placeholder-user.jpg"}
+              src={currentUser.avatarUrl || "/placeholder.svg"}
             />
             <AvatarFallback className="bg-rose-100 text-rose-600 aspect-square">
               {(currentUser.firstName?.charAt(0) || "") +
@@ -80,7 +80,7 @@ export const UserCard = () => {
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={"/placeholder-user.jpg"} />
+            <AvatarImage src={"/placeholder.svg"} />
             <AvatarFallback className="bg-rose-100 text-rose-600">
               {"U"}
             </AvatarFallback>

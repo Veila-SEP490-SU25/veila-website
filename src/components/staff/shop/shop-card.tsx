@@ -177,7 +177,7 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
             {shop.status === ShopStatus.SUSPENDED ? (
               <UpdateShopStatusDialog
                 onConfirm={async () =>
-                  await handleUpdateStatus(ShopStatus.ACTIVE)
+                  await handleUpdateStatus(ShopStatus.PENDING)
                 }
                 trigger={
                   <Button

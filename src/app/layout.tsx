@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/providers/theme.provider";
 import { StoreProvider } from "@/providers/store.provider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/auth.provider";
-import { RouteProvider } from "@/providers/route.aprovider";
+import { RouteProvider } from "@/providers/route.provider";
 import { ChatProvider } from "@/providers/chat.provider";
 import { PagingProvider } from "@/providers/paging.provider";
 
