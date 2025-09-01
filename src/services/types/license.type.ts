@@ -12,5 +12,6 @@ export interface ILicense extends IItem {
   
   shop: IShop;
   status: LicenseStatus;
+  images: string | null;
   rejectReason: string | null;
 }

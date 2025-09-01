@@ -25,7 +25,7 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
   const handleUpdateStatus = useCallback(
     async (status: ShopStatus) => {
       try {
-        const { statusCode, message } = await trigger({
+        const { statusCode } = await trigger({
           shopId: shop.id,
           status,
         }).unwrap();
@@ -49,16 +49,16 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
         <Button
           variant="outline"
           className="flex items-center justify-center gap-2"
+          size="icon"
         >
-          Hành động
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-max">
+      <DropdownMenuContent align="end" className="w-max space-y-1">
         {shop.status === ShopStatus.PENDING ? (
           <DropdownMenuItem asChild>
             <Button
-              className="flex items-center justify-start gap-2"
+              className="flex items-center justify-start gap-2 w-full"
               variant="ghost"
               size="sm"
             >
@@ -76,7 +76,7 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
                   }
                   trigger={
                     <Button
-                      className="flex items-center justify-start gap-2"
+                      className="flex items-center justify-start gap-2 w-full"
                       variant="ghost"
                       size="sm"
                       disabled={isLoading}
@@ -100,7 +100,7 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
                     }
                     trigger={
                       <Button
-                        className="flex items-center justify-start gap-2"
+                        className="flex items-center justify-start gap-2 w-full"
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
@@ -127,7 +127,8 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
                     <Button
                       className={cn(
                         "flex items-center justify-start gap-2 bg-rose-500/10 text-rose-500",
-                        "hover:bg-rose-500 hover:text-white"
+                        "hover:bg-rose-500 hover:text-white",
+                        "w-full"
                       )}
                       variant="ghost"
                       size="sm"
@@ -155,7 +156,8 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
                     <Button
                       className={cn(
                         "flex items-center justify-start gap-2 bg-green-500/10 text-green-500",
-                        "hover:bg-green-500 hover:text-white"
+                        "hover:bg-green-500 hover:text-white",
+                        "w-full"
                       )}
                       variant="ghost"
                       size="sm"

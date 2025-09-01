@@ -5,6 +5,7 @@ import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { StaffNotFound } from "@/components/staff-not-found";
 import { ActionButton } from "@/components/staff/shop/detail/action-button";
+import { ShopTabs } from "@/components/staff/shop/detail/shop-tabs";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isSuccess } from "@/lib/utils";
 import { useLazyGetShopQuery } from "@/services/apis";
 import { IShop } from "@/services/types";
@@ -103,8 +105,8 @@ export default function StaffShopDetailPage() {
       <div className="p-6 space-y-6 w-full">
         <div className="flex items-center justify-between">
           <GoBackButton />
-          <ActionButton shop={shop} onUpdate={fetchShop} />
         </div>
+        <ShopTabs shop={shop} onUpdate={fetchShop} />
       </div>
     )
   );
