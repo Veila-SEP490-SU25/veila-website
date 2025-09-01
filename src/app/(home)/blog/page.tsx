@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLazyGetBlogsQuery } from "@/services/apis/blog.api";
-import { IBlog, BlogStatus } from "@/services/types";
+import { useLazyGetPublicBlogsQuery } from "@/services/apis";
+import { IBlog } from "@/services/types";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -29,11 +29,10 @@ import {
   SortDesc,
   Filter,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function BlogListPage() {
   const router = useRouter();
-  const [trigger, { data, isLoading, error }] = useLazyGetBlogsQuery();
+  const [trigger, { data, isLoading, error }] = useLazyGetPublicBlogsQuery();
   const [blogs, setBlogs] = useState<IBlog[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -106,32 +105,6 @@ export default function BlogListPage() {
     });
   };
 
-  const getStatusColor = (status: BlogStatus) => {
-    switch (status) {
-      case BlogStatus.PUBLISHED:
-        return "bg-green-100 text-green-800 border-green-200";
-      case BlogStatus.DRAFT:
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case BlogStatus.UNPUBLISHED:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getStatusText = (status: BlogStatus) => {
-    switch (status) {
-      case BlogStatus.PUBLISHED:
-        return "Đã xuất bản";
-      case BlogStatus.DRAFT:
-        return "Bản nháp";
-      case BlogStatus.UNPUBLISHED:
-        return "Chưa xuất bản";
-      default:
-        return status;
-    }
-  };
-
   const extractImageFromContent = (content?: string): string | null => {
     if (!content) return null;
     const imgMatch = content.match(/!\[.*?\]\((.*?)\)/);
@@ -176,7 +149,7 @@ export default function BlogListPage() {
     const excerpt = extractExcerpt(blog.content);
 
     return (
-      <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-pink-100 hover:border-pink-200">
+      <Card className="group py-0 overflow-hidden hover:shadow-xl transition-all duration-300 border-pink-100 hover:border-pink-200">
         <div className="relative overflow-hidden">
           {image ? (
             <Image
@@ -192,7 +165,7 @@ export default function BlogListPage() {
               <BookOpen className="h-16 w-16 text-pink-300" />
             </div>
           )}
-          <div className="absolute top-4 left-4">
+          {/* <div className="absolute top-4 left-4">
             <Badge className={cn("text-xs", getStatusColor(blog.status))}>
               {getStatusText(blog.status)}
             </Badge>
@@ -203,7 +176,7 @@ export default function BlogListPage() {
                 Đã xác thực
               </Badge>
             </div>
-          )}
+          )} */}
         </div>
 
         <CardContent className="p-6">
@@ -221,13 +194,7 @@ export default function BlogListPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <User className="h-4 w-4" />
-              {blog.user?.shop?.name ||
-                (blog.user
-                  ? `${blog.user.firstName || ""} ${
-                      blog.user.lastName || ""
-                    }`.trim()
-                  : "") ||
-                "Tác giả"}
+              <span>Tác giả</span>
             </div>
             <Button
               size="sm"
@@ -248,16 +215,16 @@ export default function BlogListPage() {
     const excerpt = extractExcerpt(blog.content);
 
     return (
-      <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 border-pink-100 hover:border-pink-200">
+      <Card className="overflow-hidden hover:shadow-lg py-0 transition-all duration-300 border-pink-100 hover:border-pink-200">
         <div className="flex">
-          <div className="relative w-48 h-32 flex-shrink-0">
+          <div className="relative w-48 h-32  flex-shrink-0">
             {image ? (
               <Image
                 src={image}
                 alt={blog.title}
                 width={192}
                 height={128}
-                className="w-full h-full object-cover"
+                className="w-full  h-full object-cover"
                 style={{ height: "auto" }}
               />
             ) : (
@@ -267,18 +234,7 @@ export default function BlogListPage() {
             )}
           </div>
 
-          <CardContent className="flex-1 p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge className={cn("text-xs", getStatusColor(blog.status))}>
-                {getStatusText(blog.status)}
-              </Badge>
-              {blog.isVerified && (
-                <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-xs">
-                  Đã xác thực
-                </Badge>
-              )}
-            </div>
-
+          <CardContent className="flex-1 p-6 py-0">
             <h3 className="font-bold text-lg mb-2 hover:text-pink-600 transition-colors cursor-pointer">
               {blog.title}
             </h3>
@@ -289,13 +245,7 @@ export default function BlogListPage() {
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <User className="h-4 w-4" />
-                  {blog.user?.shop?.name ||
-                    (blog.user
-                      ? `${blog.user.firstName || ""} ${
-                          blog.user.lastName || ""
-                        }`.trim()
-                      : "") ||
-                    "Tác giả"}
+                  <span>Tác giả</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
@@ -439,17 +389,6 @@ export default function BlogListPage() {
                   Tìm kiếm: "{searchTerm}"
                   <button
                     onClick={() => handleSearch("")}
-                    className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
-                  >
-                    ×
-                  </button>
-                </Badge>
-              )}
-              {safeStatusFilter && safeStatusFilter !== "ALL" && (
-                <Badge variant="secondary" className="gap-1">
-                  Trạng thái: {getStatusText(safeStatusFilter as BlogStatus)}
-                  <button
-                    onClick={() => handleStatusFilter("ALL")}
                     className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
                   >
                     ×

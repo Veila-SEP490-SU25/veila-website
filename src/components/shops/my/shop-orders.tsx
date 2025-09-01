@@ -34,7 +34,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  Download,
   Edit,
   Eye,
   Mail,
@@ -62,7 +61,6 @@ export const MyShopOrders = () => {
     totalItems: 0,
     totalPages: 0,
   });
-  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -113,8 +111,7 @@ export const MyShopOrders = () => {
           description: message,
         });
       }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
+    } catch {
       toast.error("Đã xảy ra lỗi khi tải danh sách đơn hàng");
     }
   };
@@ -198,21 +195,66 @@ export const MyShopOrders = () => {
     }
   };
 
-  const handleStatusUpdate = (orderId: string, newStatus: OrderStatus) => {
-    // TODO: Implement status update API call
-    toast.success(`Đã cập nhật trạng thái đơn hàng #${orderId}`);
-  };
-
   if (isLoading && orders.length === 0) {
     return (
       <div className="space-y-6">
+        {/* Header Skeleton */}
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+          <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+        </div>
+
+        {/* Search Skeleton */}
+        <Card>
+          <CardContent className="p-6">
+            <div className="h-10 bg-gray-200 rounded"></div>
+          </CardContent>
+        </Card>
+
+        {/* Orders Skeleton */}
+        <div className="space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <Card key={i} className="animate-pulse">
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  {/* Order Header Skeleton */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-6 bg-gray-200 rounded w-32"></div>
+                      <div className="h-6 bg-gray-200 rounded w-20"></div>
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="text-right">
+                      <div className="h-8 bg-gray-200 rounded w-24 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    </div>
+                  </div>
+
+                  {/* Customer Info Skeleton */}
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-24"></div>
+                      <div className="h-3 bg-gray-200 rounded w-32"></div>
+                    </div>
+                  </div>
+
+                  {/* Order Details Skeleton */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[...Array(3)].map((_, j) => (
+                      <div key={j} className="flex items-center gap-2">
+                        <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                        <div className="space-y-1">
+                          <div className="h-3 bg-gray-200 rounded w-20"></div>
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     );
@@ -244,7 +286,13 @@ export const MyShopOrders = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
+                  disabled={isLoading}
                 />
+                {isLoading && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-rose-600"></div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -253,7 +301,7 @@ export const MyShopOrders = () => {
 
       {/* Orders List */}
       <div className="space-y-4">
-        {orders.length === 0 ? (
+        {orders.length === 0 && !isLoading ? (
           <Card>
             <CardContent className="p-12 text-center">
               <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
@@ -364,18 +412,22 @@ export const MyShopOrders = () => {
                     <div className="flex items-center gap-2 ml-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="sm">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isLoading}
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem>
+                          <DropdownMenuItem disabled={isLoading}>
                             <MessageSquare className="h-4 w-4 mr-2" />
                             Nhắn tin khách hàng
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem disabled={isLoading}>
                             <Edit className="h-4 w-4 mr-2" />
                             Cập nhật trạng thái
                           </DropdownMenuItem>
@@ -383,6 +435,7 @@ export const MyShopOrders = () => {
                             onClick={() =>
                               router.push(`/shops/my/orders/${order.id}`)
                             }
+                            disabled={isLoading}
                           >
                             <Eye className="h-4 w-4 mr-2" />
                             Xem chi tiết
@@ -417,6 +470,7 @@ export const MyShopOrders = () => {
                 <Select
                   value={paging.pageSize.toString()}
                   onValueChange={handlePageSizeChange}
+                  disabled={isLoading}
                 >
                   <SelectTrigger className="w-[100px]">
                     <SelectValue />
@@ -433,7 +487,7 @@ export const MyShopOrders = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handlePageChange(paging.pageIndex - 1)}
-                    disabled={!paging.hasPrevPage}
+                    disabled={!paging.hasPrevPage || isLoading}
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -444,10 +498,13 @@ export const MyShopOrders = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handlePageChange(paging.pageIndex + 1)}
-                    disabled={!paging.hasNextPage}
+                    disabled={!paging.hasNextPage || isLoading}
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
+                  {isLoading && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-rose-600"></div>
+                  )}
                 </div>
               </div>
             </div>

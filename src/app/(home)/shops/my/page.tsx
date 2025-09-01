@@ -12,6 +12,7 @@ import { ShopOverview } from "@/components/shops/my/shop-overview";
 import { ShopInformation } from "@/components/shops/my/shop-information";
 import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
 import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
+import { ShopBlogsTabs } from "@/components/shops/my/blogs/shop-blogs-tabs";
 
 export default function MyShopPage() {
   const router = useRouter();
@@ -98,12 +99,13 @@ export default function MyShopPage() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
           <TabsTrigger value="info">Thông tin</TabsTrigger>
           <TabsTrigger value="dresses">Váy cưới</TabsTrigger>
           <TabsTrigger value="accessories">Phụ kiện</TabsTrigger>
           <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
+          <TabsTrigger value="blogs">Blog</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -129,6 +131,11 @@ export default function MyShopPage() {
         {/* Analytics Tab */}
         <TabsContent value="orders" className="space-y-6">
           <MyShopOrders />
+        </TabsContent>
+
+        {/* Blog Tab */}
+        <TabsContent value="blogs" className="space-y-6">
+          <ShopBlogsTabs />
         </TabsContent>
       </Tabs>
     </div>

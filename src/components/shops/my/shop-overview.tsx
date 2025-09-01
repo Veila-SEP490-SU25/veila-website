@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IShop } from "@/services/types";
 import {
-  AlertCircle,
   DollarSign,
   Mail,
   MapPin,
@@ -59,11 +58,6 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
                 <h2 className="text-2xl font-bold text-gray-900">
                   {shop.name}
                 </h2>
-                <div className="flex items-center gap-2 mt-2">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium">5</span>
-                  <span className="text-gray-600">(10 đánh giá)</span>
-                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2">
