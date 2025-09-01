@@ -62,7 +62,7 @@ export const FeedbackCard = ({ feedbackId }: FeedbackCardProps) => {
                       <Star
                         key={i}
                         className={`h-4 w-4 ${
-                          i < feedback.rating
+                          i < Number(feedback.rating)
                             ? "fill-yellow-400 text-yellow-400"
                             : "text-gray-300"
                         }`}

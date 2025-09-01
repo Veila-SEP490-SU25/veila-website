@@ -46,7 +46,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  Store,
   AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -157,20 +156,44 @@ export function CreateCustomOrderDialog({
     }
 
     // Measurement validations
-    if (requestData.height < 140 || requestData.height > 200) {
-      errors.high = "Chiều cao phải từ 140-200cm";
+    if (requestData.height < 130 || requestData.height > 200) {
+      errors.height = "Chiều cao phải từ 130-200cm";
     }
-    if (requestData.weight < 35 || requestData.weight > 120) {
-      errors.weight = "Cân nặng phải từ 35-120kg";
+    if (requestData.weight < 30 || requestData.weight > 100) {
+      errors.weight = "Cân nặng phải từ 30-100kg";
     }
-    if (requestData.bust < 70 || requestData.bust > 120) {
-      errors.bust = "Số đo ngực phải từ 70-120cm";
+    if (requestData.bust < 50 || requestData.bust > 150) {
+      errors.bust = "Số đo ngực phải từ 50-150cm";
     }
-    if (requestData.waist < 50 || requestData.waist > 100) {
-      errors.waist = "Số đo eo phải từ 50-100cm";
+    if (requestData.waist < 40 || requestData.waist > 100) {
+      errors.waist = "Số đo eo phải từ 40-100cm";
     }
-    if (requestData.hip < 70 || requestData.hip > 130) {
-      errors.hip = "Số đo hông phải từ 70-130cm";
+    if (requestData.hip < 40 || requestData.hip > 150) {
+      errors.hip = "Số đo hông phải từ 40-150cm";
+    }
+    if (requestData.armpit < 10 || requestData.armpit > 40) {
+      errors.armpit = "Số đo nách phải từ 10-40cm";
+    }
+    if (requestData.bicep < 10 || requestData.bicep > 40) {
+      errors.bicep = "Số đo cánh tay phải từ 10-40cm";
+    }
+    if (requestData.neck < 20 || requestData.neck > 50) {
+      errors.neck = "Số đo cổ phải từ 20-50cm";
+    }
+    if (requestData.shoulderWidth < 20 || requestData.shoulderWidth > 50) {
+      errors.shoulderWidth = "Số đo rộng vai phải từ 20-50cm";
+    }
+    if (requestData.sleeveLength < 0 || requestData.sleeveLength > 100) {
+      errors.sleeveLength = "Số đo dài tay áo phải từ 0-100cm";
+    }
+    if (requestData.backLength < 30 || requestData.backLength > 60) {
+      errors.backLength = "Số đo dài lưng phải từ 30-60cm";
+    }
+    if (requestData.lowerWaist < 5 || requestData.lowerWaist > 30) {
+      errors.lowerWaist = "Số đo eo dưới phải từ 5-30cm";
+    }
+    if (requestData.waistToFloor < 0 || requestData.waistToFloor > 200) {
+      errors.waistToFloor = "Số đo eo xuống sàn phải từ 0-200cm";
     }
 
     setRequestErrors(errors);
@@ -234,9 +257,7 @@ export function CreateCustomOrderDialog({
     }
 
     try {
-      const { statusCode, message, item } = await createRequest(
-        requestData
-      ).unwrap();
+      const { message, item } = await createRequest(requestData).unwrap();
 
       if (item) {
         setCreatedRequest(item);
@@ -250,7 +271,7 @@ export function CreateCustomOrderDialog({
           description: message,
         });
       }
-    } catch (error: any) {
+    } catch {
       toast.error("Có lỗi xảy ra khi tạo yêu cầu thiết kế.");
     }
   };
@@ -272,9 +293,7 @@ export function CreateCustomOrderDialog({
         requestId: createdRequest.id,
       };
 
-      const { statusCode, message, item } = await createCustomOrder(
-        orderPayload
-      ).unwrap();
+      const { message, item } = await createCustomOrder(orderPayload).unwrap();
 
       if (item) {
         setCreatedOrder(item);
@@ -287,7 +306,7 @@ export function CreateCustomOrderDialog({
           description: message,
         });
       }
-    } catch (error: any) {
+    } catch {
       toast.error("Có lỗi xảy ra khi tạo đơn hàng.");
     }
   };
@@ -351,7 +370,7 @@ export function CreateCustomOrderDialog({
   };
 
   const measurementFields = [
-    { key: "high", label: "Chiều cao", icon: "📏", unit: "cm" },
+    { key: "height", label: "Chiều cao", icon: "📏", unit: "cm" },
     { key: "weight", label: "Cân nặng", icon: "⚖️", unit: "kg" },
     { key: "bust", label: "Vòng ngực", icon: "👗", unit: "cm" },
     { key: "waist", label: "Vòng eo", icon: "⭕", unit: "cm" },
@@ -529,6 +548,40 @@ export function CreateCustomOrderDialog({
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                             {field.unit}
                           </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {(() => {
+                            switch (field.key) {
+                              case "height":
+                                return "Range: 130-200cm";
+                              case "weight":
+                                return "Range: 30-100kg";
+                              case "bust":
+                                return "Range: 50-150cm";
+                              case "waist":
+                                return "Range: 40-100cm";
+                              case "hip":
+                                return "Range: 40-150cm";
+                              case "armpit":
+                                return "Range: 10-40cm";
+                              case "bicep":
+                                return "Range: 10-40cm";
+                              case "neck":
+                                return "Range: 20-50cm";
+                              case "shoulderWidth":
+                                return "Range: 20-50cm";
+                              case "sleeveLength":
+                                return "Range: 0-100cm";
+                              case "backLength":
+                                return "Range: 30-60cm";
+                              case "lowerWaist":
+                                return "Range: 5-30cm";
+                              case "waistToFloor":
+                                return "Range: 0-200cm";
+                              default:
+                                return "";
+                            }
+                          })()}
                         </div>
                         {requestErrors[field.key] && (
                           <div className="flex items-center gap-1 text-sm text-destructive">

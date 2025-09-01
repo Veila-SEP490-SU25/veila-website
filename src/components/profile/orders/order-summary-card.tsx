@@ -34,18 +34,7 @@ export const OrderSummaryCard = ({
           <span className="text-muted-foreground">Tổng tiền:</span>
           <span className="font-bold">{formatCurrency(order.amount)}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Đã thanh toán:</span>
-          <span className="font-semibold text-green-600">
-            {formatCurrency(0)}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Còn lại:</span>
-          <span className="font-semibold text-orange-600">
-            {formatCurrency(0)}
-          </span>
-        </div>
+
         <Separator />
         <div className="flex justify-between">
           <span className="text-muted-foreground">Ngày giao:</span>

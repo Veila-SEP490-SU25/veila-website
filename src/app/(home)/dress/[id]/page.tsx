@@ -16,7 +16,6 @@ import {
   Heart,
   Info,
   Mail,
-  MessageCircle,
   RotateCcw,
   Share2,
   Shield,
@@ -383,7 +382,7 @@ const DressDetailPage = () => {
                       <p className="text-2xl font-bold text-gray-900">
                         {formatPrice(parseNumber(dress.rentalPrice))}
                       </p>
-                      <p className="text-sm text-gray-600">/ lần thuê</p>
+                      <p className="text-sm text-gray-600">/ngày</p>
                     </div>
                   </div>
                 </CardContent>
@@ -413,6 +412,8 @@ const DressDetailPage = () => {
               shopId={dress.user?.shop?.id || ""}
               shopName={dress.user?.shop?.name || ""}
               shopAvatarUrl={dress.user?.shop?.logoUrl || ""}
+              dressId={dress.id}
+              dressName={dress.name}
               className="w-full bg-transparent"
             />
           </div>
@@ -497,13 +498,28 @@ const DressDetailPage = () => {
                     </div>
                   </div>
                   <div className="flex gap-3 mt-4">
-                    <Button variant="outline" size="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (dress.user?.shop?.id) {
+                          router.push(`/shops/detail/${dress.user.shop.id}`);
+                        } else {
+                          toast.error("Không thể xem hồ sơ shop");
+                        }
+                      }}
+                      disabled={!dress.user?.shop?.id}
+                    >
                       Xem hồ sơ
                     </Button>
-                    <Button variant="outline" size="sm">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Nhắn tin
-                    </Button>
+                    <CreateChatButton
+                      shopId={dress.user?.shop?.id || ""}
+                      shopName={dress.user?.shop?.name || ""}
+                      shopAvatarUrl={dress.user?.shop?.logoUrl || ""}
+                      dressId={dress.id}
+                      dressName={dress.name}
+                      className="bg-transparent border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                    />
                   </div>
                 </div>
               </div>

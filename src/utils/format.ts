@@ -65,6 +65,20 @@ export const formatDateShort = (dateString: string | Date): string => {
   });
 };
 
+export const formatDateOnly = (dateString: string | Date): string => {
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    return "Ngày không hợp lệ";
+  }
+
+  return date.toLocaleDateString("vi-VN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
+
 export const formatPrice = (price: number): string => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",

@@ -12,14 +12,26 @@ export interface IFeedback extends IItem {
   orderId: string;
   dressId: string | null;
   accessoryId: string | null;
-  
+
   customer: IUser;
   order: IOrder;
   dress: IDress | null;
   service: IService | null;
   accessory: IAccessory | null;
   content: string;
-  rating: number;
+  rating: number | string;
+  images: string | null;
+}
+
+export interface IDressFeedback {
+  id: string;
+  customer: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  };
+  content: string;
+  rating: string;
   images: string | null;
 }
 

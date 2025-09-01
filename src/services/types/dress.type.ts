@@ -1,4 +1,4 @@
-import { IUser, IItem, ICategory, IFeedback } from "@/services/types";
+import { IUser, IItem, ICategory, IDressFeedback } from "@/services/types";
 
 export enum DressStatus {
   AVAILABLE = "AVAILABLE",
@@ -30,7 +30,7 @@ export interface IDress extends IItem {
   ratingAverage: number | string;
   ratingCount: number;
   status: DressStatus;
-  feedbacks: IFeedback[];
+  feedbacks: IDressFeedback[];
   isFavorite: boolean | null;
 }
 

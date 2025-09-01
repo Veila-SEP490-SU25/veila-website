@@ -29,12 +29,10 @@ import {
 } from "@/services/types";
 import {
   AlertCircle,
-  Calendar,
   CheckCircle,
   ChevronLeft,
   ChevronRight,
   Clock,
-  Edit,
   Eye,
   Mail,
   MapPin,
@@ -64,13 +62,63 @@ export const MyOrders = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [dateFilter, setDateFilter] = useState<
+    "all" | "today" | "week" | "month" | "custom"
+  >("all");
+  const [customDateRange, setCustomDateRange] = useState<{
+    from: Date | null;
+    to: Date | null;
+  }>({
+    from: null,
+    to: null,
+  });
 
   const buildFilterString = useCallback(() => {
+    const filters: string[] = [];
+
     if (debouncedSearchTerm) {
-      return `email:like:${debouncedSearchTerm}`;
+      filters.push(`email:like:${debouncedSearchTerm}`);
     }
-    return "";
-  }, [debouncedSearchTerm]);
+
+    // Date filter
+    if (dateFilter !== "all") {
+      const now = new Date();
+      let fromDate: Date | null = null;
+      let toDate: Date | null = null;
+
+      switch (dateFilter) {
+        case "today":
+          fromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          toDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1
+          );
+          break;
+        case "week":
+          fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          toDate = now;
+          break;
+        case "month":
+          fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+          toDate = now;
+          break;
+        case "custom":
+          if (customDateRange.from && customDateRange.to) {
+            fromDate = customDateRange.from;
+            toDate = customDateRange.to;
+          }
+          break;
+      }
+
+      if (fromDate && toDate) {
+        filters.push(`createdAt:gte:${fromDate.toISOString()}`);
+        filters.push(`createdAt:lte:${toDate.toISOString()}`);
+      }
+    }
+
+    return filters.join(";");
+  }, [debouncedSearchTerm, dateFilter, customDateRange]);
 
   const handlePageChange = (newPageIndex: number) => {
     setPaging((prev) => ({
@@ -94,7 +142,7 @@ export const MyOrders = () => {
         page: paging.pageIndex,
         size: paging.pageSize,
         filter: buildFilterString(),
-        sort: "",
+        sort: "createdAt:desc", // Sort by creation date, newest first
       }).unwrap();
 
       if (statusCode === 200) {
@@ -240,6 +288,78 @@ export const MyOrders = () => {
                 />
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              <Select
+                value={dateFilter}
+                onValueChange={(
+                  value: "all" | "today" | "week" | "month" | "custom"
+                ) => {
+                  setDateFilter(value);
+                  setPaging((prev) => ({ ...prev, pageIndex: 0 })); // Reset to first page
+                }}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả thời gian</SelectItem>
+                  <SelectItem value="today">Hôm nay</SelectItem>
+                  <SelectItem value="week">7 ngày qua</SelectItem>
+                  <SelectItem value="month">Tháng này</SelectItem>
+                  <SelectItem value="custom">Tùy chọn</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {dateFilter === "custom" && (
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="date"
+                    value={
+                      customDateRange.from
+                        ? customDateRange.from.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const date = e.target.value
+                        ? new Date(e.target.value)
+                        : null;
+                      setCustomDateRange((prev) => ({
+                        ...prev,
+                        from: date,
+                      }));
+                      setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+                    }}
+                    className="w-[140px]"
+                    placeholder="Từ ngày"
+                  />
+                  <Input
+                    type="date"
+                    value={
+                      customDateRange.to
+                        ? customDateRange.to.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const date = e.target.value
+                        ? new Date(e.target.value)
+                        : null;
+                      setCustomDateRange((prev) => ({
+                        ...prev,
+                        to: date,
+                      }));
+                      setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+                    }}
+                    className="w-[140px]"
+                    placeholder="Đến ngày"
+                    min={
+                      customDateRange.from
+                        ? customDateRange.from.toISOString().split("T")[0]
+                        : undefined
+                    }
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -261,7 +381,7 @@ export const MyOrders = () => {
             {orders.map((order) => (
               <Card
                 key={order.id}
-                className="hover:shadow-md transition-shadow"
+                className="hover:shadow-md transition-shadow relative"
               >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -322,7 +442,7 @@ export const MyOrders = () => {
                       {/* Order Details */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-gray-400" />
+                          <Clock className="h-4 w-4 text-gray-400" />
                           <div>
                             <p className="text-gray-600">Ngày giao hàng</p>
                             <p className="font-medium">
@@ -332,7 +452,7 @@ export const MyOrders = () => {
                         </div>
                         {order.returnDate && (
                           <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-gray-400" />
+                            <Clock className="h-4 w-4 text-gray-400" />
                             <div>
                               <p className="text-gray-600">Ngày trả</p>
                               <p className="font-medium">
@@ -364,13 +484,16 @@ export const MyOrders = () => {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              // Tạo chat với khách hàng
+                              router.push(
+                                `/chat?userId=${order.customer.id}&userName=${order.customer.firstName}`
+                              );
+                            }}
+                          >
                             <MessageSquare className="h-4 w-4 mr-2" />
                             Nhắn tin khách hàng
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Cập nhật trạng thái
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>

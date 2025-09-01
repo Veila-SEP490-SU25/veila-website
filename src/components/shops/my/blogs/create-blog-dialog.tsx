@@ -173,7 +173,7 @@ export const CreateBlogDialog = ({
                     Tải lên ảnh
                   </Button>
                 }
-                handleUpload={() => {}}
+                handleUpload={async () => {}}
               />
             </div>
           </div>

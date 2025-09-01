@@ -10,8 +10,10 @@ import {
   IListResponse,
   IMilestone,
   IOrder,
+  IOrderAccessoryDetail,
+  IOrderDressDetail,
+  IOrderServiceDetail,
   IPagination,
-  IService,
   ITransaction,
   IUpdateOrderStatus,
   OrderStatus,
@@ -164,7 +166,10 @@ export const orderApi = createApi({
       }),
     }),
 
-    getOrderAccessories: builder.query<IListResponse<IAccessory>, string>({
+    getOrderAccessories: builder.query<
+      IListResponse<IOrderAccessoryDetail>,
+      string
+    >({
       query: (id) => ({
         url: `orders/${id}/order-accessories-details`,
         method: "GET",
@@ -181,7 +186,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    getOrderDresses: builder.query<IListResponse<IDress>, string>({
+    getOrderDresses: builder.query<IListResponse<IOrderDressDetail>, string>({
       query: (id) => ({
         url: `orders/${id}/order-dress-details`,
         method: "GET",
@@ -195,7 +200,7 @@ export const orderApi = createApi({
       }),
     }),
 
-    getOrderService: builder.query<IItemResponse<IService>, string>({
+    getOrderService: builder.query<IItemResponse<IOrderServiceDetail>, string>({
       query: (id) => ({
         url: `orders/${id}/order-service-details`,
         method: "GET",
