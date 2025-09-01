@@ -64,7 +64,7 @@ export const DressesTabs = ({ shop, onUpdate }: DressesTabsProps) => {
       const { statusCode, message, items, ...paging } = await trigger({
         id: shop.id,
         filter: debouncedSearchTerm ? `name:like:${debouncedSearchTerm}` : "",
-        sort: `name:desc`,
+        sort: `updatedAt:desc`,
         page: pageIndex,
         size: pageSize,
       }).unwrap();
