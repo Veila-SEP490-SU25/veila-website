@@ -9,6 +9,7 @@ import {
   IUpdateWalletPIN,
   IWallet,
   IWithdraw,
+  TransactionStatus,
 } from "@/services/types";
 
 export interface IUpdateBankInfo {
@@ -18,7 +19,7 @@ export interface IUpdateBankInfo {
 
 export interface IWebhookPayload {
   transactionId: string;
-  status: "COMPLETED" | "FAILED" | "CANCELLED";
+  status: TransactionStatus;
 }
 
 export const walletApi = createApi({
