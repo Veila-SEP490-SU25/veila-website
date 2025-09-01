@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageGallery } from "@/components/image-gallery";
+import { UpdateShopInfoDialog } from "@/components/shops/my/upadte-shop-info-dialog";
 import { ActionButton } from "@/components/staff/shop/detail/action-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -9,13 +10,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { TabsContent } from "@/components/ui/tabs";
+import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
 import { formatDateShort } from "@/lib/order-util";
 import { getImages } from "@/lib/products-utils";
 import { cn } from "@/lib/utils";
+import { useUpdateShopInfoMutation } from "@/services/apis";
 import {
   ILicense,
   IMembership,
   IShop,
+  IUpdateShopInfo,
   IUser,
   LicenseStatus,
   ShopStatus,
@@ -23,6 +27,7 @@ import {
 import {
   Award,
   Calendar,
+  Camera,
   CheckCircle,
   Edit,
   Edit2,
@@ -37,7 +42,8 @@ import {
   UserRoundCheck,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface InformationTabsProps {
   shop: IShop;
@@ -90,6 +96,38 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
   const [license, setLicense] = useState<ILicense | null>(null);
   const [memberships, setMemberships] = useState<IMembership[]>([]);
 
+  const [updateShopInfo, { isLoading: isUpdating }] =
+    useUpdateShopInfoMutation();
+  const [info, setInfo] = useState<IUpdateShopInfo>({
+    name: shop.name,
+    phone: shop.phone,
+    email: shop.email,
+    address: shop.address,
+    coverUrl: shop.coverUrl || "",
+    description: shop.description || "",
+    logoUrl: shop.logoUrl || "",
+  });
+
+  const handleUpdateInfo = useCallback(
+    async (info: IUpdateShopInfo) => {
+      try {
+        const { statusCode, message } = await updateShopInfo(info).unwrap();
+        if (statusCode === 200) {
+          toast.success("Cập nhật thông tin cửa hàng thành công");
+        } else {
+          toast.error("Có lỗi xảy ra khi cập nhật thông tin cửa hàng", {
+            description: message,
+          });
+        }
+      } catch (error) {
+        toast.error(
+          "Có lỗi xảy ra khi cập nhật thông tin cửa hàng vui lòng thử lại sau"
+        );
+      }
+    },
+    [info, updateShopInfo]
+  );
+
   useEffect(() => {
     if (shop.user) {
       setOwner(shop.user);
@@ -136,21 +174,40 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                 <AvatarFallback className="size-full text-7xl">
                   {shop.name.charAt(0)}
                 </AvatarFallback>
-                <Button
-                  className="absolute top-1/2 left-1/2 size-full -translate-1/2 text-transparent hover:bg-gray-600/50 hover:text-white"
-                  variant="ghost"
-                >
-                  <Edit2 className="size-8" />
-                </Button>
+
+                <SingleImageUploadDialog
+                  imageUrl={shop.logoUrl || undefined}
+                  onImageChange={(url) =>
+                    setInfo((prev) => ({ ...prev, logoUrl: url }))
+                  }
+                  trigger={
+                    <Button
+                      className="absolute top-1/2 left-1/2 size-full -translate-1/2 text-transparent hover:bg-gray-600/50 hover:text-white"
+                      variant="ghost"
+                    >
+                      <Edit2 className="size-8" />
+                    </Button>
+                  }
+                  handleUpload={() => handleUpdateInfo(info)}
+                />
               </Avatar>
             </div>
-            <Button
-              className="flex items-center gap-2 absolute right-4 top-4"
-              variant="outline"
-            >
-              <Edit className="size-4" />
-              Thay đổi ảnh bìa
-            </Button>
+            <SingleImageUploadDialog
+              imageUrl={shop.coverUrl || undefined}
+              onImageChange={(url) =>
+                setInfo((prev) => ({ ...prev, coverUrl: url }))
+              }
+              trigger={
+                <Button
+                  className="flex items-center gap-2 absolute right-4 top-4"
+                  variant="outline"
+                >
+                  <Camera className="size-4" />
+                  Thay đổi ảnh bìa
+                </Button>
+              }
+              handleUpload={() => handleUpdateInfo(info)}
+            />
           </div>
 
           <div className="pl-[calc(2.5rem+(1/8*100%))] flex items-center justify-between pr-6">
@@ -162,10 +219,22 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button className="flex items-center gap-2" variant="outline">
-                <Edit className="size-4" />
-                Chỉnh sửa
-              </Button>
+              <UpdateShopInfoDialog
+                shop={shop}
+                handleUpdateInfo={handleUpdateInfo}
+                setInfo={setInfo}
+                isUpdating={isUpdating}
+                trigger={
+                  <Button
+                    className="flex items-center gap-2"
+                    variant="outline"
+                    disabled={isUpdating}
+                  >
+                    <Edit className="size-4" />
+                    Chỉnh sửa
+                  </Button>
+                }
+              />
               <ActionButton shop={shop} onUpdate={onUpdate} />
             </div>
           </div>
