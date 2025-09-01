@@ -4,6 +4,8 @@ import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
+import { OrderCard } from "@/components/staff/shop/detail/order-card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
@@ -25,7 +27,9 @@ import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetOrderOfShopQuery } from "@/services/apis";
 import { IOrder, IShop } from "@/services/types";
 import {
+  AlertCircleIcon,
   FileText,
+  Package,
   RefreshCw,
   Scissors,
   Shirt,
@@ -317,7 +321,24 @@ export const OrdersTabs = ({ shop, onUpdate }: OrdersTabsProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          <PagingComponent />
+          {orders.length === 0 ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Không có đơn hàng nào
+                </h3>
+                <p className="text-gray-600">Chưa có đơn hàng nào được tạo</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-2">
+              {orders.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))}
+              <PagingComponent />
+            </div>
+          )}
         </CardContent>
       </Card>
     </TabsContent>
