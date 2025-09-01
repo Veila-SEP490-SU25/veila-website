@@ -67,7 +67,7 @@ export const ShopAccessoriesTabs = () => {
   const [accessories, setAccessories] = useState<IAccessory[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [trigger, { isLoading }] = useLazyGetMyShopAccessoriesQuery();
+  const [getAccessories, { isLoading }] = useLazyGetMyShopAccessoriesQuery();
   const [updateAccessory, { isLoading: isUpdating }] =
     useUpdateAccessoryMutation();
   const [isError, setIsError] = useState<boolean>(false);
@@ -88,7 +88,7 @@ export const ShopAccessoriesTabs = () => {
         filter += `status:eq:${statusFilter}`;
       }
 
-      const { statusCode, message, items, ...paging } = await trigger({
+      const { statusCode, message, items, ...paging } = await getAccessories({
         filter: filter,
         sort: `name:desc`,
         page: pageIndex,
@@ -119,23 +119,31 @@ export const ShopAccessoriesTabs = () => {
     setPaging,
     setIsError,
     setError,
+    getAccessories,
   ]);
 
   useEffect(() => {
-    resetPaging();
-    fetchAccessories();
-  }, [debouncedSearchTerm]);
+    if (debouncedSearchTerm !== searchTerm) {
+      resetPaging();
+    }
+  }, [debouncedSearchTerm, searchTerm, resetPaging]);
 
   useEffect(() => {
     fetchAccessories();
-  }, [debouncedSearchTerm, pageIndex, pageSize]);
+  }, [
+    debouncedSearchTerm,
+    statusFilter,
+    pageSize,
+    pageIndex,
+    fetchAccessories,
+  ]);
 
   const handleStatusUpdate = useCallback(
     async (accessoryId: string, newStatus: string, accessory: IAccessory) => {
       try {
         const { statusCode, message } = await updateAccessory({
           id: accessoryId,
-          categoryId: accessory.categoryId || "",
+          categoryId: accessory.categoryId || "", // Ensure it's a string
           name: accessory.name,
           description: accessory.description || "",
           sellPrice:
@@ -152,7 +160,6 @@ export const ShopAccessoriesTabs = () => {
           images: accessory.images || "",
         }).unwrap();
         if (statusCode === 200) {
-          // Force update state ngay lập tức
           setAccessories((prevAccessories) => {
             const updatedAccessories = prevAccessories.map((a) =>
               a.id === accessoryId
@@ -166,16 +173,13 @@ export const ShopAccessoriesTabs = () => {
             });
             return updatedAccessories;
           });
-
-          // Force re-render bằng cách trigger update
           setUpdateTrigger((prev) => prev + 1);
-
           toast.success("Cập nhật trạng thái phụ kiện thành công!");
         } else {
           toast.error(message || "Có lỗi xảy ra khi cập nhật trạng thái");
         }
       } catch {
-        toast.error("Có lỗi xảy ra khi cập nhật trạng thái phụ kiện");
+        toast.error("Đã xảy ra lỗi khi cập nhật trạng thái phụ kiện");
       }
     },
     [updateAccessory]

@@ -58,12 +58,23 @@ export const useChatData = () => {
 
   const chatroomCondition = useMemo<Condition | undefined>(() => {
     if (!currentUserId || !isAuthenticated || !firestore) return undefined;
-    return {
-      field: FIREBASE_FIELDS.CUSTOMER_ID, // Use customerId instead of members
-      operator: "==",
-      value: currentUserId,
-    };
-  }, [currentUserId, isAuthenticated, firestore]);
+
+    const isShop = currentUser?.role === "SHOP";
+
+    if (isShop) {
+      return {
+        field: FIREBASE_FIELDS.SHOP_ID,
+        operator: "==",
+        value: currentUserId,
+      };
+    } else {
+      return {
+        field: FIREBASE_FIELDS.CUSTOMER_ID,
+        operator: "==",
+        value: currentUserId,
+      };
+    }
+  }, [currentUserId, isAuthenticated, firestore, currentUser?.role]);
 
   const roomCondition = useMemo<Condition | undefined>(() => {
     if (!currentRoomId) return undefined;
@@ -88,6 +99,26 @@ export const useChatData = () => {
     FIREBASE_COLLECTIONS.CHATROOMS,
     chatroomCondition
   );
+
+  // Fallback query for shop role if no data found
+  const { data: fallbackChatrooms } = useFirestore(
+    FIREBASE_COLLECTIONS.CHATROOMS,
+    currentUser?.role === "SHOP" && (!rawChatrooms || rawChatrooms.length === 0)
+      ? undefined // Query all chatrooms without condition
+      : undefined
+  );
+
+  // Use main query data or fallback for shop role
+  const effectiveChatrooms = useMemo(() => {
+    if (
+      currentUser?.role === "SHOP" &&
+      (!rawChatrooms || rawChatrooms.length === 0)
+    ) {
+      return fallbackChatrooms || [];
+    }
+    return rawChatrooms || [];
+  }, [rawChatrooms, fallbackChatrooms, currentUser?.role]);
+
   const { data: _currentRoomData, error: roomError } = useFirestore(
     FIREBASE_COLLECTIONS.CHATROOMS,
     roomCondition
@@ -97,148 +128,42 @@ export const useChatData = () => {
     messageCondition
   );
 
-  // Log errors for debugging
   useEffect(() => {
     if (chatroomsError) {
-      console.error("Chatrooms query error:", chatroomsError);
+      console.error("Error fetching chatrooms:", chatroomsError);
     }
     if (roomError) {
-      console.error("Room query error:", roomError);
+      console.error("Error fetching current room:", roomError);
     }
     if (messagesError) {
-      console.error("Messages query error:", messagesError);
+      console.error("Error fetching messages:", messagesError);
     }
   }, [chatroomsError, roomError, messagesError]);
 
-  // Debug: Log chatrooms data
   useEffect(() => {
-    console.log("=== CHATROOMS DEBUG ===");
-    console.log("Current user ID:", currentUserId);
-    console.log("Is authenticated:", isAuthenticated);
-    console.log("Firestore available:", !!firestore);
-    console.log("Chatroom condition:", chatroomCondition);
+    // Only log when there are significant changes and not too frequently
+    if (effectiveChatrooms && effectiveChatrooms.length > 0) {
+      console.log("=== CHATROOMS DEBUG ===");
+      console.log("Effective chatrooms count:", effectiveChatrooms.length);
+      console.log("Current user role:", currentUser?.role);
+      console.log("Current user ID:", currentUserId);
 
-    if (rawChatrooms && rawChatrooms.length > 0) {
-      console.log("Raw chatrooms:", rawChatrooms.length, rawChatrooms);
-      console.log("Collection name:", FIREBASE_COLLECTIONS.CHATROOMS);
-
-      // Log each chatroom details
-      rawChatrooms.forEach((chatroom, index) => {
+      // Only log first few chatrooms to avoid spam
+      effectiveChatrooms.slice(0, 2).forEach((chatroom, index) => {
         console.log(`Chatroom ${index}:`, {
           id: chatroom.id,
-          docId: chatroom.docId,
           customerId: chatroom.customerId,
+          shopId: chatroom.shopId,
           customerName: chatroom.customerName,
-          isActive: chatroom.isActive,
-          lastMessage: chatroom.lastMessage,
-          createdAt: chatroom.createdAt,
-          updatedAt: chatroom.updatedAt,
+          shopName: chatroom.shopName,
+          isForCurrentUser:
+            currentUser?.role === "SHOP"
+              ? chatroom.shopId === currentUserId
+              : chatroom.customerId === currentUserId,
         });
-
-        // Check if this chatroom matches the target message
-        if (rawMessages && rawMessages.length > 0) {
-          const chatroomMessages = rawMessages.filter(
-            (msg) =>
-              msg.chatRoomId === chatroom.id ||
-              msg.chatRoomId === chatroom.docId
-          );
-          console.log(
-            `Messages for chatroom ${chatroom.id}:`,
-            chatroomMessages.length
-          );
-        }
       });
-
-      // Check if any chatroom matches the message chatRoomId
-      if (rawMessages && rawMessages.length > 0) {
-        const messageChatRoomIds = [
-          ...new Set(rawMessages.map((msg) => msg.chatRoomId)),
-        ];
-        console.log("Message chatRoomIds:", messageChatRoomIds);
-
-        messageChatRoomIds.forEach((msgChatRoomId) => {
-          const matchingChatroom = rawChatrooms.find(
-            (room) => room.id === msgChatRoomId || room.docId === msgChatRoomId
-          );
-          console.log(`Chatroom match for ${msgChatRoomId}:`, matchingChatroom);
-        });
-      }
-    } else {
-      console.log(
-        "No chatrooms found in collection:",
-        FIREBASE_COLLECTIONS.CHATROOMS
-      );
-
-      // Check if there are other collections with chat data
-      if (firestore && currentUserId) {
-        console.log("Checking for other chat collections...");
-
-        // Check "chatrooms" (lowercase) collection
-        const checkLowercaseCollection = async () => {
-          try {
-            const lowercaseQuery = query(
-              collection(firestore, "chatrooms"),
-              where(FIREBASE_FIELDS.MEMBERS, "array-contains", currentUserId)
-            );
-            const lowercaseSnapshot = await getDocs(lowercaseQuery);
-            console.log(
-              "Found in 'chatrooms' collection:",
-              lowercaseSnapshot.docs.length
-            );
-
-            if (lowercaseSnapshot.docs.length > 0) {
-              console.log(
-                "Lowercase chatrooms:",
-                lowercaseSnapshot.docs.map((doc) => ({
-                  id: doc.id,
-                  data: doc.data(),
-                }))
-              );
-            }
-          } catch (error) {
-            console.log("No 'chatrooms' collection or error:", error);
-          }
-        };
-
-        checkLowercaseCollection();
-
-        // Check all chatrooms without condition
-        const checkAllChatrooms = async () => {
-          try {
-            const allQuery = query(
-              collection(firestore, FIREBASE_COLLECTIONS.CHATROOMS)
-            );
-            const allSnapshot = await getDocs(allQuery);
-            console.log(
-              "All chatrooms in collection:",
-              allSnapshot.docs.length
-            );
-
-            if (allSnapshot.docs.length > 0) {
-              console.log(
-                "All chatrooms:",
-                allSnapshot.docs.map((doc) => ({
-                  id: doc.id,
-                  data: doc.data(),
-                }))
-              );
-            }
-          } catch (error) {
-            console.error("Error checking all chatrooms:", error);
-          }
-        };
-
-        checkAllChatrooms();
-      }
     }
-  }, [
-    rawChatrooms,
-    firestore,
-    currentUserId,
-    isAuthenticated,
-    chatroomCondition,
-    rawMessages,
-  ]);
+  }, [effectiveChatrooms, currentUserId, currentUser?.role]);
 
   useEffect(() => {
     if (!firestore || !currentUserId || !isAuthenticated) return;
@@ -259,10 +184,9 @@ export const useChatData = () => {
           for (const docSnapshot of lowercaseSnapshot.docs) {
             const data = docSnapshot.data();
 
-            // Add to camelCase collection
             await addDocument(FIREBASE_COLLECTIONS.CHATROOMS, {
               ...data,
-              docId: docSnapshot.id, // Preserve original docId
+              docId: docSnapshot.id,
             });
 
             console.log(`Migrated chatroom: ${docSnapshot.id}`);
@@ -275,7 +199,6 @@ export const useChatData = () => {
       }
     };
 
-    // Only migrate if no data in camelCase collection
     if (rawChatrooms && rawChatrooms.length === 0) {
       migrateData();
     }
@@ -302,12 +225,10 @@ export const useChatData = () => {
 
     const deduplicatedMessages = Array.from(uniqueMap.values());
 
-    // Sort messages by timestamp (oldest first for display)
     const sortedMessages = deduplicatedMessages.sort((a, b) => {
       let timeA: Date;
       let timeB: Date;
 
-      // Handle different timestamp formats
       if (a.timestamp instanceof Date) {
         timeA = a.timestamp;
       } else if (typeof a.timestamp === "string") {
@@ -319,7 +240,7 @@ export const useChatData = () => {
       ) {
         timeA = (a.timestamp as any).toDate();
       } else {
-        timeA = new Date(0); // Fallback
+        timeA = new Date(0);
       }
 
       if (b.timestamp instanceof Date) {
@@ -333,104 +254,76 @@ export const useChatData = () => {
       ) {
         timeB = (b.timestamp as any).toDate();
       } else {
-        timeB = new Date(0); // Fallback
+        timeB = new Date(0);
       }
 
-      return timeA.getTime() - timeB.getTime(); // Ascending: oldest first
+      return timeA.getTime() - timeB.getTime();
     });
 
     return sortedMessages;
   }, [rawMessages]);
 
   const chatrooms = useMemo(() => {
-    if (!rawChatrooms || rawChatrooms.length === 0) return [];
+    if (!effectiveChatrooms || effectiveChatrooms.length === 0) {
+      return [];
+    }
+
+    const filteredChatrooms = effectiveChatrooms.filter((chatroom: any) => {
+      if (currentUser?.role === "SHOP") {
+        return (
+          chatroom.shopId === currentUserId || chatroom.shopId === undefined
+        );
+      } else if (currentUser?.role === "CUSTOMER") {
+        return chatroom.customerId === currentUserId;
+      }
+      return false;
+    });
+
+    if (filteredChatrooms.length === 0) {
+      return [];
+    }
 
     const uniqueMap = new Map();
-    const duplicates: Array<{
-      key: string;
-      existing: any;
-      current: any;
-    }> = [];
 
-    rawChatrooms.forEach((chatroom: any) => {
-      // Use docId as primary key, fallback to id
+    filteredChatrooms.forEach((chatroom: any) => {
       const key = chatroom.docId || chatroom.id;
-
-      if (!key) {
-        console.warn("Chatroom without key:", chatroom);
-        return;
-      }
 
       if (!uniqueMap.has(key)) {
         uniqueMap.set(key, chatroom);
       } else {
-        // Found duplicate
         const existing = uniqueMap.get(key);
 
-        // Get timestamps from different possible locations
         const existingDate =
           existing.updatedAt ||
           existing.createdAt ||
-          existing.lastMessage?.lastMessageTime ||
           existing.lastMessage?.timestamp;
         const currentDate =
           chatroom.updatedAt ||
           chatroom.createdAt ||
-          chatroom.lastMessage?.lastMessageTime ||
           chatroom.lastMessage?.timestamp;
 
-        // Compare dates properly
         const existingTime = new Date(existingDate || 0).getTime();
         const currentTime = new Date(currentDate || 0).getTime();
 
-        duplicates.push({
-          key,
-          existing: { ...existing, time: existingTime },
-          current: { ...chatroom, time: currentTime },
-        });
-
         if (currentTime > existingTime) {
           uniqueMap.set(key, chatroom);
-          console.log(`Replaced chatroom ${key} with newer version`);
         }
       }
     });
 
-    // Log duplicates for debugging
-    if (duplicates.length > 0) {
-      console.log("Found duplicates:", duplicates);
-    }
-
-    // Sort by most recent first
     const sortedChatrooms = Array.from(uniqueMap.values()).sort((a, b) => {
       const aTime = new Date(
-        a.updatedAt ||
-          a.createdAt ||
-          a.lastMessage?.lastMessageTime ||
-          a.lastMessage?.timestamp ||
-          0
+        a.updatedAt || a.createdAt || a.lastMessage?.timestamp || 0
       ).getTime();
       const bTime = new Date(
-        b.updatedAt ||
-          b.createdAt ||
-          b.lastMessage?.lastMessageTime ||
-          b.lastMessage?.timestamp ||
-          0
+        b.updatedAt || b.createdAt || b.lastMessage?.timestamp || 0
       ).getTime();
       return bTime - aTime;
     });
 
-    // Debug: Log deduplication results
-    if (rawChatrooms && rawChatrooms.length !== sortedChatrooms.length) {
-      console.log(
-        `Deduplicated chatrooms: ${rawChatrooms.length} -> ${sortedChatrooms.length}`
-      );
-    }
-
     return sortedChatrooms;
-  }, [rawChatrooms]);
+  }, [effectiveChatrooms, currentUser?.role, currentUserId]);
 
-  // Find current room from chatrooms array instead of separate query
   const currentRoom = useMemo(() => {
     if (!currentRoomId || !chatrooms.length) return null;
 
@@ -441,14 +334,6 @@ export const useChatData = () => {
     return foundRoom || null;
   }, [currentRoomId, chatrooms]);
 
-  // Debug: Log current room
-  useEffect(() => {
-    if (currentRoomId) {
-      console.log("Current room ID:", currentRoomId);
-    }
-  }, [currentRoomId]);
-
-  // Auto-select first chatroom if none selected
   useEffect(() => {
     if (!currentRoomId && chatrooms.length > 0) {
       const firstChatroom = chatrooms[0];
@@ -467,7 +352,6 @@ export const useChatData = () => {
         chatrooms.map((room) => ({ id: room.id, docId: room.docId }))
       );
 
-      // Check if this ID exists in chatrooms
       const foundChatroom = chatrooms.find(
         (room) => room.id === id || room.docId === id
       );
@@ -488,11 +372,9 @@ export const useChatData = () => {
         !data.shopId ||
         !data.shopName
       ) {
-        console.error("Missing required fields for chatroom creation");
         return null;
       }
 
-      // Check if chatroom already exists
       const existingChatroom = chatrooms.find(
         (room) =>
           room.customerId === data.customerId &&
@@ -500,31 +382,26 @@ export const useChatData = () => {
       );
 
       if (existingChatroom) {
-        console.log(
-          "Chatroom already exists, selecting existing:",
-          existingChatroom.id
-        );
         setCurrentRoomId(existingChatroom.id);
         return existingChatroom.id;
       }
 
       const chatroomId = uuidv4();
 
-      // Use mobile app structure
       const newChatroom: Omit<IChatroom, "docId"> = {
         id: chatroomId,
         customerId: data.customerId,
+        shopId: data.shopId,
         customerName: data.customerName,
-        isActive: true,
-        lastMessage: {
-          content: "",
-          senderName: data.customerName,
-          timestamp: new Date(),
-          lastMessageTime: new Date(),
-          shopId: data.shopId,
-          shopName: data.shopName,
-          unreadCount: 0,
-        },
+        shopName: data.shopName,
+        customerAvatarUrl: data.customerAvatarUrl,
+        shopAvatarUrl: data.shopAvatarUrl,
+        orderId: data.orderId,
+        requestId: data.requestId,
+        name: data.name,
+        lastMessage: undefined,
+        customerUnreadCount: 0,
+        shopUnreadCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
@@ -537,7 +414,6 @@ export const useChatData = () => {
         );
         console.log("Created chatroom:", docId);
 
-        // Select the new chatroom
         setCurrentRoomId(chatroomId);
 
         return chatroomId;
@@ -546,13 +422,12 @@ export const useChatData = () => {
         return null;
       }
     },
-    [firestore, addDocument, chatrooms, setCurrentRoomId]
+    [firestore, addDocument, setCurrentRoomId, chatrooms]
   );
 
   const sendMessage = useCallback(
     async (content: string, type: MessageType) => {
       if (!currentRoom || !currentUserId || !firestore) {
-        console.error("Cannot send message: missing required data");
         return;
       }
 
@@ -571,11 +446,8 @@ export const useChatData = () => {
           deletedAt: null,
         };
 
-        console.log("Sending message:", newMessage);
-
         await addDocument(FIREBASE_COLLECTIONS.MESSAGES, newMessage);
 
-        // Update lastMessage in chatroom
         const updateData: any = {
           updatedAt: new Date(),
           lastMessage: {
@@ -595,8 +467,6 @@ export const useChatData = () => {
           currentRoom.docId || "",
           updateData
         );
-
-        console.log("Message sent successfully");
       } catch (error) {
         console.error("Error sending message:", error);
       }

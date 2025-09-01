@@ -46,7 +46,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 export const MyShopOrders = () => {
@@ -62,14 +62,7 @@ export const MyShopOrders = () => {
     totalPages: 0,
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
-  const buildFilterString = () => {
-    if (debouncedSearchTerm) {
-      return `email:like:${debouncedSearchTerm}`;
-    }
-    return "";
-  };
+  const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
 
   const handlePageChange = (newPageIndex: number) => {
     setPaging((prev) => ({
@@ -87,38 +80,44 @@ export const MyShopOrders = () => {
     }));
   };
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
-      const { statusCode, message, items, ...pagination } =
-        await getMyShopOrders({
-          page: paging.pageIndex,
-          size: paging.pageSize,
-          filter: buildFilterString(),
-          sort: "",
-        }).unwrap();
+      const response = await getMyShopOrders({
+        page: paging.pageIndex,
+        size: paging.pageSize,
+        filter: debouncedSearchTerm,
+        sort: "",
+      }).unwrap();
 
-      if (statusCode === 200) {
-        setOrders(items);
-        setPaging((prev) => ({
-          ...prev,
-          hasNextPage: pagination.hasNextPage,
-          hasPrevPage: pagination.hasPrevPage,
-          totalItems: pagination.totalItems,
-          totalPages: pagination.totalPages,
-        }));
+      if (response.statusCode === 200) {
+        setOrders(response.items || []);
+        setPaging({
+          pageIndex: paging.pageIndex,
+          pageSize: paging.pageSize,
+          totalItems: response.totalItems || 0,
+          totalPages: response.totalPages || 0,
+          hasNextPage: response.hasNextPage || false,
+          hasPrevPage: response.hasPrevPage || false,
+        });
       } else {
         toast.error("Không thể tải danh sách đơn hàng", {
-          description: message,
+          description: response.message,
         });
       }
     } catch {
       toast.error("Đã xảy ra lỗi khi tải danh sách đơn hàng");
     }
-  };
+  }, [
+    getMyShopOrders,
+    paging.pageIndex,
+    paging.pageSize,
+    debouncedSearchTerm,
+    setPaging,
+  ]);
 
   useEffect(() => {
     fetchOrders();
-  }, [paging.pageIndex, paging.pageSize, debouncedSearchTerm]);
+  }, [debouncedSearchTerm, paging.pageSize, paging.pageIndex, fetchOrders]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {

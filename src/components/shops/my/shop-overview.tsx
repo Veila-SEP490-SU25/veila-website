@@ -3,22 +3,43 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IShop } from "@/services/types";
 import {
+  useLazyGetMyShopDressesQuery,
+  useLazyGetMyShopAccessoriesQuery,
+  useLazyGetMyShopBlogsQuery,
+  useLazyGetOrdersQuery,
+  useLazyGetShopIncomeQuery,
+} from "@/services/apis";
+import {
   DollarSign,
   Mail,
   MapPin,
   Package,
   Phone,
   ShoppingBag,
-  Star,
-  Users,
+  FileText,
 } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface ShopOverViewProps {
   shop: IShop;
 }
 
 export const ShopOverview = ({ shop }: ShopOverViewProps) => {
+  const [metrics, setMetrics] = useState({
+    dresses: 0,
+    accessories: 0,
+    blogs: 0,
+    orders: 0,
+    income: 0,
+  });
+
+  const [getDresses] = useLazyGetMyShopDressesQuery();
+  const [getAccessories] = useLazyGetMyShopAccessoriesQuery();
+  const [getBlogs] = useLazyGetMyShopBlogsQuery();
+  const [getOrders] = useLazyGetOrdersQuery();
+  const [getShopIncome] = useLazyGetShopIncomeQuery();
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -26,9 +47,62 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
     }).format(price);
   };
 
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const dressesResponse = await getDresses({
+          page: 0,
+          size: 1000,
+          filter: "",
+          sort: "",
+        }).unwrap();
+        const dressesCount = dressesResponse.items?.length || 0;
+
+        const accessoriesResponse = await getAccessories({
+          page: 0,
+          size: 1000,
+          filter: "",
+          sort: "",
+        }).unwrap();
+        const accessoriesCount = accessoriesResponse.items?.length || 0;
+
+        const blogsResponse = await getBlogs({
+          page: 0,
+          size: 1000,
+          filter: "",
+          sort: "",
+        }).unwrap();
+        const blogsCount = blogsResponse.items?.length || 0;
+
+        const ordersResponse = await getOrders({
+          page: 0,
+          size: 1000,
+          filter: "",
+          sort: "",
+        }).unwrap();
+        const ordersCount = ordersResponse.items?.length || 0;
+
+        // Fetch shop income
+        const incomeResponse = await getShopIncome(shop.id).unwrap();
+        const incomeAmount = incomeResponse.item || 0;
+
+        setMetrics({
+          dresses: dressesCount,
+          accessories: accessoriesCount,
+          blogs: blogsCount,
+          orders: ordersCount,
+          income: incomeAmount,
+        });
+      } catch (error) {
+        console.error("Error fetching metrics:", error);
+      }
+    };
+
+    fetchMetrics();
+  }, [getDresses, getAccessories, getBlogs, getOrders, shop.id, getShopIncome]);
+
   return (
     <>
-      {/* Shop Header */}
       <Card className="pt-0">
         <div className="relative h-48 md:h-64 overflow-hidden rounded-t-lg">
           <Image
@@ -78,8 +152,7 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
         </CardContent>
       </Card>
 
-      {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -88,34 +161,59 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPrice(100000000)}</div>
+            <div className="text-2xl font-bold">
+              {formatPrice(metrics.income)}
+            </div>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tổng sản phẩm</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {metrics.dresses + metrics.accessories}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Đơn hàng</CardTitle>
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{6}</div>
+            <div className="text-2xl font-bold">{metrics.orders}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sản phẩm</CardTitle>
+            <CardTitle className="text-sm font-medium">Váy cưới</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{10}</div>
+            <div className="text-2xl font-bold">{metrics.dresses}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Khách hàng</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Phụ kiện</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{10}</div>
+            <div className="text-2xl font-bold">{metrics.accessories}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Blog</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics.blogs}</div>
           </CardContent>
         </Card>
       </div>

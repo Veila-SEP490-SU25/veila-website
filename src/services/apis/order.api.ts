@@ -76,7 +76,13 @@ export const orderApi = createApi({
   reducerPath: "orderApi",
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
-    // Get Orders
+    getShopIncome: builder.query<IItemResponse<number>, string>({
+      query: (shopId) => ({
+        url: `orders/shops/${shopId}/income`,
+        method: "GET",
+      }),
+    }),
+
     getOrders: builder.query<IListResponse<IOrder>, IPagination>({
       query: ({ filter = "", sort = "", page = 0, size = 10 }) => ({
         url: "orders",
@@ -92,7 +98,6 @@ export const orderApi = createApi({
       }),
     }),
 
-    //Create Order
     createOrder: builder.mutation<IItemResponse<IOrder>, ICreateOrder>({
       query: (body) => ({
         url: "orders",
@@ -112,7 +117,6 @@ export const orderApi = createApi({
       }),
     }),
 
-    // Update Order
     updateOrderInformation: builder.mutation<
       IItemResponse<IOrder>,
       IUpdateOrderInformation
@@ -149,7 +153,6 @@ export const orderApi = createApi({
       }),
     }),
 
-    // Order Detail
     getOrderMilestone: builder.query<
       IListResponse<IMilestone>,
       IGetOrderMilestone
@@ -210,7 +213,6 @@ export const orderApi = createApi({
       }),
     }),
 
-    //Order Complaint
     getOrderComplaints: builder.query<
       IListResponse<IComplaint>,
       IGetOrderComplaints
@@ -262,4 +264,5 @@ export const {
   useLazyGetOrderComplaintsQuery,
   useCreateOrderComplaintMutation,
   useLazyGetOrderOfShopQuery,
+  useLazyGetShopIncomeQuery,
 } = orderApi;
