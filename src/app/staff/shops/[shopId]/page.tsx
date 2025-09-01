@@ -1,10 +1,10 @@
 "use client";
 
+import NotFound from "@/app/not-found";
 import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { ActionButton } from "@/components/staff/shop/detail/action-button";
-import { UpdateShopStatusDialog } from "@/components/staff/shop/update-shop-status-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,26 +13,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn, isSuccess } from "@/lib/utils";
-import {
-  useLazyGetShopQuery,
-  useUpdateShopStatusMutation,
-} from "@/services/apis";
-import { IShop, ShopStatus } from "@/services/types";
-import {
-  Ban,
-  Check,
-  Lock,
-  LockOpen,
-  MoreHorizontal,
-  RefreshCw,
-} from "lucide-react";
+import { isSuccess } from "@/lib/utils";
+import { useLazyGetShopQuery } from "@/services/apis";
+import { IShop } from "@/services/types";
+import { RefreshCw } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -43,6 +27,7 @@ export default function StaffShopDetailPage() {
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [shop, setShop] = useState<IShop | null>(null);
+  const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
   const fetchShop = useCallback(async () => {
     try {
@@ -53,6 +38,10 @@ export default function StaffShopDetailPage() {
         setShop(item);
         setError("");
         setIsError(false);
+      } else if (statusCode === 404) {
+        setIsNotFound(true);
+        setError(message);
+        setIsError(true);
       } else {
         setIsError(true);
         setError(message);
@@ -67,9 +56,16 @@ export default function StaffShopDetailPage() {
     fetchShop();
   }, [fetchShop]);
 
+  if (isNotFound)
+    return (
+      <div className="p-6 space-y-6 max-w-full">
+        <NotFound />
+      </div>
+    );
+
   if (isError)
     return (
-      <div className="p-4 space-y-6 max-w-full">
+      <div className="p-6 space-y-6 max-w-full">
         <Card>
           <CardHeader className="items-center justify-center">
             <CardTitle className="text-red-500">
@@ -97,14 +93,14 @@ export default function StaffShopDetailPage() {
 
   if (isLoading)
     return (
-      <div className="p-4 space-y-6 max-w-full">
+      <div className="p-6 space-y-6 max-w-full">
         <LoadingItem />
       </div>
     );
 
   return (
     shop && (
-      <div className="p-4 space-y-6 w-full">
+      <div className="p-6 space-y-6 w-full">
         <div className="flex items-center justify-between">
           <GoBackButton />
           <ActionButton shop={shop} onUpdate={fetchShop} />
