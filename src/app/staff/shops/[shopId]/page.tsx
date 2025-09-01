@@ -1,9 +1,9 @@
 "use client";
 
-import NotFound from "@/app/not-found";
 import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
+import { StaffNotFound } from "@/components/staff-not-found";
 import { ActionButton } from "@/components/staff/shop/detail/action-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,8 +58,8 @@ export default function StaffShopDetailPage() {
 
   if (isNotFound)
     return (
-      <div className="p-6 space-y-6 max-w-full">
-        <NotFound />
+      <div className="space-y-6 max-w-full h-full">
+        <StaffNotFound />
       </div>
     );
 

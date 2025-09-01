@@ -227,7 +227,7 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
             </SheetTrigger>
             <TextLogo />
           </div>
-          <main className="flex-1 md:p-6">{children}</main>
+          <main className="flex-1 min-h-screen">{children}</main>
         </div>
       </Sheet>
     </div>

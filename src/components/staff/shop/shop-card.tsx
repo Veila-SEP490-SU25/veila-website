@@ -174,52 +174,52 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
                 Phê duyệt
               </Button>
             )}
-            {shop.status === ShopStatus.SUSPENDED ? (
-              <UpdateShopStatusDialog
-                onConfirm={async () =>
-                  await handleUpdateStatus(ShopStatus.PENDING)
-                }
-                trigger={
-                  <Button
-                    className="flex items-center justify-start gap-2"
-                    variant="outline"
-                    disabled={isLoading}
-                  >
-                    <LockOpen className="size-4" />
-                    Mở khoá
-                  </Button>
-                }
-                title="Xác nhận mở khoá cửa hàng"
-                message="Bạn có chắc chắn muốn mở khoá cửa hàng này không?"
-                errorMessage="Mở khoá cửa hàng thất bại. Vui lòng thử lại sau ít phút."
-                successMessage="Đã mở khoá cửa hàng"
-              />
-            ) : (
-              shop.status !== ShopStatus.PENDING &&
-              shop.status !== ShopStatus.INACTIVE && (
-                <UpdateShopStatusDialog
-                  onConfirm={async () =>
-                    await handleUpdateStatus(ShopStatus.SUSPENDED)
-                  }
-                  trigger={
-                    <Button
-                      className="flex items-center justify-start gap-2"
-                      variant="outline"
-                      disabled={isLoading}
-                    >
-                      <Lock className="size-4" />
-                      Tạm khoá
-                    </Button>
-                  }
-                  title="Xác nhận tạm khoá cửa hàng"
-                  message="Bạn có chắc chắn muốn tạm khoá cửa hàng này không?"
-                  errorMessage="Tạm khoá cửa hàng thất bại. Vui lòng thử lại sau ít phút."
-                  successMessage="Đã tạm khoá cửa hàng"
-                />
-              )
-            )}
-            {shop.status !== ShopStatus.BANNED
-              ? shop.status !== ShopStatus.PENDING && (
+            {shop.status !== ShopStatus.PENDING && (
+              <>
+                {shop.status === ShopStatus.SUSPENDED ? (
+                  <UpdateShopStatusDialog
+                    onConfirm={async () =>
+                      await handleUpdateStatus(ShopStatus.PENDING)
+                    }
+                    trigger={
+                      <Button
+                        className="flex items-center justify-start gap-2"
+                        variant="outline"
+                        disabled={isLoading}
+                      >
+                        <LockOpen className="size-4" />
+                        Mở khoá
+                      </Button>
+                    }
+                    title="Xác nhận mở khoá cửa hàng"
+                    message="Bạn có chắc chắn muốn mở khoá cửa hàng này không?"
+                    errorMessage="Mở khoá cửa hàng thất bại. Vui lòng thử lại sau ít phút."
+                    successMessage="Đã mở khoá cửa hàng"
+                  />
+                ) : (
+                  shop.status !== ShopStatus.INACTIVE && (
+                    <UpdateShopStatusDialog
+                      onConfirm={async () =>
+                        await handleUpdateStatus(ShopStatus.SUSPENDED)
+                      }
+                      trigger={
+                        <Button
+                          className="flex items-center justify-start gap-2"
+                          variant="outline"
+                          disabled={isLoading}
+                        >
+                          <Lock className="size-4" />
+                          Tạm khoá
+                        </Button>
+                      }
+                      title="Xác nhận tạm khoá cửa hàng"
+                      message="Bạn có chắc chắn muốn tạm khoá cửa hàng này không?"
+                      errorMessage="Tạm khoá cửa hàng thất bại. Vui lòng thử lại sau ít phút."
+                      successMessage="Đã tạm khoá cửa hàng"
+                    />
+                  )
+                )}
+                {shop.status !== ShopStatus.BANNED ? (
                   <UpdateShopStatusDialog
                     onConfirm={async () =>
                       await handleUpdateStatus(ShopStatus.BANNED)
@@ -242,11 +242,12 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
                     errorMessage="Cấm hoạt động cửa hàng thất bại. Vui lòng thử lại sau ít phút."
                     successMessage="Đã cấm hoạt động cửa hàng"
                   />
-                )
-              : (
+                ) : (
                   <UpdateShopStatusDialog
                     onConfirm={async () =>
-                      await handleUpdateStatus(ShopStatus.BANNED)
+                      await handleUpdateStatus(
+                        shop.isVerified ? ShopStatus.ACTIVE : ShopStatus.PENDING
+                      )
                     }
                     trigger={
                       <Button
@@ -267,6 +268,8 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
                     successMessage="Đã mở hoạt động cửa hàng"
                   />
                 )}
+              </>
+            )}
           </div>
         </div>
       </CardContent>
