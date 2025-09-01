@@ -5,6 +5,7 @@ import { useAuth } from "@/providers/auth.provider";
 import { useFirebase } from "@/services/firebase";
 import { useCallback } from "react";
 import { toast } from "sonner";
+import { signInWithRedirect } from "firebase/auth";
 
 interface GoogleButtonProps {
   variant?: "login" | "signup";
@@ -21,21 +22,54 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
       toast.error("Firebase chưa được khởi tạo. Vui lòng thử lại sau.");
       return;
     }
-    const { user } = await signInWithPopup(auth, googleProvider);
-    const { displayName, email } = user;
-    if (!displayName || !email) {
-      toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
-        description:
-          "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
-      });
-      return;
-    } else {
-      await loginGoogle({
-        email,
-        fullname: displayName,
-      });
+
+    try {
+      const { user } = await signInWithPopup(auth, googleProvider);
+      const { displayName, email } = user;
+      if (!displayName || !email) {
+        toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
+          description:
+            "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
+        });
+        return;
+      } else {
+        await loginGoogle({
+          email,
+          fullname: displayName,
+        });
+      }
+    } catch (error: any) {
+      console.error("Google sign-in error:", error);
+
+      // Xử lý lỗi COOP
+      if (
+        error.code === "auth/popup-closed-by-user" ||
+        error.message?.includes("popup") ||
+        error.message?.includes("COOP") ||
+        error.code === "auth/popup-blocked" ||
+        error.code === "auth/cancelled-popup-request"
+      ) {
+        toast.error("Popup bị chặn", {
+          description: "Đang chuyển sang chế độ redirect...",
+        });
+
+        // Fallback: sử dụng redirect
+        try {
+          await signInWithRedirect(auth, googleProvider);
+        } catch (redirectError: any) {
+          console.error("Redirect error:", redirectError);
+          toast.error("Không thể đăng nhập Google", {
+            description:
+              "Vui lòng thử đăng nhập bằng email hoặc liên hệ hỗ trợ.",
+          });
+        }
+      } else {
+        toast.error("Có lỗi xảy ra khi đăng nhập Google", {
+          description: error.message || "Vui lòng thử lại sau.",
+        });
+      }
     }
-  }, [auth, signInWithPopup, googleProvider]);
+  }, [auth, signInWithPopup, googleProvider, loginGoogle]);
 
   return (
     <Button

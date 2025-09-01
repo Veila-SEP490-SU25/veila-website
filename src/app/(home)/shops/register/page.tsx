@@ -509,6 +509,314 @@ export default function ShopRegisterPage() {
     );
   }
 
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3 mb-8"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <div className="h-96 bg-gray-200 rounded"></div>
+            </div>
+            <div className="space-y-6">
+              <div className="h-48 bg-gray-200 rounded"></div>
+              <div className="h-64 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (shopInfo && !isEditing) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Thông tin cửa hàng
+            </h1>
+            {getStatusBadge(shopInfo.status)}
+          </div>
+          <p className="text-gray-600">
+            Thông tin chi tiết về cửa hàng của bạn và trạng thái đăng ký
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building className="h-5 w-5 text-rose-600" />
+                  Thông tin cơ bản
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Tên cửa hàng
+                    </Label>
+                    <p className="text-lg font-semibold">{shopInfo.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Trạng thái
+                    </Label>
+                    <div className="mt-1">
+                      {getStatusBadge(shopInfo.status)}
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Số điện thoại
+                    </Label>
+                    <p className="text-lg">{shopInfo.phone}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Email
+                    </Label>
+                    <p className="text-lg">{shopInfo.email}</p>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-600">
+                    Địa chỉ
+                  </Label>
+                  <p className="text-lg">{shopInfo.address}</p>
+                </div>
+                {shopInfo.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Mô tả
+                    </Label>
+                    <p className="text-lg">{shopInfo.description}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-blue-600" />
+                  Giấy phép kinh doanh
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Trạng thái giấy phép
+                    </Label>
+                    <div className="mt-1">
+                      {getLicenseStatusBadge(
+                        shopInfo.license?.status || "PENDING"
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Label className="text-sm font-medium text-gray-600">
+                      Ngày tạo
+                    </Label>
+                    <p className="text-sm">
+                      {new Date(
+                        shopInfo.license?.createdAt || ""
+                      ).toLocaleDateString("vi-VN")}
+                    </p>
+                  </div>
+                </div>
+                {shopInfo.license?.rejectReason && (
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      <strong>Lý do từ chối:</strong>{" "}
+                      {shopInfo.license.rejectReason}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {(shopInfo.license as any)?.images && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-600">
+                      Hình ảnh giấy phép
+                    </Label>
+                    <div className="mt-2">
+                      <Image
+                        src={(shopInfo.license as any).images}
+                        alt="Giấy phép kinh doanh"
+                        width={400}
+                        height={300}
+                        className="max-w-full h-auto rounded-lg border"
+                      />
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-green-600" />
+                  Thống kê
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
+                      {shopInfo.isVerified ? "Đã xác minh" : "Chưa xác minh"}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Trạng thái xác minh
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {new Date(shopInfo.createdAt).toLocaleDateString("vi-VN")}
+                    </div>
+                    <div className="text-sm text-gray-600">Ngày đăng ký</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Trạng thái hiện tại</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-rose-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    ✓
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">Đã gửi đơn đăng ký</p>
+                    <p className="text-xs text-gray-600">Hoàn thành</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                      shopInfo.status === "PENDING"
+                        ? "bg-yellow-500"
+                        : shopInfo.status === "ACTIVE"
+                        ? "bg-green-500"
+                        : "bg-gray-300"
+                    }`}
+                  >
+                    {shopInfo.status === "PENDING"
+                      ? "2"
+                      : shopInfo.status === "ACTIVE"
+                      ? "✓"
+                      : "!"}
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">Xem xét tài liệu</p>
+                    <p className="text-xs text-gray-600">
+                      {shopInfo.status === "PENDING"
+                        ? "Đang xử lý"
+                        : shopInfo.status === "ACTIVE"
+                        ? "Hoàn thành"
+                        : "Bị từ chối"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                      shopInfo.status === "ACTIVE"
+                        ? "bg-green-500"
+                        : "bg-gray-300"
+                    }`}
+                  >
+                    {shopInfo.status === "ACTIVE" ? "✓" : "3"}
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">Phê duyệt & thiết lập</p>
+                    <p className="text-xs text-gray-600">
+                      {shopInfo.status === "ACTIVE"
+                        ? "Hoàn thành"
+                        : "Chờ phê duyệt"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {shopInfo.status === "ACTIVE" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Hành động</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button
+                    asChild
+                    className="w-full bg-rose-600 hover:bg-rose-700"
+                  >
+                    <Link href="/shops/my">Quản lý cửa hàng</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href="/profile">Về trang cá nhân</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {shopInfo.license?.status === "REJECTED" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Hành động</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setShopData({
+                        name: shopInfo.name,
+                        phone: shopInfo.phone,
+                        email: shopInfo.email,
+                        address: shopInfo.address,
+                        licenseImages: (shopInfo.license as any)?.images || "",
+                      });
+                      console.log("isEditing set to true");
+                    }}
+                    className="w-full bg-rose-600 hover:bg-rose-700"
+                  >
+                    Chỉnh sửa đơn đăng ký
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href="/profile">Về trang cá nhân</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="text-sm">
+                Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{" "}
+                <a
+                  href="mailto:veila.studio.mail@gmail.com"
+                  className="text-rose-600 hover:underline"
+                >
+                  veila.studio.mail@gmail.com
+                </a>
+              </AlertDescription>
+            </Alert>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isSubmitted) {
     return (
       <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8 py-16">

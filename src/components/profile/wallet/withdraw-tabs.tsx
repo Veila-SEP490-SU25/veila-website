@@ -1,7 +1,6 @@
 "use client";
 
 import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { formatPrice } from "@/lib/products-utils";
 import { useRequestWithdrawMutation } from "@/services/apis";
 import { IWallet } from "@/services/types";
-import { AlertCircleIcon, Minus } from "lucide-react";
+import { Minus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -30,29 +29,38 @@ export const WithdrawTabs = ({
 }: WithdrawTabsProps) => {
   const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [, setError] = useState<string>("");
   const [trigger, { isLoading }] = useRequestWithdrawMutation();
 
   useEffect(() => {
+    setIsError(false);
+    setError("");
+
     if (!wallet.bin || !wallet.bankNumber) {
       setIsError(true);
       setError(
         "Vui lòng cập nhật thông tin tài khoản ngân hàng trước khi rút tiền"
       );
+      return;
     }
 
     if (withdrawAmount <= 0) {
       setIsError(true);
       setError("Số tiền rút phải lớn hơn 0");
+      return;
+    }
+
+    if (withdrawAmount < 50000) {
+      setIsError(true);
+      setError("Số tiền rút tối thiểu là 50,000 VNĐ");
+      return;
     }
 
     if (withdrawAmount > wallet.availableBalance) {
       setIsError(true);
       setError("Số tiền rút không được lớn hơn số dư khả dụng");
+      return;
     }
-
-    setIsError(false);
-    setError("");
   }, [withdrawAmount, wallet]);
 
   const confirmWithdraw = useCallback(
@@ -73,12 +81,12 @@ export const WithdrawTabs = ({
           });
           return false;
         }
-      } catch (error) {
+      } catch {
         toast.error("Xác thực không thành công, vui lòng thử lại");
         return false;
       }
     },
-    [trigger, withdrawAmount]
+    [onWithdrawSuccess, trigger, withdrawAmount]
   );
 
   return (
@@ -103,7 +111,8 @@ export const WithdrawTabs = ({
               value={withdrawAmount}
               onChange={(e) => setWithdrawAmount(parseInt(e.target.value) || 0)}
               className="pl-8"
-              min={0}
+              min={50000}
+              step={1000}
             />
             <span className="absolute left-3 top-3 text-sm text-gray-400">
               ₫
@@ -112,6 +121,9 @@ export const WithdrawTabs = ({
           <p className="text-xs text-gray-600">
             Số dư khả dụng: {formatPrice(wallet.availableBalance)}
           </p>
+          <p className="text-xs text-orange-600 font-medium">
+            Số tiền rút tối thiểu: 50,000 VNĐ
+          </p>
         </div>
 
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -119,20 +131,6 @@ export const WithdrawTabs = ({
             Việc rút tiền thường mất 3-5 ngày làm việc để xử lý.
           </p>
         </div>
-        {isError && (
-          <Alert variant={"destructive"} className="mb-4 h-full">
-            <AlertCircleIcon />
-            <AlertTitle>
-              Đã có lỗi xảy ra trong quá trình lấy dữ liệu
-            </AlertTitle>
-            <AlertDescription>
-              <p>Chi tiết lỗi:</p>
-              <ul className="list-inside list-disc text-sm">
-                <li>{error}</li>
-              </ul>
-            </AlertDescription>
-          </Alert>
-        )}
         <RequestSmartOtpDialog
           trigger={
             <Button

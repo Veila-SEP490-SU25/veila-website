@@ -4,34 +4,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth.provider";
-import { useRouter } from "next/navigation";
+import { useVerifyPhonePopup } from "@/hooks/use-verify-phone-popup";
 import { useCallback } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { VerifyPhonePopup } from "@/components/verify-phone-popup";
 
 export const UserCard = () => {
-  const { currentUser, isAuthenticated } = useAuth();
-  const router = useRouter();
+  const { currentUser } = useAuth();
+  const { openPopup } = useVerifyPhonePopup();
 
   const goToPhoneVerify = useCallback(() => {
-    const returnUrl = encodeURIComponent(window.location.href);
-    router.push(`/verify-phone?returnUrl=${returnUrl}`);
-  }, [router]);
-
-  if (!isAuthenticated) {
-    return (
-      <Card className="w-full h-full">
-        <CardContent className="p-6">
-          <div className="grid items-center space-x-4 grid-cols-5">
-            <Skeleton className="w-16 h-16 rounded-full col-span-1" />
-            <div className="col-span-4 space-y-2">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+    openPopup();
+  }, [openPopup]);
 
   return currentUser ? (
     <Card className="w-full h-full">
@@ -74,6 +57,7 @@ export const UserCard = () => {
           </div>
         </div>
       </CardContent>
+      <VerifyPhonePopup />
     </Card>
   ) : (
     <Card>

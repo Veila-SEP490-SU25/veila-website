@@ -30,7 +30,6 @@ import {
   Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { BlogCardSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function BlogListPage() {
   const router = useRouter();

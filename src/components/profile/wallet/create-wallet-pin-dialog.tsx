@@ -21,8 +21,9 @@ import { Edit, Loader2, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-interface UpdateBankInfoDialogProps {
-  trigger?: React.ReactNode;
+interface CreateWalletPINDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
@@ -31,10 +32,13 @@ interface ICreateWalletPIN {
 }
 
 export const CreateWalletPINDialog = ({
-  trigger,
+  open: externalOpen,
+  onOpenChange: externalOnOpenChange,
   onSuccess,
-}: UpdateBankInfoDialogProps) => {
-  const [open, setOpen] = useState(false);
+}: CreateWalletPINDialogProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = externalOnOpenChange || setInternalOpen;
   const [createWalletPIN, { isLoading }] = useCreateWalletPINMutation();
 
   const [pinData, setPinData] = useState<ICreateWalletPIN>({
@@ -81,16 +85,8 @@ export const CreateWalletPINDialog = ({
     }
   };
 
-  const defaultTrigger = (
-    <Button className="bg-rose-600 hover:bg-rose-700">
-      <Edit className="h-4 w-4 mr-2" />
-      Tạo mã PIN
-    </Button>
-  );
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-xl md:min-w-xl max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Tạo mã PIN</DialogTitle>

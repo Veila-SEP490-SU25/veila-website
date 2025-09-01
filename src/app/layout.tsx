@@ -1,6 +1,7 @@
 "use client";
 
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme.provider";
 import { StoreProvider } from "@/providers/store.provider";
@@ -9,6 +10,8 @@ import { AuthProvider } from "@/providers/auth.provider";
 import { RouteProvider } from "@/providers/route.provider";
 import { ChatProvider } from "@/providers/chat.provider";
 import { PagingProvider } from "@/providers/paging.provider";
+import { VerifyPhonePopupProvider } from "@/hooks/use-verify-phone-popup";
+import { GoogleAuthHandler } from "@/app/(auth)/components/google-auth-handler";
 
 export const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -42,7 +45,12 @@ export default function RootLayout({
             <AuthProvider>
               <RouteProvider>
                 <PagingProvider>
-                  <ChatProvider>{children}</ChatProvider>
+                  <ChatProvider>
+                    <VerifyPhonePopupProvider>
+                      {children}
+                      <GoogleAuthHandler />
+                    </VerifyPhonePopupProvider>
+                  </ChatProvider>
                 </PagingProvider>
               </RouteProvider>
             </AuthProvider>
@@ -56,6 +64,10 @@ export default function RootLayout({
             richColors={true}
           />
         </ThemeProvider>
+        <Script
+          src="https://cdn.payos.vn/checkout.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

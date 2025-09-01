@@ -16,6 +16,11 @@ export interface IUpdateBankInfo {
   bankNumber: string;
 }
 
+export interface IWebhookPayload {
+  transactionId: string;
+  status: "COMPLETED" | "FAILED" | "CANCELLED";
+}
+
 export const walletApi = createApi({
   reducerPath: "walletApi",
   baseQuery: baseQueryWithRefresh,
@@ -72,7 +77,7 @@ export const walletApi = createApi({
       query: (body) => ({
         url: "wallets/deposit",
         method: "PUT",
-        data: body,
+        body: body,
       }),
     }),
 
@@ -90,6 +95,14 @@ export const walletApi = createApi({
         method: "GET",
       }),
     }),
+
+    postWebhook: builder.mutation<IItemResponse<null>, IWebhookPayload>({
+      query: (body) => ({
+        url: "wallets/payment/webhook",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -102,4 +115,5 @@ export const {
   useUpdateBankInfoMutation,
   useUpdateWalletPINMutation,
   useCreateWalletPINMutation,
+  usePostWebhookMutation,
 } = walletApi;
