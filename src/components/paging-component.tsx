@@ -21,7 +21,7 @@ export const PagingComponent = () => {
         <Button
           variant="outline"
           size="sm"
-          disabled={!hasPrevious}
+          disabled={pageIndex == 0}
           onClick={goPrevious}
         >
           Trước

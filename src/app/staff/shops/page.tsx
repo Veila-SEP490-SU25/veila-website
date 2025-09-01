@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -13,21 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Eye,
-  ShieldCheck,
-  Shield,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
 } from "lucide-react";
 import {
-  type IPaginationResponse,
   type IShop,
   ShopStatus,
 } from "@/services/types";
 import { useLazyGetShopsQuery } from "@/services/apis";
 import { toast } from "sonner";
-import { ShopDetailDialog } from "@/components/staff/shop/shop-detail-dialog";
 import { usePaging } from "@/providers/paging.provider";
 import { isSuccess } from "@/lib/utils";
 import { PagingComponent } from "@/components/paging-component";
@@ -68,7 +58,7 @@ export default function ShopsManagement() {
         filter,
         page: pageIndex,
         size: pageSize,
-        sort: "",
+        sort: "updatedAt:desc",
       }).unwrap();
       if (isSuccess(statusCode)) {
         setShops(items);

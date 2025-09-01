@@ -235,7 +235,7 @@ export const orderApi = createApi({
 
     getOrderOfShop: builder.query<IListResponse<IOrder>, IGetOrdersOfShop>({
       query: ({ shopId, sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: `shops/${shopId}/orders`,
+        url: `orders/shops/${shopId}`,
         method: "GET",
         params: { page, size, sort, filter },
       }),

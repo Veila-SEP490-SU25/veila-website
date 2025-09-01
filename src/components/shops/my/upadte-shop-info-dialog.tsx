@@ -292,7 +292,7 @@ export function UpdateShopInfoDialog({
             <Button
               onClick={handleSubmit}
               disabled={isUpdating}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-rose-600 hover:bg-rose-700"
             >
               {isUpdating ? (
                 <>

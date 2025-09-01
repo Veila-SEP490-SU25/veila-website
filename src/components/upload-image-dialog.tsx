@@ -255,7 +255,7 @@ export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = (
           <Button variant="outline" onClick={handleCancel}>
             Hủy
           </Button>
-          <Button onClick={handleSave} disabled={isUploading}>
+          <Button onClick={handleSave} disabled={isUploading} className="bg-rose-600 hover:bg-rose-700">
             {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Xong
           </Button>
