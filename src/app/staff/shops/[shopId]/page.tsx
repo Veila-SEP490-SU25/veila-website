@@ -4,7 +4,6 @@ import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { StaffNotFound } from "@/components/staff-not-found";
-import { ActionButton } from "@/components/staff/shop/detail/action-button";
 import { ShopTabs } from "@/components/staff/shop/detail/shop-tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isSuccess } from "@/lib/utils";
 import { useLazyGetShopQuery } from "@/services/apis";
 import { IShop } from "@/services/types";

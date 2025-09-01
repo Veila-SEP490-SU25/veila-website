@@ -1,5 +1,6 @@
 "use client";
 
+import { DressesTabs } from "@/components/staff/shop/detail/tabs/dresses-tabs";
 import { InformationTabs } from "@/components/staff/shop/detail/tabs/information-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IShop } from "@/services/types";
@@ -20,6 +21,7 @@ export const ShopTabs = ({ shop, onUpdate }: ShopTabsProps) => {
         <TabsTrigger value="blogs">Bài đăng</TabsTrigger>
       </TabsList>
       <InformationTabs shop={shop} onUpdate={onUpdate} />
+      <DressesTabs shop={shop} onUpdate={onUpdate} />
     </Tabs>
   );
 };
