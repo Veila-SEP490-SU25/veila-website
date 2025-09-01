@@ -31,22 +31,25 @@ export const ShopInformation = ({ shop }: ShopInformationProps) => {
     logoUrl: shop.logoUrl || "",
   });
 
-  const handleUpdateInfo = useCallback(async (info: IUpdateShopInfo) => {
-    try {
-      const { statusCode, message } = await updateShopInfo(info).unwrap();
-      if (statusCode === 200) {
-        toast.success("Cập nhật thông tin cửa hàng thành công");
-      } else {
-        toast.error("Có lỗi xảy ra khi cập nhật thông tin cửa hàng", {
-          description: message,
-        });
+  const handleUpdateInfo = useCallback(
+    async (info: IUpdateShopInfo) => {
+      try {
+        const { statusCode, message } = await updateShopInfo(info).unwrap();
+        if (statusCode === 200) {
+          toast.success("Cập nhật thông tin cửa hàng thành công");
+        } else {
+          toast.error("Có lỗi xảy ra khi cập nhật thông tin cửa hàng", {
+            description: message,
+          });
+        }
+      } catch {
+        toast.error(
+          "Có lỗi xảy ra khi cập nhật thông tin cửa hàng vui lòng thử lại sau"
+        );
       }
-    } catch (error) {
-      toast.error(
-        "Có lỗi xảy ra khi cập nhật thông tin cửa hàng vui lòng thử lại sau"
-      );
-    }
-  }, [info, updateShopInfo]);
+    },
+    [updateShopInfo]
+  );
 
   return (
     <Card>

@@ -2,103 +2,99 @@ import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import {
   IBlog,
   ICreateBlog,
+  IUpdateBlog,
   IItemResponse,
   IListResponse,
   IPagination,
-  IUpdateBlog,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery: baseQueryWithRefresh,
+  tagTypes: ["Blog"],
   endpoints: (builder) => ({
-    /** GET /api/blogs (customer list) */
-    getBlogs: builder.query<IListResponse<IBlog>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "blogs",
-        method: "GET",
-        params: { sort, filter, page, size },
-      }),
-    }),
-
-    /** GET /api/blogs/{id} (customer view; only PUBLISHED) */
-    getBlog: builder.query<IItemResponse<IBlog>, string>({
-      query: (id) => ({
-        url: `blogs/${id}`,
-        method: "GET",
-      }),
-    }),
-
-    /** GET /api/blogs/me (shop owner list) */
+    // Lấy danh sách blog của shop (cho shop owner)
     getMyShopBlogs: builder.query<IListResponse<IBlog>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
         url: "blogs/me",
         method: "GET",
-        params: { sort, filter, page, size },
+        params: { filter, page, size, sort },
       }),
+      providesTags: ["Blog"],
     }),
 
-    /** GET /api/blogs/{id}/me (shop owner view) */
-    getMyShopBlog: builder.query<IItemResponse<IBlog>, string>({
+    // Lấy chi tiết blog của shop (cho shop owner)
+    getBlogById: builder.query<IItemResponse<IBlog>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
         method: "GET",
       }),
+      providesTags: (result, error, id) => [{ type: "Blog", id }],
     }),
 
-    /** POST /api/blogs/me (shop owner create) */
-    createMyShopBlog: builder.mutation<IItemResponse<IBlog>, ICreateBlog>({
-      query: (body) => ({
+    // Tạo blog mới (cho shop owner)
+    createBlog: builder.mutation<IItemResponse<IBlog>, ICreateBlog>({
+      query: (data) => ({
         url: "blogs/me",
         method: "POST",
-        body,
+        body: data,
       }),
+      invalidatesTags: ["Blog"],
     }),
 
-    /** PUT /api/blogs/{id}/me (shop owner update) – body must be CUBlogDto */
-    updateMyShopBlog: builder.mutation<IItemResponse<IBlog>, IUpdateBlog>({
-      query: ({ id, ...body }) => ({
+    // Cập nhật blog (cho shop owner)
+    updateBlog: builder.mutation<
+      IItemResponse<IBlog>,
+      { id: string; data: IUpdateBlog }
+    >({
+      query: ({ id, data }) => ({
         url: `blogs/${id}/me`,
         method: "PUT",
-        body,
+        body: data,
       }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "Blog", id },
+        "Blog",
+      ],
     }),
 
-    /** DELETE /api/blogs/{id}/me (soft delete) */
-    deleteMyShopBlog: builder.mutation<IItemResponse<null>, string>({
+    // Xóa blog (cho shop owner)
+    deleteBlog: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `blogs/${id}/me`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Blog"],
     }),
 
-    /** PATCH /api/blogs/{id}/me (restore) */
-    restoreMyShopBlog: builder.mutation<IItemResponse<null>, string>({
-      query: (id) => ({
-        url: `blogs/${id}/me`,
-        method: "PATCH",
+    // Lấy danh sách blog public (cho customer)
+    getPublicBlogs: builder.query<IListResponse<IBlog>, IPagination>({
+      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
+        url: "blogs",
+        method: "GET",
+        params: { filter, page, size, sort },
       }),
+      providesTags: ["Blog"],
     }),
 
-    /** PUT /api/blogs/{id}/verify (verify) – NO request body */
-    verifyMyShopBlog: builder.mutation<IItemResponse<IBlog>, string>({
+    // Lấy chi tiết blog public (cho customer)
+    getPublicBlogById: builder.query<IItemResponse<IBlog>, string>({
       query: (id) => ({
-        url: `blogs/${id}/verify`,
-        method: "PUT",
+        url: `blogs/${id}`,
+        method: "GET",
       }),
+      providesTags: (result, error, id) => [{ type: "Blog", id }],
     }),
   }),
 });
 
 export const {
-  useLazyGetBlogsQuery,
-  useLazyGetBlogQuery,
   useLazyGetMyShopBlogsQuery,
-  useLazyGetMyShopBlogQuery,
-  useCreateMyShopBlogMutation,
-  useUpdateMyShopBlogMutation,
-  useDeleteMyShopBlogMutation,
-  useRestoreMyShopBlogMutation,
-  useVerifyMyShopBlogMutation,
+  useLazyGetBlogByIdQuery,
+  useCreateBlogMutation,
+  useUpdateBlogMutation,
+  useDeleteBlogMutation,
+  useLazyGetPublicBlogsQuery,
+  useLazyGetPublicBlogByIdQuery,
 } = blogApi;

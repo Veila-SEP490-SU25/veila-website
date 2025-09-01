@@ -18,9 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Plus, Loader2, Save } from "lucide-react";
-import {
-  useCreateDressMutation,
-} from "@/services/apis";
+import { useCreateDressMutation } from "@/services/apis";
 import { DressStatus, type ICreateDress } from "@/services/types";
 import { toast } from "sonner";
 import { ImagesUpload } from "@/components/images-upload";
@@ -91,9 +89,7 @@ export function CreateDressDialog({
 
   const handleSubmit = async () => {
     try {
-      const { statusCode, message } = await createDress(
-        dressData
-      ).unwrap();
+      const { statusCode, message } = await createDress(dressData).unwrap();
       if (statusCode === 201 || statusCode == 200) {
         toast.success("Tạo váy thành công!");
         setOpen(false);
@@ -102,7 +98,7 @@ export function CreateDressDialog({
       } else {
         toast.error(message || "Có lỗi xảy ra khi tạo váy");
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi tạo váy");
     }
   };
@@ -369,66 +365,18 @@ export function CreateDressDialog({
                 </div>
               </div>
 
-              {/* Details */}
+              {/* Category */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Chi tiết</h3>
+                <h3 className="text-lg font-semibold">Danh mục</h3>
                 <div className="space-y-3">
                   <div className="space-y-2">
-                    <Label htmlFor="material">Chất liệu</Label>
+                    <Label htmlFor="categoryId">Danh mục váy</Label>
                     <Input
-                      id="material"
-                      placeholder="Ví dụ: Cotton, Lụa, Voan..."
-                      value={dressData.material}
+                      id="categoryId"
+                      placeholder="Chọn danh mục (tùy chọn)"
+                      value={dressData.categoryId || ""}
                       onChange={(e) =>
-                        handleInputChange("material", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="color">Màu sắc *</Label>
-                    <Input
-                      id="color"
-                      placeholder="Ví dụ: Đỏ, Xanh, Trắng..."
-                      value={dressData.color}
-                      onChange={(e) =>
-                        handleInputChange("color", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="length">Độ dài *</Label>
-                    <Input
-                      id="length"
-                      placeholder="Ví dụ: Ngắn, Dài, Midi..."
-                      value={dressData.length}
-                      onChange={(e) =>
-                        handleInputChange("length", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="neckline">Cổ áo *</Label>
-                    <Input
-                      id="neckline"
-                      placeholder="Ví dụ: Cổ tròn, Cổ V, Cổ vuông..."
-                      value={dressData.neckline}
-                      onChange={(e) =>
-                        handleInputChange("neckline", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="sleeve">Tay áo *</Label>
-                    <Input
-                      id="sleeve"
-                      placeholder="Ví dụ: Tay ngắn, Tay dài, Không tay..."
-                      value={dressData.sleeve}
-                      onChange={(e) =>
-                        handleInputChange("sleeve", e.target.value)
+                        handleInputChange("categoryId", e.target.value)
                       }
                     />
                   </div>

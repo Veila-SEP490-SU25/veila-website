@@ -1,53 +1,96 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "sonner";
-import type { IShop } from "@/services/types";
-import { useLazyGetMyShopQuery } from "@/services/apis";
-import { useRouter } from "next/navigation";
-import { MyShopOrders } from "@/components/shops/my/shop-orders";
 import { ShopOverview } from "@/components/shops/my/shop-overview";
 import { ShopInformation } from "@/components/shops/my/shop-information";
 import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
 import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
+import { MyShopOrders } from "@/components/shops/my/shop-orders";
+import { ShopBlogsTabs } from "@/components/shops/my/blogs/shop-blogs-tabs";
+import { useLazyGetMyShopQuery } from "@/services/apis";
+import { IShop } from "@/services/types";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
 
-export default function MyShopPage() {
-  const router = useRouter();
-  const [shop, setShop] = useState<IShop>();
-  const [getMyShop, { isLoading }] = useLazyGetMyShopQuery();
+const MyShopPage = () => {
+  const [shop, setShop] = useState<IShop | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const router = useRouter();
+  const [getMyShop] = useLazyGetMyShopQuery();
 
-  const fetchMyShop = async () => {
+  const fetchMyShop = useCallback(async () => {
     try {
-      const { statusCode, message, item } = await getMyShop().unwrap();
-      if (statusCode === 200) {
-        setShop(item);
+      setIsLoading(true);
+      const response = await getMyShop().unwrap();
+      if (response.statusCode === 200) {
+        setShop(response.item);
       } else {
         toast.error("Không thể tải thông tin cửa hàng", {
-          description: message,
+          description: response.message,
         });
       }
     } catch (error) {
       console.error("Error fetching shop data:", error);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [getMyShop]);
 
   useEffect(() => {
     fetchMyShop();
-  }, []);
+  }, [fetchMyShop]);
 
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <div className="space-y-6">
+          {/* Header Skeleton */}
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-            <div className="h-64 bg-gray-200 rounded-lg mb-6"></div>
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+            <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+          </div>
+
+          {/* Tabs Skeleton */}
+          <div className="animate-pulse">
+            <div className="h-10 bg-gray-200 rounded w-full"></div>
+          </div>
+
+          {/* Content Skeleton */}
+          <div className="space-y-6">
+            {/* Shop Header Skeleton */}
+            <Card className="pt-0">
+              <div className="relative h-48 md:h-64 overflow-hidden rounded-t-lg bg-gray-200"></div>
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="h-24 w-24 bg-gray-200 rounded-full -mt-16 relative z-10"></div>
+                  </div>
+                  <div className="flex-1 space-y-4">
+                    <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="h-4 bg-gray-200 rounded"></div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Metrics Skeleton */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-24 bg-gray-200 rounded"></div>
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
@@ -98,12 +141,13 @@ export default function MyShopPage() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
           <TabsTrigger value="info">Thông tin</TabsTrigger>
           <TabsTrigger value="dresses">Váy cưới</TabsTrigger>
           <TabsTrigger value="accessories">Phụ kiện</TabsTrigger>
           <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
+          <TabsTrigger value="blogs">Blog</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -126,11 +170,18 @@ export default function MyShopPage() {
           <ShopAccessoriesTabs />
         </TabsContent>
 
-        {/* Analytics Tab */}
+        {/* Orders Tab */}
         <TabsContent value="orders" className="space-y-6">
           <MyShopOrders />
+        </TabsContent>
+
+        {/* Blog Tab */}
+        <TabsContent value="blogs" className="space-y-6">
+          <ShopBlogsTabs />
         </TabsContent>
       </Tabs>
     </div>
   );
-}
+};
+
+export default MyShopPage;

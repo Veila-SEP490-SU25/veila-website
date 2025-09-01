@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChat } from "@/providers/chat.provider";
+import { useAuth } from "@/providers/auth.provider";
 import type { IChatroom } from "@/services/types/chat.type";
 import { MessageType } from "@/services/types/chat.type";
 import {
@@ -21,15 +22,17 @@ import { useState, useEffect } from "react";
 export function ChatSidebar() {
   const { chatrooms, currentRoom, selectRoom, currentUserId, messages } =
     useChat();
+  const { currentUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   // Loading effect
   useEffect(() => {
-    if (chatrooms.length > 0 || currentUserId) {
+    // Set loading to false immediately if we have user ID
+    if (currentUserId) {
       setIsLoading(false);
     }
-  }, [chatrooms.length, currentUserId]);
+  }, [currentUserId]);
 
   const getLastMessageContent = (chatroom: IChatroom) => {
     // Check lastMessage from chatroom first
@@ -70,34 +73,71 @@ export function ChatSidebar() {
   };
 
   const getOtherParticipant = (chatroom: IChatroom) => {
-    if (chatroom.lastMessage) {
-      const otherParticipant = {
-        id: chatroom.lastMessage.shopId,
+    // Check if current user is customer or shop
+    const isCustomer = chatroom.customerId === currentUserId;
+    const isShop =
+      chatroom.shopId === currentUserId ||
+      (currentUser?.role === "SHOP" && chatroom.shopId === undefined);
+
+    if (isCustomer) {
+      // Current user is customer, show shop info
+      return {
+        id: chatroom.shopId || "",
         name:
-          chatroom.lastMessage.shopName || chatroom.shopName || "Unknown Shop",
-        avatarUrl: chatroom.customerAvatarUrl,
-        unreadCount: chatroom.lastMessage.unreadCount || 0,
+          chatroom.shopName || chatroom.lastMessage?.shopName || "Unknown Shop",
+        avatarUrl: chatroom.shopAvatarUrl,
+        unreadCount: chatroom.shopUnreadCount || 0,
         type: "shop" as const,
       };
-      return otherParticipant;
+    } else if (isShop) {
+      // Current user is shop, show customer info
+      return {
+        id: chatroom.customerId,
+        name: chatroom.customerName || "Unknown Customer",
+        avatarUrl: chatroom.customerAvatarUrl,
+        unreadCount: chatroom.customerUnreadCount || 0,
+        type: "customer" as const,
+      };
     }
 
-    const isCustomer = chatroom.customerId === currentUserId;
-    const otherParticipant = {
-      id: isCustomer ? chatroom.shopId || "" : chatroom.customerId,
-      name: isCustomer
-        ? chatroom.shopName || "Unknown Shop"
-        : chatroom.customerName || "Unknown Customer",
-      avatarUrl: isCustomer
-        ? chatroom.shopAvatarUrl
-        : chatroom.customerAvatarUrl,
-      unreadCount: isCustomer
-        ? chatroom.customerUnreadCount || 0
-        : chatroom.shopUnreadCount || 0,
-      type: isCustomer ? "shop" : "customer",
-    };
+    // Fallback for other cases - this should not happen with proper role checking
+    console.warn("Unexpected chatroom structure:", {
+      chatroom,
+      currentUserId,
+      customerId: chatroom.customerId,
+      shopId: chatroom.shopId,
+    });
 
-    return otherParticipant;
+    // Default fallback - try to determine based on available data
+    if (chatroom.shopId && chatroom.shopId !== currentUserId) {
+      // This is a customer chatroom
+      return {
+        id: chatroom.customerId,
+        name: chatroom.customerName || "Unknown Customer",
+        avatarUrl: chatroom.customerAvatarUrl,
+        unreadCount: chatroom.customerUnreadCount || 0,
+        type: "customer" as const,
+      };
+    } else if (chatroom.customerId && chatroom.customerId !== currentUserId) {
+      // This is a shop chatroom
+      return {
+        id: chatroom.shopId || "",
+        name:
+          chatroom.shopName || chatroom.lastMessage?.shopName || "Unknown Shop",
+        avatarUrl: chatroom.shopAvatarUrl,
+        unreadCount: chatroom.shopUnreadCount || 0,
+        type: "shop" as const,
+      };
+    }
+
+    // Last resort fallback
+    return {
+      id: "unknown",
+      name: "Unknown Participant",
+      avatarUrl: null,
+      unreadCount: 0,
+      type: "unknown" as const,
+    };
   };
 
   const filteredChatrooms = chatrooms.filter((chatroom) => {
@@ -118,11 +158,11 @@ export function ChatSidebar() {
   };
 
   return (
-    <div className="w-80 border-r bg-background flex flex-col">
-      <div className="p-4 border-b">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
+    <div className="w-64 border-r bg-background flex flex-col">
+      <div className="p-3 border-b">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-semibold flex items-center gap-2">
+            <MessageCircle className="h-4 w-4" />
             Messages
           </h2>
           <Button size="sm" variant="outline" onClick={handleCreateChatroom}>
@@ -130,29 +170,29 @@ export function ChatSidebar() {
           </Button>
         </div>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search conversations..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-8 text-sm"
           />
         </div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-2">
+        <div className="p-1">
           {isLoading ? (
-            <div className="text-center text-muted-foreground py-8">
-              <div className="h-12 w-12 mx-auto mb-4 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-              <p>Đang tải cuộc trò chuyện...</p>
-              <p className="text-sm mt-2">Vui lòng chờ trong giây lát</p>
+            <div className="text-center text-muted-foreground py-6">
+              <div className="h-10 w-10 mx-auto mb-3 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm">Đang tải cuộc trò chuyện...</p>
+              <p className="text-xs mt-1">Vui lòng chờ trong giây lát</p>
             </div>
           ) : filteredChatrooms.length === 0 ? (
-            <div className="text-center text-muted-foreground py-8">
-              <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Chưa có cuộc trò chuyện nào</p>
-              <p className="text-sm mt-2">Tìm kiếm shop để bắt đầu nhắn tin</p>
+            <div className="text-center text-muted-foreground py-6">
+              <MessageCircle className="h-10 w-10 mx-auto mb-3 opacity-50" />
+              <p className="text-sm">Chưa có cuộc trò chuyện nào</p>
+              <p className="text-xs mt-1">Tìm kiếm shop để bắt đầu nhắn tin</p>
             </div>
           ) : (
             filteredChatrooms.map((chatroom) => {
@@ -162,7 +202,7 @@ export function ChatSidebar() {
               return (
                 <div
                   key={chatroom.docId || chatroom.id}
-                  className={`p-3 rounded-lg cursor-pointer transition-colors hover:bg-accent ${
+                  className={`p-2 rounded-lg cursor-pointer transition-colors hover:bg-accent ${
                     isSelected ? "bg-accent" : ""
                   }`}
                   onClick={() => {
@@ -172,39 +212,42 @@ export function ChatSidebar() {
                     }
                   }}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2">
                     <div className="relative">
-                      <Avatar className="h-10 w-10">
+                      <Avatar className="h-8 w-8">
                         <AvatarImage src={participant.avatarUrl || undefined} />
-                        <AvatarFallback>
+                        <AvatarFallback className="text-xs">
                           {participant.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       {participant.type === "shop" ? (
-                        <Store className="absolute -bottom-1 -right-1 h-4 w-4 bg-background rounded-full p-0.5" />
+                        <Store className="absolute -bottom-1 -right-1 h-3 w-3 bg-background rounded-full p-0.5" />
                       ) : (
-                        <User className="absolute -bottom-1 -right-1 h-4 w-4 bg-background rounded-full p-0.5" />
+                        <User className="absolute -bottom-1 -right-1 h-3 w-3 bg-background rounded-full p-0.5" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-medium truncate">
+                        <h3 className="font-medium truncate text-sm">
                           {participant.name}
                         </h3>
                         {participant.unreadCount > 0 && (
-                          <Badge variant="destructive" className="ml-2 rounded-full">
+                          <Badge
+                            variant="destructive"
+                            className="ml-1 rounded-full text-xs px-1.5 py-0.5"
+                          >
                             {participant.unreadCount}
                           </Badge>
                         )}
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-xs text-muted-foreground">
                         {chatroom.orderId && (
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">
+                          <span className="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded mr-1">
                             Order #{chatroom.orderId}
                           </span>
                         )}
                         {chatroom.requestId && (
-                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded mr-2">
+                          <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded mr-1">
                             Request #{chatroom.requestId}
                           </span>
                         )}
@@ -215,7 +258,7 @@ export function ChatSidebar() {
                             return (
                               <div className="flex items-center gap-1 mt-1">
                                 {lastMessageInfo.isImage && (
-                                  <ImageIcon className="h-3 w-3 text-muted-foreground" />
+                                  <ImageIcon className="h-2.5 w-2.5 text-muted-foreground" />
                                 )}
                                 <p className="truncate text-xs">
                                   {lastMessageInfo.content}
