@@ -79,7 +79,6 @@ function WalletPageContent() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Button
@@ -100,7 +99,6 @@ function WalletPageContent() {
         </div>
       </div>
 
-      {/* Wallet Overview Card */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -109,8 +107,7 @@ function WalletPageContent() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Available Balance */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
                 {wallet ? formatPrice(wallet.availableBalance || 0) : "0 VNĐ"}
@@ -118,7 +115,6 @@ function WalletPageContent() {
               <div className="text-sm text-gray-600">Số dư khả dụng</div>
             </div>
 
-            {/* Locked Balance */}
             <div className="text-center p-4 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">
                 {wallet ? formatPrice(wallet.lockedBalance || 0) : "0 VNĐ"}
@@ -126,7 +122,6 @@ function WalletPageContent() {
               <div className="text-sm text-gray-600">Số dư bị khóa</div>
             </div>
 
-            {/* PIN Status with Action Button */}
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-lg font-semibold text-blue-600 mb-3">
                 {hasPin ? "Đã có PIN" : "Chưa có PIN"}
@@ -134,6 +129,7 @@ function WalletPageContent() {
               <div className="text-sm text-gray-600 mb-3">
                 Trạng thái bảo mật
               </div>
+              <div className="h-6"></div>
               {hasPin ? (
                 <Button
                   variant="outline"
@@ -157,7 +153,6 @@ function WalletPageContent() {
               )}
             </div>
 
-            {/* Bank Info with Action Button */}
             <div className="text-center p-4 bg-purple-50 rounded-lg">
               <div className="text-lg font-semibold text-purple-600 mb-3">
                 Thông tin ngân hàng

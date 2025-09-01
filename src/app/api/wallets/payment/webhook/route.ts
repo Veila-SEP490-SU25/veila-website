@@ -10,9 +10,13 @@ interface PaymentWebhookPayload {
 
 export async function POST(request: NextRequest) {
   try {
-    const body: PaymentWebhookPayload = await request.json();
+    console.log("=== PAYOS WEBHOOK RECEIVED ===");
+    console.log("Method:", request.method);
+    console.log("URL:", request.url);
+    console.log("Headers:", Object.fromEntries(request.headers.entries()));
 
-    console.log("Payment webhook received:", body);
+    const body: PaymentWebhookPayload = await request.json();
+    console.log("Body:", body);
 
     const { transactionId, status } = body;
 
@@ -23,31 +27,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    switch (status) {
-      case "COMPLETED":
-        console.log(`Payment completed for transaction: ${transactionId}`);
-        break;
-
-      case "FAILED":
-        console.log(`Payment failed for transaction: ${transactionId}`);
-        break;
-
-      case "CANCELLED":
-        console.log(`Payment cancelled for transaction: ${transactionId}`);
-        break;
-
-      default:
-        console.log(
-          `Unknown payment status: ${status} for transaction: ${transactionId}`
-        );
-        return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    if (!["COMPLETED", "FAILED", "CANCELLED"].includes(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
+
+    console.log("=== WEBHOOK PROCESSED SUCCESSFULLY ===");
+    console.log("Transaction ID:", transactionId);
+    console.log("Status:", status);
+    console.log("Response sent to PayOS");
 
     return NextResponse.json(
       {
+        success: true,
         message: "Webhook processed successfully",
         transactionId,
         status,
+        processedAt: new Date().toISOString(),
       },
       { status: 200 }
     );

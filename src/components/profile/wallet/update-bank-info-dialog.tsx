@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +20,7 @@ import {
 import { useVietQR } from "@/hooks/use-vietqr";
 import { IUpdateBankInfo, useUpdateBankInfoMutation } from "@/services/apis";
 import { IWallet } from "@/services/types";
-import { Loader2, Plus, Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -42,7 +41,7 @@ export const UpdateBankInfoDialog = ({
   const [internalOpen, setInternalOpen] = useState(false);
   const open = externalOpen !== undefined ? externalOpen : internalOpen;
   const setOpen = externalOnOpenChange || setInternalOpen;
-  const { banks, getBank } = useVietQR();
+  const { banks } = useVietQR();
   const [updateBankInfo, { isLoading }] = useUpdateBankInfoMutation();
 
   const [bankData, setBankData] = useState<IUpdateBankInfo>({
@@ -86,7 +85,7 @@ export const UpdateBankInfoDialog = ({
           message || "Có lỗi xảy ra khi cập nhật thông tin ngân hàng"
         );
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi cập nhật thông tin ngân hàng");
     }
   };

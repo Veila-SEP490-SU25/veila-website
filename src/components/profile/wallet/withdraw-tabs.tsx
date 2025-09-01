@@ -1,7 +1,6 @@
 "use client";
 
 import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { formatPrice } from "@/lib/products-utils";
 import { useRequestWithdrawMutation } from "@/services/apis";
 import { IWallet } from "@/services/types";
-import { AlertCircleIcon, Minus } from "lucide-react";
+import { Minus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -30,7 +29,7 @@ export const WithdrawTabs = ({
 }: WithdrawTabsProps) => {
   const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [, setError] = useState<string>("");
   const [trigger, { isLoading }] = useRequestWithdrawMutation();
 
   useEffect(() => {
