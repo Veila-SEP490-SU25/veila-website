@@ -1,5 +1,6 @@
 "use client";
 
+import { AccessoriesTabs } from "@/components/staff/shop/detail/tabs/accessories-tabs";
 import { DressesTabs } from "@/components/staff/shop/detail/tabs/dresses-tabs";
 import { InformationTabs } from "@/components/staff/shop/detail/tabs/information-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,6 +23,7 @@ export const ShopTabs = ({ shop, onUpdate }: ShopTabsProps) => {
       </TabsList>
       <InformationTabs shop={shop} onUpdate={onUpdate} />
       <DressesTabs shop={shop} onUpdate={onUpdate} />
+      <AccessoriesTabs shop={shop} onUpdate={onUpdate} />
     </Tabs>
   );
 };
