@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Search,
-  Scissors,
-  ArrowRight,
-  Star,
-  Users,
-  Shield,
-} from "lucide-react";
+import { Search, Scissors, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export const CTASection: React.FC = () => {
@@ -26,23 +19,6 @@ export const CTASection: React.FC = () => {
             </p>
           </div>
 
-          {/* Trust Indicators */}
-          <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-white">
-            <div className="flex items-center gap-2">
-              <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
-              <span className="font-medium">1000+ Cô dâu hạnh phúc</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span className="font-medium">100+ Nhà thiết kế uy tín</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span className="font-medium">4.9/5 Đánh giá trung bình</span>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/browse">
               <Button
@@ -66,15 +42,6 @@ export const CTASection: React.FC = () => {
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </div>
-
-          {/* Additional Info */}
-          <div className="pt-6 border-t border-rose-500/30">
-            <p className="text-rose-100 text-base">
-              🎉 <strong>Miễn phí tư vấn</strong> •{" "}
-              <strong>Giao hàng toàn quốc</strong> •{" "}
-              <strong>Đảm bảo chất lượng</strong>
-            </p>
           </div>
         </div>
       </div>

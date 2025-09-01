@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/components/chat/chat-message";
+import { useAuth } from "@/providers/auth.provider";
 
 interface ChatroomProps {
   isMinimized?: boolean;
@@ -39,6 +40,7 @@ export function Chatroom({
     currentUserId,
     markAsRead,
   } = useChat();
+  const { currentUser } = useAuth();
   const [newMessage, setNewMessage] = useState("");
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -128,18 +130,22 @@ export function Chatroom({
   }
 
   const getOtherParticipant = (chatroom: IChatroom) => {
-    // Check if current user is customer
+    // Check if current user is customer or shop
     const isCustomer = chatroom.customerId === currentUserId;
+    const isShop =
+      chatroom.shopId === currentUserId ||
+      (currentUser?.role === "SHOP" && chatroom.shopId === undefined);
 
     if (isCustomer) {
       // Current user is customer, show shop info
       return {
         id: chatroom.shopId || "",
-        name: chatroom.shopName || "Unknown Shop",
+        name:
+          chatroom.shopName || chatroom.lastMessage?.shopName || "Unknown Shop",
         avatarUrl: chatroom.shopAvatarUrl || null,
         type: "shop" as const,
       };
-    } else {
+    } else if (isShop) {
       // Current user is shop, show customer info
       return {
         id: chatroom.customerId,
@@ -148,20 +154,54 @@ export function Chatroom({
         type: "customer" as const,
       };
     }
+
+    // Fallback for other cases - this should not happen with proper role checking
+    console.warn("Unexpected chatroom structure in chatroom:", {
+      chatroom,
+      currentUserId,
+      customerId: chatroom.customerId,
+      shopId: chatroom.shopId,
+    });
+
+    // Default fallback - try to determine based on available data
+    if (chatroom.shopId && chatroom.shopId !== currentUserId) {
+      // This is a customer chatroom
+      return {
+        id: chatroom.customerId,
+        name: chatroom.customerName || "Unknown Customer",
+        avatarUrl: chatroom.customerAvatarUrl || null,
+        type: "customer" as const,
+      };
+    } else if (chatroom.customerId && chatroom.customerId !== currentUserId) {
+      // This is a shop chatroom
+      return {
+        id: chatroom.shopId || "",
+        name:
+          chatroom.shopName || chatroom.lastMessage?.shopName || "Unknown Shop",
+        avatarUrl: chatroom.shopAvatarUrl || null,
+        type: "shop" as const,
+      };
+    }
+
+    // Last resort fallback
+    return {
+      id: "unknown",
+      name: "Unknown Participant",
+      avatarUrl: null,
+      type: "unknown" as const,
+    };
   };
 
   const getParticipantById = (senderId: string) => {
-    // Check if sender is customer
     if (senderId === currentRoom.customerId) {
       return {
         id: currentRoom.customerId,
-        name: currentRoom.customerName,
+        name: currentRoom.customerName || "Unknown Customer",
         avatarUrl: currentRoom.customerAvatarUrl || null,
         type: "customer",
       };
     }
 
-    // Check if sender is shop (from currentRoom.shopId)
     if (senderId === currentRoom.shopId) {
       return {
         id: currentRoom.shopId || "",
@@ -171,11 +211,8 @@ export function Chatroom({
       };
     }
 
-    // Check if sender is shop (from lastMessage.shopId)
-    if (
-      currentRoom.lastMessage &&
-      senderId === currentRoom.lastMessage.shopId
-    ) {
+    // Check if sender is shop from message data
+    if (senderId === currentRoom.lastMessage?.shopId) {
       return {
         id: currentRoom.lastMessage.shopId,
         name:
@@ -187,12 +224,28 @@ export function Chatroom({
       };
     }
 
+    // Check if current user is shop and sender is customer
+    if (
+      currentUserId === currentRoom.shopId &&
+      senderId === currentRoom.customerId
+    ) {
+      return {
+        id: currentRoom.customerId,
+        name: currentRoom.customerName || "Unknown Customer",
+        avatarUrl: currentRoom.customerAvatarUrl || null,
+        type: "customer",
+      };
+    }
+
     // Default fallback
     return {
       id: senderId,
-      name: "Unknown",
-      avatarUrl: null,
-      type: "unknown",
+      name:
+        currentRoom.shopName ||
+        currentRoom.lastMessage?.shopName ||
+        "Unknown Shop",
+      avatarUrl: currentRoom.shopAvatarUrl || null,
+      type: "shop",
     };
   };
 
@@ -222,7 +275,6 @@ export function Chatroom({
 
     setIsUploadingImage(true);
     try {
-      // Convert image to base64 for demo (in real app, upload to cloud storage)
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageUrl = e.target?.result as string;
@@ -248,7 +300,7 @@ export function Chatroom({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-185">
       <div className="p-4 border-b bg-background flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

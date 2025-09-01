@@ -10,7 +10,8 @@ export const dressStatusColors = {
   RENTED: "bg-yellow-100 text-yellow-800",
   SOLD: "bg-gray-100 text-gray-800",
   MAINTENANCE: "bg-red-100 text-red-800",
-  UNAVAILABLE: "bg-gray-100 text-gray-600",
+  UNAVAILABLE: "bg-red-100 text-red-800",
+  OUT_OF_STOCK: "bg-red-100 text-red-800",
 };
 
 export const dressStatusLabels = {
@@ -19,6 +20,7 @@ export const dressStatusLabels = {
   SOLD: "Đã bán",
   MAINTENANCE: "Bảo trì",
   UNAVAILABLE: "Không có sẵn",
+  OUT_OF_STOCK: "Hết hàng",
 };
 
 export const getCoverImage = (images: string | null) => {
@@ -48,6 +50,7 @@ export const getImages = (images: string | null) => {
 
 export const accessoryStatusColors = {
   AVAILABLE: "bg-green-100 text-green-800",
+  UNAVAILABLE: "bg-red-100 text-red-800",
   OUT_OF_STOCK: "bg-red-100 text-red-800",
   DISCONTINUED: "bg-gray-100 text-gray-800",
   MAINTENANCE: "bg-yellow-100 text-yellow-800",
@@ -55,6 +58,7 @@ export const accessoryStatusColors = {
 
 export const accessoryStatusLabels = {
   AVAILABLE: "Có sẵn",
+  UNAVAILABLE: "Không có sẵn",
   OUT_OF_STOCK: "Hết hàng",
   DISCONTINUED: "Ngừng kinh doanh",
   MAINTENANCE: "Bảo trì",

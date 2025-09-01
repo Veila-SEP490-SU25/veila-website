@@ -15,9 +15,17 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -34,18 +42,23 @@ import {
   getCoverImage,
 } from "@/lib/products-utils";
 import { usePaging } from "@/providers/paging.provider";
-import { useLazyGetMyShopAccessoriesQuery } from "@/services/apis";
-import { IAccessory } from "@/services/types";
+import {
+  useLazyGetMyShopAccessoriesQuery,
+  useUpdateAccessoryMutation,
+} from "@/services/apis";
+import { IAccessory, AccessoryStatus } from "@/services/types";
 import {
   AlertCircleIcon,
   Edit,
   Eye,
   MoreHorizontal,
-  Package,
   Plus,
   Search,
   Star,
   Trash2,
+  CheckCircle,
+  XCircle,
+  Loader2,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -53,18 +66,30 @@ import { toast } from "sonner";
 export const ShopAccessoriesTabs = () => {
   const [accessories, setAccessories] = useState<IAccessory[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [trigger, { isLoading }] = useLazyGetMyShopAccessoriesQuery();
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [getAccessories, { isLoading }] = useLazyGetMyShopAccessoriesQuery();
+  const [updateAccessory, { isLoading: isUpdating }] =
+    useUpdateAccessoryMutation();
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [updateTrigger, setUpdateTrigger] = useState<number>(0);
 
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
-  const { setPaging, pageSize, pageIndex, totalItems, resetPaging } =
-    usePaging();
+  const { setPaging, pageSize, pageIndex, resetPaging } = usePaging();
 
   const fetchAccessories = useCallback(async () => {
     try {
-      const { statusCode, message, items, ...paging } = await trigger({
-        filter: debouncedSearchTerm ? `name:like:${debouncedSearchTerm}` : "",
+      let filter = "";
+      if (debouncedSearchTerm) {
+        filter += `name:like:${debouncedSearchTerm}`;
+      }
+      if (statusFilter !== "ALL") {
+        if (filter) filter += ",";
+        filter += `status:eq:${statusFilter}`;
+      }
+
+      const { statusCode, message, items, ...paging } = await getAccessories({
+        filter: filter,
         sort: `name:desc`,
         page: pageIndex,
         size: pageSize,
@@ -83,40 +108,119 @@ export const ShopAccessoriesTabs = () => {
         setIsError(true);
         setError(message);
       }
-    } catch (error) {
+    } catch {
       toast.error("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
     }
   }, [
     debouncedSearchTerm,
+    statusFilter,
     pageIndex,
     pageSize,
     setPaging,
     setIsError,
     setError,
+    getAccessories,
   ]);
 
   useEffect(() => {
-    resetPaging();
-    fetchAccessories();
-  }, [debouncedSearchTerm]);
+    if (debouncedSearchTerm !== searchTerm) {
+      resetPaging();
+    }
+  }, [debouncedSearchTerm, searchTerm, resetPaging]);
 
   useEffect(() => {
     fetchAccessories();
-  }, [debouncedSearchTerm, pageIndex, pageSize]);
+  }, [
+    debouncedSearchTerm,
+    statusFilter,
+    pageSize,
+    pageIndex,
+    fetchAccessories,
+  ]);
+
+  const handleStatusUpdate = useCallback(
+    async (accessoryId: string, newStatus: string, accessory: IAccessory) => {
+      try {
+        const { statusCode, message } = await updateAccessory({
+          id: accessoryId,
+          categoryId: accessory.categoryId || "", // Ensure it's a string
+          name: accessory.name,
+          description: accessory.description || "",
+          sellPrice:
+            typeof accessory.sellPrice === "string"
+              ? parseFloat(accessory.sellPrice) || 0
+              : accessory.sellPrice,
+          rentalPrice:
+            typeof accessory.rentalPrice === "string"
+              ? parseFloat(accessory.rentalPrice) || 0
+              : accessory.rentalPrice,
+          isSellable: accessory.isSellable,
+          isRentable: accessory.isRentable,
+          status: newStatus as AccessoryStatus,
+          images: accessory.images || "",
+        }).unwrap();
+        if (statusCode === 200) {
+          setAccessories((prevAccessories) => {
+            const updatedAccessories = prevAccessories.map((a) =>
+              a.id === accessoryId
+                ? { ...a, status: newStatus as AccessoryStatus }
+                : a
+            );
+            console.log("🔄 Updating accessory status:", {
+              accessoryId,
+              newStatus,
+              updatedAccessories,
+            });
+            return updatedAccessories;
+          });
+          setUpdateTrigger((prev) => prev + 1);
+          toast.success("Cập nhật trạng thái phụ kiện thành công!");
+        } else {
+          toast.error(message || "Có lỗi xảy ra khi cập nhật trạng thái");
+        }
+      } catch {
+        toast.error("Đã xảy ra lỗi khi cập nhật trạng thái phụ kiện");
+      }
+    },
+    [updateAccessory]
+  );
+
+  // Debug: Log khi accessories state thay đổi
+  useEffect(() => {
+    console.log("🔄 Accessories state updated:", accessories);
+  }, [accessories]);
+
+  // Debug: Log khi updateTrigger thay đổi
+  useEffect(() => {
+    console.log("🔄 Update trigger changed:", updateTrigger);
+  }, [updateTrigger]);
 
   return (
     <Card>
       <CardHeader>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-1 items-center justify-between space-x-2">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Tìm kiếm phụ kiện..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8"
-              />
+            <div className="flex items-center gap-4 flex-1">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Tìm kiếm phụ kiện..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Lọc theo trạng thái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Tất cả trạng thái</SelectItem>
+                  <SelectItem value="AVAILABLE">Có sẵn</SelectItem>
+                  <SelectItem value="UNAVAILABLE">Không có sẵn</SelectItem>
+                  <SelectItem value="OUT_OF_STOCK">Hết hàng</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <CreateAccessoryDialog
               trigger={
@@ -260,6 +364,65 @@ export const ShopAccessoriesTabs = () => {
                                 onSuccess={fetchAccessories}
                               />
                             </DropdownMenuItem>
+
+                            {/* Status Update Options */}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleStatusUpdate(
+                                  accessory.id,
+                                  AccessoryStatus.AVAILABLE,
+                                  accessory
+                                )
+                              }
+                              className="text-green-600"
+                              disabled={isUpdating}
+                            >
+                              {isUpdating ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              ) : (
+                                <CheckCircle className="h-4 w-4 mr-2" />
+                              )}
+                              Đặt trạng thái: Có sẵn
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleStatusUpdate(
+                                  accessory.id,
+                                  AccessoryStatus.UNAVAILABLE,
+                                  accessory
+                                )
+                              }
+                              className="text-orange-600"
+                              disabled={isUpdating}
+                            >
+                              {isUpdating ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              ) : (
+                                <XCircle className="h-4 w-4 mr-2" />
+                              )}
+                              Đặt trạng thái: Không có sẵn
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleStatusUpdate(
+                                  accessory.id,
+                                  AccessoryStatus.OUT_OF_STOCK,
+                                  accessory
+                                )
+                              }
+                              className="text-red-600"
+                              disabled={isUpdating}
+                            >
+                              {isUpdating ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              ) : (
+                                <XCircle className="h-4 w-4 mr-2" />
+                              )}
+                              Đặt trạng thái: Hết hàng
+                            </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
                               <DeleteAccessoryDialog
                                 accessory={accessory}

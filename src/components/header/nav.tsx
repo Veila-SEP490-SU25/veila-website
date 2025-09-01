@@ -30,26 +30,30 @@ export const Nav: React.FC = () => {
           href="/"
           className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
         >
-          Trang chủ
+          {isShop ? "Dashboard" : "Trang chủ"}
         </Link>
-        <Link
-          href="/browse"
-          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-        >
-          Khám phá Váy Cưới
-        </Link>
-        <Link
-          href="/shops"
-          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-        >
-          Tìm Cửa Hàng
-        </Link>
-        <Link
-          href="/blog"
-          className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-        >
-          Bài Viết
-        </Link>
+        {!isShop && (
+          <>
+            <Link
+              href="/browse"
+              className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+            >
+              Khám phá Váy Cưới
+            </Link>
+            <Link
+              href="/shops"
+              className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+            >
+              Tìm Cửa Hàng
+            </Link>
+            <Link
+              href="/blog"
+              className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+            >
+              Bài Viết
+            </Link>
+          </>
+        )}
         {isAuthenticated && (
           <>
             {isCustomer ? (
@@ -60,12 +64,20 @@ export const Nav: React.FC = () => {
                 Đăng Ký Cửa Hàng
               </Link>
             ) : isShop ? (
-              <Link
-                href="/shops/my"
-                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-              >
-                Cửa Hàng Của Tôi
-              </Link>
+              <>
+                <Link
+                  href="/shops/my"
+                  className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                >
+                  Cửa Hàng Của Tôi
+                </Link>
+                <Link
+                  href="/custom-orders"
+                  className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                >
+                  Tìm yêu cầu đặt may
+                </Link>
+              </>
             ) : null}
           </>
         )}
@@ -96,26 +108,30 @@ export const Nav: React.FC = () => {
                 href="/"
                 className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
-                Trang chủ
+                {isShop ? "Dashboard" : "Trang chủ"}
               </Link>
-              <Link
-                href="/browse"
-                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-              >
-                Duyệt Váy Cưới
-              </Link>
-              <Link
-                href="/shops"
-                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-              >
-                Tìm Cửa Hàng
-              </Link>
-              <Link
-                href="/blog"
-                className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-              >
-                Bài Viết
-              </Link>
+              {!isShop && (
+                <>
+                  <Link
+                    href="/browse"
+                    className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                  >
+                    Duyệt Váy Cưới
+                  </Link>
+                  <Link
+                    href="/shops"
+                    className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                  >
+                    Tìm Cửa Hàng
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                  >
+                    Bài Viết
+                  </Link>
+                </>
+              )}
               {isAuthenticated && (
                 <>
                   {isCustomer ? (
@@ -126,12 +142,20 @@ export const Nav: React.FC = () => {
                       Đăng Ký Cửa Hàng
                     </Link>
                   ) : isShop ? (
-                    <Link
-                      href="/shops/my"
-                      className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
-                    >
-                      Cửa Hàng Của Tôi
-                    </Link>
+                    <>
+                      <Link
+                        href="/shops/my"
+                        className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                      >
+                        Cửa Hàng Của Tôi
+                      </Link>
+                      <Link
+                        href="/custom-orders"
+                        className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
+                      >
+                        Yêu cầu đặt may
+                      </Link>
+                    </>
                   ) : null}
                 </>
               )}

@@ -18,13 +18,8 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Plus, Loader2, Save } from "lucide-react";
-import {
-  useCreateAccessoryMutation,
-} from "@/services/apis";
-import {
-  AccessoryStatus,
-  ICreateAccessory,
-} from "@/services/types";
+import { useCreateAccessoryMutation } from "@/services/apis";
+import { AccessoryStatus, ICreateAccessory } from "@/services/types";
 import { toast } from "sonner";
 import { ImagesUpload } from "@/components/images-upload";
 
@@ -115,7 +110,9 @@ export function CreateAccessoryDialog({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Tạo váy mới</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            Tạo phụ kiện mới
+          </DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">
@@ -127,7 +124,7 @@ export function CreateAccessoryDialog({
                 <h3 className="text-lg font-semibold">Thông tin cơ bản</h3>
 
                 <div className="space-y-2">
-                  <Label htmlFor="name">Tên váy *</Label>
+                  <Label htmlFor="name">Tên phụ kiện *</Label>
                   <Input
                     id="name"
                     placeholder="Nhập tên phụ kiện"
@@ -157,7 +154,7 @@ export function CreateAccessoryDialog({
                   <div className="space-y-1">
                     <Label>Có thể bán *</Label>
                     <p className="text-sm text-muted-foreground">
-                      Cho phép khách hàng mua váy này
+                      Cho phép khách hàng mua phụ kiện này
                     </p>
                   </div>
                   <Switch
@@ -192,7 +189,7 @@ export function CreateAccessoryDialog({
                   <div className="space-y-1">
                     <Label>Có thể thuê *</Label>
                     <p className="text-sm text-muted-foreground">
-                      Cho phép khách hàng thuê váy này
+                      Cho phép khách hàng thuê phụ kiện này
                     </p>
                   </div>
                   <Switch

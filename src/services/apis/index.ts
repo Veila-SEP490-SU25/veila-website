@@ -4,6 +4,7 @@ export * from "./blog.api";
 export * from "./category.api";
 export * from "./complaint.api";
 export * from "./contract.api";
+export * from "./custom-order.api";
 export * from "./dress.api";
 export * from "./feedback.api";
 export * from "./milestone.api";

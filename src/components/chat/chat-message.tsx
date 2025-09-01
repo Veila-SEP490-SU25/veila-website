@@ -148,9 +148,7 @@ export function ChatMessage({
                   onError={() => {
                     setImageError(true);
                   }}
-                  onLoad={() => {
-                    // Image loaded successfully
-                  }}
+                  onLoad={() => {}}
                   unoptimized={true}
                   priority={false}
                   placeholder="blur"
