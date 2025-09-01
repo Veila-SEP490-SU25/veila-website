@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,24 +20,28 @@ import {
 import { useVietQR } from "@/hooks/use-vietqr";
 import { IUpdateBankInfo, useUpdateBankInfoMutation } from "@/services/apis";
 import { IWallet } from "@/services/types";
-import { Loader2, Plus, Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface UpdateBankInfoDialogProps {
-  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onSuccess?: () => void;
   wallet: IWallet;
 }
 
 export const UpdateBankInfoDialog = ({
-  trigger,
+  open: externalOpen,
+  onOpenChange: externalOnOpenChange,
   onSuccess,
   wallet,
 }: UpdateBankInfoDialogProps) => {
-  const [open, setOpen] = useState(false);
-  const { banks, getBank } = useVietQR();
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = externalOnOpenChange || setInternalOpen;
+  const { banks } = useVietQR();
   const [updateBankInfo, { isLoading }] = useUpdateBankInfoMutation();
 
   const [bankData, setBankData] = useState<IUpdateBankInfo>({
@@ -82,21 +85,13 @@ export const UpdateBankInfoDialog = ({
           message || "Có lỗi xảy ra khi cập nhật thông tin ngân hàng"
         );
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi cập nhật thông tin ngân hàng");
     }
   };
 
-  const defaultTrigger = (
-    <Button className="bg-rose-600 hover:bg-rose-700">
-      <Plus className="h-4 w-4 mr-2" />
-      Thêm ngân hàng
-    </Button>
-  );
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-xl md:min-w-xl max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Thông tin ngân hàng</DialogTitle>

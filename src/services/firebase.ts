@@ -29,24 +29,52 @@ const initializeFirebase = () => {
     };
   }
 
-  if (!app) {
-    const firebaseConfig = getFirebaseConfig();
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    firestore = getFirestore(app);
-    storage = getStorage(app);
-  }
+  try {
+    if (!app) {
+      const firebaseConfig = getFirebaseConfig();
+      if (!firebaseConfig || !firebaseConfig.apiKey) {
+        console.error("Firebase config is missing or invalid");
+        return {
+          app: null,
+          auth: null,
+          firestore: null,
+          storage: null,
+          googleProvider: null,
+          recaptcha: null,
+          signInWithPhoneNumber: null,
+          signInWithPopup: null,
+        };
+      }
+      
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      firestore = getFirestore(app);
+      storage = getStorage(app);
+    }
 
-  const googleProvider = new GoogleAuthProvider();
-  return {
-    app,
-    auth,
-    firestore,
-    storage,
-    googleProvider,
-    signInWithPhoneNumber,
-    signInWithPopup,
-  };
+    const googleProvider = new GoogleAuthProvider();
+    return {
+      app,
+      auth,
+      firestore,
+      storage,
+      googleProvider,
+      signInWithPhoneNumber,
+      signInWithPopup,
+    };
+  } catch (error) {
+    console.error("Error initializing Firebase:", error);
+    return {
+      app: null,
+      auth: null,
+      firestore: null,
+      storage: null,
+      googleProvider: null,
+      recaptcha: null,
+      signInWithPhoneNumber: null,
+      signInWithPopup: null,
+    };
+  }
 };
 
 export const useFirebase = () => {

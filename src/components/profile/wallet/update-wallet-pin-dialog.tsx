@@ -7,7 +7,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   InputOTP,
@@ -17,20 +16,24 @@ import {
 import { Label } from "@/components/ui/label";
 import { useUpdateWalletPINMutation } from "@/services/apis";
 import { IUpdateWalletPIN } from "@/services/types";
-import { Edit, Loader2, Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface UpdateWalletPINDialogProps {
-  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
 export const UpdateWalletPINDialog = ({
-  trigger,
+  open: externalOpen,
+  onOpenChange: externalOnOpenChange,
   onSuccess,
 }: UpdateWalletPINDialogProps) => {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = externalOnOpenChange || setInternalOpen;
   const [updateWalletPIN, { isLoading }] = useUpdateWalletPINMutation();
 
   const [pinData, setPinData] = useState<IUpdateWalletPIN>({
@@ -72,21 +75,13 @@ export const UpdateWalletPINDialog = ({
       } else {
         toast.error(message || "Có lỗi xảy ra khi cập nhật thông tin ví");
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra khi cập nhật thông tin ví");
     }
   };
 
-  const defaultTrigger = (
-    <Button className="bg-rose-600 hover:bg-rose-700">
-      <Edit className="h-4 w-4 mr-2" />
-      Cập nhật mã PIN
-    </Button>
-  );
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-xl md:min-w-xl max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Chập nhật mã PIN</DialogTitle>

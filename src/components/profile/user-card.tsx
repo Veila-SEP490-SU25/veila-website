@@ -4,34 +4,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth.provider";
-import { useRouter } from "next/navigation";
+import { useVerifyPhonePopup } from "@/hooks/use-verify-phone-popup";
 import { useCallback } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { VerifyPhonePopup } from "@/components/verify-phone-popup";
 
 export const UserCard = () => {
-  const { currentUser, isAuthenticated } = useAuth();
-  const router = useRouter();
+  const { currentUser } = useAuth();
+  const { openPopup } = useVerifyPhonePopup();
 
   const goToPhoneVerify = useCallback(() => {
-    const returnUrl = encodeURIComponent(window.location.href);
-    router.push(`/verify-phone?returnUrl=${returnUrl}`);
-  }, [router]);
-
-  if (!isAuthenticated) {
-    return (
-      <Card className="w-full h-full">
-        <CardContent className="p-6">
-          <div className="grid items-center space-x-4 grid-cols-5">
-            <Skeleton className="w-16 h-16 rounded-full col-span-1" />
-            <div className="col-span-4 space-y-2">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+    openPopup();
+  }, [openPopup]);
 
   return currentUser ? (
     <Card className="w-full h-full">
@@ -40,7 +23,7 @@ export const UserCard = () => {
           <Avatar className="w-16 h-16 aspect-square col-span-1">
             <AvatarImage
               className="aspect-square"
-              src={currentUser.avatarUrl || "/placeholder-user.jpg"}
+              src={currentUser.avatarUrl || "/placeholder.svg"}
             />
             <AvatarFallback className="bg-rose-100 text-rose-600 aspect-square">
               {(currentUser.firstName?.charAt(0) || "") +
@@ -74,13 +57,14 @@ export const UserCard = () => {
           </div>
         </div>
       </CardContent>
+      <VerifyPhonePopup />
     </Card>
   ) : (
     <Card>
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={"/placeholder-user.jpg"} />
+            <AvatarImage src={"/placeholder.svg"} />
             <AvatarFallback className="bg-rose-100 text-rose-600">
               {"U"}
             </AvatarFallback>
