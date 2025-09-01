@@ -9,6 +9,7 @@ export interface IWallet extends IItem {
   bin: string | null;
   bankNumber: string | null;
   pin: string | null;
+  hasPin: boolean;
 }
 
 export interface IDeposit {

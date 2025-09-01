@@ -108,10 +108,10 @@ export function VerifyPhonePopup() {
 
     try {
       if (!auth.config || !auth.config.apiKey) {
-        console.error("Firebase Auth not properly initialized");
         return false;
       }
 
+      // Clear existing reCAPTCHA
       if (recaptchaVerifierRef.current) {
         try {
           recaptchaVerifierRef.current.clear();
@@ -119,20 +119,38 @@ export function VerifyPhonePopup() {
         recaptchaVerifierRef.current = null;
       }
 
+      if (window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+        } catch {}
+        window.recaptchaVerifier = undefined;
+      }
+
+      // Remove existing container
       const container = document.getElementById("verify-phone-recaptcha");
       if (container) {
         container.remove();
       }
 
+      // Create new container with better positioning
       const newContainer = document.createElement("div");
       newContainer.id = "verify-phone-recaptcha";
-      newContainer.style.position = "absolute";
-      newContainer.style.top = "-9999px";
+      newContainer.style.position = "fixed";
+      newContainer.style.top = "0";
+      newContainer.style.left = "0";
+      newContainer.style.width = "100px";
+      newContainer.style.height = "100px";
+      newContainer.style.zIndex = "-9999";
+      newContainer.style.opacity = "0";
+      newContainer.style.pointerEvents = "none";
+      newContainer.style.visibility = "hidden";
       document.body.appendChild(newContainer);
 
+      // Wait for DOM to update
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      recaptchaVerifierRef.current = new RecaptchaVerifier(
+      // Create new reCAPTCHA verifier
+      const newVerifier = new RecaptchaVerifier(
         auth,
         "verify-phone-recaptcha",
         {
@@ -147,11 +165,21 @@ export function VerifyPhonePopup() {
         }
       );
 
-      await recaptchaVerifierRef.current.render();
+      // Render reCAPTCHA with timeout
+      const renderPromise = newVerifier.render();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("reCAPTCHA render timeout")), 10000)
+      );
+
+      await Promise.race([renderPromise, timeoutPromise]);
+
+      // Store references
+      recaptchaVerifierRef.current = newVerifier;
+      window.recaptchaVerifier = newVerifier;
+
       setRecaptchaReady(true);
       return true;
-    } catch (error) {
-      console.error("Error resetting reCAPTCHA:", error);
+    } catch {
       setRecaptchaReady(false);
       return false;
     }
@@ -163,32 +191,44 @@ export function VerifyPhonePopup() {
     const initializeRecaptcha = async () => {
       try {
         if (!auth.config || !auth.config.apiKey) {
-          console.error("Firebase Auth not properly initialized");
           setError("Firebase Auth chưa được khởi tạo. Vui lòng tải lại trang.");
           setRecaptchaReady(false);
           return;
         }
 
-        if (window.recaptchaVerifier) {
-          recaptchaVerifierRef.current = window.recaptchaVerifier;
+        // Check if reCAPTCHA is already initialized
+        if (window.recaptchaVerifier && recaptchaVerifierRef.current) {
           setRecaptchaReady(true);
           return;
         }
 
+        // Remove any existing container
         let recaptchaContainer = document.getElementById(
           "verify-phone-recaptcha"
         );
-        if (!recaptchaContainer) {
-          recaptchaContainer = document.createElement("div");
-          recaptchaContainer.id = "verify-phone-recaptcha";
-          recaptchaContainer.style.position = "absolute";
-          recaptchaContainer.style.top = "-9999px";
-          document.body.appendChild(recaptchaContainer);
+        if (recaptchaContainer) {
+          recaptchaContainer.remove();
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // Create new container
+        recaptchaContainer = document.createElement("div");
+        recaptchaContainer.id = "verify-phone-recaptcha";
+        recaptchaContainer.style.position = "fixed";
+        recaptchaContainer.style.top = "0";
+        recaptchaContainer.style.left = "0";
+        recaptchaContainer.style.width = "100px";
+        recaptchaContainer.style.height = "100px";
+        recaptchaContainer.style.zIndex = "-9999";
+        recaptchaContainer.style.opacity = "0";
+        recaptchaContainer.style.pointerEvents = "none";
+        recaptchaContainer.style.visibility = "hidden";
+        document.body.appendChild(recaptchaContainer);
 
-        window.recaptchaVerifier = new RecaptchaVerifier(
+        // Wait for DOM to update
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Create new reCAPTCHA verifier
+        const newVerifier = new RecaptchaVerifier(
           auth,
           "verify-phone-recaptcha",
           {
@@ -203,50 +243,54 @@ export function VerifyPhonePopup() {
           }
         );
 
-        recaptchaVerifierRef.current = window.recaptchaVerifier;
+        // Render reCAPTCHA with timeout
+        const renderPromise = newVerifier.render();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("reCAPTCHA render timeout")), 10000)
+        );
 
-        await window.recaptchaVerifier.render();
+        await Promise.race([renderPromise, timeoutPromise]);
+
+        // Store references
+        recaptchaVerifierRef.current = newVerifier;
+        window.recaptchaVerifier = newVerifier;
+
         setRecaptchaReady(true);
-      } catch (error) {
-        console.error("Error initializing reCAPTCHA:", error);
+      } catch {
         setError("Không thể khởi tạo reCAPTCHA. Vui lòng tải lại trang.");
         setRecaptchaReady(false);
       }
     };
 
-    const timer = setTimeout(() => {
-      initializeRecaptcha();
-    }, 1000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [auth, isClient, firebaseReady]);
+    initializeRecaptcha();
+  }, [isClient, auth, firebaseReady]);
 
   const handleSendOTP = useCallback(
     async (data: PhoneSchema) => {
-      if (!auth || !signInWithPhoneNumber) {
-        setError("Chưa sẵn sàng để gửi OTP. Vui lòng thử lại.");
+      if (!auth || !recaptchaReady) {
+        setError("reCAPTCHA chưa sẵn sàng. Vui lòng đợi một chút.");
         return;
       }
+
+      const currentTime = Date.now();
 
       // Check if user is blocked
-      if (isBlocked) {
-        const remaining = Math.ceil((blockUntil - Date.now()) / 1000);
-        setError(
-          `Tài khoản tạm thời bị khóa do gửi quá nhiều OTP. Vui lòng đợi ${remaining} giây.`
-        );
-        return;
+      if (isBlocked && blockUntil > 0) {
+        const now = Date.now();
+        if (now < blockUntil) {
+          const remainingTime = Math.ceil((blockUntil - now) / 1000);
+          setCountdown(remainingTime);
+          setError(
+            `Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`
+          );
+          return;
+        }
       }
 
-      // Rate limiting: prevent requests within 60 seconds
-      const currentTime = Date.now();
-      const timeSinceLastRequest = currentTime - lastRequestTime;
-      const minimumInterval = 60000; // 60 seconds
-
-      if (timeSinceLastRequest < minimumInterval && lastRequestTime > 0) {
+      // Check rate limiting (30 seconds between requests)
+      if (currentTime - lastRequestTime < 30000) {
         const remainingTime = Math.ceil(
-          (minimumInterval - timeSinceLastRequest) / 1000
+          (30000 - (currentTime - lastRequestTime)) / 1000
         );
         setCountdown(remainingTime);
         setError(
@@ -280,6 +324,25 @@ export function VerifyPhonePopup() {
         }
         phoneNumber = `+84${phoneNumber}`;
 
+        // Verify reCAPTCHA is properly initialized
+        if (!recaptchaVerifierRef.current) {
+          setError("reCAPTCHA chưa được khởi tạo. Vui lòng tải lại trang.");
+          return;
+        }
+
+        // Try to get reCAPTCHA token first
+        try {
+          const token = await recaptchaVerifierRef.current.verify();
+          if (!token) {
+            throw new Error("reCAPTCHA token is empty");
+          }
+        } catch {
+          setError("Không thể xác thực reCAPTCHA. Vui lòng thử lại.");
+          // Try to reset reCAPTCHA
+          await resetRecaptcha();
+          return;
+        }
+
         const result = await signInWithPhoneNumber(
           auth,
           phoneNumber,
@@ -287,54 +350,8 @@ export function VerifyPhonePopup() {
         );
         setResult(result);
         setOtpSent(true);
-      } catch (error: any) {
-        setOtpSent(false);
-
-        // Handle specific Firebase errors
-        if (error.code === "auth/invalid-app-credential") {
-          setError(
-            "Phone authentication chưa được kích hoạt trong Firebase Console. Vui lòng kiểm tra cấu hình Firebase."
-          );
-        } else if (error.code === "auth/invalid-phone-number") {
-          setError("Số điện thoại không hợp lệ. Vui lòng kiểm tra lại.");
-        } else if (error.code === "auth/too-many-requests") {
-          const blockTime = 60 * 60 * 1000; // 1 hour
-          setIsBlocked(true);
-          setBlockUntil(Date.now() + blockTime);
-          setError(
-            "Quá nhiều yêu cầu OTP từ Firebase. Tài khoản bị khóa trong 1 giờ để bảo mật. Vui lòng thử lại sau hoặc sử dụng số điện thoại khác."
-          );
-          toast.error("Quá nhiều yêu cầu OTP", {
-            description: "Vui lòng đợi 1 giờ hoặc thử số điện thoại khác.",
-          });
-        } else if (error.code === "auth/quota-exceeded") {
-          setError(
-            "Đã vượt quá giới hạn gửi OTP. Vui lòng thử lại sau 24 giờ hoặc liên hệ hỗ trợ."
-          );
-          toast.error("Vượt quá giới hạn OTP", {
-            description: "Vui lòng thử lại sau 24 giờ.",
-          });
-        } else if (error.code === "auth/invalid-recaptcha-token") {
-          setError("reCAPTCHA không hợp lệ. Đang thử khởi tạo lại...");
-          const success = await resetRecaptcha();
-          if (success) {
-            setError("reCAPTCHA đã được khởi tạo lại. Vui lòng thử gửi OTP.");
-          } else {
-            setError(
-              "Không thể khởi tạo lại reCAPTCHA. Vui lòng tải lại trang."
-            );
-          }
-        } else if (
-          error.code === "auth/operation-not-supported-in-this-environment"
-        ) {
-          setError(
-            "Tính năng này không được hỗ trợ trong môi trường hiện tại."
-          );
-        } else {
-          setError(
-            error.message || "Có lỗi xảy ra khi gửi OTP. Vui lòng thử lại."
-          );
-        }
+      } catch {
+        setError("Không thể gửi mã xác thực. Vui lòng thử lại.");
       } finally {
         setIsLoading(false);
       }
@@ -348,6 +365,7 @@ export function VerifyPhonePopup() {
       blockUntil,
       attemptCount,
       lastRequestTime,
+      recaptchaReady,
     ]
   );
 
@@ -384,7 +402,7 @@ export function VerifyPhonePopup() {
         toast.error("Số điện thoại không hợp lệ.");
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi xác thực OTP.");
+      setError("Không thể xác thực OTP. Vui lòng thử lại.");
     }
   }, [result, otp, reloadProfile, closePopup]);
 

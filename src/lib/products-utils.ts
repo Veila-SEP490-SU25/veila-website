@@ -86,7 +86,7 @@ export const getPlaceholderImage = (
   height: number = 600,
   text: string = "Veila+Dress"
 ) => {
-  return `https://via.placeholder.com/${width}x${height}/f3f4f6/9ca3af?text=${encodeURIComponent(
+  return `https://placehold.co/${width}x${height}/f3f4f6/9ca3af?text=${encodeURIComponent(
     text
   )}`;
 };
@@ -105,10 +105,9 @@ export const isValidImageUrl = (url: string): boolean => {
 
 export const getFallbackImage = (width = 400, height = 300, index = 0) => {
   const services = [
-    `https://via.placeholder.com/${width}x${height}/f3f4f6/9ca3af?text=Image`,
+    `https://placehold.co/${width}x${height}/f3f4f6/9ca3af?text=Image`,
     `https://picsum.photos/${width}/${height}?random=${Math.random()}`,
     `https://dummyimage.com/${width}x${height}/f3f4f6/9ca3af&text=Image`,
-    `https://placehold.co/${width}x${height}/f3f4f6/9ca3af?text=Image`,
   ];
 
   return services[index] || services[0];

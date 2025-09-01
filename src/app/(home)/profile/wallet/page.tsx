@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState, Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -9,342 +8,302 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Wallet,
-  Plus,
-  Minus,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Calendar,
-  DollarSign,
-  CreditCard,
-  Edit,
-  History,
-} from "lucide-react";
-import { IWallet } from "@/services/types";
+import { Wallet, CreditCard, Settings, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useLazyGetMyWalletQuery } from "@/services/apis";
-import { useVietQR } from "@/hooks/use-vietqr";
-import { IBank } from "@/services/types/bank.type";
 import { formatPrice } from "@/lib/products-utils";
-import { UpdateBankInfoDialog } from "@/components/profile/wallet/update-bank-info-dialog";
-import Image from "next/image";
-import { useAuth } from "@/providers/auth.provider";
-import { formatDate, formatDateShort } from "@/lib/order-util";
+import { useVietQR } from "@/hooks/use-vietqr";
+import { DepositTabs } from "@/components/profile/wallet/deposit-tabs";
+import { WithdrawTabs } from "@/components/profile/wallet/withdraw-tabs";
+import { TransactionHistoryTabs } from "@/components/profile/wallet/transaction-history-tabs";
 import { CreateWalletPINDialog } from "@/components/profile/wallet/create-wallet-pin-dialog";
 import { UpdateWalletPINDialog } from "@/components/profile/wallet/update-wallet-pin-dialog";
-import { TransactionHistoryTabs } from "@/components/profile/wallet/transaction-history-tabs";
-import { WithdrawTabs } from "@/components/profile/wallet/withdraw-tabs";
+import { UpdateBankInfoDialog } from "@/components/profile/wallet/update-bank-info-dialog";
 
-export default function WalletPage() {
-  const { currentUser } = useAuth();
+function WalletPageContent() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("overview");
+  const [showCreatePinDialog, setShowCreatePinDialog] = useState(false);
+  const [showUpdatePinDialog, setShowUpdatePinDialog] = useState(false);
+  const [showBankInfoDialog, setShowBankInfoDialog] = useState(false);
 
-  const [wallet, setWallet] = useState<IWallet>();
-  const [userBank, setUserBank] = useState<IBank | null>(null);
-  const [trigger, { isLoading }] = useLazyGetMyWalletQuery();
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState<string>("");
-
-  const fetchMyWallet = useCallback(async () => {
-    try {
-      const { statusCode, item, message } = await trigger().unwrap();
-      if (statusCode === 200) {
-        setWallet(item);
-      } else {
-        setIsError(true);
-        setError(
-          message ||
-            "Không thể tải ví của bạn vào lúc này. Vui lòng thử lại sau."
-        );
-      }
-    } catch (error) {
-      setIsError(true);
-      setError("Không thể tải ví của bạn vào lúc này. Vui lòng thử lại sau.");
-    }
-  }, [setWallet, setError, setIsError]);
+  const [getMyWallet, { data: walletData, isLoading, error }] =
+    useLazyGetMyWalletQuery();
+  const { banks } = useVietQR();
 
   useEffect(() => {
-    fetchMyWallet();
-  }, [trigger]);
+    getMyWallet();
+  }, [getMyWallet]);
 
-  const { banks, getBank } = useVietQR();
+  const handleDepositSuccess = () => {
+    getMyWallet();
+    setActiveTab("overview");
+  };
 
-  useEffect(() => {
-    if (wallet) {
-      const bank = getBank(wallet.bin);
-      setUserBank(bank);
-    }
-  }, [wallet, getBank, setUserBank]);
+  const handleWithdrawSuccess = () => {
+    getMyWallet();
+    setActiveTab("overview");
+  };
 
-  return (
-    wallet && (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Ví Điện Tử</h1>
-          <p className="text-gray-600">Quản lý tiền và theo dõi giao dịch</p>
-        </div>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      </div>
+    );
+  }
 
-        {/* Balance Cards */}
-        <Card className="mb-4">
-          <CardContent className="">
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="cols-span-1 w-full space-y-2">
-                <div className="grid grid-cols-1 gap-6 mb-8">
-                  <Card className="bg-gradient-to-r from-rose-600 to-rose-700 text-white">
-                    <CardContent className="p-6 flex items-center h-full">
-                      <div className="flex items-center justify-between w-full">
-                        <div>
-                          <p className="text-rose-100 text-sm">
-                            Số Dư Khả Dụng
-                          </p>
-                          <p className="text-3xl font-bold">
-                            {formatPrice(wallet.availableBalance)}
-                          </p>
-                        </div>
-                        <Wallet className="h-8 w-8 text-rose-200" />
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-6 flex items-center h-full">
-                      <div className="flex items-center justify-between w-full">
-                        <div>
-                          <p className="text-gray-600 text-sm">
-                            Đang Chờ Xử Lý
-                          </p>
-                          <p className="text-2xl font-bold text-gray-900">
-                            {formatPrice(wallet.lockedBalance)}
-                          </p>
-                        </div>
-                        <Calendar className="h-8 w-8 text-yellow-600" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-              <div className="cols-span-1 w-full">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-8 w-full">
-                    <CardTitle className="text-gray-600 text-sm">
-                      Thông tin ngân hàng
-                    </CardTitle>
-                    {userBank ? (
-                      <div className="space-y-1 flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <Image
-                            src={userBank.logo}
-                            alt={userBank.shortName}
-                            width={24}
-                            height={24}
-                            className="w-14 h-14 object-contain"
-                          />
-                          <div className="flex-1 gap-2">
-                            <p className="text-lg text-gray-600 font-semibold">
-                              {userBank.shortName}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              {wallet.bankNumber}
-                            </p>
-                          </div>
-                        </div>
-                        <UpdateBankInfoDialog
-                          onSuccess={fetchMyWallet}
-                          wallet={wallet}
-                          trigger={
-                            <Button
-                              className="cursor-pointer w-max"
-                              variant="outline"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Thay đổi ngân hàng
-                            </Button>
-                          }
-                        />
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <p className="text-gray-900">
-                          Không có thông tin ngân hàng
-                        </p>
-                        <UpdateBankInfoDialog
-                          onSuccess={fetchMyWallet}
-                          wallet={wallet}
-                        />
-                      </div>
-                    )}
-                    {currentUser && (
-                      <div className="space-y-2">
-                        <CardTitle className="text-gray-600 text-sm">
-                          Thông tin cá nhân
-                        </CardTitle>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Họ và tên:</span>
-                          <span>
-                            {currentUser.firstName} {currentUser.middleName}{" "}
-                            {currentUser.lastName}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Ngày sinh:</span>
-                          <span>
-                            {formatDateShort(currentUser.birthDate || "")}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Địa chỉ:</span>
-                          <span>{currentUser.address || ""}</span>
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-sm">
-                      <CardTitle className="text-gray-600 text-sm">
-                        Mã khoá Ví
-                      </CardTitle>
-                      {wallet.pin ? (
-                        <UpdateWalletPINDialog
-                          onSuccess={fetchMyWallet}
-                          trigger={
-                            <Button
-                              className="cursor-pointer w-max"
-                              variant="outline"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Thay đổi mã PIN
-                            </Button>
-                          }
-                        />
-                      ) : (
-                        <CreateWalletPINDialog
-                          onSuccess={fetchMyWallet}
-                          trigger={
-                            <Button
-                              className="cursor-pointer w-max"
-                              variant="outline"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Tạo mã PIN
-                            </Button>
-                          }
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-8 text-center">
+            <div className="text-red-600 mb-4">
+              <Wallet className="h-16 w-16 mx-auto" />
             </div>
+            <h3 className="text-lg font-semibold mb-2">
+              Không thể tải thông tin ví
+            </h3>
+            <p className="text-gray-600 mb-4">Vui lòng thử lại sau</p>
+            <Button onClick={() => getMyWallet()}>Thử lại</Button>
           </CardContent>
         </Card>
-
-        <Tabs defaultValue="transaction" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="transaction">Lịch Sử Giao Dịch</TabsTrigger>
-            <TabsTrigger value="deposit">Nạp Tiền</TabsTrigger>
-            <TabsTrigger value="withdraw">Rút Tiền</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="transaction">
-            <TransactionHistoryTabs />
-          </TabsContent>
-
-          <TabsContent value="deposit">
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="h-5 w-5 text-green-600" />
-                  Nạp Tiền Vào Ví
-                </CardTitle>
-                <CardDescription>
-                  Nạp tiền vào ví để thực hiện mua hàng
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="depositAmount">Số Tiền</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-3 text-sm text-gray-400">
-                      ₫
-                    </span>
-                    <Input
-                      id="depositAmount"
-                      type="number"
-                      placeholder="0"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Phương Thức Thanh Toán</Label>
-                  <Select
-                    value={paymentMethod}
-                    onValueChange={setPaymentMethod}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn phương thức thanh toán" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="credit">Thẻ Tín Dụng</SelectItem>
-                      <SelectItem value="debit">Thẻ Ghi Nợ</SelectItem>
-                      <SelectItem value="bank">
-                        Chuyển Khoản Ngân Hàng
-                      </SelectItem>
-                      <SelectItem value="momo">MoMo</SelectItem>
-                      <SelectItem value="zalopay">ZaloPay</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDepositAmount("2500000")}
-                  >
-                    2.5 triệu
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDepositAmount("6250000")}
-                  >
-                    6.25 triệu
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDepositAmount("12500000")}
-                  >
-                    12.5 triệu
-                  </Button>
-                </div>
-
-                <Button className="w-full bg-green-600 hover:bg-green-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nạp Tiền
-                </Button>
-              </CardContent>
-            </Card> */}
-          </TabsContent>
-
-          <TabsContent value="withdraw">
-            <WithdrawTabs wallet={wallet} onWithdrawSuccess={fetchMyWallet} />
-          </TabsContent>
-        </Tabs>
       </div>
-    )
+    );
+  }
+
+  const wallet = walletData?.item;
+  const hasPin = wallet?.hasPin || false;
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/profile")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Quay về
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Ví Điện Tử</h1>
+            <p className="text-gray-600">
+              Quản lý tài khoản và giao dịch của bạn
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Wallet Overview Card */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wallet className="h-6 w-6 text-green-600" />
+            Thông Tin Ví
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Available Balance */}
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">
+                {wallet ? formatPrice(wallet.availableBalance || 0) : "0 VNĐ"}
+              </div>
+              <div className="text-sm text-gray-600">Số dư khả dụng</div>
+            </div>
+
+            {/* Locked Balance */}
+            <div className="text-center p-4 bg-orange-50 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">
+                {wallet ? formatPrice(wallet.lockedBalance || 0) : "0 VNĐ"}
+              </div>
+              <div className="text-sm text-gray-600">Số dư bị khóa</div>
+            </div>
+
+            {/* PIN Status with Action Button */}
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <div className="text-lg font-semibold text-blue-600 mb-3">
+                {hasPin ? "Đã có PIN" : "Chưa có PIN"}
+              </div>
+              <div className="text-sm text-gray-600 mb-3">
+                Trạng thái bảo mật
+              </div>
+              {hasPin ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowUpdatePinDialog(true)}
+                  className="w-full text-xs"
+                >
+                  <Settings className="h-3 w-3 mr-1" />
+                  Cập nhật PIN
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCreatePinDialog(true)}
+                  className="w-full text-xs"
+                >
+                  <Settings className="h-3 w-3 mr-1" />
+                  Tạo PIN
+                </Button>
+              )}
+            </div>
+
+            {/* Bank Info with Action Button */}
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <div className="text-lg font-semibold text-purple-600 mb-3">
+                Thông tin ngân hàng
+              </div>
+              <div className="text-sm text-gray-600 mb-3">
+                {wallet?.bin && wallet?.bankNumber ? (
+                  <div className="space-y-1">
+                    <div className="font-medium">
+                      Ngân hàng:{" "}
+                      {banks?.find((bank) => bank.bin === wallet.bin)
+                        ?.shortName || wallet.bin}
+                    </div>
+                    <div className="font-medium">
+                      Số TK: {wallet.bankNumber}
+                    </div>
+                  </div>
+                ) : (
+                  "Chưa cập nhật"
+                )}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowBankInfoDialog(true)}
+                className="w-full text-xs"
+              >
+                <CreditCard className="h-3 w-3 mr-1" />
+                {wallet?.bin && wallet?.bankNumber ? "Cập nhật" : "Thêm mới"}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+          <TabsTrigger value="deposit">Nạp tiền</TabsTrigger>
+          <TabsTrigger value="withdraw">Rút tiền</TabsTrigger>
+          <TabsTrigger value="history">Lịch sử</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Hướng Dẫn Sử Dụng</CardTitle>
+              <CardDescription>
+                Tìm hiểu cách sử dụng ví điện tử của bạn
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">💳 Nạp tiền</h4>
+                  <p className="text-sm text-gray-600">
+                    Nạp tiền vào ví để thực hiện mua hàng và giao dịch
+                  </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">💰 Rút tiền</h4>
+                  <p className="text-sm text-gray-600">
+                    Rút tiền từ ví về tài khoản ngân hàng của bạn
+                  </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">🔒 Bảo mật</h4>
+                  <p className="text-sm text-gray-600">
+                    Tạo và quản lý mã PIN để bảo vệ ví của bạn
+                  </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-semibold mb-2">📊 Theo dõi</h4>
+                  <p className="text-sm text-gray-600">
+                    Xem lịch sử giao dịch và quản lý tài khoản
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="deposit">
+          <DepositTabs onDepositSuccess={handleDepositSuccess} />
+        </TabsContent>
+
+        <TabsContent value="withdraw">
+          {wallet && (
+            <WithdrawTabs
+              wallet={wallet}
+              onWithdrawSuccess={handleWithdrawSuccess}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="history">
+          <TransactionHistoryTabs />
+        </TabsContent>
+      </Tabs>
+
+      <CreateWalletPINDialog
+        open={showCreatePinDialog}
+        onOpenChange={setShowCreatePinDialog}
+        onSuccess={() => {
+          setShowCreatePinDialog(false);
+          getMyWallet();
+        }}
+      />
+
+      <UpdateWalletPINDialog
+        open={showUpdatePinDialog}
+        onOpenChange={setShowUpdatePinDialog}
+        onSuccess={() => {
+          setShowUpdatePinDialog(false);
+          getMyWallet();
+        }}
+      />
+
+      {wallet && (
+        <UpdateBankInfoDialog
+          open={showBankInfoDialog}
+          onOpenChange={setShowBankInfoDialog}
+          wallet={wallet}
+          onSuccess={() => {
+            setShowBankInfoDialog(false);
+            getMyWallet();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+export default function WalletPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        </div>
+      }
+    >
+      <WalletPageContent />
+    </Suspense>
   );
 }

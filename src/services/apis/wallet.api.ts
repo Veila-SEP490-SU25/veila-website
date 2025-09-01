@@ -72,7 +72,7 @@ export const walletApi = createApi({
       query: (body) => ({
         url: "wallets/deposit",
         method: "PUT",
-        data: body,
+        body: body,
       }),
     }),
 

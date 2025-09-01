@@ -3,20 +3,21 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLazyGetMyWalletQuery } from "@/services/apis";
+import {
+  useLazyGetMyWalletQuery,
+  useUpdateWalletPINMutation,
+  useCreateWalletPINMutation,
+} from "@/services/apis";
 import { IWallet } from "@/services/types";
 import {
   Wallet,
   AlertCircleIcon,
   CircleDollarSign,
-  Calendar,
-  MapPin,
   Lock,
   Unlock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { useAuth } from "@/providers/auth.provider";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -30,7 +31,6 @@ import { Label } from "@/components/ui/label";
 
 export const WalletCard = () => {
   const router = useRouter();
-  const { currentUser } = useAuth();
   const [wallet, setWallet] = useState<IWallet>();
   const [isError, setIsError] = useState<boolean>(false);
   const [error, setError] = useState<string>();
@@ -42,6 +42,8 @@ export const WalletCard = () => {
   const [newPin, setNewPin] = useState<string>("");
 
   const [getMyWWallet, { isLoading }] = useLazyGetMyWalletQuery();
+  const [updateWalletPIN] = useUpdateWalletPINMutation();
+  const [createWalletPIN] = useCreateWalletPINMutation();
 
   const fetchWallet = useCallback(async () => {
     try {
@@ -49,12 +51,11 @@ export const WalletCard = () => {
       if (statusCode === 200) {
         setWallet(item);
         setBalance(item.availableBalance + item.lockedBalance);
-        // Kiểm tra xem có mã PIN không - nếu không có field pin thì chưa có PIN
-        const hasPinValue =
-          item.hasOwnProperty("pin") &&
-          item.pin !== null &&
-          item.pin !== "" &&
-          item.pin.length > 0;
+
+        // Kiểm tra hasPin với fallback
+        const hasPinValue = item.hasOwnProperty("hasPin")
+          ? Boolean(item.hasPin)
+          : false;
         setHasPin(hasPinValue);
       } else {
         setError(message);
@@ -63,7 +64,7 @@ export const WalletCard = () => {
     } catch (error) {
       console.log("Failed to fetch wallet", error);
     }
-  }, [setIsError, setError, setWallet, getMyWWallet]);
+  }, [getMyWWallet]);
 
   const formatVND = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -84,39 +85,56 @@ export const WalletCard = () => {
     }
 
     setIsUpdatingPin(true);
+
     try {
-      const endpoint = hasPin
-        ? "/wallets/my-wallet/update-pin"
-        : "/wallets/my-wallet/create-pin";
-      const body = hasPin ? { oldPin, pin: newPin } : { pin: newPin };
+      await fetchWallet();
+    } catch (error) {
+      console.log("Failed to refresh wallet before PIN action:", error);
+    }
+    try {
+      const currentHasPin = wallet?.hasOwnProperty("hasPin")
+        ? Boolean(wallet.hasPin)
+        : false;
 
-      const response = await fetch(endpoint, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (response.ok) {
-        toast.success(
-          hasPin ? "Cập nhật mã PIN thành công" : "Tạo mã PIN thành công"
-        );
-        setIsPinDialogOpen(false);
-        setOldPin("");
-        setNewPin("");
-        fetchWallet();
+      if (currentHasPin) {
+        const result = await updateWalletPIN({ oldPin, pin: newPin }).unwrap();
+        if (result.statusCode === 200) {
+          toast.success("Cập nhật mã PIN thành công");
+          setIsPinDialogOpen(false);
+          setOldPin("");
+          setNewPin("");
+          fetchWallet();
+        } else {
+          toast.error("Cập nhật mã PIN thất bại", {
+            description: result.message || "Có lỗi xảy ra",
+          });
+        }
       } else {
-        const errorData = await response.json();
-        toast.error(
-          hasPin ? "Cập nhật mã PIN thất bại" : "Tạo mã PIN thất bại",
-          {
-            description: errorData.message || "Có lỗi xảy ra",
-          }
-        );
+        const result = await createWalletPIN(newPin).unwrap();
+
+        if (result.statusCode === 200) {
+          toast.success("Tạo mã PIN thành công");
+          setIsPinDialogOpen(false);
+          setOldPin("");
+          setNewPin("");
+          fetchWallet();
+        } else {
+          toast.error("Tạo mã PIN thất bại", {
+            description: result.message || "Có lỗi xảy ra",
+          });
+        }
       }
-    } catch {
-      toast.error("Có lỗi xảy ra khi xử lý mã PIN");
+    } catch (error: any) {
+      console.error("PIN action error:", error);
+      console.error("Error details:", {
+        status: error?.status,
+        data: error?.data,
+        message: error?.message,
+      });
+      toast.error("Có lỗi xảy ra khi xử lý mã PIN", {
+        description:
+          error?.data?.message || error?.message || "Vui lòng thử lại",
+      });
     } finally {
       setIsUpdatingPin(false);
     }
@@ -131,10 +149,6 @@ export const WalletCard = () => {
   useEffect(() => {
     fetchWallet();
   }, [fetchWallet]);
-
-  useEffect(() => {
-    // console.log("hasPin state:", hasPin); // Removed debug log
-  }, [hasPin]);
 
   return (
     <>
@@ -180,28 +194,6 @@ export const WalletCard = () => {
           <Card>
             <CardContent className="p-4">
               <div className="space-y-4">
-                {currentUser && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4" />
-                      <span>
-                        Ngày sinh:{" "}
-                        {currentUser.birthDate
-                          ? new Date(currentUser.birthDate).toLocaleDateString(
-                              "vi-VN"
-                            )
-                          : "Chưa cập nhật"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MapPin className="h-4 w-4" />
-                      <span>
-                        Địa chỉ: {currentUser.address || "Chưa cập nhật"}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Tổng Số Dư Ví</span>
@@ -230,24 +222,6 @@ export const WalletCard = () => {
                     </>
                   )}
                 </div>
-
-                {/* Debug info - chỉ hiển thị trong development */}
-                {process.env.NODE_ENV === "development" && (
-                  <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
-                    <div>Debug Info:</div>
-                    <div>
-                      Has PIN field:{" "}
-                      {wallet?.hasOwnProperty("pin") ? "Yes" : "No"}
-                    </div>
-                    <div>PIN field: {wallet?.pin || "undefined"}</div>
-                    <div>PIN type: {typeof wallet?.pin}</div>
-                    <div>hasPin state: {hasPin.toString()}</div>
-                    <div>
-                      Available fields:{" "}
-                      {wallet ? Object.keys(wallet).join(", ") : "No wallet"}
-                    </div>
-                  </div>
-                )}
 
                 <div className="space-y-2">
                   <Button

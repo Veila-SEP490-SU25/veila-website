@@ -1,6 +1,7 @@
 "use client";
 
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme.provider";
 import { StoreProvider } from "@/providers/store.provider";
@@ -63,6 +64,10 @@ export default function RootLayout({
             richColors={true}
           />
         </ThemeProvider>
+        <Script
+          src="https://cdn.payos.vn/checkout.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

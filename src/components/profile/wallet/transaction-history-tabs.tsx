@@ -27,6 +27,23 @@ import { ArrowDownLeft, ArrowUpRight, History } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+const getTransactionTypeLabel = (type: TransactionType): string => {
+  switch (type) {
+    case TransactionType.DEPOSIT:
+      return "Nạp tiền";
+    case TransactionType.WITHDRAW:
+      return "Rút tiền";
+    case TransactionType.TRANSFER:
+      return "Chuyển tiền";
+    case TransactionType.RECEIVE:
+      return "Nhận tiền";
+    case TransactionType.REFUND:
+      return "Hoàn tiền";
+    default:
+      return type;
+  }
+};
+
 export const TransactionHistoryTabs = () => {
   const [trigger, { isLoading }] = useLazyGetMyTransactionsQuery();
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
@@ -142,6 +159,18 @@ export const TransactionHistoryTabs = () => {
                 </p>
                 <p className="text-sm text-gray-500">
                   Người nhận: {transaction.to}
+                </p>
+
+                <p className="text-sm text-gray-500">
+                  Loại giao dịch: {getTransactionTypeLabel(transaction.type)}
+                </p>
+                <p className="text-sm text-gray-400">
+                  Số dư khả dụng:{" "}
+                  {formatPrice(transaction.availableBalanceSnapshot)}
+                </p>
+                <p className="text-sm text-gray-400">
+                  Số dư bị khóa:{" "}
+                  {formatPrice(transaction.lockedBalanceSnapshot)}
                 </p>
               </div>
             </div>
