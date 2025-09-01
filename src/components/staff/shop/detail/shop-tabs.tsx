@@ -3,6 +3,7 @@
 import { AccessoriesTabs } from "@/components/staff/shop/detail/tabs/accessories-tabs";
 import { DressesTabs } from "@/components/staff/shop/detail/tabs/dresses-tabs";
 import { InformationTabs } from "@/components/staff/shop/detail/tabs/information-tabs";
+import { OrdersTabs } from "@/components/staff/shop/detail/tabs/orders-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IShop } from "@/services/types";
 
@@ -24,6 +25,7 @@ export const ShopTabs = ({ shop, onUpdate }: ShopTabsProps) => {
       <InformationTabs shop={shop} onUpdate={onUpdate} />
       <DressesTabs shop={shop} onUpdate={onUpdate} />
       <AccessoriesTabs shop={shop} onUpdate={onUpdate} />
+      <OrdersTabs shop={shop} onUpdate={onUpdate} />
     </Tabs>
   );
 };
