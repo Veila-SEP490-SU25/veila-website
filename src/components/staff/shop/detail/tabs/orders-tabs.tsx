@@ -3,6 +3,7 @@
 import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
+import { PagingComponent } from "@/components/paging-component";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
@@ -23,7 +24,13 @@ import { formatPrice } from "@/lib/products-utils";
 import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetOrderOfShopQuery } from "@/services/apis";
 import { IOrder, IShop } from "@/services/types";
-import { FileText, RefreshCw, Scissors, Shirt, ShoppingBag } from "lucide-react";
+import {
+  FileText,
+  RefreshCw,
+  Scissors,
+  Shirt,
+  ShoppingBag,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "react-day-picker";
 
@@ -309,6 +316,9 @@ export const OrdersTabs = ({ shop, onUpdate }: OrdersTabsProps) => {
             </Select>
           </div>
         </CardHeader>
+        <CardContent>
+          <PagingComponent />
+        </CardContent>
       </Card>
     </TabsContent>
   );

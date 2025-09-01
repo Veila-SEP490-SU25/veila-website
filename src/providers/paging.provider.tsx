@@ -99,10 +99,10 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
   }, [hasNext, setPageIndex]);
 
   const goPrevious = useCallback(() => {
-    if (hasPrevious) {
+    if (pageIndex > 0) {
       setPageIndex((prev) => prev - 1);
     }
-  }, [hasPrevious, setPageIndex]);
+  }, [pageIndex, setPageIndex]);
 
   const gotoPage = useCallback(
     (page: number) => {
