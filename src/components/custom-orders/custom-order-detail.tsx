@@ -6,10 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useGetCustomOrderRequestByIdQuery } from "@/services/apis/custom-order.api";
-import {
-  customOrderStatusColors,
-  customOrderStatusLabels,
-} from "@/services/types/custom-order.type";
+
 import { formatDateDetailed } from "@/utils/format";
 import {
   ArrowLeft,
