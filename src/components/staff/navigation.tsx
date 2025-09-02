@@ -28,12 +28,12 @@ const allowedRoles = [UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.STAFF];
 const adminRoles = [UserRole.ADMIN, UserRole.SUPER_ADMIN];
 
 const modRoutes = [
-  {
-    name: "Tổng Quan",
-    href: "/staff",
-    icon: LayoutDashboard,
-    allowedRoles: allowedRoles,
-  },
+  // {
+  //   name: "Tổng Quan",
+  //   href: "/staff",
+  //   icon: LayoutDashboard,
+  //   allowedRoles: allowedRoles,
+  // },
   {
     name: "Cửa Hàng",
     href: "/staff/shops",
@@ -74,12 +74,6 @@ const modRoutes = [
     name: "Người Dùng",
     href: "/staff/users",
     icon: Users,
-    allowedRoles: adminRoles,
-  },
-  {
-    name: "Cài đặt",
-    href: "/staff/settings",
-    icon: Settings,
     allowedRoles: adminRoles,
   },
 ];
