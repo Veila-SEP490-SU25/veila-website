@@ -1,6 +1,5 @@
 import { TextLogo } from "@/components/text-logo";
 import {
-  Heart,
   Facebook,
   Instagram,
   Twitter,

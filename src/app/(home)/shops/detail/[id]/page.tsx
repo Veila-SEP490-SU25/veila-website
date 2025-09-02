@@ -11,18 +11,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useLazyGetShopQuery } from "@/services/apis";
 import { IShop } from "@/services/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
-import {
-  ArrowLeft,
-  Calendar,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  Share2,
-} from "lucide-react";
+import { ArrowLeft, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const ShopDetailPage = () => {
   const { id } = useParams();
@@ -32,22 +24,20 @@ const ShopDetailPage = () => {
 
   const [getShop, { isLoading }] = useLazyGetShopQuery();
 
-  const fetchShop = async () => {
+  const fetchShop = useCallback(async () => {
     try {
-      const { statusCode, message, item } = await getShop(
-        id as string
-      ).unwrap();
+      const { statusCode, item } = await getShop(id as string).unwrap();
       if (statusCode === 200) {
         setShop(item);
       } else {
         router.push("/shops");
       }
-    } catch (error) {}
-  };
+    } catch {}
+  }, [getShop, id, router]);
 
   useEffect(() => {
     fetchShop();
-  }, [id]);
+  }, [fetchShop]);
 
   if (isLoading) {
     return (
@@ -168,13 +158,43 @@ const ShopDetailPage = () => {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="about">Giới thiệu</TabsTrigger>
-          <TabsTrigger value="dresses">Váy</TabsTrigger>
-          <TabsTrigger value="accessories">Phụ kiện</TabsTrigger>
-          <TabsTrigger value="custom">Đặt may</TabsTrigger>
-          <TabsTrigger value="blogs">Bài đăng</TabsTrigger>
-          <TabsTrigger value="info">Thông tin liên hệ</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-6 bg-gray-100/50 p-1 rounded-lg">
+          <TabsTrigger
+            value="about"
+            className="relative py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Giới thiệu
+          </TabsTrigger>
+          <TabsTrigger
+            value="dresses"
+            className="relative py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Váy
+          </TabsTrigger>
+          <TabsTrigger
+            value="accessories"
+            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Phụ kiện
+          </TabsTrigger>
+          <TabsTrigger
+            value="custom"
+            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Đặt may
+          </TabsTrigger>
+          <TabsTrigger
+            value="blogs"
+            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Bài đăng
+          </TabsTrigger>
+          <TabsTrigger
+            value="info"
+            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Thông tin liên hệ
+          </TabsTrigger>
         </TabsList>
 
         {/* About Tab */}

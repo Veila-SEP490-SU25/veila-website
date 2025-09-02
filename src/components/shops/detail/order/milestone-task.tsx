@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import { CreateTaskDialog } from "@/components/shops/detail/order/create-task-dialog";
+import { ComplaintForm } from "@/components/shops/detail/order/complaint-form";
 import { useAuth } from "@/providers/auth.provider";
 
 interface Props {
@@ -39,6 +40,9 @@ interface Props {
   milestoneTitle?: string;
   autoExpand?: boolean;
   onChange: () => Promise<void>;
+  orderStatus?: string; // Thêm prop để kiểm tra trạng thái đơn hàng
+  isLastMilestone?: boolean; // Thêm prop để kiểm tra có phải milestone cuối không
+  orderId?: string; // Thêm prop để truyền orderId cho complaint form
 }
 
 const getTaskStatusIcon = (status: TaskStatus) => {
@@ -106,6 +110,10 @@ export const MilestoneTask = ({
   milestoneId,
   milestoneTitle,
   autoExpand = false,
+  onChange,
+  orderStatus,
+  isLastMilestone = false,
+  orderId,
 }: Props) => {
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [isOpen, setIsOpen] = useState(autoExpand);
@@ -324,15 +332,17 @@ export const MilestoneTask = ({
                             <div className="text-xs text-blue-600 font-medium">
                               Đang thực hiện
                             </div>
-                            <Button
-                              size="sm"
-                              onClick={() => handleMarkComplete(task.id)}
-                              disabled={isUpdating}
-                              className="bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              <Check className="h-3 w-3 mr-1" />
-                              {isUpdating ? "Đang cập nhật..." : "Hoàn thành"}
-                            </Button>
+                            {!isLastMilestone && (
+                              <Button
+                                size="sm"
+                                onClick={() => handleMarkComplete(task.id)}
+                                disabled={isUpdating}
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                <Check className="h-3 w-3 mr-1" />
+                                {isUpdating ? "Đang cập nhật..." : "Hoàn thành"}
+                              </Button>
+                            )}
                           </div>
                         )}
                         {task.status === TaskStatus.COMPLETED && (
@@ -347,21 +357,22 @@ export const MilestoneTask = ({
               ))}
             </div>
 
-            {currentUser?.role === UserRole.SHOP && (
-              <CreateTaskDialog
-                milestoneId={milestoneId}
-                trigger={
-                  <Button
-                    className="w-full justify-start bg-transparent"
-                    variant="outline"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Thêm công việc
-                  </Button>
-                }
-                onSuccess={fetchTasks}
-              />
-            )}
+            {currentUser?.role === UserRole.SHOP &&
+              orderStatus !== "IN_PROCESS" && (
+                <CreateTaskDialog
+                  milestoneId={milestoneId}
+                  trigger={
+                    <Button
+                      className="w-full justify-start bg-transparent"
+                      variant="outline"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm công việc
+                    </Button>
+                  }
+                  onSuccess={fetchTasks}
+                />
+              )}
 
             {/* Progress Summary */}
             <Card className="bg-gray-50/50">
@@ -379,24 +390,39 @@ export const MilestoneTask = ({
                 </div>
               </CardContent>
             </Card>
+
+            {/* Complaint Form - Chỉ hiển thị ở milestone cuối cùng khi đơn hàng IN_PROCESS và user là khách hàng */}
+            {isLastMilestone &&
+              orderStatus === "IN_PROCESS" &&
+              orderId &&
+              currentUser?.role === UserRole.CUSTOMER && (
+                <ComplaintForm
+                  orderId={orderId}
+                  onSuccess={() => {
+                    // Refresh data nếu cần
+                    fetchTasks();
+                  }}
+                />
+              )}
           </div>
         ) : (
           <Card className="flex items-center justify-center">
-            {currentUser?.role === UserRole.SHOP && (
-              <CreateTaskDialog
-                milestoneId={milestoneId}
-                trigger={
-                  <Button
-                    className="w-fit justify-start bg-transparent"
-                    variant="outline"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Thêm công việc
-                  </Button>
-                }
-                onSuccess={fetchTasks}
-              />
-            )}
+            {currentUser?.role === UserRole.SHOP &&
+              orderStatus !== "IN_PROCESS" && (
+                <CreateTaskDialog
+                  milestoneId={milestoneId}
+                  trigger={
+                    <Button
+                      className="w-fit justify-start bg-transparent"
+                      variant="outline"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm công việc
+                    </Button>
+                  }
+                  onSuccess={fetchTasks}
+                />
+              )}
             <CardContent className="text-center py-8">
               <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
               <h3 className="text-lg font-semibold mb-2">Chưa có công việc</h3>

@@ -2,10 +2,10 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,9 +19,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ICreateTask, useCreateTaskMutation } from "@/services/apis";
+import {
+  ICreateTask,
+  useCreateTaskMutation,
+  useLazyGetMilestoneTasksQuery,
+} from "@/services/apis";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/date-picker";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface CreateTaskDialogProps {
   onSuccess?: () => void;
@@ -36,6 +41,9 @@ export function CreateTaskDialog({
 }: CreateTaskDialogProps) {
   const [open, setOpen] = useState(false);
   const [createTask, { isLoading }] = useCreateTaskMutation();
+  const [getMilestoneTasks] = useLazyGetMilestoneTasksQuery();
+  const [existingTasks, setExistingTasks] = useState<any[]>([]);
+  const [dateError, setDateError] = useState<string>("");
 
   const [taskData, setTaskData] = useState<ICreateTask>({
     milestoneId: milestoneId,
@@ -44,11 +52,76 @@ export function CreateTaskDialog({
     dueDate: "",
   });
 
-  const handleInputChange = (key: keyof ICreateTask, value: string) => {
-    setTaskData((prev) => ({ ...prev, [key]: value }));
+  const fetchExistingTasks = async () => {
+    try {
+      const response = await getMilestoneTasks({
+        id: milestoneId,
+        sort: "index:asc",
+        page: 0,
+        size: 1000,
+      }).unwrap();
+      if (response.statusCode === 200) {
+        setExistingTasks(response.items);
+      }
+    } catch (error) {
+      console.error("Error fetching existing tasks:", error);
+    }
   };
 
+  const validateDate = (newDate: string): boolean => {
+    if (!newDate) return true;
+
+    const newDateObj = new Date(newDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Kiểm tra ngày không được trong quá khứ
+    if (newDateObj < today) {
+      setDateError("Ngày hạn hoàn thành không được trong quá khứ");
+      return false;
+    }
+
+    // Kiểm tra ngày phải tăng dần so với task cuối cùng
+    if (existingTasks.length > 0) {
+      const lastTask = existingTasks[existingTasks.length - 1];
+      if (lastTask.dueDate) {
+        const lastTaskDate = new Date(lastTask.dueDate);
+        if (newDateObj <= lastTaskDate) {
+          setDateError(
+            "Ngày hạn hoàn thành phải lớn hơn ngày của công việc trước đó"
+          );
+          return false;
+        }
+      }
+    }
+
+    setDateError("");
+    return true;
+  };
+
+  const handleInputChange = (key: keyof ICreateTask, value: string) => {
+    setTaskData((prev) => ({ ...prev, [key]: value }));
+
+    // Validate ngày khi thay đổi
+    if (key === "dueDate") {
+      validateDate(value);
+    }
+  };
+
+  // Fetch existing tasks when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchExistingTasks();
+    }
+  }, [open, milestoneId]);
+
   const onSubmit = async (data: ICreateTask) => {
+    // Validate ngày trước khi submit
+    if (!validateDate(data.dueDate)) {
+      toast.error("Vui lòng kiểm tra lại ngày hạn hoàn thành");
+      return;
+    }
+
     try {
       const response = await createTask(data).unwrap();
 
@@ -112,6 +185,12 @@ export function CreateTaskDialog({
                 handleInputChange("dueDate", date?.toISOString() || "")
               }
             />
+            {dateError && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{dateError}</AlertDescription>
+              </Alert>
+            )}
           </div>
         </div>
         <DialogFooter className="flex items-center space-x-2">
@@ -123,7 +202,11 @@ export function CreateTaskDialog({
           >
             Hủy
           </Button>
-          <Button type="submit" disabled={isLoading} onClick={() => onSubmit(taskData)}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            onClick={() => onSubmit(taskData)}
+          >
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />

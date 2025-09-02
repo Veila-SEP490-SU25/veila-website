@@ -16,6 +16,7 @@ import { WalletCard } from "@/components/profile/wallet-card";
 import { MyOrders } from "@/components/profile/orders/my-orders";
 import { ProfileEditForm } from "@/components/profile/profile-edit-form";
 import { ProfileStatsSkeleton } from "@/components/ui/loading-skeleton";
+import { CustomRequestsTab } from "@/components/profile/custom-requests/custom-requests-tab";
 import { useAuth } from "@/providers/auth.provider";
 
 export default function DashboardPage() {
@@ -106,10 +107,10 @@ export default function DashboardPage() {
           onValueChange={setActiveTab}
           className="space-y-6"
         >
-          <TabsList className="grid w-full grid-cols-3">
-            {/* <TabsTrigger value="overview">Tổng Quan</TabsTrigger> */}
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile">Thông tin cá nhân</TabsTrigger>
             <TabsTrigger value="orders">Đơn Hàng</TabsTrigger>
+            <TabsTrigger value="custom-requests">Yêu cầu đặt may</TabsTrigger>
             <TabsTrigger value="favourite">Yêu thích</TabsTrigger>
           </TabsList>
 
@@ -119,6 +120,10 @@ export default function DashboardPage() {
 
           <TabsContent value="orders" className="space-y-6">
             <MyOrders />
+          </TabsContent>
+
+          <TabsContent value="custom-requests" className="space-y-6">
+            <CustomRequestsTab />
           </TabsContent>
 
           <TabsContent value="favourite" className="space-y-6">

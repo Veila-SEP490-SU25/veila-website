@@ -1,19 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import {
-  CheckCircle,
-  Eye,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  Shield,
-  ShieldCheck,
-  Star,
-} from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+// import { useRouter } from "next/navigation";
+// import { Badge } from "@/components/ui/badge";
+import { Eye, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { IPaginationResponse, IShop, ShopStatus } from "@/services/types";
 import { useLazyGetShopsQuery } from "@/services/apis";
 import { toast } from "sonner";
@@ -30,11 +20,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RequireAuth } from "@/components/auth/require-auth";
-import { ShopCardSkeleton } from "@/components/ui/loading-skeleton";
+// import { ShopCardSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function ShopPage() {
-  const router = useRouter();
-  const [statusFilter, setStatusFilter] = useState<ShopStatus | null>(null);
+  // const router = useRouter();
+  const [statusFilter, _setStatusFilter] = useState<ShopStatus | null>(null);
   const [paging, setPaging] = useState<IPaginationResponse>({
     hasNextPage: false,
     hasPrevPage: false,
@@ -44,56 +34,55 @@ export default function ShopPage() {
     totalPages: 0,
   });
   const [shops, setShops] = useState<IShop[]>([]);
-  const [stats, setStats] = useState({
-    total: 0,
-    active: 0,
-    pending: 0,
-    suspended: 0,
-    verified: 0,
-  });
+  // const [stats, setStats] = useState({
+  //   total: 0,
+  //   active: 0,
+  //   pending: 0,
+  //   suspended: 0,
+  //   verified: 0,
+  // });
 
   const [getShops, { isLoading }] = useLazyGetShopsQuery();
 
-  const getVerificationBadge = (isVerified: boolean) => {
-    return isVerified ? (
-      <Badge className="bg-blue-100 text-blue-700">
-        <ShieldCheck className="h-3 w-3 mr-1" />
-        Đã xác minh
-      </Badge>
-    ) : (
-      <Badge className="bg-gray-100 text-gray-700">
-        <Shield className="h-3 w-3 mr-1" />
-        Chưa xác minh
-      </Badge>
-    );
-  };
+  // const getVerificationBadge = (isVerified: boolean) => {
+  //   return isVerified ? (
+  //     <Badge className="bg-blue-100 text-blue-700">
+  //         <ShieldCheck className="h-3 w-3 mr-1" />
+  //         Đã xác minh
+  //       </Badge>
+  //     ) : (
+  //       <Badge className="h-3 w-3 mr-1" />
+  //         Chưa xác minh
+  //       </Badge>
+  //     );
+  //   };
 
-  const getStatusBadge = (status: ShopStatus) => {
-    const statusConfig = {
-      [ShopStatus.ACTIVE]: {
-        label: "Hoạt động",
-        className: "bg-green-100 text-green-700",
-      },
-      [ShopStatus.PENDING]: {
-        label: "Chờ duyệt",
-        className: "bg-yellow-100 text-yellow-700",
-      },
-      [ShopStatus.SUSPENDED]: {
-        label: "Tạm khóa",
-        className: "bg-red-100 text-red-700",
-      },
-      [ShopStatus.INACTIVE]: {
-        label: "Tạm ngưng",
-        className: "bg-gray-100 text-gray-700",
-      },
-      [ShopStatus.BANNED]: {
-        label: "Bị cấm",
-        className: "bg-red-200 text-red-800",
-      },
-    };
-    const config = statusConfig[status];
-    return <Badge className={config.className}>{config.label}</Badge>;
-  };
+  // const getStatusBadge = (status: ShopStatus) => {
+  //   const statusConfig = {
+  //     [ShopStatus.ACTIVE]: {
+  //       label: "Hoạt động",
+  //       className: "bg-green-100 text-green-700",
+  //     },
+  //     [ShopStatus.PENDING]: {
+  //       label: "Chờ duyệt",
+  //       className: "bg-yellow-100 text-yellow-700",
+  //     },
+  //     [ShopStatus.SUSPENDED]: {
+  //       label: "Tạm khóa",
+  //       className: "bg-red-100 text-red-700",
+  //     },
+  //     [ShopStatus.INACTIVE]: {
+  //       label: "Tạm ngưng",
+  //       className: "bg-gray-100 text-gray-700",
+  //     },
+  //     [ShopStatus.BANNED]: {
+  //       label: "Bị cấm",
+  //       className: "bg-red-200 text-red-800",
+  //     },
+  //   };
+  //   const config = statusConfig[status];
+  //   return <Badge className={config.className}>{config.label}</Badge>;
+  // };
 
   const getFilterText = (status: ShopStatus | null) => {
     switch (status) {
@@ -112,7 +101,7 @@ export default function ShopPage() {
     }
   };
 
-  const fetchShops = async () => {
+  const fetchShops = useCallback(async () => {
     const filter = getFilterText(statusFilter);
     try {
       const { statusCode, items, message, ...pagination } = await getShops({
@@ -126,10 +115,10 @@ export default function ShopPage() {
         setShops(items);
         setPaging((prev) => ({ ...prev, ...pagination }));
       }
-    } catch (error) {
+    } catch {
       toast.error("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
     }
-  };
+  }, [statusFilter, paging.pageIndex, paging.pageSize, getShops]);
 
   const handlePageChange = (newPageIndex: number) => {
     setPaging((prev) => ({
@@ -147,14 +136,14 @@ export default function ShopPage() {
     }));
   };
 
-  const handleStatusFilterChange = (value: string) => {
-    setStatusFilter(value === "all" ? null : (value as ShopStatus));
-    setPaging((prev) => ({ ...prev, pageIndex: 0 }));
-  };
+  // const handleStatusFilterChange = (value: string) => {
+  //   setStatusFilter(value === "all" ? null : (value as ShopStatus));
+  //   setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+  // };
 
   useEffect(() => {
     fetchShops();
-  }, [statusFilter, paging.pageIndex, paging.pageSize]);
+  }, [statusFilter, paging.pageIndex, paging.pageSize, fetchShops]);
 
   return (
     <RequireAuth>

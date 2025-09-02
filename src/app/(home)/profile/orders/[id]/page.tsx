@@ -9,11 +9,20 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Package } from "lucide-react";
-import { IDress, IMilestone, IOrder, MilestoneStatus } from "@/services/types";
+import {
+  IMilestone,
+  IOrder,
+  IOrderAccessoryDetail,
+  IOrderDressDetail,
+  IOrderServiceDetail,
+  MilestoneStatus,
+} from "@/services/types";
 import {
   useCheckoutOrderMutation,
   useLazyGetOrderMilestoneQuery,
   useLazyGetOrderDressesQuery,
+  useLazyGetOrderAccessoriesQuery,
+  useLazyGetOrderServiceQuery,
   useLazyGetOrderQuery,
 } from "@/services/apis";
 import {
@@ -38,7 +47,13 @@ const OrderDetailPage = () => {
   // State management
   const [order, setOrder] = useState<IOrder>();
   const [milestones, setMilestones] = useState<IMilestone[]>([]);
-  const [_orderDresses, setOrderDresses] = useState<IDress[]>([]);
+  const [_orderDresses, setOrderDresses] = useState<IOrderDressDetail[]>([]);
+  const [_orderAccessories, setOrderAccessories] = useState<
+    IOrderAccessoryDetail[]
+  >([]);
+  const [_orderService, setOrderService] = useState<IOrderServiceDetail | null>(
+    null
+  );
 
   // API hooks
   const [getOrder, { isLoading: isOrderLoading }] = useLazyGetOrderQuery();
@@ -46,6 +61,10 @@ const OrderDetailPage = () => {
     useLazyGetOrderMilestoneQuery();
   const [getOrderDressDetail, { isLoading: isOrderDressDetailLoading }] =
     useLazyGetOrderDressesQuery();
+  const [getOrderAccessories, { isLoading: isOrderAccessoriesLoading }] =
+    useLazyGetOrderAccessoriesQuery();
+  const [getOrderService, { isLoading: isOrderServiceLoading }] =
+    useLazyGetOrderServiceQuery();
   const [checkoutOrder, { isLoading: isCheckingOut }] =
     useCheckoutOrderMutation();
 
@@ -70,15 +89,13 @@ const OrderDetailPage = () => {
 
   const fetchMilestone = useCallback(async () => {
     try {
-      const { statusCode, message, items } = await getMilestones(
-        {
-          orderId: orderId as string,
-          page: 0,
-          size: 10,
-          sort: "index:asc",
-          filter: "",
-        }
-      ).unwrap();
+      const { statusCode, message, items } = await getMilestones({
+        orderId: orderId as string,
+        page: 0,
+        size: 10,
+        sort: "index:asc",
+        filter: "",
+      }).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
       } else {
@@ -108,6 +125,40 @@ const OrderDetailPage = () => {
     }
   }, [getOrderDressDetail, orderId]);
 
+  const fetchOrderAccessories = useCallback(async () => {
+    try {
+      const { statusCode, message, items } = await getOrderAccessories(
+        orderId as string
+      ).unwrap();
+      if (statusCode === 200) {
+        setOrderAccessories(items);
+      } else {
+        toast.error("Không thể lấy dữ liệu thông tin accessories", {
+          description: message,
+        });
+      }
+    } catch {
+      toast.error("Không thể lấy dữ liệu thông tin accessories");
+    }
+  }, [getOrderAccessories, orderId]);
+
+  const fetchOrderService = useCallback(async () => {
+    try {
+      const { statusCode, message, item } = await getOrderService(
+        orderId as string
+      ).unwrap();
+      if (statusCode === 200) {
+        setOrderService(item);
+      } else {
+        toast.error("Không thể lấy dữ liệu thông tin service", {
+          description: message,
+        });
+      }
+    } catch {
+      toast.error("Không thể lấy dữ liệu thông tin service");
+    }
+  }, [getOrderService, orderId]);
+
   const handleCheckout = async (otp: string) => {
     try {
       const { statusCode, message } = await checkoutOrder({
@@ -134,13 +185,27 @@ const OrderDetailPage = () => {
       fetchOrder();
       fetchMilestone();
       fetchOrderDressDetail();
+      fetchOrderAccessories();
+      if (order?.type === "CUSTOM") {
+        fetchOrderService();
+      }
     }
-  }, [orderId, fetchOrder, fetchMilestone, fetchOrderDressDetail]);
+  }, [
+    orderId,
+    fetchOrder,
+    fetchMilestone,
+    fetchOrderDressDetail,
+    fetchOrderAccessories,
+    fetchOrderService,
+    order?.type,
+  ]);
 
-  // Note: Không cần update order.orderDressDetail nữa vì orderDresses và order.orderDressDetail có kiểu khác nhau
-
-  // Loading state
-  if (isOrderLoading || isOrderDressDetailLoading) {
+  if (
+    isOrderLoading ||
+    isOrderDressDetailLoading ||
+    isOrderAccessoriesLoading ||
+    isOrderServiceLoading
+  ) {
     return (
       <div className="container mx-auto p-4 md:p-6 space-y-6">
         <div className="flex items-center space-x-4">
@@ -164,7 +229,6 @@ const OrderDetailPage = () => {
     );
   }
 
-  // Order not found
   if (!order) {
     return (
       <div className="container mx-auto p-4 md:p-6">
@@ -189,7 +253,6 @@ const OrderDetailPage = () => {
     );
   }
 
-  // Calculate progress
   const completedMilestones = milestones.filter(
     (m) => m.status === MilestoneStatus.COMPLETED
   ).length;
@@ -197,15 +260,14 @@ const OrderDetailPage = () => {
   const progress =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
-  // Get current order dress detail - chỉ sử dụng order.orderDressDetail vì có đúng type
-  const currentOrderDressDetail = order?.orderDressDetail;
+  const currentOrderDressDetail =
+    _orderDresses.length > 0 ? _orderDresses[0] : null;
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <Link href="/shops/orders">
+          <Link href="/profile/">
             <Button variant="ghost" size="sm" className="shrink-0">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Quay lại
@@ -230,25 +292,20 @@ const OrderDetailPage = () => {
         </div>
       </div>
 
-      {/* Progress Overview */}
       <OrderProgressCard milestones={milestones} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details" className="text-xs sm:text-sm">
-                Chi tiết
+                Thông tin
               </TabsTrigger>
               <TabsTrigger value="milestones" className="text-xs sm:text-sm">
                 Tiến độ
               </TabsTrigger>
               <TabsTrigger value="measurements" className="text-xs sm:text-sm">
-                Số đo
-              </TabsTrigger>
-              <TabsTrigger value="transactions" className="text-xs sm:text-sm">
-                Thanh toán
+                Chi tiết
               </TabsTrigger>
             </TabsList>
 
@@ -264,22 +321,22 @@ const OrderDetailPage = () => {
                 milestones={milestones}
                 isMilestonesLoading={isMilestonesLoading}
                 fetchMilestone={fetchMilestone}
+                orderStatus={order.status}
+                orderId={order.id}
               />
             </TabsContent>
 
             <TabsContent value="measurements" className="space-y-4 mt-4">
               <MeasurementsTab
                 currentOrderDressDetail={currentOrderDressDetail}
+                orderAccessories={_orderAccessories}
+                orderService={_orderService}
+                orderType={order.type}
               />
-            </TabsContent>
-
-            <TabsContent value="transactions" className="space-y-4 mt-4">
-              {/* Transactions content would go here */}
             </TabsContent>
           </Tabs>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
           <CustomerInfoCard customer={order.customer} />
           <QuickActionsCard

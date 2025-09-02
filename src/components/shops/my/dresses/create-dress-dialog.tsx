@@ -88,6 +88,19 @@ export function CreateDressDialog({
   };
 
   const handleSubmit = async () => {
+    if (!dressData.bust || dressData.bust < 50 || dressData.bust > 150) {
+      toast.error("Ngực phải từ 50-150cm");
+      return;
+    }
+    if (!dressData.waist || dressData.waist < 40 || dressData.waist > 100) {
+      toast.error("Eo phải từ 40-100cm");
+      return;
+    }
+    if (!dressData.hip || dressData.hip < 40 || dressData.hip > 150) {
+      toast.error("Hông phải từ 40-150cm");
+      return;
+    }
+
     try {
       const { statusCode, message } = await createDress(dressData).unwrap();
       if (statusCode === 201 || statusCode == 200) {
@@ -236,49 +249,109 @@ export function CreateDressDialog({
                 <h3 className="text-lg font-semibold">Số đo (cm)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="bust">Ngực *</Label>
+                    <Label htmlFor="bust">Ngực * (50-150cm)</Label>
                     <Input
                       id="bust"
                       type="number"
+                      min="50"
+                      max="150"
                       placeholder="0"
                       value={dressData.bust || ""}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "bust",
-                          Number.parseInt(e.target.value) || 0
-                        )
-                      }
+                      onChange={(e) => {
+                        const value = Number.parseInt(e.target.value) || 0;
+                        if (value >= 50 && value <= 150) {
+                          handleInputChange("bust", value);
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const value = Number.parseInt(e.target.value) || 0;
+                        if (value < 50) {
+                          handleInputChange("bust", 50);
+                        } else if (value > 150) {
+                          handleInputChange("bust", 150);
+                        }
+                      }}
                     />
+                    {dressData.bust && dressData.bust < 50 && (
+                      <p className="text-sm text-red-500">
+                        Ngực phải từ 50-150cm
+                      </p>
+                    )}
+                    {dressData.bust && dressData.bust > 150 && (
+                      <p className="text-sm text-red-500">
+                        Ngực phải từ 50-150cm
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="waist">Eo *</Label>
+                    <Label htmlFor="waist">Eo * (40-100cm)</Label>
                     <Input
                       id="waist"
                       type="number"
+                      min="40"
+                      max="100"
                       placeholder="0"
                       value={dressData.waist || ""}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "waist",
-                          Number.parseInt(e.target.value) || 0
-                        )
-                      }
+                      onChange={(e) => {
+                        const value = Number.parseInt(e.target.value) || 0;
+                        if (value >= 40 && value <= 100) {
+                          handleInputChange("waist", value);
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const value = Number.parseInt(e.target.value) || 0;
+                        if (value < 40) {
+                          handleInputChange("waist", 40);
+                        } else if (value > 100) {
+                          handleInputChange("waist", 100);
+                        }
+                      }}
                     />
+                    {dressData.waist && dressData.waist < 40 && (
+                      <p className="text-sm text-red-500">
+                        Eo phải từ 40-100cm
+                      </p>
+                    )}
+                    {dressData.waist && dressData.waist > 100 && (
+                      <p className="text-sm text-red-500">
+                        Eo phải từ 40-100cm
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="hip">Hông *</Label>
+                    <Label htmlFor="hip">Hông * (40-150cm)</Label>
                     <Input
                       id="hip"
                       type="number"
+                      min="40"
+                      max="150"
                       placeholder="0"
                       value={dressData.hip || ""}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "hip",
-                          Number.parseInt(e.target.value) || 0
-                        )
-                      }
+                      onChange={(e) => {
+                        const value = Number.parseInt(e.target.value) || 0;
+                        if (value >= 40 && value <= 150) {
+                          handleInputChange("hip", value);
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const value = Number.parseInt(e.target.value) || 0;
+                        if (value < 40) {
+                          handleInputChange("hip", 40);
+                        } else if (value > 150) {
+                          handleInputChange("hip", 150);
+                        }
+                      }}
                     />
+                    {dressData.hip && dressData.hip < 40 && (
+                      <p className="text-sm text-red-500">
+                        Hông phải từ 40-150cm
+                      </p>
+                    )}
+                    {dressData.hip && dressData.hip > 150 && (
+                      <p className="text-sm text-red-500">
+                        Hông phải từ 40-150cm
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -352,9 +425,7 @@ export function CreateDressDialog({
               </div>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Images */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Hình ảnh *</h3>
                 <div className="flex gap-2">
@@ -365,7 +436,6 @@ export function CreateDressDialog({
                 </div>
               </div>
 
-              {/* Category */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Danh mục</h3>
                 <div className="space-y-3">
@@ -386,7 +456,6 @@ export function CreateDressDialog({
           </div>
         </ScrollArea>
 
-        {/* Action Buttons */}
         <div className="flex justify-end space-x-3 pt-4 border-t">
           <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             <X className="h-4 w-4 mr-2" />

@@ -13,6 +13,8 @@ interface CreateChatButtonProps {
   shopAvatarUrl?: string | null;
   orderId?: string | null;
   requestId?: string | null;
+  dressId?: string | null;
+  dressName?: string | null;
   className?: string;
 }
 
@@ -22,6 +24,8 @@ export function CreateChatButton({
   shopAvatarUrl,
   orderId,
   requestId,
+  dressId,
+  dressName,
   className,
 }: CreateChatButtonProps) {
   const { createChatroom } = useChat();
@@ -44,10 +48,13 @@ export function CreateChatButton({
       const chatroomId = await createChatroom({
         orderId: orderId || null,
         requestId: requestId || null,
+        dressId: dressId || null,
         name: orderId
           ? `Đơn hàng #${orderId}`
           : requestId
           ? `Yêu cầu #${requestId}`
+          : dressId
+          ? `Váy: ${dressName || dressId}`
           : null,
         customerId: currentUser.id,
         customerName:
@@ -62,7 +69,6 @@ export function CreateChatButton({
 
       if (chatroomId) {
         toast.success("Đã tạo cuộc trò chuyện với shop!");
-        // Optionally navigate to chat page
         window.location.href = `/chat`;
       } else {
         toast.error("Không thể tạo cuộc trò chuyện. Vui lòng thử lại!");

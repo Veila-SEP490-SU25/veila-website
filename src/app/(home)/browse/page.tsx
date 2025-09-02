@@ -411,7 +411,6 @@ export default function BrowsePage() {
             </div>
           </div>
 
-          {/* Loading Skeleton */}
           {isLoading && (
             <div
               className={`grid gap-6 ${
@@ -426,7 +425,6 @@ export default function BrowsePage() {
             </div>
           )}
 
-          {/* Results Grid */}
           {!isLoading && dresses.length > 0 && (
             <div
               className={`grid gap-6 ${
@@ -467,7 +465,7 @@ export default function BrowsePage() {
           {!isLoading && dresses.length > 0 && (
             <div className="mt-12 pt-8 border-t border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-0 shadow-lg bg-gradient-to-br from-rose-50 to-pink-50">
+                <Card className="border-0 py-0 shadow-lg bg-gradient-to-br from-rose-50 to-pink-50">
                   <CardContent className="p-6 text-center">
                     <div className="text-3xl font-bold text-rose-600 mb-2">
                       {totalItems}
