@@ -92,9 +92,9 @@ export default function ComplaintsManagement() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="in_progress">Đang xử lý</SelectItem>
-                <SelectItem value="rejected">Từ chối</SelectItem>
-                <SelectItem value="approved">Đã duyệt</SelectItem>
+                <SelectItem value="IN_PROGRESS">Đang xử lý</SelectItem>
+                <SelectItem value="REJECTED">Từ chối</SelectItem>
+                <SelectItem value="APPROVED">Đã duyệt</SelectItem>
               </SelectContent>
             </Select>
           </div>
