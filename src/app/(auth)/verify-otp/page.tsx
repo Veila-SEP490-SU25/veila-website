@@ -23,9 +23,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import {
-  RefreshCw,
-} from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { otpSchema, type OTPSchema } from "@/lib/validations";
 import { useRequestOtpMutation } from "@/services/apis";
@@ -61,7 +59,7 @@ export default function VerifyOTPPage() {
     } else {
       router.push("/login-otp");
     }
-  }, []);
+  }, [searchParams, router]);
 
   // Countdown timer
   useEffect(() => {
@@ -99,7 +97,7 @@ export default function VerifyOTPPage() {
           description: message,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error(
         "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
       );

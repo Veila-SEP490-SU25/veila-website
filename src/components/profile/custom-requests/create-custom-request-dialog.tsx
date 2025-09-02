@@ -14,23 +14,58 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Ruler, Plus, Minus, Info, FileText, Eye, EyeOff } from "lucide-react";
+
+import { Ruler, Info, FileText } from "lucide-react";
 import { toast } from "sonner";
-import { useCreateCustomRequestMutation } from "@/services/apis";
+import {
+  useCreateCustomRequestMutation,
+  ICustomRequest,
+  ICreateCustomRequest,
+} from "@/services/apis";
 
 interface CreateCustomRequestDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  _editData?: ICustomRequest | null;
+  _onSuccess?: () => void;
 }
 
 export const CreateCustomRequestDialog = ({
   open,
   onOpenChange,
+  _editData,
+  _onSuccess,
 }: CreateCustomRequestDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [createCustomRequest] = useCreateCustomRequestMutation();
+
+  // Initialize form data with _editData if editing
+  const [_formData, _setFormData] = useState<ICreateCustomRequest>({
+    title: "",
+    description: "",
+    images: "",
+    height: 0,
+    weight: 0,
+    bust: 0,
+    waist: 0,
+    hip: 0,
+    armpit: 0,
+    bicep: 0,
+    neck: 0,
+    shoulderWidth: 0,
+    sleeveLength: 0,
+    backLength: 0,
+    lowerWaist: 0,
+    waistToFloor: 0,
+    material: "",
+    color: "",
+    length: "",
+    neckline: "",
+    sleeve: "",
+    status: "DRAFT",
+    isPrivate: false,
+  });
 
   // Form data states
   const [requestData, setRequestData] = useState({
@@ -125,10 +160,10 @@ export const CreateCustomRequestDialog = ({
       return;
     }
 
-        setIsSubmitting(true);
+    setIsSubmitting(true);
     try {
       const result = await createCustomRequest(requestData).unwrap();
-      
+
       if (result.statusCode === 201) {
         toast.success("Tạo yêu cầu đặt may thành công!");
         onOpenChange(false);
@@ -168,35 +203,6 @@ export const CreateCustomRequestDialog = ({
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const resetDialog = () => {
-    setCurrentStep(1);
-    setRequestData({
-      title: "",
-      description: "",
-      images: "",
-      height: 165,
-      weight: 55,
-      bust: 85,
-      waist: 65,
-      hip: 90,
-      armpit: 40,
-      bicep: 28,
-      neck: 35,
-      shoulderWidth: 38,
-      sleeveLength: 60,
-      backLength: 40,
-      lowerWaist: 85,
-      waistToFloor: 100,
-      material: "",
-      color: "",
-      length: "",
-      neckline: "",
-      sleeve: "",
-      status: "DRAFT" as "DRAFT" | "SUBMIT",
-      isPrivate: false,
-    });
   };
 
   return (
@@ -301,6 +307,48 @@ export const CreateCustomRequestDialog = ({
                       Có thể nhập nhiều link hình ảnh, cách nhau bằng dấu phẩy
                     </p>
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Trạng thái</Label>
+                      <select
+                        value={requestData.status}
+                        onChange={(e) =>
+                          setRequestData((prev) => ({
+                            ...prev,
+                            status: e.target.value as "DRAFT" | "SUBMIT",
+                          }))
+                        }
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="DRAFT">Nháp</option>
+                        <option value="SUBMIT">Đăng</option>
+                      </select>
+                      <p className="text-xs text-gray-500">
+                        DRAFT: Lưu nháp, SUBMIT: Đăng để shop thấy
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={requestData.isPrivate}
+                          onChange={(e) =>
+                            setRequestData((prev) => ({
+                              ...prev,
+                              isPrivate: e.target.checked,
+                            }))
+                          }
+                          className="rounded"
+                        />
+                        Riêng tư
+                      </Label>
+                      <p className="text-xs text-gray-500">
+                        Bật: Chỉ bạn thấy, Tắt: Shop có thể thấy
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -337,12 +385,12 @@ export const CreateCustomRequestDialog = ({
                               ({min}-{max})
                             </span>
                           </Label>
-                                                        <Input
-                                id={key}
-                                type="number"
-                                min={min}
-                                max={max}
-                                value={String(value)}
+                          <Input
+                            id={key}
+                            type="number"
+                            min={min}
+                            max={max}
+                            value={String(value)}
                             onChange={(e) => {
                               const newValue = Number(e.target.value);
                               if (newValue >= min && newValue <= max) {

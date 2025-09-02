@@ -47,7 +47,9 @@ export const MilestonesTab = ({
   milestones,
   isMilestonesLoading,
   fetchMilestone,
-}: MilestonesTabProps) => {
+  orderStatus,
+  orderId,
+}: MilestonesTabProps & { orderStatus?: string; orderId?: string }) => {
   if (isMilestonesLoading) {
     return (
       <div className="space-y-4">
@@ -82,7 +84,7 @@ export const MilestonesTab = ({
 
   return (
     <div className="space-y-4">
-      {milestones.map((milestone) => (
+      {milestones.map((milestone, index) => (
         <Card key={milestone.id} className="relative">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -116,6 +118,9 @@ export const MilestonesTab = ({
                 milestoneId={milestone.id}
                 milestoneTitle={milestone.title}
                 onChange={fetchMilestone}
+                orderStatus={orderStatus}
+                isLastMilestone={index === milestones.length - 1}
+                orderId={orderId}
               />
             </div>
           </CardContent>

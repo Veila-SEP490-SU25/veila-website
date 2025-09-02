@@ -292,11 +292,9 @@ const OrderDetailPage = () => {
         </div>
       </div>
 
-      {/* Progress Overview */}
       <OrderProgressCard milestones={milestones} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Tabs defaultValue="details" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
@@ -323,6 +321,8 @@ const OrderDetailPage = () => {
                 milestones={milestones}
                 isMilestonesLoading={isMilestonesLoading}
                 fetchMilestone={fetchMilestone}
+                orderStatus={order.status}
+                orderId={order.id}
               />
             </TabsContent>
 

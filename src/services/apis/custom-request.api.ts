@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "./base-query";
-import { IItemResponse, IListResponse } from "../types/base.type";
+import { baseQueryWithRefresh } from "./base.query";
+import { IItemResponse, IListResponse } from "@/services/types";
 
 export interface ICreateCustomRequest {
   title: string;
@@ -35,11 +35,18 @@ export interface ICustomRequest extends ICreateCustomRequest {
   customerId: string;
 }
 
+export interface IUpdateCustomRequest extends Partial<ICreateCustomRequest> {
+  id: string;
+}
+
 export const customRequestApi = createApi({
   reducerPath: "customRequestApi",
-  baseQuery,
+  baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
-    createCustomRequest: builder.mutation<IItemResponse<any>, ICreateCustomRequest>({
+    createCustomRequest: builder.mutation<
+      IItemResponse<any>,
+      ICreateCustomRequest
+    >({
       query: (data) => ({
         url: "requests/me",
         method: "POST",
@@ -52,10 +59,35 @@ export const customRequestApi = createApi({
         method: "GET",
       }),
     }),
+    getCustomRequestById: builder.query<IItemResponse<ICustomRequest>, string>({
+      query: (id) => ({
+        url: `requests/${id}/me`,
+        method: "GET",
+      }),
+    }),
+    updateCustomRequest: builder.mutation<
+      IItemResponse<any>,
+      IUpdateCustomRequest
+    >({
+      query: ({ id, ...data }) => ({
+        url: `requests/${id}/me`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    deleteCustomRequest: builder.mutation<IItemResponse<any>, string>({
+      query: (id) => ({
+        url: `requests/${id}/me`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { 
+export const {
   useCreateCustomRequestMutation,
   useGetMyCustomRequestsQuery,
+  useGetCustomRequestByIdQuery,
+  useUpdateCustomRequestMutation,
+  useDeleteCustomRequestMutation,
 } = customRequestApi;

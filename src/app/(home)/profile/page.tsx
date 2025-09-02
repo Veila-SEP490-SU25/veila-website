@@ -10,13 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Heart,
-  ShoppingBag,
-  Calendar,
-  MessageCircle,
-  FileText,
-} from "lucide-react";
+import { Heart, ShoppingBag, Calendar, MessageCircle } from "lucide-react";
 import { UserCard } from "@/components/profile/user-card";
 import { WalletCard } from "@/components/profile/wallet-card";
 import { MyOrders } from "@/components/profile/orders/my-orders";

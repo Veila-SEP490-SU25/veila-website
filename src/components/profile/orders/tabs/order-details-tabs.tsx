@@ -77,15 +77,6 @@ export const OrderDetailsTab = ({
                   </p>
                 </div>
               )}
-
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-blue-700">
-                  Tổng tiền
-                </label>
-                <p className="font-bold text-xl text-green-600">
-                  {formatCurrency(order.amount + parseFloat(order.deposit))}
-                </p>
-              </div>
             </div>
           </div>
 
