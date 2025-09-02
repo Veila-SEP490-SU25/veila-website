@@ -108,7 +108,7 @@ export default function BlogsManagement() {
                   <CardTitle className="text-red-500">
                     Đã có lỗi xảy ra khi tải dữ liệu
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="w-full items-center justify-center flex gap-2">
                     <GoBackButton />
                     <Button
                       className="flex items-center justify-center gap-2 bg-rose-500 text-white"

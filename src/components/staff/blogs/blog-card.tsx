@@ -53,20 +53,23 @@ export const BlogCard = ({ blog, onUpdate }: BlogCardProps) => {
         className="col-span-1 aspect-[5/3] object-cover"
       />
       <div className="col-span-1 md:col-span-2 p-4 flex flex-col justify-between gap-4">
-        <div className="w-full flex items-center justify-between">
-          <CardTitle>{blog.title}</CardTitle>
-          <div className="flex items-center gap-2">
-            <StatusBadge status={blog.status} />
-            <VerifyBadge isVerified={blog.isVerified} />
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="w-full flex items-center justify-between">
+            <CardTitle>{blog.title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <StatusBadge status={blog.status} />
+              <VerifyBadge isVerified={blog.isVerified} />
+            </div>
+          </div>
+          <div className="w-full flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm">
+              <Calendar className="size-4 text-rose-500" />
+              {formatDateShort(blog.createdAt)}
+            </div>
+            {blog.deletedAt && <Badge variant="destructive">Đã xóa</Badge>}
           </div>
         </div>
-        <div className="w-full flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm">
-            <Calendar className="size-4 text-rose-500" />
-            {formatDateShort(blog.createdAt)}
-          </div>
-          {blog.deletedAt && <Badge variant="destructive">Đã xóa</Badge>}
-        </div>
+
         <div className="w-full flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Avatar className="w-10 h-10 aspect-square rounded-full overflow-hidden">
