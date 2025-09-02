@@ -63,6 +63,7 @@ export default function ComplaintDetailPage() {
       setError(
         "Đã có lỗi xảy ra khi tải dữ liệu của khiếu nại. Vui lòng thử lại sau."
       );
+      console.error(error);
     }
   }, [complaintId, trigger, setComplaint, setIsError, setError, setIsNotFound]);
   useEffect(() => {
