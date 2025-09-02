@@ -17,17 +17,17 @@ import { Check, X } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
 import { toast } from "sonner";
 
-interface VerifyBlogDialogProps {
+interface BlogVerifyDialogProps {
   blog: IBlog;
   onUpdate?: () => void;
   trigger?: ReactNode;
 }
 
-export const VerifyBlogDialog = ({
+export const BlogVerifyDialog = ({
   blog,
   onUpdate,
   trigger,
-}: VerifyBlogDialogProps) => {
+}: BlogVerifyDialogProps) => {
   const [updateTrigger, { isLoading }] = useVerifyBlogMutation();
   const [open, setOpen] = useState(false);
 
