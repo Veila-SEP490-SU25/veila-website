@@ -27,7 +27,7 @@ interface SingleImageUploadDialogProps {
   description?: string
   acceptedTypes?: string
   maxSizeInMB?: number
-  handleUpload: () => Promise<void>
+  handleUpload?: () => Promise<void>
 }
 
 export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = ({
@@ -129,7 +129,7 @@ export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = (
       URL.revokeObjectURL(previewUrl)
       setPreviewUrl(null)
     }
-    handleUpload();
+    handleUpload?.();
   }
 
   const displayImageUrl = previewUrl || currentImageUrl
