@@ -49,7 +49,7 @@ export const DressCard = ({ dress }: DressProps) => {
   const shopLocation = dress.user?.shop?.address || "Chưa có địa chỉ";
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden bg-white border-0 shadow-md hover:shadow-2xl">
+    <Card className="group py-0 hover:shadow-xl transition-all duration-300 overflow-hidden bg-white border-0 shadow-md hover:shadow-2xl">
       <div className="relative aspect-[3/4] overflow-hidden">
         <ImageWithFallback
           src={getCoverImage(dress.images)}
@@ -98,11 +98,11 @@ export const DressCard = ({ dress }: DressProps) => {
         </div>
       </div>
 
-      <CardContent className="p-6">
+      <CardContent className="pb-6">
         <div className="space-y-4">
           {/* Title */}
           <Link href={`/dress/${dress.id}`} className="cursor-pointer">
-            <h3 className="font-bold text-xl group-hover:text-rose-600 transition-colors cursor-pointer line-clamp-2 leading-tight">
+            <h3 className="font-bold text-xl group-hover:text-rose-600 transition-colors cursor-pointer line-clamp-2 leading-tight min-h-[3.5rem] flex items-start">
               {dress.name}
             </h3>
           </Link>
@@ -175,12 +175,12 @@ export const DressCard = ({ dress }: DressProps) => {
             <div className="space-y-1">
               {dress.isSellable && (
                 <p className="text-xl font-bold text-gray-900">
-                  {formatPrice(parseNumber(dress.sellPrice))}
+                  Giá mua: {formatPrice(parseNumber(dress.sellPrice))}
                 </p>
               )}
               {dress.isRentable && dress.isSellable && (
                 <p className="text-sm text-gray-600">
-                  Thuê: {formatPrice(parseNumber(dress.rentalPrice))}
+                  Thuê chỉ từ: {formatPrice(parseNumber(dress.rentalPrice))}
                 </p>
               )}
               {dress.isRentable && !dress.isSellable && (
@@ -189,16 +189,16 @@ export const DressCard = ({ dress }: DressProps) => {
                 </p>
               )}
             </div>
-            <Link href={`/dress/${dress.id}`}>
-              <Button
-                size="sm"
-                className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                <ShoppingBag className="h-4 w-4 mr-2" />
-                Xem chi tiết
-              </Button>
-            </Link>
           </div>
+          <Link href={`/dress/${dress.id}`}>
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-semibold px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+            >
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              Xem chi tiết
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

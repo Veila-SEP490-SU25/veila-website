@@ -4,11 +4,13 @@ import {
   useLazyGetOrderMilestoneQuery,
   useLazyGetOrderQuery,
   useLazyGetOrderDressesQuery,
+  useLazyGetOrderAccessoriesQuery,
+  useLazyGetOrderServiceQuery,
 } from "@/services/apis";
 import {
-  type IDress,
   type IMilestone,
   type IOrder,
+  type IOrderDressDetail,
   OrderStatus,
   OrderType,
   MilestoneStatus,
@@ -19,32 +21,20 @@ import { toast } from "sonner";
 import {
   ArrowLeft,
   Clock,
-  MapPin,
-  Phone,
-  Mail,
   User,
   Package,
-  Ruler,
-  Settings,
   CheckCircle,
   XCircle,
   AlertCircle,
   PlayCircle,
   MessageSquare,
   TrendingUp,
-  Eye,
   Plus,
 } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -55,6 +45,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
 import { ImageGallery } from "@/components/image-gallery";
 import { ChangeOrderStatusButton } from "@/components/shops/detail/order/change-order-status-button";
+import { OrderDetailsTab } from "@/components/shops/detail/order/order-details-tab";
+import { MeasurementsTab } from "@/components/shops/detail/order/measurements-tab";
 
 const parseImages = (
   images: string | string[] | null | undefined
@@ -243,7 +235,15 @@ const ShopOrderDetailPage = () => {
 
   const [getOrderDressDetail, { isLoading: isOrderDressDetailLoading }] =
     useLazyGetOrderDressesQuery();
-  const [orderDresses, setOrderDresses] = useState<IDress[]>([]);
+  const [orderDresses, setOrderDresses] = useState<IOrderDressDetail[]>([]);
+
+  const [getOrderAccessories, { isLoading: isOrderAccessoriesLoading }] =
+    useLazyGetOrderAccessoriesQuery();
+  const [orderAccessories, setOrderAccessories] = useState<any[]>([]);
+
+  const [getOrderService, { isLoading: isOrderServiceLoading }] =
+    useLazyGetOrderServiceQuery();
+  const [orderServiceDetails, setOrderServiceDetails] = useState<any>(null);
 
   const fetchOrderDressDetail = useCallback(async () => {
     try {
@@ -263,18 +263,72 @@ const ShopOrderDetailPage = () => {
     }
   }, [getOrderDressDetail, orderId]);
 
+  const fetchOrderAccessories = useCallback(async () => {
+    try {
+      const { statusCode, message, items } = await getOrderAccessories(
+        orderId as string
+      ).unwrap();
+      if (statusCode === 200) {
+        setOrderAccessories(items);
+      } else {
+        toast.error("Không thể lấy dữ liệu thông tin accessories", {
+          description: message,
+        });
+      }
+    } catch (error) {
+      toast.error("Không thể lấy dữ liệu thông tin accessories");
+      console.error("Error fetching order accessories:", error);
+    }
+  }, [getOrderAccessories, orderId]);
+
+  const fetchOrderService = useCallback(async () => {
+    try {
+      const { statusCode, message, item } = await getOrderService(
+        orderId as string
+      ).unwrap();
+      if (statusCode === 200) {
+        setOrderServiceDetails(item);
+      } else {
+        toast.error("Không thể lấy dữ liệu thông tin service", {
+          description: message,
+        });
+      }
+    } catch (error) {
+      toast.error("Không thể lấy dữ liệu thông tin service");
+      console.error("Error fetching order service:", error);
+    }
+  }, [getOrderService, orderId]);
+
   useEffect(() => {
     if (orderId) {
       fetchOrder();
       fetchMilestone();
       fetchOrderDressDetail();
+      fetchOrderAccessories();
     }
-  }, [orderId, fetchOrder, fetchMilestone, fetchOrderDressDetail]);
+  }, [
+    orderId,
+    fetchOrder,
+    fetchMilestone,
+    fetchOrderDressDetail,
+    fetchOrderAccessories,
+  ]);
+
+  // Gọi API service riêng khi đã có thông tin order và là đơn custom
+  useEffect(() => {
+    if (order && order.type === OrderType.CUSTOM) {
+      fetchOrderService();
+    }
+  }, [order, fetchOrderService]);
 
   // Update order when orderDresses is fetched
   // Note: Since API returns IDress[] instead of IOrderDressDetail[], we skip this update
 
-  if (isOrderLoading || isOrderDressDetailLoading) {
+  if (
+    isOrderLoading ||
+    isOrderDressDetailLoading ||
+    isOrderAccessoriesLoading
+  ) {
     return (
       <div className="container mx-auto p-4 md:p-6 space-y-6">
         <div className="flex items-center space-x-4">
@@ -350,9 +404,21 @@ const ShopOrderDetailPage = () => {
             <h1 className="text-xl md:text-2xl font-bold truncate">
               Đơn hàng #{order.id.slice(-8)}
             </h1>
-            <p className="text-sm text-muted-foreground">
-              Tạo ngày {formatDateShort(order.createdAt)}
-            </p>
+            <div className="flex items-center gap-4 mt-1">
+              <p className="text-sm text-muted-foreground">
+                Tạo ngày {formatDateShort(order.createdAt)}
+              </p>
+              <span className="text-sm text-muted-foreground">•</span>
+              <p className="text-sm text-muted-foreground">
+                Shop:{" "}
+                <span className="font-medium text-blue-600">
+                  {currentDress?.dress?.user?.shop?.name ||
+                    currentOrderDressDetail?.dress?.user?.shop?.name ||
+                    order.shop?.name ||
+                    "Không xác định"}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -365,7 +431,6 @@ const ShopOrderDetailPage = () => {
         </div>
       </div>
 
-      {/* Progress Overview */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center space-x-2 text-lg">
@@ -398,231 +463,24 @@ const ShopOrderDetailPage = () => {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details" className="text-xs sm:text-sm">
-                Chi tiết
+                Thông tin
               </TabsTrigger>
               <TabsTrigger value="milestones" className="text-xs sm:text-sm">
                 Tiến độ
               </TabsTrigger>
               <TabsTrigger value="measurements" className="text-xs sm:text-sm">
-                Số đo
-              </TabsTrigger>
-              <TabsTrigger value="transactions" className="text-xs sm:text-sm">
-                Thanh toán
+                Chi tiết
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="space-y-4 mt-4">
-              {/* Order Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Package className="h-5 w-5" />
-                    <span>Thông tin đơn hàng</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Loại đơn hàng
-                      </label>
-                      <p className="font-medium">{getTypeText(order.type)}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Tổng tiền
-                      </label>
-                      <p className="font-bold text-lg text-green-600">
-                        {formatCurrency(order.amount)}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Ngày giao hàng
-                      </label>
-                      <p className="font-medium">
-                        {formatDateShort(order.dueDate)}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Mua lại
-                      </label>
-                      <Badge
-                        variant={order.isBuyBack ? "default" : "secondary"}
-                        className="w-fit"
-                      >
-                        {order.isBuyBack ? "Có" : "Không"}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  {/* Product Details */}
-                  {(currentDress ||
-                    (currentOrderDressDetail &&
-                      currentOrderDressDetail.dress)) && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold flex items-center gap-2">
-                        <Eye className="h-4 w-4" />
-                        Sản phẩm
-                      </h4>
-                      <div className="flex items-start space-x-4 p-4 border rounded-lg bg-gray-50/50">
-                        <ImageGallery
-                          images={
-                            parseImages(
-                              currentDress?.images ||
-                                currentOrderDressDetail?.dress?.images
-                            ) || []
-                          }
-                          alt={
-                            currentDress?.name ||
-                            currentOrderDressDetail?.dress?.name ||
-                            "Sản phẩm"
-                          }
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h5 className="font-semibold text-lg">
-                            {currentDress?.name ||
-                              currentOrderDressDetail?.dress?.name ||
-                              ""}
-                          </h5>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {currentDress?.description ||
-                              currentOrderDressDetail?.dress?.description ||
-                              ""}
-                          </p>
-                          <p className="font-bold text-lg text-green-600 mt-2">
-                            {formatCurrency(
-                              currentOrderDressDetail?.price || 0
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                      {currentOrderDressDetail?.description && (
-                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                          <label className="text-sm font-semibold text-blue-800 block mb-1">
-                            Yêu cầu đặc biệt
-                          </label>
-                          <p className="text-sm text-blue-700">
-                            {currentOrderDressDetail?.description}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Accessories */}
-                  {/* {order.orderAccessoryDetail &&
-                    Array.isArray(order.orderAccessoryDetail) &&
-                    order.orderAccessoryDetail.length > 0 && (
-                      <div className="space-y-3">
-                        <h4 className="font-semibold flex items-center gap-2">
-                          <Package className="h-4 w-4" />
-                          Phụ kiện ({order.orderAccessoryDetail.length})
-                        </h4>
-                        <div className="space-y-3">
-                          {order.orderAccessoryDetail.map((accessory) => (
-                            <div
-                              key={accessory.id}
-                              className="flex items-center space-x-4 p-4 border rounded-lg"
-                            >
-                              <ImageGallery
-                                images={parseImages(accessory.accessory?.images) || []}
-                                alt={accessory.accessory?.name || "Phụ kiện"}
-                              />
-                              <div className="flex-1 min-w-0">
-                                <h5 className="font-medium">
-                                  {accessory.accessory?.name || ""}
-                                </h5>
-                                <p className="text-sm text-muted-foreground">
-                                  Số lượng: {accessory.quantity}
-                                </p>
-                                <p className="font-semibold text-green-600">
-                                  {formatCurrency(accessory.price)}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )} */}
-
-                  {/* Services */}
-                  {order.orderServiceDetail && (
-                    <div className="space-y-3">
-                      <h4 className="font-semibold flex items-center gap-2">
-                        <Settings className="h-4 w-4" />
-                        Dịch vụ
-                      </h4>
-                      <div className="p-4 border rounded-lg bg-gray-50/50">
-                        <h5 className="font-semibold text-lg">
-                          {order.orderServiceDetail.service.name}
-                        </h5>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {order.orderServiceDetail.service.description}
-                        </p>
-                        <p className="font-bold text-lg text-green-600 mt-2">
-                          {formatCurrency(order.orderServiceDetail.price)}
-                        </p>
-                        {order.orderServiceDetail.request && (
-                          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                            <label className="text-sm font-semibold text-blue-800 block mb-1">
-                              Yêu cầu
-                            </label>
-                            <p className="text-sm font-medium text-blue-700">
-                              {order.orderServiceDetail.request.title}
-                            </p>
-                            {order.orderServiceDetail.request.description && (
-                              <p className="text-sm text-blue-600 mt-1">
-                                {order.orderServiceDetail.request.description}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Contact Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <MapPin className="h-5 w-5" />
-                    <span>Thông tin liên hệ</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <Phone className="h-5 w-5 text-green-600 shrink-0" />
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          Điện thoại
-                        </p>
-                        <p className="font-medium">{order.phone}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <Mail className="h-5 w-5 text-blue-600 shrink-0" />
-                      <div>
-                        <p className="text-sm text-muted-foreground">Email</p>
-                        <p className="font-medium truncate">{order.email}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <MapPin className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Địa chỉ</p>
-                      <p className="font-medium">{order.address}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <OrderDetailsTab
+                order={order}
+                currentDress={currentDress}
+                currentOrderDressDetail={currentOrderDressDetail}
+              />
             </TabsContent>
 
             <TabsContent value="milestones" className="space-y-4 mt-4">
@@ -640,196 +498,92 @@ const ShopOrderDetailPage = () => {
                     </Card>
                   ))}
                 </div>
-              ) : milestones.length > 0 ? (
+              ) : (
                 <div className="space-y-4">
-                  {milestones.map((milestone) => (
-                    <Card key={milestone.id} className="relative">
-                      <CardHeader>
-                        <CardTitle className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            {getMilestoneStatusIcon(milestone.status)}
-                            <div>
-                              <span className="text-lg">
-                                Giai đoạn {milestone.index}: {milestone.title}
-                              </span>
-                              <p className="text-sm text-muted-foreground font-normal mt-1">
-                                Hạn: {formatDateShort(milestone.dueDate)}
+                  {/* Hiển thị milestones nếu có */}
+                  {milestones.length > 0 ? (
+                    <div className="space-y-4">
+                      {milestones.map((milestone, index) => (
+                        <Card key={milestone.id} className="relative">
+                          <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                {getMilestoneStatusIcon(milestone.status)}
+                                <div>
+                                  <span className="text-lg">
+                                    Giai đoạn {milestone.index}:{" "}
+                                    {milestone.title}
+                                  </span>
+                                  <p className="text-sm text-muted-foreground font-normal mt-1">
+                                    Hạn: {formatDateShort(milestone.dueDate)}
+                                  </p>
+                                </div>
+                              </div>
+                              <Badge
+                                variant="outline"
+                                className={getMilestoneStatusColor(
+                                  milestone.status
+                                )}
+                              >
+                                {getMilestoneStatusText(milestone.status)}
+                              </Badge>
+                            </CardTitle>
+                            {milestone.description && (
+                              <p className="text-base text-muted-foreground">
+                                {milestone.description}
                               </p>
-                            </div>
-                          </div>
-                          <Badge
-                            variant="outline"
-                            className={getMilestoneStatusColor(
-                              milestone.status
                             )}
-                          >
-                            {getMilestoneStatusText(milestone.status)}
-                          </Badge>
-                        </CardTitle>
-                        {milestone.description && (
-                          <CardDescription className="text-base">
-                            {milestone.description}
-                          </CardDescription>
-                        )}
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          <MilestoneTask
-                            milestoneId={milestone.id}
-                            milestoneTitle={milestone.title}
-                            onChange={fetchMilestone}
-                          />
-                        </div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-3">
+                              <MilestoneTask
+                                milestoneId={milestone.id}
+                                milestoneTitle={milestone.title}
+                                onChange={fetchMilestone}
+                                orderStatus={order.status}
+                                isLastMilestone={
+                                  index === milestones.length - 1
+                                }
+                                orderId={order.id}
+                              />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card>
+                      <CardContent className="text-center py-12">
+                        <Clock className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                        <h3 className="text-lg font-semibold mb-2">
+                          {order.status === OrderStatus.PENDING
+                            ? "Chưa có giai đoạn nào được tạo"
+                            : "Chưa có giai đoạn nào được thiết lập cho đơn hàng này."}
+                        </h3>
+                        <p className="text-muted-foreground">
+                          {order.status === OrderStatus.PENDING
+                            ? "Hãy tạo các giai đoạn công việc để bắt đầu xử lý đơn hàng."
+                            : "Các giai đoạn sẽ được tạo khi đơn hàng được xử lý."}
+                        </p>
                       </CardContent>
                     </Card>
-                  ))}
+                  )}
                 </div>
-              ) : (
-                <Card>
-                  <CardContent className="text-center py-12">
-                    <Clock className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      Chưa có giai đoạn nào
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Các giai đoạn sẽ được tạo khi đơn hàng được xử lý.
-                    </p>
-                  </CardContent>
-                </Card>
               )}
             </TabsContent>
 
             <TabsContent value="measurements" className="space-y-4 mt-4">
-              {currentOrderDressDetail ? (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Ruler className="h-5 w-5" />
-                      <span>Số đo cơ thể</span>
-                    </CardTitle>
-                    <CardDescription>
-                      Thông tin số đo chi tiết cho việc may đo
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {[
-                        {
-                          label: "Chiều cao",
-                          value: currentOrderDressDetail?.height,
-                          unit: "cm",
-                          icon: "📏",
-                        },
-                        {
-                          label: "Cân nặng",
-                          value: currentOrderDressDetail?.weight,
-                          unit: "kg",
-                          icon: "⚖️",
-                        },
-                        {
-                          label: "Vòng ngực",
-                          value: currentOrderDressDetail?.bust,
-                          unit: "cm",
-                          icon: "👗",
-                        },
-                        {
-                          label: "Vòng eo",
-                          value: currentOrderDressDetail?.waist,
-                          unit: "cm",
-                          icon: "👗",
-                        },
-                        {
-                          label: "Vòng hông",
-                          value: currentOrderDressDetail?.hip,
-                          unit: "cm",
-                          icon: "👗",
-                        },
-                        {
-                          label: "Nách",
-                          value: currentOrderDressDetail?.armpit,
-                          unit: "cm",
-                          icon: "👕",
-                        },
-                        {
-                          label: "Bắp tay",
-                          value: currentOrderDressDetail?.bicep,
-                          unit: "cm",
-                          icon: "💪",
-                        },
-                        {
-                          label: "Cổ",
-                          value: currentOrderDressDetail?.neck,
-                          unit: "cm",
-                          icon: "👔",
-                        },
-                        {
-                          label: "Vai",
-                          value: currentOrderDressDetail?.shoulderWidth,
-                          unit: "cm",
-                          icon: "👕",
-                        },
-                        {
-                          label: "Tay áo",
-                          value: currentOrderDressDetail?.sleeveLength,
-                          unit: "cm",
-                          icon: "👕",
-                        },
-                        {
-                          label: "Dài lưng",
-                          value: currentOrderDressDetail?.backLength,
-                          unit: "cm",
-                          icon: "👗",
-                        },
-                        {
-                          label: "Eo thấp",
-                          value: currentOrderDressDetail?.lowerWaist,
-                          unit: "cm",
-                          icon: "📐",
-                        },
-                        {
-                          label: "Eo xuống sàn",
-                          value: currentOrderDressDetail?.waistToFloor,
-                          unit: "cm",
-                          icon: "📐",
-                        },
-                      ].map((measurement) => (
-                        <div
-                          key={measurement.label}
-                          className="p-3 border rounded-lg bg-gray-50/50"
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg">{measurement.icon}</span>
-                            <label className="text-sm font-medium text-muted-foreground">
-                              {measurement.label}
-                            </label>
-                          </div>
-                          <p className="font-semibold text-lg">
-                            {measurement.value ? (
-                              <span className="text-blue-600">
-                                {measurement.value} {measurement.unit}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400">Chưa đo</span>
-                            )}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card>
-                  <CardContent className="text-center py-12">
-                    <Ruler className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      Không yêu cầu số đo
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Đơn hàng này không cần thông tin số đo cơ thể.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+              <MeasurementsTab
+                currentOrderDressDetail={currentOrderDressDetail}
+                order={order}
+                orderDressDetails={orderDresses}
+                orderAccessories={orderAccessories}
+                orderServiceDetails={
+                  order.type === OrderType.CUSTOM
+                    ? orderServiceDetails || order.orderServiceDetail
+                    : null
+                }
+              />
             </TabsContent>
 
             <TabsContent
@@ -841,6 +595,37 @@ const ShopOrderDetailPage = () => {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Shop Info */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Package className="h-5 w-5" />
+                <span>Thông tin shop</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-3">
+                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Package className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold truncate text-blue-600">
+                    {currentDress?.dress?.user?.shop?.name ||
+                      currentOrderDressDetail?.dress?.user?.shop?.name ||
+                      order.shop?.name ||
+                      "Không xác định"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {currentDress?.dress?.user?.shop?.address ||
+                      currentOrderDressDetail?.dress?.user?.shop?.address ||
+                      order.shop?.address ||
+                      "Không có địa chỉ"}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Customer Info */}
           <Card>
             <CardHeader>
@@ -901,17 +686,9 @@ const ShopOrderDetailPage = () => {
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Nhắn tin khách hàng
               </Button>
-              <Button
-                className="w-full justify-start bg-transparent"
-                variant="outline"
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                Gọi điện
-              </Button>
             </CardContent>
           </Card>
 
-          {/* Order Summary */}
           <Card>
             <CardHeader>
               <CardTitle>Tóm tắt đơn hàng</CardTitle>
@@ -924,23 +701,21 @@ const ShopOrderDetailPage = () => {
                 </Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Tổng tiền:</span>
+                <span className="text-muted-foreground">
+                  Số tiền chuyển cho Shop:
+                </span>
                 <span className="font-bold">
                   {formatCurrency(order.amount)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Đã thanh toán:</span>
-                <span className="font-semibold text-green-600">
-                  {formatCurrency(0)}
+                <span className="text-muted-foreground">Số dư bị khoá:</span>
+                <span className="font-bold">
+                  {" "}
+                  {formatCurrency(parseFloat(order.deposit))}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Còn lại:</span>
-                <span className="font-semibold text-orange-600">
-                  {formatCurrency(0)}
-                </span>
-              </div>
+
               <Separator />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Ngày giao:</span>

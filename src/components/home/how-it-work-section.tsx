@@ -4,7 +4,6 @@ import {
   Search,
   MessageCircle,
   Heart,
-  ArrowRight,
   Users,
   Star,
   Shield,

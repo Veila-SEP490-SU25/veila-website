@@ -39,6 +39,7 @@ export interface IOrder extends IItem {
   dueDate: Date;
   returnDate: Date | null;
   amount: number;
+  deposit: string; // Tiền cọc - "0.00" khi không có
   type: OrderType;
   status: OrderStatus;
   milestones: IMilestone[];

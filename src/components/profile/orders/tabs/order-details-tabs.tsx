@@ -2,12 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, Eye, Settings, MapPin, Phone, Mail } from "lucide-react";
 import { IOrder, IOrderDressDetail } from "@/services/types";
-import {
-  formatCurrency,
-  formatDateShort,
-  getTypeText,
-  parseImages,
-} from "@/lib/order-util";
+import { formatCurrency, getTypeText, parseImages } from "@/lib/order-util";
+import { formatDateOnly } from "@/utils/format";
 import { ImageGallery } from "@/components/image-gallery";
 
 interface OrderDetailsTabProps {
@@ -39,28 +35,48 @@ export const OrderDetailsTab = ({
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium text-muted-foreground">
-                Tổng tiền
-              </label>
-              <p className="font-bold text-lg text-green-600">
-                {formatCurrency(order.amount)}
-              </p>
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-muted-foreground">
                 Ngày giao hàng
               </label>
-              <p className="font-medium">{formatDateShort(order.dueDate)}</p>
+              <p className="font-medium">{formatDateOnly(order.dueDate)}</p>
             </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-muted-foreground">
-                Mua lại
-              </label>
-              <Badge
-                variant={order.isBuyBack ? "default" : "secondary"}
-                className="w-fit"
-              >
-                {order.isBuyBack ? "Có" : "Không"}
-              </Badge>
+
+            {order.returnDate && (
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Ngày trả hàng
+                </label>
+                <p className="font-medium">
+                  {formatDateOnly(order.returnDate)}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Thông tin thanh toán
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-blue-700">
+                  {order.type === "RENT" ? "Tiền thuê" : "Tiền mua"}
+                </label>
+                <p className="font-bold text-lg text-blue-900">
+                  {formatCurrency(order.amount)}
+                </p>
+              </div>
+
+              {order.type === "RENT" && parseFloat(order.deposit) > 0 && (
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-blue-700">
+                    Tiền cọc
+                  </label>
+                  <p className="font-bold text-lg text-orange-600">
+                    {formatCurrency(parseFloat(order.deposit))}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -71,24 +87,57 @@ export const OrderDetailsTab = ({
                 <Eye className="h-4 w-4" />
                 Sản phẩm
               </h4>
-              <div className="flex items-start space-x-4 p-4 border rounded-lg bg-gray-50/50">
-                <ImageGallery
-                  images={
-                    parseImages(currentOrderDressDetail.dress?.images || "") ||
-                    []
-                  }
-                  alt={currentOrderDressDetail.dress?.name || "Sản phẩm"}
-                />
-                <div className="flex-1 min-w-0">
-                  <h5 className="font-semibold text-lg">
-                    {currentOrderDressDetail.dress?.name || ""}
-                  </h5>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {currentOrderDressDetail.dress?.description || ""}
-                  </p>
-                  <p className="font-bold text-lg text-green-600 mt-2">
-                    {formatCurrency(currentOrderDressDetail.price)}
-                  </p>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 border rounded-lg bg-gray-50/50">
+                {/* Image Gallery */}
+                <div className="lg:col-span-1">
+                  <ImageGallery
+                    images={
+                      parseImages(
+                        currentOrderDressDetail.dress?.images || ""
+                      ) || []
+                    }
+                    alt={currentOrderDressDetail.dress?.name || "Sản phẩm"}
+                  />
+                </div>
+
+                {/* Product Info */}
+                <div className="lg:col-span-2 space-y-4">
+                  {/* Category and Name */}
+                  <div>
+                    <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                      Váy cưới
+                    </span>
+                    <h5 className="font-bold text-2xl text-gray-900 mt-1 break-words leading-tight">
+                      {currentOrderDressDetail.dress?.name || "Không có tên"}
+                    </h5>
+                  </div>
+
+                  {/* Description */}
+                  {currentOrderDressDetail.dress?.description && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-500 block mb-2">
+                        Mô tả
+                      </span>
+                      <p className="text-sm text-gray-700 leading-relaxed break-words">
+                        {currentOrderDressDetail.dress.description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Price and Status */}
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <div>
+                      <span className="text-sm text-gray-500 block mb-1">
+                        Giá
+                      </span>
+                      <p className="font-bold text-2xl text-green-600">
+                        {formatCurrency(currentOrderDressDetail.price)}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-xs px-3 py-1">
+                      {currentOrderDressDetail.dress?.status || "AVAILABLE"}
+                    </Badge>
+                  </div>
                 </div>
               </div>
               {currentOrderDressDetail.description && (
@@ -104,7 +153,6 @@ export const OrderDetailsTab = ({
             </div>
           )}
 
-          {/* Services */}
           {order.orderServiceDetail && (
             <div className="space-y-3">
               <h4 className="font-semibold flex items-center gap-2">
@@ -142,7 +190,6 @@ export const OrderDetailsTab = ({
         </CardContent>
       </Card>
 
-      {/* Contact Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">

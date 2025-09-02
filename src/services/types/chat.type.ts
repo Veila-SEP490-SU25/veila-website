@@ -50,6 +50,7 @@ export interface IMessage extends IItem {
 export interface CreateChatroomData {
   orderId?: string | null;
   requestId?: string | null;
+  dressId?: string | null;
   name?: string | null;
   customerId: string;
   customerName: string;

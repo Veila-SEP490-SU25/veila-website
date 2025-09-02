@@ -174,7 +174,7 @@ export const UpdateBlogDialog = ({
                     Thay đổi ảnh
                   </Button>
                 }
-                handleUpload={() => {}}
+                handleUpload={async () => {}}
               />
             </div>
           </div>

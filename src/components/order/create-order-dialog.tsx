@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -57,8 +57,12 @@ import {
 } from "@/services/types";
 import { useAuth } from "@/providers/auth.provider";
 import { LocationInput } from "@/components/location-input";
-import { useCreateOrderMutation } from "@/services/apis";
+import {
+  useCreateOrderMutation,
+  useLazyGetShopAccessoriesQuery,
+} from "@/services/apis";
 import { Image } from "@/components/image";
+import { useRouter } from "next/navigation";
 
 interface CreateOrderDialogProps {
   dress?: IDress;
@@ -68,13 +72,21 @@ interface CreateOrderDialogProps {
 
 export function CreateOrderDialog({
   dress,
-  accessories = [],
+  accessories: _accessories,
   trigger,
 }: CreateOrderDialogProps) {
   const { currentUser } = useAuth();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get shop accessories
+  const [
+    getShopAccessories,
+    { data: shopAccessoriesData, isLoading: isLoadingAccessories },
+  ] = useLazyGetShopAccessoriesQuery();
+  const [shopAccessories, setShopAccessories] = useState<IAccessory[]>([]);
 
   // Form data states
   const [orderData, setOrderData] = useState<INewOrder>({
@@ -89,48 +101,70 @@ export function CreateOrderDialog({
   const [dressDetails, setDressDetails] = useState<IDressDetails>({
     dressId: dress?.id || "",
     height: 165,
-    weight: 50,
+    weight: 55,
     bust: 85,
     waist: 65,
     hip: 90,
-    armpit: 10,
-    bicep: 10,
-    neck: 20,
-    shoulderWidth: 40,
-    sleeveLength: 40,
-    backLength: 60,
-    lowerWaist: 50,
-    waistToFloor: 60,
+    armpit: 15,
+    bicep: 15,
+    neck: 25,
+    shoulderWidth: 35,
+    sleeveLength: 50,
+    backLength: 45,
+    lowerWaist: 15,
+    waistToFloor: 100,
   });
 
   const [accessoriesDetails, setAccessoriesDetails] = useState<
     IAccessoriesDetail[]
-  >(
-    accessories.map((accessory) => ({
-      accessoryId: accessory.id,
-      quantity: 1,
-    }))
-  );
+  >([]);
+
+  // Fetch shop accessories when dress changes
+  useEffect(() => {
+    if (dress?.user?.shop?.id) {
+      getShopAccessories({
+        id: dress.user.shop.id,
+        page: 0,
+        size: 100, // Get all accessories
+        sort: "",
+        filter: "",
+      });
+    }
+  }, [dress?.user?.shop?.id, getShopAccessories]);
+
+  // Update shop accessories when data changes
+  useEffect(() => {
+    if (shopAccessoriesData?.items) {
+      setShopAccessories(shopAccessoriesData.items);
+      // Initialize accessories details with all available accessories
+      setAccessoriesDetails(
+        shopAccessoriesData.items.map((accessory) => ({
+          accessoryId: accessory.id,
+          quantity: 0, // Start with 0 quantity
+        }))
+      );
+    }
+  }, [shopAccessoriesData]);
 
   const measurementFields = [
-    { key: "height", label: "Chiều cao", unit: "cm", min: 140, max: 200 },
-    { key: "weight", label: "Cân nặng", unit: "kg", min: 35, max: 120 },
-    { key: "bust", label: "Vòng ngực", unit: "cm", min: 70, max: 120 },
-    { key: "waist", label: "Vòng eo", unit: "cm", min: 55, max: 100 },
-    { key: "hip", label: "Vòng hông", unit: "cm", min: 75, max: 130 },
-    { key: "armpit", label: "Nách", unit: "cm", min: 5, max: 25 },
-    { key: "bicep", label: "Vòng tay", unit: "cm", min: 5, max: 25 },
-    { key: "neck", label: "Vòng cổ", unit: "cm", min: 15, max: 35 },
-    { key: "shoulderWidth", label: "Rộng vai", unit: "cm", min: 30, max: 55 },
-    { key: "sleeveLength", label: "Dài tay áo", unit: "cm", min: 30, max: 70 },
-    { key: "backLength", label: "Dài lưng", unit: "cm", min: 40, max: 80 },
-    { key: "lowerWaist", label: "Eo dưới", unit: "cm", min: 40, max: 90 },
+    { key: "height", label: "Chiều cao", unit: "cm", min: 130, max: 200 },
+    { key: "weight", label: "Cân nặng", unit: "kg", min: 30, max: 100 },
+    { key: "bust", label: "Vòng ngực", unit: "cm", min: 50, max: 150 },
+    { key: "waist", label: "Vòng eo", unit: "cm", min: 40, max: 100 },
+    { key: "hip", label: "Vòng hông", unit: "cm", min: 40, max: 150 },
+    { key: "armpit", label: "Nách", unit: "cm", min: 10, max: 40 },
+    { key: "bicep", label: "Vòng tay", unit: "cm", min: 10, max: 40 },
+    { key: "neck", label: "Vòng cổ", unit: "cm", min: 20, max: 50 },
+    { key: "shoulderWidth", label: "Rộng vai", unit: "cm", min: 20, max: 50 },
+    { key: "sleeveLength", label: "Dài tay áo", unit: "cm", min: 0, max: 100 },
+    { key: "backLength", label: "Dài lưng", unit: "cm", min: 30, max: 60 },
+    { key: "lowerWaist", label: "Eo dưới", unit: "cm", min: 5, max: 30 },
     {
       key: "waistToFloor",
       label: "Eo xuống sàn",
       unit: "cm",
-      min: 50,
-      max: 120,
+      min: 0,
+      max: 200,
     },
   ];
 
@@ -147,14 +181,56 @@ export function CreateOrderDialog({
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
-        return !!(
-          orderData.phone &&
-          orderData.email &&
-          orderData.address &&
-          orderData.dueDate
-        );
+        if (
+          !orderData.phone ||
+          !orderData.email ||
+          !orderData.address ||
+          !orderData.dueDate
+        ) {
+          toast.error("Vui lòng điền đầy đủ thông tin bắt buộc");
+          return false;
+        }
+
+        // Validate due date (minimum 3 days from today)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const minDueDate = new Date(today);
+        minDueDate.setDate(today.getDate() + 3);
+
+        if (orderData.dueDate < minDueDate) {
+          toast.error("Ngày cần hàng phải cách ngày hiện tại ít nhất 3 ngày");
+          return false;
+        }
+
+        // Validate return date for rental orders (maximum 7 days from due date)
+        if (orderData.type === "RENT" && orderData.returnDate) {
+          const maxReturnDate = new Date(orderData.dueDate);
+          maxReturnDate.setDate(orderData.dueDate.getDate() + 7);
+
+          if (orderData.returnDate > maxReturnDate) {
+            toast.error("Ngày trả hàng không được quá 7 ngày kể từ ngày thuê");
+            return false;
+          }
+        }
+
+        return true;
       case 2:
-        return dress ? true : false; // Skip measurements if no dress
+        if (!dress) return true; // Skip measurements if no dress
+
+        // Validate all measurements are within range
+        for (const field of measurementFields) {
+          const value = dressDetails[field.key as keyof IDressDetails];
+          if (
+            typeof value === "number" &&
+            (value < field.min || value > field.max)
+          ) {
+            toast.error(
+              `${field.label} phải từ ${field.min}-${field.max}${field.unit}`
+            );
+            return false;
+          }
+        }
+        return true;
       case 3:
         return true; // Accessories are optional
       default:
@@ -200,11 +276,18 @@ export function CreateOrderDialog({
         ),
       };
 
-      const { statusCode, message } = await createOrder(orderPayload).unwrap();
+      const { statusCode, message, item } = await createOrder(
+        orderPayload
+      ).unwrap();
       if (statusCode === 201) {
         toast.success("Tạo đơn hàng thành công");
         setOpen(false);
         setCurrentStep(1);
+
+        // Chuyển hướng đến trang chi tiết đơn hàng
+        if (item?.id) {
+          router.push(`/profile/orders/${item.id}`);
+        }
       } else {
         toast.error("Tạo đơn hàng thất bại", { description: message });
       }
@@ -218,16 +301,44 @@ export function CreateOrderDialog({
 
   const calculateTotal = () => {
     let total = 0;
+
     if (dress) {
-      const dressPrice =
-        orderData.type === "SELL" ? dress.sellPrice : dress.rentalPrice;
-      total +=
-        typeof dressPrice === "string"
-          ? parseFloat(dressPrice) || 0
-          : dressPrice || 0;
+      if (orderData.type === "SELL") {
+        // Đơn mua: chỉ tính giá mua
+        const sellPrice =
+          typeof dress.sellPrice === "string"
+            ? parseFloat(dress.sellPrice) || 0
+            : dress.sellPrice || 0;
+        total += sellPrice;
+      } else if (orderData.type === "RENT") {
+        // Đơn thuê: tính tiền thuê × số ngày + tiền cọc (giá mua)
+        const rentalPrice =
+          typeof dress.rentalPrice === "string"
+            ? parseFloat(dress.rentalPrice) || 0
+            : dress.rentalPrice || 0;
+        const sellPrice =
+          typeof dress.sellPrice === "string"
+            ? parseFloat(dress.sellPrice) || 0
+            : dress.sellPrice || 0;
+
+        // Tính số ngày thuê
+        const rentalDays =
+          orderData.returnDate && orderData.dueDate
+            ? Math.ceil(
+                (orderData.returnDate.getTime() - orderData.dueDate.getTime()) /
+                  (1000 * 60 * 60 * 24)
+              )
+            : 1;
+
+        total += rentalPrice * rentalDays + sellPrice; // Tiền thuê + tiền cọc
+      }
     }
+
+    // Tính tiền phụ kiện
     accessoriesDetails.forEach((item) => {
-      const accessory = accessories.find((acc) => acc.id === item.accessoryId);
+      const accessory = shopAccessories.find(
+        (acc) => acc.id === item.accessoryId
+      );
       if (accessory) {
         const price =
           orderData.type === "SELL"
@@ -235,9 +346,25 @@ export function CreateOrderDialog({
             : accessory.rentalPrice;
         const numericPrice =
           typeof price === "string" ? parseFloat(price) || 0 : price || 0;
-        total += numericPrice * item.quantity;
+
+        if (orderData.type === "SELL") {
+          // Đơn mua: tiền phụ kiện × số lượng
+          total += numericPrice * item.quantity;
+        } else if (orderData.type === "RENT") {
+          // Đơn thuê: tiền phụ kiện × số lượng × số ngày thuê
+          const rentalDays =
+            orderData.returnDate && orderData.dueDate
+              ? Math.ceil(
+                  (orderData.returnDate.getTime() -
+                    orderData.dueDate.getTime()) /
+                    (1000 * 60 * 60 * 24)
+                )
+              : 1;
+          total += numericPrice * item.quantity * rentalDays;
+        }
       }
     });
+
     return total;
   };
 
@@ -270,7 +397,6 @@ export function CreateOrderDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Progress Steps */}
         <div className="flex items-center justify-between mb-6">
           {[
             { step: 1, title: "Thông tin", icon: User },
@@ -303,7 +429,6 @@ export function CreateOrderDialog({
         </div>
 
         <div className="space-y-6">
-          {/* Step 1: Basic Information */}
           {currentStep === 1 && (
             <div className="space-y-6">
               <Card>
@@ -397,6 +522,31 @@ export function CreateOrderDialog({
                         )}
                       </SelectContent>
                     </Select>
+
+                    {/* Thông báo cho đơn thuê */}
+                    {orderData.type === "RENT" && (
+                      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-start gap-2">
+                          <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div className="text-sm text-blue-800">
+                            <p className="font-medium mb-1">
+                              Thông tin thuê váy:
+                            </p>
+                            <ul className="space-y-1 text-blue-700">
+                              <li>• Tiền thuê = Giá thuê × Số ngày thuê</li>
+                              <li>• Tiền cọc = Giá mua (để đảm bảo váy)</li>
+                              <li>
+                                • Tổng tiền = Tiền thuê + Tiền cọc + Tiền phụ
+                                kiện
+                              </li>
+                              <li>
+                                • Tiền cọc sẽ được hoàn lại sau khi trả váy
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -404,6 +554,9 @@ export function CreateOrderDialog({
                       <Label>
                         Ngày cần hàng <span className="text-red-500">*</span>
                       </Label>
+                      <p className="text-xs text-amber-600">
+                        ⚠️ Ngày cần hàng phải cách ngày hiện tại ít nhất 3 ngày
+                      </p>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -424,14 +577,20 @@ export function CreateOrderDialog({
                         <PopoverContent className="w-auto p-0">
                           <Calendar
                             mode="single"
-                            selected={orderData.dueDate}
+                            selected={orderData.dueDate || undefined}
                             onSelect={(date) =>
                               setOrderData((prev) => ({
                                 ...prev,
                                 dueDate: date ?? prev.dueDate,
                               }))
                             }
-                            disabled={(date) => date < new Date()}
+                            disabled={(date) => {
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              const minDueDate = new Date(today);
+                              minDueDate.setDate(today.getDate() + 3);
+                              return date < minDueDate;
+                            }}
                             initialFocus
                           />
                         </PopoverContent>
@@ -441,6 +600,9 @@ export function CreateOrderDialog({
                     {orderData.type === "RENT" && (
                       <div className="space-y-2">
                         <Label>Ngày trả hàng</Label>
+                        <p className="text-xs text-amber-600">
+                          ⚠️ Ngày trả hàng không được quá 7 ngày kể từ ngày thuê
+                        </p>
                         <Popover>
                           <PopoverTrigger asChild>
                             <Button
@@ -461,16 +623,26 @@ export function CreateOrderDialog({
                           <PopoverContent className="w-auto p-0">
                             <Calendar
                               mode="single"
-                              selected={orderData.returnDate}
+                              selected={orderData.returnDate || undefined}
                               onSelect={(date) =>
                                 setOrderData((prev) => ({
                                   ...prev,
                                   returnDate: date ?? prev.returnDate,
                                 }))
                               }
-                              disabled={(date) =>
-                                date < (orderData.dueDate || new Date())
-                              }
+                              disabled={(date) => {
+                                if (!orderData.dueDate) return true;
+                                const maxReturnDate = new Date(
+                                  orderData.dueDate
+                                );
+                                maxReturnDate.setDate(
+                                  orderData.dueDate.getDate() + 7
+                                );
+                                return (
+                                  date < orderData.dueDate ||
+                                  date > maxReturnDate
+                                );
+                              }}
                               initialFocus
                             />
                           </PopoverContent>
@@ -483,7 +655,6 @@ export function CreateOrderDialog({
             </div>
           )}
 
-          {/* Step 2: Dress Measurements */}
           {currentStep === 2 && (
             <div className="space-y-6">
               {dress ? (
@@ -501,27 +672,66 @@ export function CreateOrderDialog({
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {measurementFields.map(
-                        ({ key, label, unit, min, max }) => (
-                          <div key={key} className="space-y-2">
-                            <Label htmlFor={key}>
-                              {label} ({unit})
-                            </Label>
-                            <Input
-                              id={key}
-                              type="number"
-                              min={min}
-                              max={max}
-                              value={dressDetails[key as keyof IDressDetails]}
-                              onChange={(e) =>
-                                setDressDetails((prev) => ({
-                                  ...prev,
-                                  [key]: Number(e.target.value),
-                                }))
-                              }
-                              className="text-center"
-                            />
-                          </div>
-                        )
+                        ({ key, label, unit, min, max }) => {
+                          const value =
+                            dressDetails[key as keyof IDressDetails];
+                          const isValid =
+                            typeof value === "number" &&
+                            value >= min &&
+                            value <= max;
+
+                          return (
+                            <div key={key} className="space-y-2">
+                              <Label htmlFor={key}>
+                                {label} ({unit}){" "}
+                                <span className="text-xs text-gray-500">
+                                  ({min}-{max})
+                                </span>
+                              </Label>
+                              <Input
+                                id={key}
+                                type="number"
+                                min={min}
+                                max={max}
+                                value={value}
+                                onChange={(e) => {
+                                  const newValue = Number(e.target.value);
+                                  if (newValue >= min && newValue <= max) {
+                                    setDressDetails((prev) => ({
+                                      ...prev,
+                                      [key]: newValue,
+                                    }));
+                                  }
+                                }}
+                                onBlur={(e) => {
+                                  const newValue = Number(e.target.value);
+                                  if (newValue < min) {
+                                    setDressDetails((prev) => ({
+                                      ...prev,
+                                      [key]: min,
+                                    }));
+                                  } else if (newValue > max) {
+                                    setDressDetails((prev) => ({
+                                      ...prev,
+                                      [key]: max,
+                                    }));
+                                  }
+                                }}
+                                className={cn(
+                                  "text-center",
+                                  !isValid &&
+                                    "border-red-300 focus:border-red-500"
+                                )}
+                              />
+                              {!isValid && (
+                                <p className="text-xs text-red-500">
+                                  {label} phải từ {min}-{max}
+                                  {unit}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        }
                       )}
                     </div>
                   </CardContent>
@@ -550,18 +760,26 @@ export function CreateOrderDialog({
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Package className="h-5 w-5" />
-                    Phụ kiện (
+                    Phụ kiện của shop (
                     {
                       accessoriesDetails.filter((item) => item.quantity > 0)
                         .length
                     }
                     )
                   </CardTitle>
+                  <p className="text-sm text-gray-600">
+                    Chọn phụ kiện bạn muốn mua/thuê cùng với váy
+                  </p>
                 </CardHeader>
                 <CardContent>
-                  {accessories.length > 0 ? (
+                  {isLoadingAccessories ? (
+                    <div className="text-center py-8">
+                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-rose-600 border-t-transparent mx-auto mb-4"></div>
+                      <p className="text-gray-600">Đang tải phụ kiện...</p>
+                    </div>
+                  ) : shopAccessories.length > 0 ? (
                     <div className="space-y-4">
-                      {accessories.map((accessory) => {
+                      {shopAccessories.map((accessory) => {
                         const detail = accessoriesDetails.find(
                           (item) => item.accessoryId === accessory.id
                         );
@@ -574,7 +792,7 @@ export function CreateOrderDialog({
                         return (
                           <div
                             key={accessory.id}
-                            className="flex items-center gap-4 p-4 border rounded-lg"
+                            className="flex items-center gap-4 p-4 border rounded-lg hover:border-rose-300 transition-colors"
                           >
                             <Image
                               src={
@@ -628,7 +846,7 @@ export function CreateOrderDialog({
                         Không có phụ kiện
                       </h3>
                       <p className="text-gray-600">
-                        Không có phụ kiện nào được chọn cho đơn hàng này.
+                        Shop này chưa có phụ kiện nào để bán/thuê.
                       </p>
                     </div>
                   )}
@@ -697,42 +915,166 @@ export function CreateOrderDialog({
                     <h4 className="font-medium mb-2">Sản phẩm đặt hàng</h4>
                     <div className="space-y-3">
                       {dress && (
-                        <div className="flex items-center gap-4 p-4 border rounded-lg">
-                          <Image
-                            src={
-                              dress.images?.split(",")[0] || "/placeholder.svg"
-                            }
-                            alt={dress.name}
-                            className="w-16 h-16 object-cover rounded-md"
-                          />
-                          <div className="flex-1">
-                            <h5 className="font-medium">{dress.name}</h5>
-                            <p className="text-sm text-gray-600">
-                              {dress.category?.name}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-rose-600">
-                              {formatPrice(
-                                (() => {
-                                  const price =
-                                    orderData.type === "SELL"
-                                      ? dress.sellPrice
-                                      : dress.rentalPrice;
-                                  return typeof price === "string"
-                                    ? parseFloat(price) || 0
-                                    : price || 0;
-                                })()
+                        <div className="space-y-3">
+                          {/* Thông tin váy */}
+                          <div className="flex items-center gap-4 p-4 border rounded-lg">
+                            <Image
+                              src={
+                                dress.images?.split(",")[0] ||
+                                "/placeholder.svg"
+                              }
+                              alt={dress.name}
+                              className="w-16 h-16 object-cover rounded-md"
+                            />
+                            <div className="flex-1">
+                              <h5 className="font-medium">{dress.name}</h5>
+                              <p className="text-sm text-gray-600">
+                                {dress.category?.name}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              {orderData.type === "SELL" ? (
+                                <p className="font-bold text-rose-600">
+                                  {formatPrice(
+                                    typeof dress.sellPrice === "string"
+                                      ? parseFloat(dress.sellPrice) || 0
+                                      : dress.sellPrice || 0
+                                  )}
+                                </p>
+                              ) : (
+                                <div className="space-y-1">
+                                  <p className="text-sm text-gray-600">
+                                    Giá thuê:{" "}
+                                    {formatPrice(
+                                      typeof dress.rentalPrice === "string"
+                                        ? parseFloat(dress.rentalPrice) || 0
+                                        : dress.rentalPrice || 0
+                                    )}
+                                  </p>
+                                  <p className="text-sm text-gray-600">
+                                    Tiền cọc:{" "}
+                                    {formatPrice(
+                                      typeof dress.sellPrice === "string"
+                                        ? parseFloat(dress.sellPrice) || 0
+                                        : dress.sellPrice || 0
+                                    )}
+                                  </p>
+                                </div>
                               )}
-                            </p>
+                            </div>
                           </div>
+
+                          {/* Chi tiết tính toán cho đơn thuê */}
+                          {orderData.type === "RENT" &&
+                            orderData.returnDate &&
+                            orderData.dueDate && (
+                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <h6 className="font-medium text-blue-800 mb-2">
+                                  Chi tiết tính toán:
+                                </h6>
+                                <div className="space-y-1 text-sm text-blue-700">
+                                  {(() => {
+                                    const rentalPrice =
+                                      typeof dress.rentalPrice === "string"
+                                        ? parseFloat(dress.rentalPrice) || 0
+                                        : dress.rentalPrice || 0;
+                                    const sellPrice =
+                                      typeof dress.sellPrice === "string"
+                                        ? parseFloat(dress.sellPrice) || 0
+                                        : dress.sellPrice || 0;
+                                    const rentalDays = Math.ceil(
+                                      (orderData.returnDate.getTime() -
+                                        orderData.dueDate.getTime()) /
+                                        (1000 * 60 * 60 * 24)
+                                    );
+
+                                    return (
+                                      <>
+                                        <p>• Số ngày thuê: {rentalDays} ngày</p>
+                                        <p>
+                                          • Tiền thuê:{" "}
+                                          {formatPrice(rentalPrice)} ×{" "}
+                                          {rentalDays} ={" "}
+                                          {formatPrice(
+                                            rentalPrice * rentalDays
+                                          )}
+                                        </p>
+                                        <p>
+                                          • Tiền cọc: {formatPrice(sellPrice)}
+                                        </p>
+                                        <p className="font-medium">
+                                          • Tổng váy:{" "}
+                                          {formatPrice(
+                                            rentalPrice * rentalDays + sellPrice
+                                          )}
+                                        </p>
+                                        {(() => {
+                                          const accessoriesTotal =
+                                            accessoriesDetails
+                                              .filter(
+                                                (item) => item.quantity > 0
+                                              )
+                                              .reduce((acc, item) => {
+                                                const accessory =
+                                                  shopAccessories.find(
+                                                    (acc) =>
+                                                      acc.id ===
+                                                      item.accessoryId
+                                                  );
+                                                if (accessory) {
+                                                  const price =
+                                                    typeof accessory.rentalPrice ===
+                                                    "string"
+                                                      ? parseFloat(
+                                                          accessory.rentalPrice
+                                                        ) || 0
+                                                      : accessory.rentalPrice ||
+                                                        0;
+                                                  return (
+                                                    acc +
+                                                    price *
+                                                      item.quantity *
+                                                      rentalDays
+                                                  );
+                                                }
+                                                return acc;
+                                              }, 0);
+
+                                          if (accessoriesTotal > 0) {
+                                            return (
+                                              <>
+                                                <p>
+                                                  • Tiền phụ kiện:{" "}
+                                                  {formatPrice(
+                                                    accessoriesTotal
+                                                  )}
+                                                </p>
+                                                <p className="font-medium text-blue-800">
+                                                  • Tổng cộng:{" "}
+                                                  {formatPrice(
+                                                    rentalPrice * rentalDays +
+                                                      sellPrice +
+                                                      accessoriesTotal
+                                                  )}
+                                                </p>
+                                              </>
+                                            );
+                                          }
+                                          return null;
+                                        })()}
+                                      </>
+                                    );
+                                  })()}
+                                </div>
+                              </div>
+                            )}
                         </div>
                       )}
 
                       {accessoriesDetails
                         .filter((item) => item.quantity > 0)
                         .map((item) => {
-                          const accessory = accessories.find(
+                          const accessory = shopAccessories.find(
                             (acc) => acc.id === item.accessoryId
                           );
                           if (!accessory) return null;
@@ -780,7 +1122,6 @@ export function CreateOrderDialog({
 
                   <Separator />
 
-                  {/* Total */}
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span>Tổng cộng:</span>
                     <span className="text-rose-600">

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useLazyGetShopBlogsQuery } from "@/services/apis";
 import { IBlog, IPaginationResponse } from "@/services/types";
-import { BookOpen, Calendar, Eye, Share2 } from "lucide-react";
+import { BookOpen, Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -144,7 +144,7 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
             return (
               <Card
                 key={blog.id}
-                className="group hover:shadow-lg transition-shadow overflow-hidden"
+                className="group py-0 hover:shadow-lg transition-shadow overflow-hidden"
               >
                 <div className="relative">
                   <Image
@@ -154,31 +154,13 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
                     height={250}
                     className="w-full h-48 object-cover"
                   />
-                  <div className="absolute top-4 right-4 space-y-2">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Link href={`/blog/${blog.id}`}>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </div>
                 </div>
 
                 <CardContent className="p-6">
                   <div className="space-y-3">
-                    {blog.category && (
+                    {blog.categoryId && (
                       <Badge variant="outline" className="text-xs">
-                        {blog.category.name}
+                        {blog.categoryId}
                       </Badge>
                     )}
 
@@ -192,28 +174,24 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
                       className="text-gray-600 text-sm line-clamp-3"
                       dangerouslySetInnerHTML={{
                         __html: (blog.content || "")
-                          .replace(/<[^>]*>/g, '') // Remove all HTML tags
-                          .replace(/&/g, '&amp;')
-                          .replace(/</g, '&lt;')
-                          .replace(/>/g, '&gt;')
-                          .replace(/"/g, '&quot;')
-                          .replace(/'/g, '&#x27;')
+                          .replace(/<[^>]*>/g, "") // Remove all HTML tags
+                          .replace(/&/g, "&amp;")
+                          .replace(/</g, "&lt;")
+                          .replace(/>/g, "&gt;")
+                          .replace(/"/g, "&quot;")
+                          .replace(/'/g, "&#x27;"),
                       }}
                     />
 
                     {/* Author and Date */}
                     <div className="flex items-center gap-3 pt-2 border-t">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={blog.user.avatarUrl || "/placeholder.svg"}
-                        />
-                        <AvatarFallback>
-                          {blog.user.shop?.name.charAt(0)}
-                        </AvatarFallback>
+                        <AvatarImage src="/placeholder.svg" />
+                        <AvatarFallback>T</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {blog.user.shop?.name}
+                          Tác giả
                         </p>
                         <div className="flex items-center gap-1 text-xs text-gray-500">
                           <Calendar className="h-3 w-3" />

@@ -6,6 +6,8 @@ import {
   IPagination,
   IResponseComplaint,
   IUpdateComplaint,
+  IComplaintReason,
+  ICreateComplaint,
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
@@ -60,6 +62,26 @@ export const complaintApi = createApi({
         body,
       }),
     }),
+
+    // Lấy danh sách complaint reasons cho SHOP
+    getComplaintReasons: builder.query<IListResponse<IComplaintReason>, void>({
+      query: () => ({
+        url: "complaints/reasons",
+        method: "GET",
+        params: {
+          type: "SHOP",
+        },
+      }),
+    }),
+
+    // Tạo complaint mới
+    createComplaint: builder.mutation<IItemResponse<any>, ICreateComplaint>({
+      query: (body) => ({
+        url: "complaints/me",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -68,5 +90,7 @@ export const {
   useLazyGetMyComplaintQuery,
   useLazyGetComplaintStaffQuery,
   useUpdateMyComplaintMutation,
-  useResponseComplaintMutation
+  useResponseComplaintMutation,
+  useGetComplaintReasonsQuery,
+  useCreateComplaintMutation,
 } = complaintApi;

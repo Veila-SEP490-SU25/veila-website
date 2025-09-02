@@ -1,23 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Image } from "@/components/image";
-import {
-  Star,
-  Heart,
-  ShoppingBag,
-  MapPin,
-  Phone,
-  Mail,
-  Calendar,
-  Sparkles,
-} from "lucide-react";
+import { Star, Heart, ShoppingBag, MapPin, Phone, Mail } from "lucide-react";
 import { useLazyGetAccessoryQuery } from "@/services/apis/accessory.api";
 import { IAccessory } from "@/services/types/accessory.type";
 
@@ -30,7 +21,7 @@ export default function AccessoryDetailPage() {
 
   const [getAccessory] = useLazyGetAccessoryQuery();
 
-  const fetchAccessory = async () => {
+  const fetchAccessory = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await getAccessory(accessoryId).unwrap();
@@ -40,13 +31,13 @@ export default function AccessoryDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [accessoryId, getAccessory]);
 
   useEffect(() => {
     if (accessoryId) {
       fetchAccessory();
     }
-  }, [accessoryId]);
+  }, [accessoryId, fetchAccessory]);
 
   if (isLoading) {
     return (

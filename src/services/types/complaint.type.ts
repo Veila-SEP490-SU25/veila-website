@@ -37,9 +37,21 @@ export interface IGetComplaints extends IPagination {
 }
 
 export interface ICreateComplaint {
-  id: string;
+  orderId: string;
   title: string;
   description: string;
+  reason: string;
   images: string;
   status: ComplaintStatus;
+}
+
+export interface IComplaintReason {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  code: string;
+  reason: string;
+  reputationPenalty: number;
+  type: string;
 }

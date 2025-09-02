@@ -1,13 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  formatCurrency,
-  formatDateShort,
-  getTypeColor,
-  getTypeText,
-} from "@/lib/order-util";
+import { formatCurrency, getTypeColor, getTypeText } from "@/lib/order-util";
 import { IOrder } from "@/services/types";
+import { formatDateOnly } from "@/utils/format";
 
 interface OrderSummaryCardProps {
   order: IOrder;
@@ -31,25 +27,23 @@ export const OrderSummaryCard = ({
           </Badge>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Tổng tiền:</span>
+          <span className="text-muted-foreground">
+            Số tiền chuyển cho Shop:
+          </span>
           <span className="font-bold">{formatCurrency(order.amount)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Đã thanh toán:</span>
-          <span className="font-semibold text-green-600">
-            {formatCurrency(0)}
+          <span className="text-muted-foreground">Số dư bị khoá:</span>
+          <span className="font-bold">
+            {" "}
+            {formatCurrency(parseFloat(order.deposit))}
           </span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Còn lại:</span>
-          <span className="font-semibold text-orange-600">
-            {formatCurrency(0)}
-          </span>
-        </div>
+
         <Separator />
         <div className="flex justify-between">
           <span className="text-muted-foreground">Ngày giao:</span>
-          <span className="font-medium">{formatDateShort(order.dueDate)}</span>
+          <span className="font-medium">{formatDateOnly(order.dueDate)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Tiến độ:</span>

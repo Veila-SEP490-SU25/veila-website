@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useLazyGetBlogQuery } from "@/services/apis/blog.api";
+import { useLazyGetPublicBlogByIdQuery } from "@/services/apis/blog.api";
 import { IBlog, BlogStatus } from "@/services/types";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -31,7 +31,7 @@ export default function BlogDetailPage() {
   const params = useParams();
   const blogId = params.id as string;
 
-  const [trigger, { data, isLoading, error }] = useLazyGetBlogQuery();
+  const [trigger, { data, isLoading, error }] = useLazyGetPublicBlogByIdQuery();
   const [blog, setBlog] = useState<IBlog | null>(null);
 
   useEffect(() => {
@@ -194,13 +194,13 @@ export default function BlogDetailPage() {
                     Đã xác thực
                   </Badge>
                 )}
-                {blog.category && (
+                {blog.categoryId && (
                   <Badge
                     variant="outline"
                     className="border-purple-200 text-purple-700"
                   >
                     <Tag className="h-3 w-3 mr-1" />
-                    {blog.category.name}
+                    {blog.categoryId}
                   </Badge>
                 )}
               </div>
@@ -215,13 +215,7 @@ export default function BlogDetailPage() {
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5" />
                   <span className="font-medium">
-                    {blog.user?.shop?.name ||
-                      (blog.user
-                        ? `${blog.user.firstName || ""} ${
-                            blog.user.lastName || ""
-                          }`.trim()
-                        : "") ||
-                      "Tác giả"}
+                    Tác giả
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -341,41 +335,29 @@ export default function BlogDetailPage() {
           </Card>
 
           {/* Author Info */}
-          {blog.user && (
-            <Card className="mt-8 border-purple-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-purple-700">
-                  <User className="h-5 w-5" />
-                  Về tác giả
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                    {(blog.user?.shop?.name ||
-                      blog.user?.firstName ||
-                      "A")[0].toUpperCase()}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg text-gray-900 mb-1">
-                      {blog.user?.shop?.name ||
-                        (blog.user
-                          ? `${blog.user.firstName || ""} ${
-                              blog.user.lastName || ""
-                            }`.trim()
-                          : "") ||
-                        "Tác giả"}
-                    </h4>
-                    <p className="text-gray-600">
-                      {blog.user?.shop?.address ||
-                        blog.user?.email ||
-                        "Thành viên của Veila"}
-                    </p>
-                  </div>
+          <Card className="mt-8 border-purple-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-purple-700">
+                <User className="h-5 w-5" />
+                Về tác giả
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  T
                 </div>
-              </CardContent>
-            </Card>
-          )}
+                <div>
+                  <h4 className="font-semibold text-lg text-gray-900 mb-1">
+                    Tác giả
+                  </h4>
+                  <p className="text-gray-600">
+                    Thành viên của Veila
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Related Actions */}
           <div className="mt-8 text-center">
