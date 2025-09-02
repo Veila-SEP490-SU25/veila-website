@@ -20,6 +20,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDebounce } from "@/hooks/use-debounce";
+import {
+  getStatusColor,
+  getStatusText,
+  getTypeColor,
+  getTypeText,
+} from "@/lib/order-util";
 import { useLazyGetOrdersQuery } from "@/services/apis";
 import {
   IOrder,
@@ -196,64 +202,6 @@ export const MyOrders = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const getStatusBadge = (status: OrderStatus) => {
-    switch (status) {
-      case "PENDING":
-        return <Badge className="bg-yellow-600">Chờ xử lý</Badge>;
-      case "IN_PROCESS":
-        return <Badge className="bg-blue-600">Đang xử lý</Badge>;
-      case "COMPLETED":
-        return <Badge className="bg-green-600">Hoàn thành</Badge>;
-      case "CANCELLED":
-        return <Badge className="bg-red-600">Đã hủy</Badge>;
-      default:
-        return <Badge variant="secondary">Không xác định</Badge>;
-    }
-  };
-
-  const getTypeBadge = (type: OrderType) => {
-    switch (type) {
-      case "SELL":
-        return (
-          <Badge variant="outline" className="text-green-600 border-green-600">
-            Bán
-          </Badge>
-        );
-      case "RENT":
-        return (
-          <Badge variant="outline" className="text-blue-600 border-blue-600">
-            Thuê
-          </Badge>
-        );
-      case "CUSTOM":
-        return (
-          <Badge
-            variant="outline"
-            className="text-purple-600 border-purple-600"
-          >
-            Đặt may
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">Khác</Badge>;
-    }
-  };
-
-  const getStatusIcon = (status: OrderStatus) => {
-    switch (status) {
-      case "PENDING":
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-      case "IN_PROCESS":
-        return <AlertCircle className="h-4 w-4 text-blue-600" />;
-      case "COMPLETED":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case "CANCELLED":
-        return <XCircle className="h-4 w-4 text-red-600" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-gray-600" />;
-    }
   };
 
   if (isLoading && orders.length === 0) {
@@ -435,13 +383,22 @@ export const MyOrders = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2">
-                            {getStatusIcon(order.status)}
+                            <Badge
+                              className={getTypeColor(order.type)}
+                              variant="outline"
+                            >
+                              {getTypeText(order.type)}
+                            </Badge>
+                            <Badge
+                              className={getStatusColor(order.status)}
+                              variant="outline"
+                            >
+                              {getStatusText(order.status)}
+                            </Badge>
                             <h3 className="font-semibold text-lg">
                               Đơn hàng #{order.id.slice(-8)}
                             </h3>
                           </div>
-                          {getStatusBadge(order.status)}
-                          {getTypeBadge(order.type)}
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-bold text-rose-600">
@@ -506,11 +463,11 @@ export const MyOrders = () => {
                             </div>
                           </div>
                         )}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full">
                           <MapPin className="h-4 w-4 text-gray-400" />
-                          <div>
+                          <div className="w-full">
                             <p className="text-gray-600">Địa chỉ giao hàng</p>
-                            <p className="font-medium truncate">
+                            <p className="font-medium truncate max-w-full">
                               {order.address}
                             </p>
                           </div>

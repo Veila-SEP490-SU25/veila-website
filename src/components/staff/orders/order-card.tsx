@@ -2,7 +2,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDateShort } from "@/lib/order-util";
+import {
+  formatDateShort,
+  getStatusColor,
+  getStatusText,
+  getTypeColor,
+  getTypeText,
+} from "@/lib/order-util";
 import { formatPrice } from "@/lib/products-utils";
 import { IOrder, OrderStatus, OrderType } from "@/services/types";
 import {
@@ -23,46 +29,6 @@ interface IOrderCardProps {
   onUpdate?: () => void;
 }
 
-const getStatusBadge = (status: OrderStatus) => {
-  switch (status) {
-    case "PENDING":
-      return <Badge className="bg-yellow-600">Chờ xử lý</Badge>;
-    case "IN_PROCESS":
-      return <Badge className="bg-blue-600">Đang xử lý</Badge>;
-    case "COMPLETED":
-      return <Badge className="bg-green-600">Hoàn thành</Badge>;
-    case "CANCELLED":
-      return <Badge className="bg-red-600">Đã hủy</Badge>;
-    default:
-      return <Badge variant="secondary">Không xác định</Badge>;
-  }
-};
-
-const getTypeBadge = (type: OrderType) => {
-  switch (type) {
-    case "SELL":
-      return (
-        <Badge variant="outline" className="text-green-600 border-green-600">
-          Bán
-        </Badge>
-      );
-    case "RENT":
-      return (
-        <Badge variant="outline" className="text-blue-600 border-blue-600">
-          Thuê
-        </Badge>
-      );
-    case "CUSTOM":
-      return (
-        <Badge variant="outline" className="text-purple-600 border-purple-600">
-          Đặt may
-        </Badge>
-      );
-    default:
-      return <Badge variant="outline">Khác</Badge>;
-  }
-};
-
 const getStatusIcon = (status: OrderStatus) => {
   switch (status) {
     case "PENDING":
@@ -74,7 +40,7 @@ const getStatusIcon = (status: OrderStatus) => {
     case "CANCELLED":
       return <XCircle className="h-4 w-4 text-red-600" />;
     default:
-      return <AlertCircle className="h-4 w-4 text-gray-600" />;
+      return <Clock className="h-4 w-4 text-gray-600" />;
   }
 };
 
@@ -93,8 +59,15 @@ export const OrderCard = ({ order, onUpdate }: IOrderCardProps) => {
                     Đơn hàng #{order.id.slice(-8)}
                   </h3>
                 </div>
-                {getStatusBadge(order.status)}
-                {getTypeBadge(order.type)}
+                <Badge className={getTypeColor(order.type)} variant="outline">
+                  {getTypeText(order.type)}
+                </Badge>
+                <Badge
+                  className={getStatusColor(order.status)}
+                  variant="outline"
+                >
+                  {getStatusText(order.status)}
+                </Badge>
               </div>
               <div className="text-right">
                 <p className="text-2xl font-bold text-rose-600">

@@ -2,9 +2,27 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Ruler, Package, Settings, Tag, Weight, User, Circle, Shirt, Hand } from "lucide-react";
-import { IOrderDressDetail, IOrder, OrderType } from "@/services/types";
+import {
+  Ruler,
+  Package,
+  Settings,
+  Tag,
+  Weight,
+  User,
+  Circle,
+  Shirt,
+  Hand,
+} from "lucide-react";
+import {
+  IOrderDressDetail,
+  IOrder,
+  OrderType,
+  IUpdateRequest,
+} from "@/services/types";
 import { formatCurrency } from "@/lib/order-util";
+import { useLazyGetUpdateRequestsQuery } from "@/services/apis";
+import { useCallback, useState } from "react";
+import { isSuccess } from "@/lib/utils";
 
 interface MeasurementsTabProps {
   currentOrderDressDetail: IOrderDressDetail | null;
@@ -19,7 +37,7 @@ export const MeasurementsTab = ({
   order,
   orderDressDetails = [],
   orderAccessories = [],
-  orderService : orderService,
+  orderService: orderService,
 }: MeasurementsTabProps) => {
   const orderType = order.type;
   const measurements = [
@@ -142,6 +160,27 @@ export const MeasurementsTab = ({
     },
   ];
 
+  const [trigger, { isLoading }] = useLazyGetUpdateRequestsQuery();
+  const [updateRequests, setUpdateRequests] = useState<IUpdateRequest[]>([]);
+
+  const fetchUpdateRequests = useCallback(async () => {
+    if (orderType !== OrderType.CUSTOM) return;
+    try {
+      const {statusCode, items} = await trigger({
+        requestId: orderService.request.id,
+        filter: "",
+        sort: "updatedAt:asc",
+        page: 0,
+        size: 1000,
+      }).unwrap();
+      if (isSuccess(statusCode)) {
+        setUpdateRequests(items);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [setUpdateRequests, trigger, orderService]);
+
   // Đơn hàng custom - hiển thị thông tin dịch vụ
   if (order.type === OrderType.CUSTOM) {
     return (
@@ -165,8 +204,7 @@ export const MeasurementsTab = ({
                     {orderService.service?.name || "Dịch vụ đặt may"}
                   </h4>
                   <p className="text-sm text-gray-700 mb-3">
-                    {orderService.service?.description ||
-                      "Không có mô tả"}
+                    {orderService.service?.description || "Không có mô tả"}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Giá dịch vụ:</span>
