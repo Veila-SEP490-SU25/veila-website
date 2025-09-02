@@ -73,10 +73,10 @@ export const BlogVerifyDialog = ({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader>
-          <DialogTitle>Xác thực bài đăng</DialogTitle>
+          <DialogTitle>Phê duyệt bài đăng</DialogTitle>
         </DialogHeader>
         <DialogDescription className="p-9 text-center">
-          <p>Bạn có chắc chắn muốn xác thực bài đăng này?</p>
+          <p>Bạn có chắc chắn muốn phê duyệt bài đăng này?</p>
         </DialogDescription>
         <DialogFooter>
           <Button

@@ -56,7 +56,7 @@ export const complaintApi = createApi({
     >({
       query: ({ id, ...body }) => ({
         url: `complaints/${id}/review`,
-        method: "POST",
+        method: "PUT",
         body,
       }),
     }),
