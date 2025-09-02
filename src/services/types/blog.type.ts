@@ -1,20 +1,24 @@
+import { IItem } from "@/services/types/base.type";
+import { ICategory } from "@/services/types/category.type";
+import { IUser } from "@/services/types/user.type";
+
 export enum BlogStatus {
   DRAFT = "DRAFT",
   PUBLISHED = "PUBLISHED",
   UNPUBLISHED = "UNPUBLISHED",
 }
 
-export interface IBlog {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
+export interface IBlog extends IItem {
+  userId: string;
+  categoryId: string | null;
+
+  user: IUser;
+  category: ICategory | null;
   title: string;
   content: string;
-  images: string;
+  images: string | null;
   isVerified: boolean;
   status: BlogStatus;
-  categoryId?: string;
 }
 
 export interface ICreateBlog {
