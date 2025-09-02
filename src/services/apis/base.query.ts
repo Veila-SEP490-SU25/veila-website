@@ -1,5 +1,10 @@
 import { IItemResponse, IToken } from "@/services/types";
-import { clearLocalStorage, getTokens, getVeilaServerConfig, setTokens } from "@/lib/utils/index";
+import {
+  clearLocalStorage,
+  getTokens,
+  getVeilaServerConfig,
+  setTokens,
+} from "@/lib/utils/index";
 import {
   BaseQueryFn,
   FetchArgs,
@@ -35,7 +40,21 @@ export const baseQueryWithRefresh: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result.error) {
-    toastError("Đã xảy ra lỗi", result.error.data as string);
+    // Xử lý error message an toàn
+    let errorMessage = "Đã xảy ra lỗi";
+    if (result.error.data) {
+      if (typeof result.error.data === "string") {
+        errorMessage = result.error.data;
+      } else if (
+        typeof result.error.data === "object" &&
+        result.error.data !== null
+      ) {
+        // Nếu data là object, thử lấy message
+        const data = result.error.data as any;
+        errorMessage = data.message || data.error || "Đã xảy ra lỗi";
+      }
+    }
+    toastError("Đã xảy ra lỗi", errorMessage);
   } else {
     const { statusCode, message } = result.data as IItemResponse<null>;
     if (statusCode === 401) {
@@ -57,7 +76,15 @@ export const baseQueryWithRefresh: BaseQueryFn<
             setTokens(item.accessToken, item.refreshToken);
             result = await baseQuery(args, api, extraOptions);
           } else {
-            toastError("Đã xảy ra lỗi", message);
+            // Xử lý error message an toàn
+            let errorMessage = "Đã xảy ra lỗi";
+            if (typeof message === "string") {
+              errorMessage = message;
+            } else if (typeof message === "object" && message !== null) {
+              const msg = message as any;
+              errorMessage = msg.message || msg.error || "Đã xảy ra lỗi";
+            }
+            toastError("Đã xảy ra lỗi", errorMessage);
             clearLocalStorage();
             window.location.href = "/";
           }

@@ -17,6 +17,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   BarChart,
   Bar,
@@ -61,6 +62,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
     const fetchMetrics = async () => {
       try {
         setIsLoading(true);
+
+        // Fetch dresses
         const dressesResponse = await getDresses({
           page: 0,
           size: 1000,
@@ -69,6 +72,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
         }).unwrap();
         const dressesCount = dressesResponse.items?.length || 0;
 
+        // Fetch accessories
         const accessoriesResponse = await getAccessories({
           page: 0,
           size: 1000,
@@ -77,6 +81,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
         }).unwrap();
         const accessoriesCount = accessoriesResponse.items?.length || 0;
 
+        // Fetch blogs
         const blogsResponse = await getBlogs({
           page: 0,
           size: 1000,
@@ -85,14 +90,16 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
         }).unwrap();
         const blogsCount = blogsResponse.items?.length || 0;
 
+        // Fetch orders with shop filter
         const ordersResponse = await getOrders({
           page: 0,
           size: 1000,
-          filter: "",
+          filter: `shopId:eq:${shop.id}`,
           sort: "",
         }).unwrap();
         const ordersCount = ordersResponse.items?.length || 0;
 
+        // Fetch shop income
         const incomeResponse = await getShopIncome(shop.id).unwrap();
         const incomeAmount = incomeResponse.item || 0;
 
@@ -103,8 +110,30 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
           orders: ordersCount,
           income: incomeAmount,
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching metrics:", error);
+
+        // Xử lý error message an toàn
+        let errorMessage = "Không thể tải dữ liệu dashboard";
+        if (error?.data?.message) {
+          errorMessage = error.data.message;
+        } else if (error?.message) {
+          errorMessage = error.message;
+        } else if (typeof error === "string") {
+          errorMessage = error;
+        }
+
+        // Hiển thị toast error với message an toàn
+        toast.error(errorMessage);
+
+        // Set metrics mặc định khi có lỗi
+        setMetrics({
+          dresses: 0,
+          accessories: 0,
+          blogs: 0,
+          orders: 0,
+          income: 0,
+        });
       } finally {
         setIsLoading(false);
       }

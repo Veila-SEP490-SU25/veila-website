@@ -206,7 +206,7 @@ export const MilestonesTab = ({
         description: complaintData.description,
         reason: complaintData.description,
         images: "",
-        status: ComplaintStatus.DRAFT,
+        status: ComplaintStatus.IN_PROGRESS, // Auto SUBMIT như yêu cầu
       }).unwrap();
 
       toast.success("Đã tạo khiếu nại thành công!");
@@ -440,7 +440,7 @@ export const MilestonesTab = ({
                       </SelectTrigger>
                       <SelectContent>
                         {isReasonsLoading ? (
-                          <SelectItem value="" disabled>
+                          <SelectItem value="loading" disabled>
                             Đang tải...
                           </SelectItem>
                         ) : (

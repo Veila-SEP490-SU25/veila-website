@@ -13,9 +13,8 @@ import { IUser, IUpdateProfile } from "@/services/types";
 import { useUpdateProfileMutation } from "@/services/apis/auth.api";
 import { ProfileInfoCard } from "@/components/profile/profile-info-card";
 import { LocationInput } from "@/components/location-input";
-import { PhoneVerification } from "@/components/phone-verification";
 import { toast } from "sonner";
-import { Camera, Save, X, Phone, CheckCircle } from "lucide-react";
+import { Camera, Save, X } from "lucide-react";
 
 interface ProfileEditFormProps {
   onSave?: (user: IUser) => void;
@@ -25,7 +24,6 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
   const { currentUser, reloadProfile } = useAuth();
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
   const [showEditForm, setShowEditForm] = useState(false);
-  const [showPhoneVerification, setShowPhoneVerification] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -247,27 +245,6 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
     );
   }
 
-  // Show phone verification modal
-  if (showPhoneVerification) {
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg max-w-md w-full">
-          <PhoneVerification
-            phone={currentUser.phone || ""}
-            onSuccess={() => {
-              setShowPhoneVerification(false);
-              if (reloadProfile) {
-                reloadProfile();
-              }
-              toast.success("Xác thực số điện thoại thành công!");
-            }}
-            onCancel={() => setShowPhoneVerification(false)}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <Card>
@@ -423,31 +400,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
 
             <div className="space-y-2">
               <Label>Số điện thoại</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={currentUser.phone || ""}
-                  disabled
-                  className="bg-gray-50 flex-1"
-                />
-                {!currentUser.isIdentified && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPhoneVerification(true)}
-                    className="shrink-0"
-                  >
-                    <Phone className="h-4 w-4 mr-1" />
-                    Xác thực
-                  </Button>
-                )}
-                {currentUser.isIdentified && (
-                  <div className="flex items-center gap-1 text-green-600 text-sm">
-                    <CheckCircle className="h-4 w-4" />
-                    Đã xác thực
-                  </div>
-                )}
-              </div>
+              <Input
+                value={currentUser.phone || ""}
+                disabled
+                className="bg-gray-50"
+              />
             </div>
           </div>
         </CardContent>
