@@ -8,12 +8,14 @@ import { useAuth } from "@/providers/auth.provider";
 import { UserRole } from "@/services/types";
 import {
   BarChart3,
+  CreditCard,
   FileText,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageSquare,
   Settings,
+  ShoppingBag,
   Store,
   TrendingUpDown,
   Users,
@@ -24,75 +26,56 @@ import { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const allowedRoles = [UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.STAFF];
+const adminRoles = [UserRole.ADMIN, UserRole.SUPER_ADMIN];
 
-const staffRoutes = [
+const modRoutes = [
   {
     name: "Tổng Quan",
     href: "/staff",
     icon: LayoutDashboard,
+    allowedRoles: allowedRoles,
   },
   {
     name: "Cửa Hàng",
     href: "/staff/shops",
     icon: Store,
+    allowedRoles: allowedRoles,
   },
   {
-    name: "Blog",
-    href: "/staff/blogs",
-    icon: FileText,
+    name: "Đơn hàng",
+    href: "/staff/orders",
+    icon: ShoppingBag,
+    allowedRoles: adminRoles,
   },
   {
-    name: "Khiếu Nại",
-    href: "/staff/complaints",
-    icon: MessageSquare,
-  },
-  {
-    name: "Cài Đặt",
-    href: "/staff/settings",
-    icon: Settings,
-  },
-];
-
-const adminRoutes = [
-  {
-    name: "Tổng Quan",
-    href: "/staff",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Cửa Hàng",
-    href: "/staff/shops",
-    icon: Store,
+    name: "Gói đăng ký",
+    href: "/staff/subscriptions",
+    icon: CreditCard,
+    allowedRoles: adminRoles,
   },
   {
     name: "Giao Dịch",
     href: "/staff/transactions",
     icon: TrendingUpDown,
+    allowedRoles: adminRoles,
   },
   {
     name: "Blog",
     href: "/staff/blogs",
     icon: FileText,
+    allowedRoles: allowedRoles,
   },
   {
     name: "Khiếu Nại",
     href: "/staff/complaints",
     icon: MessageSquare,
+    allowedRoles: allowedRoles,
   },
   {
     name: "Người Dùng",
     href: "/staff/users",
     icon: Users,
-  },
-  {
-    name: "Báo Cáo",
-    href: "/staff/analytics",
-    icon: BarChart3,
-  },
-  {
-    name: "Cài Đặt",
-    href: "/staff/settings",
-    icon: Settings,
+    allowedRoles: adminRoles,
   },
 ];
 
@@ -100,7 +83,7 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
   const { currentUser, isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [routes, setRoutes] = useState<typeof staffRoutes>([]);
+  const [routes, setRoutes] = useState<typeof modRoutes>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -111,24 +94,24 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-  // Wait for auth to be loaded
-  if (!isAuthenticated || !currentUser) return;
+    // Wait for auth to be loaded
+    if (!isAuthenticated || !currentUser) return;
 
-  // Block non-admin/staff users
-  if (!allowedRoles.includes(currentUser.role)) {
-    toast.error("Bạn không có quyền truy cập vào trang này.");
-    router.replace("/"); // ✅ Use replace to avoid stacking history
-    return;
-  }
+    // Block non-admin/staff users
+    if (!allowedRoles.includes(currentUser.role)) {
+      toast.error("Bạn không có quyền truy cập vào trang này.");
+      router.replace("/"); // ✅ Use replace to avoid stacking history
+      return;
+    }
 
-  // Set sidebar routes based on role
-  if (currentUser.role === UserRole.STAFF) {
-    setRoutes(staffRoutes);
-  } else {
-    setRoutes(adminRoutes);
-  }
-}, [currentUser, router, isAuthenticated]);
-
+    // Set sidebar routes based on role
+    modRoutes.forEach((item) => {
+      if (routes.includes(item)) return;
+      if (item.allowedRoles.includes(currentUser.role)) {
+        setRoutes((prev) => [...prev, item]);
+      }
+    });
+  }, [currentUser, router, isAuthenticated]);
 
   return (
     <div className="min-h-screen">
