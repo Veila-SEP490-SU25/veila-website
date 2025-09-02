@@ -47,7 +47,7 @@ const getTransactionTypeLabel = (type: TransactionType): string => {
     case TransactionType.RECEIVE:
       return "Nhận tiền";
     case TransactionType.REFUND:
-      return "Hoàn tiền";
+      return "Hoàn tiền (Trừ)";
     default:
       return type;
   }
@@ -64,7 +64,7 @@ const getTransactionStatusLabel = (status: TransactionStatus): string => {
     case TransactionStatus.CANCELLED:
       return "Đã hủy";
     case TransactionStatus.REFUNDED:
-      return "Đã hoàn tiền";
+      return "Đã hoàn tiền (Trừ)";
     case TransactionStatus.DISPUTED:
       return "Đang tranh chấp";
     default:
@@ -83,7 +83,7 @@ const getStatusBadgeColor = (status: TransactionStatus): string => {
     case TransactionStatus.CANCELLED:
       return "bg-gray-100 text-gray-800 border-gray-200";
     case TransactionStatus.REFUNDED:
-      return "bg-blue-100 text-blue-800 border-blue-200";
+      return "bg-red-100 text-red-800 border-red-200";
     case TransactionStatus.DISPUTED:
       return "bg-orange-100 text-orange-800 border-orange-200";
     default:
@@ -280,7 +280,9 @@ export const TransactionHistoryTabs = () => {
                     [
                       TransactionType.TRANSFER,
                       TransactionType.WITHDRAW,
-                    ].includes(transaction.type)
+                      TransactionType.REFUND,
+                    ].includes(transaction.type) ||
+                    transaction.status === TransactionStatus.REFUNDED
                       ? "bg-red-100"
                       : "bg-green-100"
                   }`}
@@ -288,7 +290,9 @@ export const TransactionHistoryTabs = () => {
                   {[
                     TransactionType.TRANSFER,
                     TransactionType.WITHDRAW,
-                  ].includes(transaction.type) ? (
+                    TransactionType.REFUND,
+                  ].includes(transaction.type) ||
+                  transaction.status === TransactionStatus.REFUNDED ? (
                     <ArrowDownLeft className="h-4 w-4 text-red-600" />
                   ) : (
                     <ArrowUpRight className="h-4 w-4 text-green-600" />
@@ -324,6 +328,12 @@ export const TransactionHistoryTabs = () => {
                     <p className="text-sm text-gray-500">
                       Loại giao dịch:{" "}
                       {getTransactionTypeLabel(transaction.type)}
+                      {(transaction.type === TransactionType.REFUND ||
+                        transaction.status === TransactionStatus.REFUNDED) && (
+                        <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                          Trừ tiền
+                        </span>
+                      )}
                     </p>
                     <p className="text-sm text-gray-500">
                       Người gửi: {transaction.from}
@@ -350,9 +360,12 @@ export const TransactionHistoryTabs = () => {
                 </div>
               </div>
               <div className="text-right flex flex-col items-end gap-2">
-                {[TransactionType.TRANSFER, TransactionType.WITHDRAW].includes(
-                  transaction.type
-                ) ? (
+                {[
+                  TransactionType.TRANSFER,
+                  TransactionType.WITHDRAW,
+                  TransactionType.REFUND,
+                ].includes(transaction.type) ||
+                transaction.status === TransactionStatus.REFUNDED ? (
                   <div className="text-right">
                     <p className="text-2xl font-bold text-red-600">
                       - {formatPrice(transaction.amount)}
