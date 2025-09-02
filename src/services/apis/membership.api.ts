@@ -1,6 +1,5 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import { IItemResponse, IMembership, IListResponse } from "@/services/types";
-import { IMembershipResponse } from "@/services/types/membership.type";
+import { IItemResponse, IMembership } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export interface IRegisterMembership {
@@ -24,7 +23,7 @@ export const membershipApi = createApi({
       IRegisterMembership
     >({
       query: (body) => ({
-        url: "/membership/register",
+        url: "/memberships/register",
         method: "POST",
         body,
       }),
@@ -32,7 +31,7 @@ export const membershipApi = createApi({
 
     cancelMembership: builder.mutation<IItemResponse<IMembership>, void>({
       query: () => ({
-        url: "/membership/cancel",
+        url: "/memberships/cancel",
         method: "PUT",
       }),
     }),

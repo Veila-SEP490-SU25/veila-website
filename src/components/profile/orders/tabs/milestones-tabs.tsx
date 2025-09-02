@@ -133,16 +133,12 @@ export const MilestonesTab = ({
   // Update request mutations
   const [createUpdateRequest, { isLoading: isCreatingUpdateRequest }] =
     useCreateUpdateRequestMutation();
-  const [
-    getUpdateRequests,
-    { data: updateRequestsData, isLoading: isUpdateRequestsLoading },
-  ] = useLazyGetUpdateRequestsQuery();
+  const [getUpdateRequests, { data: updateRequestsData }] =
+    useLazyGetUpdateRequestsQuery();
   const [deleteUpdateRequest, { isLoading: isDeletingUpdateRequest }] =
     useDeleteUpdateRequestMutation();
-  const [
-    getUpdateRequest,
-    { data: updateRequestDetail, isLoading: isUpdateRequestDetailLoading },
-  ] = useLazyGetUpdateRequestQuery();
+  const [getUpdateRequest, { data: updateRequestDetail }] =
+    useLazyGetUpdateRequestQuery();
 
   // Kiểm tra xem có thể hủy đơn hàng không
   const canCancelOrder = () => {

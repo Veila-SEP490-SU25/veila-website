@@ -59,17 +59,6 @@ export const MembershipInfo = () => {
     }
   };
 
-  const getStatusIcon = (status: MembershipStatus) => {
-    switch (status) {
-      case MembershipStatus.ACTIVE:
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case MembershipStatus.INACTIVE:
-        return <XCircle className="h-5 w-5 text-gray-600" />;
-      default:
-        return <AlertCircle className="h-5 w-5 text-gray-600" />;
-    }
-  };
-
   if (isLoading) {
     return (
       <Card>
