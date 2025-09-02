@@ -590,7 +590,7 @@ const ShopOrderDetailPage = () => {
                 order={order}
                 orderDressDetails={orderDresses}
                 orderAccessories={orderAccessories}
-                orderServiceDetails={
+                orderService={
                   order.type === OrderType.CUSTOM
                     ? orderServiceDetails || order.orderServiceDetail
                     : null
