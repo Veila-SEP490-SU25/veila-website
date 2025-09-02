@@ -54,7 +54,7 @@ export const UpdateBlogDialog = ({
         categoryId: blog.categoryId || "",
         title: blog.title,
         content: blog.content,
-        images: blog.images,
+        images: blog.images || "",
         status: blog.status,
       });
     }
