@@ -110,6 +110,7 @@ export default function BlogDetailPage() {
           <CardContent className="p-8">
             {/* Status and Meta */}
             <div className="w-full flex items-center justify-between">
+              <GoBackButton />
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <StatusBadge status={blog.status} />
                 <VerifyBadge isVerified={blog.isVerified} />

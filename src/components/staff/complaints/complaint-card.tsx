@@ -41,7 +41,7 @@ interface IComplaintCardProps {
   onUpdate?: () => void;
 }
 
-const StatusBadge = ({ status }: { status: ComplaintStatus }) => {
+export const StatusBadge = ({ status }: { status: ComplaintStatus }) => {
   switch (status) {
     case ComplaintStatus.APPROVED:
       return (
