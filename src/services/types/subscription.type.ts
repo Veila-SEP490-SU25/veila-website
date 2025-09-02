@@ -4,7 +4,7 @@ export interface ISubscription extends IItem {
   name: string;
   description: string;
   images: string | null;
-  duration: number;
+  duration: string; // Changed from number to string based on API response
   amount: number;
 }
 

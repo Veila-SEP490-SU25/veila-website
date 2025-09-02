@@ -5,12 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShopOverview } from "@/components/shops/my/shop-overview";
 import { ShopInformation } from "@/components/shops/my/shop-information";
-import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
-import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
-import { MyShopOrders } from "@/components/shops/my/shop-orders";
-import { ShopBlogsTabs } from "@/components/shops/my/blogs/shop-blogs-tabs";
+
+import { SuspendedShopDashboard } from "@/components/shops/suspended-shop-dashboard";
 import { useLazyGetMyShopQuery } from "@/services/apis";
-import { IShop } from "@/services/types";
+import { IShop, ShopStatus } from "@/services/types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -122,6 +120,15 @@ const MyShopPage = () => {
     );
   }
 
+  // Kiểm tra nếu shop bị suspended
+  if (shop.status === ShopStatus.SUSPENDED) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        <SuspendedShopDashboard />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -141,13 +148,9 @@ const MyShopPage = () => {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
           <TabsTrigger value="info">Thông tin</TabsTrigger>
-          <TabsTrigger value="dresses">Váy cưới</TabsTrigger>
-          <TabsTrigger value="accessories">Phụ kiện</TabsTrigger>
-          <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
-          <TabsTrigger value="blogs">Blog</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -158,26 +161,6 @@ const MyShopPage = () => {
         {/* Shop Information Tab */}
         <TabsContent value="info" className="space-y-6">
           <ShopInformation shop={shop} />
-        </TabsContent>
-
-        {/* Products Tab */}
-        <TabsContent value="dresses" className="space-y-6">
-          <ShopDressesTabs />
-        </TabsContent>
-
-        {/* Accessories Tab */}
-        <TabsContent value="accessories" className="space-y-6">
-          <ShopAccessoriesTabs />
-        </TabsContent>
-
-        {/* Orders Tab */}
-        <TabsContent value="orders" className="space-y-6">
-          <MyShopOrders />
-        </TabsContent>
-
-        {/* Blog Tab */}
-        <TabsContent value="blogs" className="space-y-6">
-          <ShopBlogsTabs />
         </TabsContent>
       </Tabs>
     </div>

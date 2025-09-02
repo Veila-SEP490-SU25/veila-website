@@ -165,6 +165,9 @@ export const MyShopOrders = () => {
     paging.pageSize,
     debouncedSearchTerm,
     setPaging,
+    statusFilter,
+    typeFilter,
+    dateFilter,
   ]);
 
   useEffect(() => {

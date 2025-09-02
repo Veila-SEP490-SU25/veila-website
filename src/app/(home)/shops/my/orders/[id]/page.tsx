@@ -29,7 +29,6 @@ import {
   PlayCircle,
   MessageSquare,
   TrendingUp,
-  Plus,
   Edit,
 } from "lucide-react";
 import Link from "next/link";
@@ -45,25 +44,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
 import { EditMilestoneDialog } from "@/components/shops/detail/order/edit-milestone-dialog";
-import { ImageGallery } from "@/components/image-gallery";
+
 import { ChangeOrderStatusButton } from "@/components/shops/detail/order/change-order-status-button";
 import { OrderDetailsTab } from "@/components/shops/detail/order/order-details-tab";
 import { MeasurementsTab } from "@/components/shops/detail/order/measurements-tab";
-
-const parseImages = (
-  images: string | string[] | null | undefined
-): string[] => {
-  if (Array.isArray(images)) {
-    return images;
-  }
-  if (typeof images === "string") {
-    return images
-      .split(",")
-      .map((img) => img.trim())
-      .filter((img) => img.length > 0);
-  }
-  return [];
-};
 
 const getStatusColor = (status: OrderStatus) => {
   switch (status) {
@@ -243,7 +227,7 @@ const ShopOrderDetailPage = () => {
     useLazyGetOrderAccessoriesQuery();
   const [orderAccessories, setOrderAccessories] = useState<any[]>([]);
 
-  const [getOrderService, { isLoading: isOrderServiceLoading }] =
+  const [getOrderService, { isLoading: _isOrderServiceLoading }] =
     useLazyGetOrderServiceQuery();
   const [orderServiceDetails, setOrderServiceDetails] = useState<any>(null);
 
@@ -566,7 +550,7 @@ const ShopOrderDetailPage = () => {
                               <MilestoneTask
                                 milestoneId={milestone.id}
                                 milestoneTitle={milestone.title}
-                                onChange={fetchMilestone}
+                                _onChange={fetchMilestone}
                                 orderStatus={order.status}
                                 isLastMilestone={
                                   index === milestones.length - 1
