@@ -39,7 +39,7 @@ interface Props {
   milestoneId: string;
   milestoneTitle?: string;
   autoExpand?: boolean;
-  onChange: () => Promise<void>;
+  _onChange: () => Promise<void>;
   orderStatus?: string; // Thêm prop để kiểm tra trạng thái đơn hàng
   isLastMilestone?: boolean; // Thêm prop để kiểm tra có phải milestone cuối không
   orderId?: string; // Thêm prop để truyền orderId cho complaint form
@@ -110,7 +110,7 @@ export const MilestoneTask = ({
   milestoneId,
   milestoneTitle,
   autoExpand = false,
-  onChange,
+  _onChange,
   orderStatus,
   isLastMilestone = false,
   orderId,
