@@ -62,6 +62,9 @@ export const MyShopOrders = () => {
     totalPages: 0,
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
 
   const handlePageChange = (newPageIndex: number) => {
@@ -80,13 +83,62 @@ export const MyShopOrders = () => {
     }));
   };
 
+  const resetFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setTypeFilter("all");
+    setDateFilter("all");
+    setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+  };
+
   const fetchOrders = useCallback(async () => {
     try {
+      // Tạo filter string từ các filter
+      let filterString = debouncedSearchTerm;
+
+      if (statusFilter !== "all") {
+        filterString += filterString
+          ? `&status:${statusFilter}`
+          : `status:${statusFilter}`;
+      }
+
+      if (typeFilter !== "all") {
+        filterString += filterString
+          ? `&type:${typeFilter}`
+          : `type:${typeFilter}`;
+      }
+
+      if (dateFilter !== "all") {
+        const today = new Date();
+        const startDate = new Date();
+
+        switch (dateFilter) {
+          case "today":
+            startDate.setHours(0, 0, 0, 0);
+            break;
+          case "week":
+            startDate.setDate(today.getDate() - 7);
+            break;
+          case "month":
+            startDate.setMonth(today.getMonth() - 1);
+            break;
+          case "custom":
+            // Có thể thêm custom date range sau
+            break;
+        }
+
+        if (dateFilter !== "custom") {
+          filterString += filterString
+            ? `&createdAt:${startDate.toISOString()}`
+            : `createdAt:${startDate.toISOString()}`;
+        }
+      }
+
       const response = await getMyShopOrders({
         page: paging.pageIndex,
         size: paging.pageSize,
-        filter: debouncedSearchTerm,
-        sort: "",
+        filter: filterString,
+        sort: "createdAt:desc", // Sắp xếp theo thời gian tạo mới nhất
       }).unwrap();
 
       if (response.statusCode === 200) {
@@ -117,7 +169,15 @@ export const MyShopOrders = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [debouncedSearchTerm, paging.pageSize, paging.pageIndex, fetchOrders]);
+  }, [
+    debouncedSearchTerm,
+    statusFilter,
+    typeFilter,
+    dateFilter,
+    paging.pageSize,
+    paging.pageIndex,
+    fetchOrders,
+  ]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -203,10 +263,17 @@ export const MyShopOrders = () => {
           <div className="h-5 bg-gray-200 rounded w-1/2"></div>
         </div>
 
-        {/* Search Skeleton */}
+        {/* Search and Filters Skeleton */}
         <Card>
           <CardContent className="p-6">
-            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="space-y-4">
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="h-10 bg-gray-200 rounded"></div>
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -273,30 +340,179 @@ export const MyShopOrders = () => {
         </div>
       </div>
 
-      {/* Search */}
+      {/* Search and Filters */}
       <Card>
         <CardContent className="p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Tìm kiếm theo email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+          <div className="space-y-4">
+            {/* Search */}
+            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Tìm kiếm theo email, tên khách hàng..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                    disabled={isLoading}
+                  />
+                  {isLoading && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-rose-600"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Status Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Trạng thái
+                </label>
+                <Select
+                  value={statusFilter}
+                  onValueChange={setStatusFilter}
                   disabled={isLoading}
-                />
-                {isLoading && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-rose-600"></div>
-                  </div>
-                )}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Tất cả trạng thái" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                    <SelectItem value="PENDING">Chờ xử lý</SelectItem>
+                    <SelectItem value="IN_PROCESS">Đang xử lý</SelectItem>
+                    <SelectItem value="COMPLETED">Hoàn thành</SelectItem>
+                    <SelectItem value="CANCELLED">Đã hủy</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Type Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Loại đơn hàng
+                </label>
+                <Select
+                  value={typeFilter}
+                  onValueChange={setTypeFilter}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Tất cả loại" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả loại</SelectItem>
+                    <SelectItem value="SELL">Bán</SelectItem>
+                    <SelectItem value="RENT">Thuê</SelectItem>
+                    <SelectItem value="CUSTOM">Đặt may</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Date Filter */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Thời gian
+                </label>
+                <Select
+                  value={dateFilter}
+                  onValueChange={setDateFilter}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Tất cả thời gian" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả thời gian</SelectItem>
+                    <SelectItem value="today">Hôm nay</SelectItem>
+                    <SelectItem value="week">7 ngày qua</SelectItem>
+                    <SelectItem value="month">30 ngày qua</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Reset Button */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  &nbsp;
+                </label>
+                <Button
+                  variant="outline"
+                  onClick={resetFilters}
+                  disabled={isLoading}
+                  className="w-full"
+                >
+                  Đặt lại
+                </Button>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Active Filters Info */}
+      {(statusFilter !== "all" ||
+        typeFilter !== "all" ||
+        dateFilter !== "all" ||
+        searchTerm) && (
+        <Card className="border-blue-200 bg-blue-50/50">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-blue-700">
+                <span className="font-medium">Bộ lọc đang áp dụng:</span>
+                {statusFilter !== "all" && (
+                  <Badge
+                    variant="outline"
+                    className="text-blue-700 border-blue-300"
+                  >
+                    Trạng thái: {getStatusBadge(statusFilter as OrderStatus)}
+                  </Badge>
+                )}
+                {typeFilter !== "all" && (
+                  <Badge
+                    variant="outline"
+                    className="text-blue-700 border-blue-300"
+                  >
+                    Loại: {getTypeBadge(typeFilter as OrderType)}
+                  </Badge>
+                )}
+                {dateFilter !== "all" && (
+                  <Badge
+                    variant="outline"
+                    className="text-blue-700 border-blue-300"
+                  >
+                    Thời gian:{" "}
+                    {dateFilter === "today"
+                      ? "Hôm nay"
+                      : dateFilter === "week"
+                      ? "7 ngày qua"
+                      : "30 ngày qua"}
+                  </Badge>
+                )}
+                {searchTerm && (
+                  <Badge
+                    variant="outline"
+                    className="text-blue-700 border-blue-300"
+                  >
+                    Tìm kiếm: "{searchTerm}"
+                  </Badge>
+                )}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetFilters}
+                className="text-blue-700 hover:text-blue-800"
+              >
+                Xóa tất cả
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Orders List */}
       <div className="space-y-4">
