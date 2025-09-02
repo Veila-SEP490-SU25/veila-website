@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,11 @@ import { CheckCircle, Calendar, DollarSign, Package } from "lucide-react";
 import { toast } from "sonner";
 import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
 import { formatCurrency } from "@/lib/order-util";
-import { useLazyGetSubscriptionsQuery } from "@/services/apis";
+import {
+  useLazyGetSubscriptionsQuery,
+  useRegisterMembershipMutation,
+  useGetMyMembershipsQuery,
+} from "@/services/apis";
 import { ISubscription } from "@/services/types";
 import Image from "next/image";
 
@@ -27,14 +32,27 @@ export function MembershipPackagesDialog({
   trigger,
 }: MembershipPackagesDialogProps) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const [getSubscriptions, { data: subscriptionsData, isLoading, error }] =
     useLazyGetSubscriptionsQuery();
 
+  const [registerMembership, { isLoading: isRegistering }] =
+    useRegisterMembershipMutation();
+  const { data: membershipsData } = useGetMyMembershipsQuery();
+
   useEffect(() => {
     if (open) {
-      getSubscriptions({ page: 0, size: 100, filter: null, sort: null });
+      getSubscriptions({ page: 0, size: 100, filter: "", sort: "" });
     }
   }, [open, getSubscriptions]);
+
+  // Refresh data khi membership thay đổi
+  useEffect(() => {
+    if (open) {
+      // Refresh subscriptions và memberships
+      getSubscriptions({ page: 0, size: 100, filter: "", sort: "" });
+    }
+  }, [open, getSubscriptions, membershipsData]);
 
   const parseImages = (images: string) => {
     try {
@@ -44,10 +62,48 @@ export function MembershipPackagesDialog({
     }
   };
 
+  const handleRegisterMembership = async (
+    subscription: ISubscription,
+    otp: string
+  ) => {
+    try {
+      const currentMembership = membershipsData?.item;
+
+      let force = false;
+      if (!currentMembership) {
+        force = true;
+      } else if (
+        currentMembership.subscription &&
+        subscription.amount > currentMembership.subscription.amount
+      ) {
+        force = true;
+      }
+
+      const result = await registerMembership({
+        subscriptionId: subscription.id,
+        force,
+        otp,
+      }).unwrap();
+
+      if (result) {
+        toast.success("Đăng ký gói dịch vụ thành công!");
+        setOpen(false); // Đóng dialog
+        // Chuyển về profile và reload page
+        router.push("/profile");
+        window.location.reload();
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Đăng ký gói dịch vụ thất bại!");
+      return false;
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="!w-[98vw] !max-w-7xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="h-6 w-6" />
@@ -103,17 +159,18 @@ export function MembershipPackagesDialog({
                 </Badge>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {subscriptionsData?.items?.map(
                   (subscription: ISubscription) => (
                     <Card
                       key={subscription.id}
-                      className="hover:shadow-lg transition-shadow border-2 hover:border-green-300"
+                      className="hover:shadow-lg transition-shadow border-2 hover:border-green-300 h-full flex flex-col"
                     >
                       <CardHeader className="pb-4">
                         <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <CardTitle className="text-lg leading-tight">
+                          {/* Package Name and Duration */}
+                          <div className="flex-1 min-w-0 pr-4">
+                            <CardTitle className="text-xl font-bold text-gray-900 mb-2 break-words">
                               {subscription.name}
                             </CardTitle>
                             <Badge
@@ -124,15 +181,17 @@ export function MembershipPackagesDialog({
                               {subscription.duration}
                             </Badge>
                           </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-green-600">
+
+                          {/* Price */}
+                          <div className="text-right flex-shrink-0">
+                            <div className="text-3xl font-bold text-green-600">
                               {formatCurrency(subscription.amount)}
                             </div>
                           </div>
                         </div>
                       </CardHeader>
 
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-6 flex-1 flex flex-col">
                         {/* Images */}
                         {subscription.images &&
                           parseImages(subscription.images).length > 0 && (
@@ -148,43 +207,55 @@ export function MembershipPackagesDialog({
                           )}
 
                         {/* Description */}
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <p className="text-gray-600 leading-relaxed">
                           {subscription.description}
                         </p>
 
                         {/* Features */}
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2 text-sm">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span>Mở khóa tất cả tính năng shop</span>
+                        <div className="space-y-3">
+                          <div className="flex items-start space-x-3">
+                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <span className="text-gray-700">
+                              Mở khóa tất cả tính năng shop
+                            </span>
                           </div>
-                          <div className="flex items-center space-x-2 text-sm">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span>Quản lý đơn hàng không giới hạn</span>
+                          <div className="flex items-start space-x-3">
+                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <span className="text-gray-700">
+                              Quản lý đơn hàng không giới hạn
+                            </span>
                           </div>
-                          <div className="flex items-center space-x-2 text-sm">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span>Hỗ trợ khách hàng 24/7</span>
+                          <div className="flex items-start space-x-3">
+                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <span className="text-gray-700">
+                              Hỗ trợ khách hàng 24/7
+                            </span>
                           </div>
                         </div>
 
                         {/* Action Button */}
-                        <RequestSmartOtpDialog
-                          message={`Nhập mã PIN để đăng ký gói ${subscription.name}`}
-                          onConfirm={async (_smartOtp: string) => {
-                            // TODO: Implement subscription registration logic
-                            // Cần gọi API registerMembership với force = true nếu chưa có gói
-                            // hoặc force = true nếu gói mới lớn hơn gói hiện tại
-                            toast.success("Đăng ký gói dịch vụ thành công!");
-                            return true;
-                          }}
-                          trigger={
-                            <Button className="w-full bg-green-600 hover:bg-green-700">
-                              <DollarSign className="h-4 w-4 mr-2" />
-                              Đăng ký ngay
-                            </Button>
-                          }
-                        />
+                        <div className="mt-auto pt-6">
+                          <RequestSmartOtpDialog
+                            message={`Nhập mã PIN để đăng ký gói ${subscription.name}`}
+                            onConfirm={async (otp: string) => {
+                              return await handleRegisterMembership(
+                                subscription,
+                                otp
+                              );
+                            }}
+                            trigger={
+                              <Button
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3"
+                                disabled={isRegistering}
+                              >
+                                <DollarSign className="h-4 w-4 mr-2" />
+                                {isRegistering
+                                  ? "Đang đăng ký..."
+                                  : "Đăng ký ngay"}
+                              </Button>
+                            }
+                          />
+                        </div>
                       </CardContent>
                     </Card>
                   )

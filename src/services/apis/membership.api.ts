@@ -1,6 +1,5 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import { IItemResponse, IMembership, IListResponse } from "@/services/types";
-import { IMembershipResponse } from "@/services/types/membership.type";
+import { IItemResponse, IMembership } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export interface IRegisterMembership {

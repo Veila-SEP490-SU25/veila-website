@@ -5,7 +5,6 @@ import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { StaffNotFound } from "@/components/staff-not-found";
 import { ShopTabs } from "@/components/staff/shops/detail/shop-tabs";
-import { ShopVerifyDialog } from "@/components/staff/shops/shop-verify-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -104,21 +103,6 @@ export default function StaffShopDetailPage() {
       <div className="p-6 space-y-6 w-full">
         <div className="flex items-center justify-between">
           <GoBackButton />
-          {!shop.isVerified && (
-            <ShopVerifyDialog
-              shop={shop}
-              onUpdate={fetchShop}
-              trigger={
-                <Button
-                  className="flex items-center justify-start gap-2"
-                  variant="outline"
-                >
-                  <Check className="size-4" />
-                  Xác thực
-                </Button>
-              }
-            />
-          )}
         </div>
         <ShopTabs shop={shop} onUpdate={fetchShop} />
       </div>

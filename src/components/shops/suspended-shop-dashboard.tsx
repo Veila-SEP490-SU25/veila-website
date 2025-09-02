@@ -37,7 +37,7 @@ export const SuspendedShopDashboard = () => {
       setIsLoading(true);
       const response = await getSubscriptions({
         page: 0,
-        size: 10,
+        size: 100,
         sort: "amount:asc",
         filter: "",
       }).unwrap();
@@ -137,8 +137,9 @@ export const SuspendedShopDashboard = () => {
 
       if (result.statusCode === 200 || result.statusCode === 201) {
         toast.success("Đăng ký gói dịch vụ thành công!");
-        // Chuyển về profile shop
+        // Chuyển về profile shop và reload page
         window.location.href = "/profile";
+        window.location.reload();
       } else {
         toast.error(result.message || "Có lỗi xảy ra khi đăng ký gói dịch vụ");
       }
