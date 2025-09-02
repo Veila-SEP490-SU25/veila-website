@@ -26,7 +26,7 @@ export interface IUpdateOrderInformation {
   email: string;
   address: string;
   dueDate: string;
-  returnDate: string;
+  returnDate: string | null;
   price: number;
 }
 

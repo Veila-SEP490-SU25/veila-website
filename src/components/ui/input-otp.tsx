@@ -17,7 +17,7 @@ function InputOTP({
     <OTPInput
       data-slot="input-otp"
       containerClassName={cn(
-        "flex items-center gap-2 has-disabled:opacity-50",
+        "flex items-center gap-3 has-disabled:opacity-50",
         containerClassName
       )}
       className={cn("disabled:cursor-not-allowed", className)}
@@ -30,7 +30,7 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="input-otp-group"
-      className={cn("flex items-center", className)}
+      className={cn("flex items-center gap-3", className)}
       {...props}
     />
   );
@@ -46,19 +46,34 @@ function InputOTPSlot({
   type?: "text" | "password";
 }) {
   const inputOTPContext = React.useContext(OTPInputContext);
-  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {};
+
+  const slot = inputOTPContext?.slots?.[index];
+  const { char, hasFakeCaret, isActive } = slot ?? {};
+
+  // Tách các props không phải DOM props để tránh React warning
+  const domProps = { ...props };
+  delete (domProps as any).placeholderChar;
+  delete (domProps as any).isActive;
+  delete (domProps as any).hasFakeCaret;
+  delete (domProps as any).char;
+  delete (domProps as any).placeholder;
+  delete (domProps as any).value;
 
   return (
     <div
       data-slot="input-otp-slot"
-      data-active={isActive}
+      data-active={isActive || false}
       className={cn(
-        "data-[active=true]:border-ring data-[active=true]:ring-maroon-400/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive dark:bg-input/30 border-input relative flex h-9 w-9 items-center justify-center border-y border-r text-sm shadow-xs transition-all outline-none first:rounded-l-md first:border-l last:rounded-r-md data-[active=true]:z-10 data-[active=true]:ring-[1px]",
+        "relative flex h-12 w-12 items-center justify-center border-2 border-gray-300 rounded-md text-lg font-medium text-gray-900 bg-white shadow-sm transition-all outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 data-[active=true]:border-rose-500 data-[active=true]:ring-2 data-[active=true]:ring-rose-500/20",
         className
       )}
-      {...props}
+      {...domProps}
     >
-      {type === "text" ? char : char && char.trim() !== '' ? "•" : ""}
+      <span
+        className={cn("text-gray-900 font-medium", !char && "text-gray-400")}
+      >
+        {type === "text" ? char || "" : char && char.trim() !== "" ? "•" : ""}
+      </span>
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="animate-caret-blink bg-foreground h-4 w-px duration-1000" />

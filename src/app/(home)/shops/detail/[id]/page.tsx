@@ -158,7 +158,7 @@ const ShopDetailPage = () => {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-6 bg-gray-100/50 p-1 rounded-lg">
+        <TabsList className="grid w-full grid-cols-7 bg-gray-100/50 p-1 rounded-lg">
           <TabsTrigger
             value="about"
             className="relative py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
@@ -182,6 +182,12 @@ const ShopDetailPage = () => {
             className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
           >
             Đặt may
+          </TabsTrigger>
+          <TabsTrigger
+            value="services"
+            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
+          >
+            Dịch vụ
           </TabsTrigger>
           <TabsTrigger
             value="blogs"

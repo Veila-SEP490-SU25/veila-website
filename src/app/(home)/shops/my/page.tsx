@@ -9,6 +9,7 @@ import { MyShopOrders } from "@/components/shops/my/shop-orders";
 import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
 import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
 import { ShopBlogsTabs } from "@/components/shops/my/blogs/shop-blogs-tabs";
+import { ShopServices } from "@/components/shops/detail/shop-services";
 
 import { SuspendedShopDashboard } from "@/components/shops/suspended-shop-dashboard";
 import { useLazyGetMyShopQuery } from "@/services/apis";
@@ -152,11 +153,12 @@ const MyShopPage = () => {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
           <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
           <TabsTrigger value="dresses">Váy cưới</TabsTrigger>
           <TabsTrigger value="accessories">Phụ kiện</TabsTrigger>
+          <TabsTrigger value="services">Dịch vụ</TabsTrigger>
           <TabsTrigger value="blogs">Blogs</TabsTrigger>
           <TabsTrigger value="info">Thông tin</TabsTrigger>
         </TabsList>
@@ -179,6 +181,11 @@ const MyShopPage = () => {
         {/* Accessories Tab */}
         <TabsContent value="accessories" className="space-y-6">
           <ShopAccessoriesTabs />
+        </TabsContent>
+
+        {/* Services Tab */}
+        <TabsContent value="services" className="space-y-6">
+          <ShopServices id={shop.id} />
         </TabsContent>
 
         {/* Blogs Tab */}

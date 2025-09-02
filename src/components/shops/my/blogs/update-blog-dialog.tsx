@@ -23,9 +23,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
 import { useUpdateBlogMutation } from "@/services/apis";
 import { IBlog, IUpdateBlog, BlogStatus } from "@/services/types";
-import { Edit, Loader2 } from "lucide-react";
+import { Edit, Loader2, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface UpdateBlogDialogProps {
   blog: IBlog;
@@ -64,7 +65,12 @@ export const UpdateBlogDialog = ({
     field: keyof IUpdateBlog,
     value: string | BlogStatus
   ) => {
-    setBlogData((prev) => ({ ...prev, [field]: value }));
+    console.log(`🔄 Updating ${field}:`, value);
+    setBlogData((prev) => {
+      const newData = { ...prev, [field]: value };
+      console.log("📝 New blog data:", newData);
+      return newData;
+    });
   };
 
   const handleSubmit = async () => {
@@ -78,18 +84,26 @@ export const UpdateBlogDialog = ({
     }
 
     try {
-      const { statusCode, message } = await updateBlog({
+      console.log("📝 Updating blog data:", blogData);
+      const response = await updateBlog({
         id: blog.id,
         data: blogData,
       }).unwrap();
-      if (statusCode === 200) {
-        toast.success("Cập nhật blog thành công!");
+      console.log("📡 API Response:", response);
+
+      if (response.statusCode === 200 || response.statusCode === 201) {
+        toast("Cập nhật blog thành công!", {
+          icon: "✅",
+          duration: 3000,
+        });
         setOpen(false);
         onSuccess();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi cập nhật blog");
+        console.error("❌ API Error:", response);
+        toast.error(response.message || "Có lỗi xảy ra khi cập nhật blog");
       }
-    } catch {
+    } catch (error) {
+      console.error("🚨 Update Error:", error);
       toast.error("Có lỗi xảy ra khi cập nhật blog");
     }
   };
@@ -135,9 +149,6 @@ export const UpdateBlogDialog = ({
                     <SelectItem value={BlogStatus.PUBLISHED}>
                       Xuất bản ngay
                     </SelectItem>
-                    <SelectItem value={BlogStatus.UNPUBLISHED}>
-                      Ẩn blog
-                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -165,13 +176,42 @@ export const UpdateBlogDialog = ({
             <h3 className="text-lg font-semibold">Hình ảnh</h3>
             <div className="space-y-2">
               <Label>Ảnh bìa blog</Label>
+
+              {/* Hiển thị ảnh hiện tại */}
+              {blogData.images && (
+                <div className="mb-4">
+                  <div className="relative w-32 h-32 rounded-lg overflow-hidden border">
+                    <Image
+                      src={blogData.images}
+                      alt="Ảnh bìa blog"
+                      fill
+                      className="object-cover"
+                    />
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-1 right-1 h-6 w-6"
+                      onClick={() => handleInputChange("images", "")}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Ảnh hiện tại của blog
+                  </p>
+                </div>
+              )}
+
               <SingleImageUploadDialog
                 imageUrl={blogData.images || undefined}
-                onImageChange={(url) => handleInputChange("images", url)}
+                onImageChange={(url) => {
+                  console.log("🖼️ Image changed:", url);
+                  handleInputChange("images", url);
+                }}
                 trigger={
                   <Button variant="outline" className="w-full">
                     <Edit className="h-4 w-4 mr-2" />
-                    Thay đổi ảnh
+                    {blogData.images ? "Thay đổi ảnh" : "Tải lên ảnh"}
                   </Button>
                 }
                 handleUpload={async () => {}}

@@ -7,11 +7,13 @@ import { IOrder, IOrderDressDetail } from "@/services/types";
 import { ImageGallery } from "@/components/image-gallery";
 import { formatCurrency, formatDateShort } from "@/lib/order-util";
 import { formatDateOnly } from "@/utils/format";
+import { EditOrderDialog } from "./edit-order-dialog";
 
 interface OrderDetailsTabProps {
   order: IOrder;
   currentDress?: any;
   currentOrderDressDetail?: IOrderDressDetail | null;
+  onUpdate?: () => void;
 }
 
 const parseImages = (
@@ -46,15 +48,19 @@ export const OrderDetailsTab = ({
   order,
   currentDress,
   currentOrderDressDetail,
+  onUpdate,
 }: OrderDetailsTabProps) => {
   return (
     <div className="space-y-6">
       {/* Order Information */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Eye className="h-5 w-5" />
-            <span>Thông tin đơn hàng</span>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Eye className="h-5 w-5" />
+              <span>Thông tin đơn hàng</span>
+            </div>
+            <EditOrderDialog order={order} onUpdate={onUpdate} />
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">

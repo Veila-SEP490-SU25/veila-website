@@ -466,6 +466,7 @@ const ShopOrderDetailPage = () => {
                 order={order}
                 currentDress={currentDress}
                 currentOrderDressDetail={currentOrderDressDetail}
+                onUpdate={fetchOrder}
               />
             </TabsContent>
 
