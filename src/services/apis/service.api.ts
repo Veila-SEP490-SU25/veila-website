@@ -1,87 +1,99 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import {
-  ICreateService,
-  IItemResponse,
-  IListResponse,
-  IPagination,
-  IService,
-  IUpdateService,
-} from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithRefresh } from "./base.query";
+
+export interface IService {
+  id: string;
+  name: string;
+  images: string;
+  ratingAverage: string;
+  status: "AVAILABLE" | "UNAVAILABLE";
+  user?: {
+    shop: {
+      id: string;
+      name: string;
+      address: string;
+      logoUrl: string;
+      reputation: number;
+    };
+  };
+  category?: {
+    id: string;
+    name: string;
+    type: string;
+  };
+}
+
+export interface ICreateService {
+  name: string;
+  description: string;
+  status: "AVAILABLE" | "UNAVAILABLE";
+}
+
+export interface IUpdateService {
+  id: string;
+  name?: string;
+  description?: string;
+  images?: string;
+  status?: "AVAILABLE" | "UNAVAILABLE";
+}
+
+export interface IServiceResponse {
+  message: string;
+  statusCode: number;
+  pageIndex: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  items: IService[]; // Thay đổi từ item thành items array
+}
 
 export const serviceApi = createApi({
   reducerPath: "serviceApi",
   baseQuery: baseQueryWithRefresh,
+  tagTypes: ["Service"],
   endpoints: (builder) => ({
-    getServices: builder.query<IListResponse<IService>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "services",
-        method: "GET",
-        params: { sort, filter, page, size },
-      }),
+    // Lấy dịch vụ của shop
+    getShopServices: builder.query<IServiceResponse, string>({
+      query: (shopId) => `/shops/${shopId}/services`,
+      providesTags: ["Service"],
     }),
 
-    getService: builder.query<IItemResponse<IService>, string>({
-      query: (id) => ({
-        url: `services/${id}`,
-        method: "GET",
-      }),
-    }),
-
-    getMyShopService: builder.query<IListResponse<IService>, string>({
-      query: (id) => ({
-        url: `services/${id}/me`,
-        method: "GET",
-      }),
-    }),
-
-    getMyShopServices: builder.query<IListResponse<IService>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "services/my-shop",
-        method: "GET",
-        params: { sort, filter, page, size },
-      }),
-    }),
-
-    createService: builder.mutation<IItemResponse<IService>, ICreateService>({
-      query: (body) => ({
-        url: "services/me",
+    // Tạo dịch vụ mới
+    createService: builder.mutation<IServiceResponse, ICreateService>({
+      query: (data) => ({
+        url: "/services/me",
         method: "POST",
-        body,
+        body: data,
       }),
+      invalidatesTags: ["Service"],
     }),
 
-    updateService: builder.mutation<IItemResponse<null>, IUpdateService>({
-      query: ({ id, ...body }) => ({
-        url: `services/${id}/me`,
+    // Cập nhật dịch vụ
+    updateService: builder.mutation<IServiceResponse, IUpdateService>({
+      query: ({ id, ...data }) => ({
+        url: `/services/${id}/me`,
         method: "PUT",
-        body,
+        body: data,
       }),
+      invalidatesTags: ["Service"],
     }),
 
-    deleteService: builder.mutation<IItemResponse<null>, string>({
+    // Xóa dịch vụ
+    deleteService: builder.mutation<IServiceResponse, string>({
       query: (id) => ({
-        url: `services/${id}/me`,
+        url: `/services/${id}/me`,
         method: "DELETE",
       }),
-    }),
-
-    restoreService: builder.mutation<IItemResponse<null>, string>({
-      query: (id) => ({
-        url: `services/${id}/me`,
-        method: "PATCH",
-      }),
+      invalidatesTags: ["Service"],
     }),
   }),
 });
 
 export const {
-  useLazyGetServiceQuery,
-  useLazyGetServicesQuery,
-  useLazyGetMyShopServiceQuery,
-  useLazyGetMyShopServicesQuery,
+  useGetShopServicesQuery,
   useCreateServiceMutation,
-  useDeleteServiceMutation,
   useUpdateServiceMutation,
-  useRestoreServiceMutation,
+  useDeleteServiceMutation,
 } = serviceApi;

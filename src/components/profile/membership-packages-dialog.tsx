@@ -95,7 +95,16 @@ export function MembershipPackagesDialog({
       }
       return false;
     } catch (error: any) {
-      toast.error(error?.data?.message || "Đăng ký gói dịch vụ thất bại!");
+      // Xử lý error message an toàn
+      let errorMessage = "Đăng ký gói dịch vụ thất bại!";
+      if (error?.data?.message) {
+        errorMessage =
+          typeof error.data.message === "string"
+            ? error.data.message
+            : "Đăng ký gói dịch vụ thất bại!";
+      }
+
+      toast.error(errorMessage);
       return false;
     }
   };

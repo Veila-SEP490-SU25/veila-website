@@ -86,10 +86,10 @@ export const complaintApi = createApi({
       }),
     }),
 
-    // Tạo complaint mới
+    // Tạo complaint mới cho order
     createComplaint: builder.mutation<IItemResponse<any>, ICreateComplaint>({
-      query: (body) => ({
-        url: "complaints/me",
+      query: ({ orderId, ...body }) => ({
+        url: `orders/${orderId}/complaints/me`,
         method: "POST",
         body,
       }),
