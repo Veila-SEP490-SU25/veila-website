@@ -105,12 +105,9 @@ export const Navigation = ({ children }: { children: ReactNode }) => {
     }
 
     // Set sidebar routes based on role
-    modRoutes.forEach((item) => {
-      if (routes.includes(item)) return;
-      if (item.allowedRoles.includes(currentUser.role)) {
-        setRoutes((prev) => [...prev, item]);
-      }
-    });
+    setRoutes(
+      modRoutes.filter((item) => item.allowedRoles.includes(currentUser.role))
+    );
   }, [currentUser, router, isAuthenticated]);
 
   return (
