@@ -29,7 +29,7 @@ import {
   PlayCircle,
   MessageSquare,
   TrendingUp,
-  Plus,
+  Edit,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -43,25 +43,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
-import { ImageGallery } from "@/components/image-gallery";
+import { EditMilestoneDialog } from "@/components/shops/detail/order/edit-milestone-dialog";
+
 import { ChangeOrderStatusButton } from "@/components/shops/detail/order/change-order-status-button";
 import { OrderDetailsTab } from "@/components/shops/detail/order/order-details-tab";
 import { MeasurementsTab } from "@/components/shops/detail/order/measurements-tab";
-
-const parseImages = (
-  images: string | string[] | null | undefined
-): string[] => {
-  if (Array.isArray(images)) {
-    return images;
-  }
-  if (typeof images === "string") {
-    return images
-      .split(",")
-      .map((img) => img.trim())
-      .filter((img) => img.length > 0);
-  }
-  return [];
-};
 
 const getStatusColor = (status: OrderStatus) => {
   switch (status) {
@@ -241,7 +227,7 @@ const ShopOrderDetailPage = () => {
     useLazyGetOrderAccessoriesQuery();
   const [orderAccessories, setOrderAccessories] = useState<any[]>([]);
 
-  const [getOrderService, { isLoading: isOrderServiceLoading }] =
+  const [getOrderService, { isLoading: _isOrderServiceLoading }] =
     useLazyGetOrderServiceQuery();
   const [orderServiceDetails, setOrderServiceDetails] = useState<any>(null);
 
@@ -519,14 +505,39 @@ const ShopOrderDetailPage = () => {
                                   </p>
                                 </div>
                               </div>
-                              <Badge
-                                variant="outline"
-                                className={getMilestoneStatusColor(
-                                  milestone.status
-                                )}
-                              >
-                                {getMilestoneStatusText(milestone.status)}
-                              </Badge>
+                              <div className="flex items-center space-x-2">
+                                <EditMilestoneDialog
+                                  milestone={milestone}
+                                  previousMilestoneDueDate={
+                                    index > 0
+                                      ? milestones[
+                                          index - 1
+                                        ].dueDate?.toString() || null
+                                      : null
+                                  }
+                                  onSuccess={() => {
+                                    fetchMilestone();
+                                  }}
+                                  trigger={
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-8 px-3"
+                                    >
+                                      <Edit className="h-3 w-3 mr-1" />
+                                      Sửa hạn
+                                    </Button>
+                                  }
+                                />
+                                <Badge
+                                  variant="outline"
+                                  className={getMilestoneStatusColor(
+                                    milestone.status
+                                  )}
+                                >
+                                  {getMilestoneStatusText(milestone.status)}
+                                </Badge>
+                              </div>
                             </CardTitle>
                             {milestone.description && (
                               <p className="text-base text-muted-foreground">
@@ -539,7 +550,7 @@ const ShopOrderDetailPage = () => {
                               <MilestoneTask
                                 milestoneId={milestone.id}
                                 milestoneTitle={milestone.title}
-                                onChange={fetchMilestone}
+                                _onChange={fetchMilestone}
                                 orderStatus={order.status}
                                 isLastMilestone={
                                   index === milestones.length - 1

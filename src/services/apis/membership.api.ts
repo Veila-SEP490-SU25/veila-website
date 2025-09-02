@@ -1,8 +1,14 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import { IItemResponse, IMembership } from "@/services/types";
+import { IItemResponse, IMembership, IListResponse } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export interface IRegisterMembership {
+  subscriptionId: string;
+  force: boolean;
+  otp: string;
+}
+
+export interface ICancelMembership {
   subscriptionId: string;
   force: boolean;
   otp: string;
@@ -29,8 +35,19 @@ export const membershipApi = createApi({
         method: "PUT",
       }),
     }),
+
+    // Lấy danh sách membership của user
+    getMyMemberships: builder.query<IListResponse<IMembership>, void>({
+      query: () => ({
+        url: "memberships/me",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMembershipMutation, useCancelMembershipMutation } =
-  membershipApi;
+export const {
+  useRegisterMembershipMutation,
+  useCancelMembershipMutation,
+  useGetMyMembershipsQuery,
+} = membershipApi;

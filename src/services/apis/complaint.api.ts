@@ -42,15 +42,13 @@ export const complaintApi = createApi({
       }),
     }),
 
-    updateMyComplaint: builder.mutation<IItemResponse<null>, IUpdateComplaint>(
-      {
-        query: ({ id, ...body }) => ({
-          url: `complaints/${id}`,
-          method: "PUT",
-          body,
-        }),
-      }
-    ),
+    updateMyComplaint: builder.mutation<IItemResponse<null>, IUpdateComplaint>({
+      query: ({ id, ...body }) => ({
+        url: `complaints/${id}`,
+        method: "PUT",
+        body,
+      }),
+    }),
 
     responseComplaint: builder.mutation<
       IItemResponse<null>,
@@ -74,6 +72,20 @@ export const complaintApi = createApi({
       }),
     }),
 
+    // Lấy danh sách complaint reasons cho CUSTOMER
+    getComplaintReasonsCustomer: builder.query<
+      IListResponse<IComplaintReason>,
+      void
+    >({
+      query: () => ({
+        url: "complaints/reasons",
+        method: "GET",
+        params: {
+          type: "CUSTOMER",
+        },
+      }),
+    }),
+
     // Tạo complaint mới
     createComplaint: builder.mutation<IItemResponse<any>, ICreateComplaint>({
       query: (body) => ({
@@ -92,5 +104,6 @@ export const {
   useUpdateMyComplaintMutation,
   useResponseComplaintMutation,
   useGetComplaintReasonsQuery,
+  useGetComplaintReasonsCustomerQuery,
   useCreateComplaintMutation,
 } = complaintApi;
