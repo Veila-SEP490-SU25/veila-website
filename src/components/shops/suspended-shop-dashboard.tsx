@@ -20,7 +20,7 @@ import {
   useRegisterMembershipMutation,
   useGetMyMembershipsQuery,
 } from "@/services/apis";
-import { ISubscription, IMembership } from "@/services/types";
+import { ISubscription } from "@/services/types";
 import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
 
 export const SuspendedShopDashboard = () => {
@@ -85,6 +85,7 @@ export const SuspendedShopDashboard = () => {
       const currentMembership = membershipsData?.item;
 
       // Logic để xác định force dựa trên gói hiện tại:
+      // - Chưa có gói nào: force = true (không có gì để hủy)
       // - Nếu gói mới xịn hơn gói hiện tại (giá cao hơn) thì force = true
       //   -> Tự động hủy gói hiện tại và đăng ký gói mới
       // - Nếu gói mới nhỏ hơn gói hiện tại (giá thấp hơn) thì force = false
@@ -119,8 +120,8 @@ export const SuspendedShopDashboard = () => {
           canRegister = true;
         }
       } else {
-        // Chưa có gói nào -> force = false
-        force = false;
+        // Chưa có gói nào -> force = true (vì không có gì để hủy)
+        force = true;
         canRegister = true;
       }
 

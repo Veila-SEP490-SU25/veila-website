@@ -24,7 +24,7 @@ export const membershipApi = createApi({
       IRegisterMembership
     >({
       query: (body) => ({
-        url: "/membership/register",
+        url: "/memberships/register",
         method: "POST",
         body,
       }),
@@ -32,7 +32,7 @@ export const membershipApi = createApi({
 
     cancelMembership: builder.mutation<IItemResponse<IMembership>, void>({
       query: () => ({
-        url: "/membership/cancel",
+        url: "/memberships/cancel",
         method: "PUT",
       }),
     }),
