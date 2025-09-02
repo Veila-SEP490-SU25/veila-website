@@ -1,6 +1,7 @@
 "use client";
 
 import { UpdateShopStatusDialog } from "@/components/staff/shops/update-shop-status-dialog";
+import { ShopVerifyDialog } from "@/components/staff/shops/shop-verify-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -165,14 +166,20 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
               Xem chi tiết
             </Button>
             {shop.status === ShopStatus.PENDING && (
-              <Button
-                className="flex items-center justify-start gap-2"
-                variant="outline"
-                disabled={isLoading}
-              >
-                <Check className="size-4" />
-                Phê duyệt
-              </Button>
+              <ShopVerifyDialog
+                shop={shop}
+                onUpdate={onUpdate}
+                trigger={
+                  <Button
+                    className="flex items-center justify-start gap-2"
+                    variant="outline"
+                    disabled={isLoading}
+                  >
+                    <Check className="size-4" />
+                    Phê duyệt
+                  </Button>
+                }
+              />
             )}
             {shop.status !== ShopStatus.PENDING && (
               <>

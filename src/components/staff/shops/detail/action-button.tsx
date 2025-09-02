@@ -1,6 +1,7 @@
 "use client";
 
 import { UpdateShopStatusDialog } from "@/components/staff/shops/update-shop-status-dialog";
+import { ShopVerifyDialog } from "@/components/staff/shops/shop-verify-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,7 +41,7 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
         return false;
       }
     },
-    [trigger]
+    [trigger, onUpdate, shop.id]
   );
 
   return (
@@ -57,14 +58,20 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
       <DropdownMenuContent align="end" className="w-max space-y-1">
         {shop.status === ShopStatus.PENDING ? (
           <DropdownMenuItem asChild>
-            <Button
-              className="flex items-center justify-start gap-2 w-full"
-              variant="ghost"
-              size="sm"
-            >
-              <Check className="size-4" />
-              Phê duyệt
-            </Button>
+            <ShopVerifyDialog
+              shop={shop}
+              onUpdate={onUpdate}
+              trigger={
+                <Button
+                  className="flex items-center justify-start gap-2 w-full"
+                  variant="ghost"
+                  size="sm"
+                >
+                  <Check className="size-4" />
+                  Phê duyệt
+                </Button>
+              }
+            />
           </DropdownMenuItem>
         ) : (
           <>
