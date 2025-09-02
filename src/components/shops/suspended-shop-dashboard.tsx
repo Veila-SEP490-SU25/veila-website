@@ -18,8 +18,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   useLazyGetSubscriptionsQuery,
   useRegisterMembershipMutation,
+  useGetMyMembershipsQuery,
 } from "@/services/apis";
-import { ISubscription } from "@/services/types";
+import { ISubscription, IMembership } from "@/services/types";
 import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
 
 export const SuspendedShopDashboard = () => {
@@ -27,6 +28,9 @@ export const SuspendedShopDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [getSubscriptions] = useLazyGetSubscriptionsQuery();
   const [registerMembership] = useRegisterMembershipMutation();
+
+  // Lấy thông tin membership hiện tại để so sánh
+  const { data: membershipsData } = useGetMyMembershipsQuery();
 
   const fetchSubscriptions = useCallback(async () => {
     try {
@@ -75,11 +79,10 @@ export const SuspendedShopDashboard = () => {
   const handleRegisterMembership = async (
     subscription: ISubscription,
     smartOtp: string
-  ) => {
+  ): Promise<boolean> => {
     try {
-      // Logic để xác định force dựa trên gói hiện tại
-      // Nếu gói mới xịn hơn gói hiện tại thì force = true
-      // Nếu gói mới nhỏ hơn thì force = false và không cho đăng ký
+      // Lấy membership hiện tại để so sánh
+      const currentMembership = membershipsData?.item;
 
       // Logic để xác định force dựa trên gói hiện tại:
       // - Nếu gói mới xịn hơn gói hiện tại (giá cao hơn) thì force = true
@@ -89,9 +92,41 @@ export const SuspendedShopDashboard = () => {
       // - Nếu gói bằng nhau thì force = false
       //   -> Không cần hủy gói hiện tại
 
-      // TODO: Cần lấy thông tin membership hiện tại để so sánh
-      // Hiện tại tạm thời để force = true để cho phép đăng ký
-      const force = true;
+      let force = false;
+      let canRegister = true;
+
+      if (currentMembership && currentMembership.subscription) {
+        const currentAmount = currentMembership.subscription.amount || 0;
+        const newAmount = subscription.amount || 0;
+
+        if (newAmount > currentAmount) {
+          // Gói mới lớn hơn -> cho phép đăng ký với force = true
+          force = true;
+          canRegister = true;
+        } else if (newAmount < currentAmount) {
+          // Gói mới nhỏ hơn -> không cho đăng ký
+          canRegister = false;
+          toast.error(
+            "Không thể đăng ký gói có giá trị thấp hơn gói hiện tại",
+            {
+              description: `Gói hiện tại: ${currentMembership.subscription.name} (${currentMembership.subscription.amount} VND)`,
+            }
+          );
+          return false;
+        } else {
+          // Gói bằng nhau -> không cần force
+          force = false;
+          canRegister = true;
+        }
+      } else {
+        // Chưa có gói nào -> force = false
+        force = false;
+        canRegister = true;
+      }
+
+      if (!canRegister) {
+        return false;
+      }
 
       const result = await registerMembership({
         subscriptionId: subscription.id,

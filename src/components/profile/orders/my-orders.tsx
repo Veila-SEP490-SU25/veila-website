@@ -62,6 +62,7 @@ export const MyOrders = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<
     "all" | "today" | "week" | "month" | "custom"
   >("all");
@@ -78,6 +79,11 @@ export const MyOrders = () => {
 
     if (debouncedSearchTerm) {
       filters.push(`email:like:${debouncedSearchTerm}`);
+    }
+
+    // Status filter
+    if (statusFilter !== "all") {
+      filters.push(`status:eq:${statusFilter}`);
     }
 
     // Date filter
@@ -117,8 +123,8 @@ export const MyOrders = () => {
       }
     }
 
-    return filters.join(";");
-  }, [debouncedSearchTerm, dateFilter, customDateRange]);
+    return filters.join(",");
+  }, [debouncedSearchTerm, statusFilter, dateFilter, customDateRange]);
 
   const handlePageChange = (newPageIndex: number) => {
     setPaging((prev) => ({
@@ -167,7 +173,13 @@ export const MyOrders = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [paging.pageIndex, paging.pageSize, debouncedSearchTerm, fetchOrders]);
+  }, [
+    paging.pageIndex,
+    paging.pageSize,
+    debouncedSearchTerm,
+    statusFilter,
+    fetchOrders,
+  ]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -290,6 +302,25 @@ export const MyOrders = () => {
             </div>
             <div className="flex items-center gap-3">
               <Select
+                value={statusFilter}
+                onValueChange={(value: string) => {
+                  setStatusFilter(value);
+                  setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+                }}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                  <SelectItem value="PENDING">Chờ xử lý</SelectItem>
+                  <SelectItem value="IN_PROCESS">Đang xử lý</SelectItem>
+                  <SelectItem value="COMPLETED">Hoàn thành</SelectItem>
+                  <SelectItem value="CANCELLED">Đã hủy</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select
                 value={dateFilter}
                 onValueChange={(
                   value: "all" | "today" | "week" | "month" | "custom"
@@ -359,6 +390,20 @@ export const MyOrders = () => {
                   />
                 </div>
               )}
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchTerm("");
+                  setStatusFilter("all");
+                  setDateFilter("all");
+                  setCustomDateRange({ from: null, to: null });
+                  setPaging((prev) => ({ ...prev, pageIndex: 0 }));
+                }}
+                className="whitespace-nowrap"
+              >
+                Xóa bộ lọc
+              </Button>
             </div>
           </div>
         </CardContent>

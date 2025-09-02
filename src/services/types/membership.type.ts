@@ -15,3 +15,9 @@ export interface IMembership extends IItem {
   endDate: string; // Changed from Date to string based on API response
   status: MembershipStatus;
 }
+
+// API response thực tế từ /memberships/me
+export interface IMembershipResponse extends IItem {
+  startDate: string;
+  // Không có status, endDate trong response thực tế
+}

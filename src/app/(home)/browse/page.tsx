@@ -44,27 +44,31 @@ export default function BrowsePage() {
 
   const fetchDresses = useCallback(async () => {
     try {
-      let filter = "";
+      // Tạo filter string theo format đúng: [field]:[operator]:[value]
+      const filters: string[] = [];
+
       if (debouncedSearchQuery) {
-        filter += `name:like:${debouncedSearchQuery}`;
+        filters.push(`name:like:${debouncedSearchQuery}`);
       }
+
       if (priceRange.min) {
-        filter += filter
-          ? `;sellPrice:gte:${priceRange.min}`
-          : `sellPrice:gte:${priceRange.min}`;
+        filters.push(`sellPrice:gte:${priceRange.min}`);
       }
+
       if (priceRange.max) {
-        filter += filter
-          ? `;sellPrice:lte:${priceRange.max}`
-          : `sellPrice:lte:${priceRange.max}`;
+        filters.push(`sellPrice:lte:${priceRange.max}`);
       }
+
       if (availabilityFilter !== "all") {
         if (availabilityFilter === "sellable") {
-          filter += filter ? `;isSellable:eq:true` : `isSellable:eq:true`;
+          filters.push(`isSellable:eq:true`);
         } else if (availabilityFilter === "rentable") {
-          filter += filter ? `;isRentable:eq:true` : `isRentable:eq:true`;
+          filters.push(`isRentable:eq:true`);
         }
       }
+
+      // Kết hợp các filter bằng dấu phẩy
+      const filter = filters.join(",");
 
       const { statusCode, message, items, ...pagination } = await getDresses({
         filter,

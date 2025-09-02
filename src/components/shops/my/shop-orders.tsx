@@ -93,21 +93,25 @@ export const MyShopOrders = () => {
 
   const fetchOrders = useCallback(async () => {
     try {
-      // Tạo filter string từ các filter
-      let filterString = debouncedSearchTerm;
+      // Tạo filter string theo format đúng: [field]:[operator]:[value]
+      const filters: string[] = [];
 
+      // Filter theo tìm kiếm
+      if (debouncedSearchTerm) {
+        filters.push(`name:like:${debouncedSearchTerm}`);
+      }
+
+      // Filter theo trạng thái
       if (statusFilter !== "all") {
-        filterString += filterString
-          ? `&status:${statusFilter}`
-          : `status:${statusFilter}`;
+        filters.push(`status:eq:${statusFilter}`);
       }
 
+      // Filter theo loại đơn hàng
       if (typeFilter !== "all") {
-        filterString += filterString
-          ? `&type:${typeFilter}`
-          : `type:${typeFilter}`;
+        filters.push(`type:eq:${typeFilter}`);
       }
 
+      // Filter theo ngày
       if (dateFilter !== "all") {
         const today = new Date();
         const startDate = new Date();
@@ -128,11 +132,12 @@ export const MyShopOrders = () => {
         }
 
         if (dateFilter !== "custom") {
-          filterString += filterString
-            ? `&createdAt:${startDate.toISOString()}`
-            : `createdAt:${startDate.toISOString()}`;
+          filters.push(`createdAt:gte:${startDate.toISOString()}`);
         }
       }
+
+      // Kết hợp các filter bằng dấu phẩy
+      const filterString = filters.join(",");
 
       const response = await getMyShopOrders({
         page: paging.pageIndex,

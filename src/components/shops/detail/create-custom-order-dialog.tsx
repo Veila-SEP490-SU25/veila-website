@@ -493,17 +493,6 @@ export function CreateCustomOrderDialog({
                       </div>
                     )}
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="isPrivate"
-                      checked={requestData.isPrivate}
-                      onCheckedChange={(checked) =>
-                        updateRequestData("isPrivate", checked)
-                      }
-                    />
-                    <Label htmlFor="isPrivate">Yêu cầu riêng tư</Label>
-                  </div>
                 </CardContent>
               </Card>
 

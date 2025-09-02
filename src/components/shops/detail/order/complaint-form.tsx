@@ -2,15 +2,25 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { AlertCircle, Upload, X } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetComplaintReasonsQuery, useCreateComplaintMutation } from "@/services/apis";
+import Image from "next/image";
+import {
+  useGetComplaintReasonsQuery,
+  useCreateComplaintMutation,
+  useConfirmNoComplaintMutation,
+} from "@/services/apis";
 import { ICreateComplaint, ComplaintStatus } from "@/services/types";
 
 interface ComplaintFormProps {
@@ -25,24 +35,30 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [imageUrls, setImageUrls] = useState<string>("");
 
-  const { data: reasonsData, isLoading: isLoadingReasons } = useGetComplaintReasonsQuery();
-  const [createComplaint, { isLoading: isCreating }] = useCreateComplaintMutation();
+  const { data: reasonsData, isLoading: isLoadingReasons } =
+    useGetComplaintReasonsQuery();
+  const [createComplaint, { isLoading: isCreating }] =
+    useCreateComplaintMutation();
+  const [confirmNoComplaint, { isLoading: isConfirmingNoComplaint }] =
+    useConfirmNoComplaintMutation();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
       // Trong thực tế, bạn sẽ upload images lên server và lấy URLs
       // Ở đây tôi giả định đã có URLs
-      const newImages = files.map(file => URL.createObjectURL(file));
-      setImages(prev => [...prev, ...newImages]);
-      setImageUrls(prev => prev ? `${prev},${newImages.join(',')}` : newImages.join(','));
+      const newImages = files.map((file) => URL.createObjectURL(file));
+      setImages((prev) => [...prev, ...newImages]);
+      setImageUrls((prev) =>
+        prev ? `${prev},${newImages.join(",")}` : newImages.join(",")
+      );
     }
   };
 
   const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages(newImages);
-    setImageUrls(newImages.join(','));
+    setImageUrls(newImages.join(","));
   };
 
   const handleSubmit = async () => {
@@ -86,7 +102,27 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
     }
   };
 
-  const selectedReasonData = reasonsData?.items?.find(r => r.code === selectedReason);
+  const handleConfirmNoComplaint = async () => {
+    try {
+      const response = await confirmNoComplaint(orderId).unwrap();
+      if (response.statusCode === 200 || response.statusCode === 201) {
+        toast.success("Đã xác nhận không có khiếu nại!");
+        setIsExpanded(false);
+        onSuccess?.();
+      } else {
+        toast.error("Không thể xác nhận", {
+          description: response.message,
+        });
+      }
+    } catch (error) {
+      console.error("Error confirming no complaint:", error);
+      toast.error("Có lỗi xảy ra khi xác nhận");
+    }
+  };
+
+  const selectedReasonData = reasonsData?.items?.find(
+    (r) => r.code === selectedReason
+  );
 
   return (
     <Card className="border-orange-200 bg-orange-50/50">
@@ -129,7 +165,9 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
               </Select>
               {selectedReasonData && (
                 <div className="text-sm text-muted-foreground">
-                  <p>Mức phạt uy tín: {selectedReasonData.reputationPenalty} điểm</p>
+                  <p>
+                    Mức phạt uy tín: {selectedReasonData.reputationPenalty} điểm
+                  </p>
                 </div>
               )}
             </div>
@@ -171,9 +209,11 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   {images.map((image, index) => (
                     <div key={index} className="relative">
-                      <img
+                      <Image
                         src={image}
                         alt={`Hình ảnh ${index + 1}`}
+                        width={80}
+                        height={80}
                         className="w-full h-20 object-cover rounded border"
                       />
                       <Button
@@ -196,13 +236,28 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
                 type="button"
                 variant="outline"
                 onClick={() => setIsExpanded(false)}
-                disabled={isCreating}
+                disabled={isCreating || isConfirmingNoComplaint}
               >
                 Hủy
               </Button>
               <Button
+                onClick={handleConfirmNoComplaint}
+                disabled={isCreating || isConfirmingNoComplaint}
+                variant="outline"
+                className="border-green-300 text-green-700 hover:bg-green-50"
+              >
+                {isConfirmingNoComplaint
+                  ? "Đang xác nhận..."
+                  : "Xác nhận không có khiếu nại"}
+              </Button>
+              <Button
                 onClick={handleSubmit}
-                disabled={isCreating || !selectedReason || !description.trim()}
+                disabled={
+                  isCreating ||
+                  isConfirmingNoComplaint ||
+                  !selectedReason ||
+                  !description.trim()
+                }
                 className="bg-orange-600 hover:bg-orange-700"
               >
                 {isCreating ? "Đang gửi..." : "Gửi khiếu nại"}
