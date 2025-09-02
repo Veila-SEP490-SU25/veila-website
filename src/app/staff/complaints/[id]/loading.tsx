@@ -1,6 +1,6 @@
 import { PageLoading } from "@/components/ui/page-loading";
 
-export default function StaffSubscriptionLoading() {
+export default function ComplaintPageLoading() {
   return (
     <div className="max-w-full w-full p-6 space-y-6">
       <PageLoading />

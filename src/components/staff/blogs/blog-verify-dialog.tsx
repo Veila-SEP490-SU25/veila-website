@@ -17,17 +17,17 @@ import { Check, X } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
 import { toast } from "sonner";
 
-interface VerifyBlogDialogProps {
+interface BlogVerifyDialogProps {
   blog: IBlog;
   onUpdate?: () => void;
   trigger?: ReactNode;
 }
 
-export const VerifyBlogDialog = ({
+export const BlogVerifyDialog = ({
   blog,
   onUpdate,
   trigger,
-}: VerifyBlogDialogProps) => {
+}: BlogVerifyDialogProps) => {
   const [updateTrigger, { isLoading }] = useVerifyBlogMutation();
   const [open, setOpen] = useState(false);
 
@@ -73,10 +73,10 @@ export const VerifyBlogDialog = ({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader>
-          <DialogTitle>Xác thực bài đăng</DialogTitle>
+          <DialogTitle>Phê duyệt bài đăng</DialogTitle>
         </DialogHeader>
         <DialogDescription className="p-9 text-center">
-          <p>Bạn có chắc chắn muốn xác thực bài đăng này?</p>
+          <p>Bạn có chắc chắn muốn phê duyệt bài đăng này?</p>
         </DialogDescription>
         <DialogFooter>
           <Button
@@ -92,6 +92,7 @@ export const VerifyBlogDialog = ({
             onClick={() => {
               handleVerify(true);
             }}
+            disabled={isLoading}
           >
             <Check className="size-4" />
             Xác nhận

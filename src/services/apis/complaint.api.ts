@@ -17,7 +17,7 @@ export const complaintApi = createApi({
   endpoints: (builder) => ({
     getComplaintsStaff: builder.query<IListResponse<IComplaint>, IPagination>({
       query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "complaints/staff",
+        url: "complaints",
         method: "GET",
         params: {
           sort,
@@ -30,7 +30,7 @@ export const complaintApi = createApi({
 
     getComplaintStaff: builder.query<IItemResponse<IComplaint>, string>({
       query: (id) => ({
-        url: `complaints/${id}/staff`,
+        url: `complaints/${id}`,
         method: "GET",
       }),
     }),
@@ -56,7 +56,7 @@ export const complaintApi = createApi({
     >({
       query: ({ id, ...body }) => ({
         url: `complaints/${id}/review`,
-        method: "POST",
+        method: "PUT",
         body,
       }),
     }),

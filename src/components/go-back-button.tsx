@@ -10,7 +10,7 @@ export const GoBackButton = () => {
   return (
     <Button
       variant="outline"
-      className="flex items-center justify-center gap-2"
+      className="flex items-center justify-center gap-2 w-max"
       onClick={() => {
         router.back();
       }}

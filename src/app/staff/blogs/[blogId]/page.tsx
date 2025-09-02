@@ -25,7 +25,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import Image from "next/image";
-import { VerifyBlogDialog } from "@/components/staff/blogs/verify-blog-dialog";
+import { BlogVerifyDialog } from "@/components/staff/blogs/blog-verify-dialog";
 
 export default function BlogDetailPage() {
   const { blogId } = useParams() as { blogId: string };
@@ -110,12 +110,13 @@ export default function BlogDetailPage() {
           <CardContent className="p-8">
             {/* Status and Meta */}
             <div className="w-full flex items-center justify-between">
+              <GoBackButton />
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 <StatusBadge status={blog.status} />
                 <VerifyBadge isVerified={blog.isVerified} />
               </div>
               {!blog.isVerified && (
-                <VerifyBlogDialog
+                <BlogVerifyDialog
                   blog={blog}
                   onUpdate={fetchBlog}
                   trigger={
