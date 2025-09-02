@@ -2,7 +2,7 @@
 
 import { ImageGallery } from "@/components/image-gallery";
 import { UpdateShopInfoDialog } from "@/components/shops/my/upadte-shop-info-dialog";
-import { ActionButton } from "@/components/staff/shop/detail/action-button";
+import { ActionButton } from "@/components/staff/shops/detail/action-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

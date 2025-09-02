@@ -23,7 +23,7 @@ import { isSuccess } from "@/lib/utils";
 import { PagingComponent } from "@/components/paging-component";
 import { ErrorCard } from "@/components/error-card";
 import { LoadingItem } from "@/components/loading-item";
-import { ShopList } from "@/components/staff/shop/shop-list";
+import { ShopList } from "@/components/staff/shops/shop-list";
 
 export default function ShopsManagement() {
   const [statusFilter, setStatusFilter] = useState<ShopStatus | null>(null);

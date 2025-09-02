@@ -1,5 +1,5 @@
 import { EmptyCard } from "@/components/empty-card";
-import { ShopCard } from "@/components/staff/shop/shop-card";
+import { ShopCard } from "@/components/staff/shops/shop-card";
 import { IShop } from "@/services/types";
 
 interface ShopListProps {

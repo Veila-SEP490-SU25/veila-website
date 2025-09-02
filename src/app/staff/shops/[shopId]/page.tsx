@@ -4,7 +4,7 @@ import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { StaffNotFound } from "@/components/staff-not-found";
-import { ShopTabs } from "@/components/staff/shop/detail/shop-tabs";
+import { ShopTabs } from "@/components/staff/shops/detail/shop-tabs";
 import { Button } from "@/components/ui/button";
 import {
   Card,

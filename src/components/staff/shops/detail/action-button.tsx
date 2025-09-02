@@ -1,6 +1,6 @@
 "use client";
 
-import { UpdateShopStatusDialog } from "@/components/staff/shop/update-shop-status-dialog";
+import { UpdateShopStatusDialog } from "@/components/staff/shops/update-shop-status-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
