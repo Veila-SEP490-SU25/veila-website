@@ -92,6 +92,7 @@ export const BlogVerifyDialog = ({
             onClick={() => {
               handleVerify(true);
             }}
+            disabled={isLoading}
           >
             <Check className="size-4" />
             Xác nhận

@@ -34,7 +34,7 @@ export interface IGetShopItem extends IPagination {
 export interface IHandleCreateShop {
   id: string;
   isApproved: boolean;
-  rejectReason: string | null;
+  rejectReason?: string;
 }
 
 export interface ICreateShop {
