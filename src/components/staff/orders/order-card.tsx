@@ -16,6 +16,7 @@ import {
   Phone,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
 
 interface IOrderCardProps {
   order: IOrder;
@@ -164,8 +165,10 @@ export const OrderCard = ({ order, onUpdate }: IOrderCardProps) => {
 
           {/* Actions */}
           <div className="flex items-center gap-2 ml-4">
-            <Button variant={"outline"} size="icon">
-              <Eye className="size-4" />
+            <Button variant={"outline"} size="icon" asChild>
+              <Link href={`/staff/orders/${order.id}`}>
+                <Eye className="size-4" />
+              </Link>
             </Button>
           </div>
         </div>

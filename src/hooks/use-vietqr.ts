@@ -29,6 +29,17 @@ export const useVietQR = () => {
     }
   };
 
+  const generateQRImage = async (
+    bin: string,
+    bankNumber: string,
+    amount: number,
+    note?: string
+  ) => {
+    return `https://img.vietqr.io/image/${bin}-${bankNumber}-print.png?amount=${amount}${
+      note ? `&addInfo=${note}` : ""
+    }`;
+  };
+
   const getBank = useCallback(
     (bin: string | null) => {
       if (!bin || !banks) return null;
@@ -41,5 +52,5 @@ export const useVietQR = () => {
     fetchBanks();
   }, [vietQR]);
 
-  return { banks, getBank };
+  return { banks, getBank, generateQRImage };
 };

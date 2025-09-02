@@ -1,4 +1,3 @@
-import { ImageGallery } from "@/components/image-gallery";
 import { DeleteSubscriptionDialog } from "@/components/staff/subscriptions/delete-subscription-dialog";
 import { RestoreSubscriptionDialog } from "@/components/staff/subscriptions/restore-subscription-dialog";
 import { UpdateSubscriptionDialog } from "@/components/staff/subscriptions/update-subscription-dialog";
@@ -7,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatPrice, getCoverImage, getImages } from "@/lib/products-utils";
+import { formatPrice, getCoverImage } from "@/lib/products-utils";
 import { ISubscription } from "@/services/types";
 import { ArchiveRestore, Banknote, Clock, Edit3, Trash } from "lucide-react";
 import Image from "next/image";

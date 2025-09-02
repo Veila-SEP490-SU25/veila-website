@@ -7,7 +7,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/providers/auth.provider";
 import { UserRole } from "@/services/types";
 import {
-  BarChart3,
   CreditCard,
   FileText,
   LayoutDashboard,
@@ -75,6 +74,12 @@ const modRoutes = [
     name: "Người Dùng",
     href: "/staff/users",
     icon: Users,
+    allowedRoles: adminRoles,
+  },
+  {
+    name: "Cài đặt",
+    href: "/staff/settings",
+    icon: Settings,
     allowedRoles: adminRoles,
   },
 ];

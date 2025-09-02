@@ -4,7 +4,7 @@ import { ErrorCard } from "@/components/error-card";
 import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
-import { OrderCard } from "@/components/staff/shops/detail/order-card";
+import { OrderCard } from "@/components/staff/orders/order-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
