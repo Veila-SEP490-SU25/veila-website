@@ -16,9 +16,6 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.ENV_PRODUCTION }}" > .env
 
-      - name: Build nocache Docker image
-        run: docker build -t veila-website:latest --no-cache .
-
       - name: Build Docker image
         run: docker build -t veila-website:latest .
 
