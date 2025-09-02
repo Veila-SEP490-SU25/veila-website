@@ -12,17 +12,21 @@ import {
   Circle,
   Shirt,
   Hand,
+  Check,
 } from "lucide-react";
 import {
   IOrderDressDetail,
   IOrder,
   OrderType,
   IUpdateRequest,
+  UpdateRequestStatus,
 } from "@/services/types";
 import { formatCurrency } from "@/lib/order-util";
 import { useLazyGetUpdateRequestsQuery } from "@/services/apis";
-import { useCallback, useState } from "react";
+import { JSX, useCallback, useEffect, useState } from "react";
 import { isSuccess } from "@/lib/utils";
+import { ResponseUpdateRequestDialog } from "@/components/shops/detail/order/response-update-request-dialog";
+import { Button } from "@/components/ui/button";
 
 interface MeasurementsTabProps {
   currentOrderDressDetail: IOrderDressDetail | null;
@@ -30,6 +34,7 @@ interface MeasurementsTabProps {
   orderDressDetails?: any[];
   orderAccessories?: any[];
   orderService?: any;
+  onUpdate?: () => void;
 }
 
 export const MeasurementsTab = ({
@@ -38,9 +43,17 @@ export const MeasurementsTab = ({
   orderDressDetails = [],
   orderAccessories = [],
   orderService: orderService,
+  onUpdate,
 }: MeasurementsTabProps) => {
   const orderType = order.type;
-  const measurements = [
+  const [measurements, setMeasurements] = useState<
+    {
+      label: string;
+      value: number | undefined;
+      unit: string;
+      icon: JSX.Element;
+    }[]
+  >([
     {
       label: "Chiều cao",
       value:
@@ -158,7 +171,7 @@ export const MeasurementsTab = ({
       unit: "cm",
       icon: <Ruler className="h-4 w-4 text-rose-500" />,
     },
-  ];
+  ]);
 
   const [trigger, { isLoading }] = useLazyGetUpdateRequestsQuery();
   const [updateRequests, setUpdateRequests] = useState<IUpdateRequest[]>([]);
@@ -166,7 +179,7 @@ export const MeasurementsTab = ({
   const fetchUpdateRequests = useCallback(async () => {
     if (orderType !== OrderType.CUSTOM) return;
     try {
-      const {statusCode, items} = await trigger({
+      const { statusCode, items } = await trigger({
         requestId: orderService.request.id,
         filter: "",
         sort: "updatedAt:asc",
@@ -175,11 +188,96 @@ export const MeasurementsTab = ({
       }).unwrap();
       if (isSuccess(statusCode)) {
         setUpdateRequests(items);
+        const lastItem = items[items.length - 1];
+        setMeasurements([
+          {
+            label: "Chiều cao",
+            value: lastItem.height || undefined,
+            unit: "cm",
+            icon: <Ruler className="h-4 w-4 text-blue-500" />,
+          },
+          {
+            label: "Cân nặng",
+            value: lastItem.weight || undefined,
+            unit: "kg",
+            icon: <Weight className="h-4 w-4 text-green-500" />,
+          },
+          {
+            label: "Vòng ngực",
+            value: lastItem.bust || undefined,
+            unit: "cm",
+            icon: <User className="h-4 w-4 text-purple-500" />,
+          },
+          {
+            label: "Vòng eo",
+            value: lastItem.waist || undefined,
+            unit: "cm",
+            icon: <Circle className="h-4 w-4 text-orange-500" />,
+          },
+          {
+            label: "Vòng hông",
+            value: lastItem.hip || undefined,
+            unit: "cm",
+            icon: <Circle className="h-4 w-4 text-pink-500" />,
+          },
+          {
+            label: "Nách",
+            value: lastItem.armpit || undefined,
+            unit: "cm",
+            icon: <Shirt className="h-4 w-4 text-indigo-500" />,
+          },
+          {
+            label: "Bắp tay",
+            value: lastItem.bicep || undefined,
+            unit: "cm",
+            icon: <Hand className="h-4 w-4 text-red-500" />,
+          },
+          {
+            label: "Cổ",
+            value: lastItem.neck || undefined,
+            unit: "cm",
+            icon: <Circle className="h-4 w-4 text-teal-500" />,
+          },
+          {
+            label: "Vai",
+            value: lastItem.shoulderWidth || undefined,
+            unit: "cm",
+            icon: <Shirt className="h-4 w-4 text-cyan-500" />,
+          },
+          {
+            label: "Tay áo",
+            value: lastItem.sleeveLength || undefined,
+            unit: "cm",
+            icon: <Shirt className="h-4 w-4 text-amber-500" />,
+          },
+          {
+            label: "Dài lưng",
+            value: lastItem.backLength || undefined,
+            unit: "cm",
+            icon: <Ruler className="h-4 w-4 text-emerald-500" />,
+          },
+          {
+            label: "Eo thấp",
+            value: lastItem.lowerWaist || undefined,
+            unit: "cm",
+            icon: <Ruler className="h-4 w-4 text-violet-500" />,
+          },
+          {
+            label: "Eo xuống sàn",
+            value: lastItem.waistToFloor || undefined,
+            unit: "cm",
+            icon: <Ruler className="h-4 w-4 text-rose-500" />,
+          },
+        ]);
       }
     } catch (error) {
       console.error(error);
     }
   }, [setUpdateRequests, trigger, orderService]);
+
+  useEffect(() => {
+    fetchUpdateRequests();
+  }, [fetchUpdateRequests]);
 
   // Đơn hàng custom - hiển thị thông tin dịch vụ
   if (order.type === OrderType.CUSTOM) {
@@ -229,6 +327,86 @@ export const MeasurementsTab = ({
                     )}
                   </div>
                 )}
+
+                {updateRequests &&
+                  updateRequests.length > 0 &&
+                  updateRequests.map((request, index) => (
+                    <div
+                      key={request.id}
+                      className="p-4 border rounded-lg bg-rose-50/50 flex items-start justify-between"
+                    >
+                      <div className="">
+                        <h5 className="font-semibold text-blue-800 mb-2">
+                          Yêu cầu chỉnh sửa #{index + 1}
+                        </h5>
+                        <p className="text-sm text-blue-700 mb-2">
+                          {request.title}
+                        </p>
+                        {request.description && (
+                          <p className="text-sm text-blue-600">
+                            {request.description}
+                          </p>
+                        )}
+                      </div>
+                      {request.status === UpdateRequestStatus.PENDING && (
+                        <ResponseUpdateRequestDialog
+                          requestId={orderService.request.id}
+                          updateRequest={request}
+                          onUpdate={() => {
+                            fetchUpdateRequests();
+                            onUpdate && onUpdate();
+                          }}
+                          trigger={
+                            <Button
+                              className="flex items-center justify-start gap-2"
+                              variant="outline"
+                            >
+                              <Check className="size-4" />
+                              Phê duyệt yêu cầu
+                            </Button>
+                          }
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Ruler className="h-5 w-5" />
+                      <span>Số đo cơ thể</span>
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Thông tin số đo chi tiết cho việc may đo
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {measurements.map((measurement) => (
+                        <div
+                          key={measurement.label}
+                          className="p-3 border rounded-lg bg-gray-50/50"
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg">{measurement.icon}</span>
+                            <label className="text-sm font-medium text-muted-foreground">
+                              {measurement.label}
+                            </label>
+                          </div>
+                          <p className="font-semibold text-lg">
+                            {measurement.value ? (
+                              <span className="text-blue-600">
+                                {measurement.value} {measurement.unit}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">Chưa đo</span>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             ) : (
               <div className="text-center py-8">

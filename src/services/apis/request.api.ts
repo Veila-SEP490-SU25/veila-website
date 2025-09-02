@@ -22,7 +22,7 @@ export interface IGetUpdateRequest {
 }
 
 export interface IApproveUpdateRequest extends IGetUpdateRequest {
-  status: UpdateRequestStatus;
+  status: UpdateRequestStatus.ACCEPTED | UpdateRequestStatus.REJECTED;
   price: number;
 }
 
@@ -132,8 +132,8 @@ export const requestApi = createApi({
       IApproveUpdateRequest
     >({
       query: ({ requestId, updateRequestId, status, price }) => ({
-        url: `requests/${requestId}/updates/${updateRequestId}/approve`,
-        method: "POST",
+        url: `requests/${requestId}/updates/${updateRequestId}`,
+        method: "PUT",
         body: { status, price },
       }),
     }),
