@@ -20,8 +20,9 @@ interface BlogDetailDialogProps {
 }
 
 export const BlogDetailDialog = ({ blog, trigger }: BlogDetailDialogProps) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return dateObj.toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -30,7 +31,7 @@ export const BlogDetailDialog = ({ blog, trigger }: BlogDetailDialogProps) => {
     });
   };
 
-  const getCoverImage = (images: string) => {
+  const getCoverImage = (images: string | null) => {
     if (!images) return null;
     const imageArray = images.split(",");
     return imageArray[0] || null;

@@ -33,8 +33,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IBlog, BlogStatus, blogStatusColors, blogStatusLabels } from "@/services/types";
-import { useLazyGetMyShopBlogsQuery, useUpdateBlogMutation } from "@/services/apis";
+import {
+  IBlog,
+  BlogStatus,
+  blogStatusColors,
+  blogStatusLabels,
+} from "@/services/types";
+import {
+  useLazyGetMyShopBlogsQuery,
+  useUpdateBlogMutation,
+} from "@/services/apis";
 import { usePaging } from "@/providers/paging.provider";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
@@ -121,7 +129,7 @@ export const ShopBlogsTabs = () => {
             categoryId: blog.categoryId || "",
             title: blog.title,
             content: blog.content,
-            images: blog.images,
+            images: blog.images || "",
             status: newStatus as BlogStatus,
           },
         }).unwrap();
@@ -172,8 +180,9 @@ export const ShopBlogsTabs = () => {
     console.log("🔄 Update trigger changed:", updateTrigger);
   }, [updateTrigger]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return dateObj.toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
