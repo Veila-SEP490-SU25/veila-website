@@ -1,41 +1,34 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { isSuccess } from "@/lib/utils";
-import { useRestoreSubscriptionMutation } from "@/services/apis";
-import { ISubscription } from "@/services/types";
-import { ArchiveRestore, Check, X } from "lucide-react";
+import { useDeleteUserMutation, useRestoreUserMutation } from "@/services/apis";
+import { IUser } from "@/services/types";
+import { ArchiveRestore, Check, Trash, X } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
 import { toast } from "sonner";
 
-interface RestoreSubscriptionDialogProps {
-  subscription: ISubscription;
-  onSuccess?: () => void;
+interface RestoreUserDialogProps {
+  user: IUser;
+  onUpdate?: () => void;
   children?: ReactNode;
 }
 
-export const RestoreSubscriptionDialog = ({
-  subscription,
-  onSuccess,
+export const RestoreUserDialog = ({
+  user,
+  onUpdate,
   children,
-}: RestoreSubscriptionDialogProps) => {
-  const [trigger, { isLoading }] = useRestoreSubscriptionMutation();
+}: RestoreUserDialogProps) => {
+  const [trigger, { isLoading }] = useRestoreUserMutation();
   const [open, setOpen] = useState<boolean>(false);
 
   const handleConfirm = useCallback(async () => {
     try {
-      const { statusCode, message } = await trigger(subscription.id).unwrap();
+      const { statusCode, message } = await trigger(user.id).unwrap();
       if (isSuccess(statusCode)) {
         setOpen(false);
-        onSuccess?.();
+        onUpdate?.();
         toast.success(message);
       } else {
         toast.error(message);
@@ -43,7 +36,7 @@ export const RestoreSubscriptionDialog = ({
     } catch (error) {
       console.error("Failed to respond to complaint:", error);
     }
-  }, [subscription, onSuccess, trigger, setOpen]);
+  }, [user, onUpdate, trigger, setOpen]);
 
   const handleCancel = useCallback(() => {
     setOpen(false);
@@ -52,7 +45,7 @@ export const RestoreSubscriptionDialog = ({
   const defaultTrigger = (
     <Button className="flex items-center justify-start gap-2">
       <ArchiveRestore className="size-4" />
-      Khôi phục gói đăng ký
+      Khôi phục người dùng
     </Button>
   );
 
@@ -61,10 +54,10 @@ export const RestoreSubscriptionDialog = ({
       <DialogTrigger asChild>{children || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader>
-          <DialogTitle>Khôi phục gói đăng ký</DialogTitle>
+          <DialogTitle>Khôi phục người dùng</DialogTitle>
         </DialogHeader>
         <DialogDescription className="p-9 text-center">
-          <p>Bạn có chắc chắn muốn khôi phục gói đăng ký này?</p>
+          <p>Bạn có chắc chắn muốn khôi phục người dùng này?</p>
         </DialogDescription>
         <DialogFooter>
           <Button

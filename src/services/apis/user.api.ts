@@ -22,8 +22,17 @@ export interface ICreateUser {
   isIdentified: boolean;
 }
 
-export interface IUpdateUser extends ICreateUser {
+export interface IUpdateUser {
   id: string;
+  username: string;
+  email: string;
+  password?: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  status: string;
+  isVerified: boolean;
+  isIdentified: boolean;
 }
 
 export const userApi = createApi({

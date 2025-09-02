@@ -1,34 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import {
-  Search,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Ban,
-  CheckCircle,
-  Phone,
-  Calendar,
-  ShoppingBag,
-  Heart,
-  Filter,
-} from "lucide-react"
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Search, RefreshCw, Plus } from "lucide-react";
+import { useLazyGetUsersQuery } from "@/services/apis";
+import { usePaging } from "@/providers/paging.provider";
+import { isSuccess } from "@/lib/utils";
+import { IUser } from "@/services/types";
+import { useDebounce } from "@/hooks/use-debounce";
+import { GoBackButton } from "@/components/go-back-button";
+import { ErrorCard } from "@/components/error-card";
+import { PageLoading } from "@/components/ui/page-loading";
+import { EmptyCard } from "@/components/empty-card";
+import { PagingComponent } from "@/components/paging-component";
+import { UserCard } from "@/components/staff/users/user-card";
+import { CreateUserDialog } from "@/components/staff/users/create-user-dialog";
 
 const users = [
   {
@@ -96,306 +90,145 @@ const users = [
     totalSpent: 0,
     avatar: null,
   },
-]
+];
 
 export default function UsersManagement() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [userTypeFilter, setUserTypeFilter] = useState("all")
-  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [trigger, { isLoading }] = useLazyGetUsersQuery();
+  const { pageIndex, pageSize, totalItems, resetPaging, setPaging } =
+    usePaging();
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [filter, setFilter] = useState<string>("");
+  const debouncedFilter = useDebounce<string>(filter, 500);
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      active: { label: "Hoạt động", className: "bg-green-100 text-green-700" },
-      suspended: { label: "Tạm khóa", className: "bg-red-100 text-red-700" },
-      pending: { label: "Chờ duyệt", className: "bg-yellow-100 text-yellow-700" },
+  const fetchUsers = useCallback(async () => {
+    try {
+      const { statusCode, message, items, ...paging } = await trigger({
+        sort: "updatedAt:desc",
+        page: pageIndex,
+        size: pageSize,
+        filter: debouncedFilter && `email:like:${debouncedFilter}`,
+      }).unwrap();
+      if (isSuccess(statusCode)) {
+        setUsers(items);
+        setPaging(
+          paging.pageIndex,
+          paging.pageSize,
+          paging.totalItems,
+          paging.totalPages,
+          paging.hasNextPage,
+          paging.hasPrevPage
+        );
+        setError("");
+        setIsError(false);
+      } else {
+        setIsError(true);
+        setError(message);
+      }
+    } catch (error) {
+      setIsError(true);
+      setError("Có lỗi xảy ra trong quá trình tải dữ liệu khiếu nại");
     }
-    const config = statusConfig[status as keyof typeof statusConfig]
-    return <Badge className={config.className}>{config.label}</Badge>
-  }
+  }, [
+    debouncedFilter,
+    pageSize,
+    pageIndex,
+    setPaging,
+    trigger,
+    setError,
+    setIsError,
+  ]);
 
-  const getUserTypeBadge = (userType: string) => {
-    const typeConfig = {
-      customer: { label: "Khách hàng", className: "bg-blue-100 text-blue-700", icon: Heart },
-      supplier: { label: "Nhà cung cấp", className: "bg-purple-100 text-purple-700", icon: ShoppingBag },
-    }
-    const config = typeConfig[userType as keyof typeof typeConfig]
-    const Icon = config.icon
-    return (
-      <Badge className={config.className}>
-        <Icon className="h-3 w-3 mr-1" />
-        {config.label}
-      </Badge>
-    )
-  }
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers, pageSize, pageIndex]);
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.phone.includes(searchQuery)
-
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter
-    const matchesUserType = userTypeFilter === "all" || user.userType === userTypeFilter
-
-    return matchesSearch && matchesStatus && matchesUserType
-  })
+  useEffect(() => {
+    resetPaging();
+  }, [resetPaging, debouncedFilter]);
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản Lý Người Dùng</h1>
-          <p className="text-gray-600 mt-2">Quản lý tài khoản khách hàng và nhà cung cấp</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-2" />
-            Xuất Dữ Liệu
-          </Button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tổng Người Dùng</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Khách Hàng</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {users.filter((u) => u.userType === "customer").length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Nhà Cung Cấp</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  {users.filter((u) => u.userType === "supplier").length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Hoạt Động</p>
-                <p className="text-2xl font-bold text-green-600">{users.filter((u) => u.status === "active").length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Tìm kiếm tên, email, số điện thoại..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Lọc theo trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="active">Hoạt động</SelectItem>
-                <SelectItem value="suspended">Tạm khóa</SelectItem>
-                <SelectItem value="pending">Chờ duyệt</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={userTypeFilter} onValueChange={setUserTypeFilter}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Lọc theo loại" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả loại</SelectItem>
-                <SelectItem value="customer">Khách hàng</SelectItem>
-                <SelectItem value="supplier">Nhà cung cấp</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Users List */}
-      <Card>
+    <div className="p-6 space-y-6 max-w-full w-full">
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle>Danh Sách Người Dùng ({filteredUsers.length})</CardTitle>
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="space-y-2">
+              <CardTitle>Quản lý người dùng</CardTitle>
+              <CardDescription>
+                Hiển thị {users.length}/{totalItems} người dùng
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Tìm kiếm email..."
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="pl-8 w-full"
+                />
+              </div>
+              <CreateUserDialog onUpdate={fetchUsers}>
+                <Button className="flex items-center gap-2" variant="outline">
+                  <Plus className="size-4" />
+                  Thêm người dùng
+                </Button>
+              </CreateUserDialog>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {filteredUsers.map((user) => (
-              <div key={user.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={user.avatar || undefined} />
-                      <AvatarFallback className="bg-rose-100 text-rose-600">{user.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="font-semibold text-lg">{user.name}</h3>
-                      <p className="text-gray-600">{user.email}</p>
-                    </div>
+          {isError ? (
+            <div className="p-6 space-y-6 max-w-full">
+              <Card>
+                <CardHeader className="items-center justify-center">
+                  <CardTitle className="text-red-500">
+                    Đã có lỗi xảy ra khi tải dữ liệu
+                  </CardTitle>
+                  <CardDescription className="w-full items-center justify-center flex gap-2">
+                    <GoBackButton />
+                    <Button
+                      className="flex items-center justify-center gap-2 bg-rose-500 text-white"
+                      onClick={fetchUsers}
+                    >
+                      <RefreshCw
+                        className={`size-4 ${isLoading ? "animate-spin" : ""}`}
+                      />
+                      Thử lại
+                    </Button>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ErrorCard message={error} />
+                </CardContent>
+              </Card>
+            </div>
+          ) : isLoading ? (
+            <div className="p-6 space-y-6 max-w-full">
+              <PageLoading type="shops" />
+            </div>
+          ) : users.length === 0 ? (
+            <div className="p-6 space-y-6 max-w-full">
+              <EmptyCard
+                message="Không có người dùng phù hợp với tìm kiếm của bạn"
+                title="Không có người dùng nào"
+              />
+            </div>
+          ) : (
+            <div className="max-w-full ">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {users.map((user) => (
+                  <div className="w-full col-span-1" key={user.id}>
+                    <UserCard user={user} onUpdate={fetchUsers} />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    {getUserTypeBadge(user.userType)}
-                    {getStatusBadge(user.status)}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setSelectedUser(user)}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          Xem chi tiết
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Edit className="h-4 w-4 mr-2" />
-                          Chỉnh sửa
-                        </DropdownMenuItem>
-                        {user.status === "active" && (
-                          <DropdownMenuItem>
-                            <Ban className="h-4 w-4 mr-2" />
-                            Tạm khóa
-                          </DropdownMenuItem>
-                        )}
-                        {user.status === "suspended" && (
-                          <DropdownMenuItem>
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Kích hoạt
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Phone className="h-4 w-4 text-gray-400" />
-                    <span>{user.phone}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <span>Tham gia: {new Date(user.joinDate).toLocaleDateString("vi-VN")}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <span>Đăng nhập: {new Date(user.lastLogin).toLocaleDateString("vi-VN")}</span>
-                  </div>
-                  {user.userType === "customer" && (
-                    <div className="flex items-center space-x-2">
-                      <ShoppingBag className="h-4 w-4 text-gray-400" />
-                      <span>{user.totalOrders} đơn hàng</span>
-                    </div>
-                  )}
-                </div>
-
-                {user.userType === "customer" && user.totalSpent > 0 && (
-                  <div className="mt-3 text-sm text-gray-600">
-                    <strong>Tổng chi tiêu:</strong> {user.totalSpent.toLocaleString("vi-VN")}₫
-                  </div>
-                )}
+                ))}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* User Detail Dialog */}
-      <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Chi Tiết Người Dùng</DialogTitle>
-            <DialogDescription>Thông tin chi tiết về {selectedUser?.name}</DialogDescription>
-          </DialogHeader>
-          {selectedUser && (
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4 mb-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={selectedUser.avatar || undefined} />
-                  <AvatarFallback className="bg-rose-100 text-rose-600 text-xl">
-                    {selectedUser.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-xl font-semibold">{selectedUser.name}</h3>
-                  <div className="flex items-center space-x-2 mt-1">
-                    {getUserTypeBadge(selectedUser.userType)}
-                    {getStatusBadge(selectedUser.status)}
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Email</label>
-                  <p className="text-sm text-gray-600">{selectedUser.email}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Số điện thoại</label>
-                  <p className="text-sm text-gray-600">{selectedUser.phone}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Ngày tham gia</label>
-                  <p className="text-sm text-gray-600">{new Date(selectedUser.joinDate).toLocaleDateString("vi-VN")}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Đăng nhập cuối</label>
-                  <p className="text-sm text-gray-600">
-                    {new Date(selectedUser.lastLogin).toLocaleDateString("vi-VN")}
-                  </p>
-                </div>
-                {selectedUser.userType === "customer" && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium">Tổng đơn hàng</label>
-                      <p className="text-sm text-gray-600">{selectedUser.totalOrders}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Tổng chi tiêu</label>
-                      <p className="text-sm text-gray-600">{selectedUser.totalSpent.toLocaleString("vi-VN")}₫</p>
-                    </div>
-                  </>
-                )}
-              </div>
+              <PagingComponent />
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedUser(null)}>
-              Đóng
-            </Button>
-            <Button className="bg-rose-600 hover:bg-rose-700">Chỉnh Sửa</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }
