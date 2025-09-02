@@ -9,6 +9,11 @@ import {
 } from "@/services/types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
+export interface IVerifyBlog {
+  id: string;
+  isVerified: boolean;
+}
+
 export const blogApi = createApi({
   reducerPath: "blogApi",
   baseQuery: baseQueryWithRefresh,
@@ -86,6 +91,14 @@ export const blogApi = createApi({
       }),
       providesTags: (result, error, id) => [{ type: "Blog", id }],
     }),
+
+    verifyBlog: builder.mutation<IItemResponse<null>, IVerifyBlog>({
+      query: ({ id, isVerified }) => ({
+        url: `blogs/${id}/verify`,
+        method: "PUT",
+        body: { isVerified },
+      }),
+    }),
   }),
 });
 
@@ -97,4 +110,5 @@ export const {
   useDeleteBlogMutation,
   useLazyGetPublicBlogsQuery,
   useLazyGetPublicBlogByIdQuery,
+  useVerifyBlogMutation,
 } = blogApi;

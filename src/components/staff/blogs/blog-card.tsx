@@ -14,7 +14,7 @@ interface BlogCardProps {
   onUpdate?: () => void;
 }
 
-const StatusBadge = ({ status }: { status: BlogStatus }) => {
+export const StatusBadge = ({ status }: { status: BlogStatus }) => {
   switch (status) {
     case BlogStatus.PUBLISHED:
       return <Badge variant={"success"}>Đã xuất bản</Badge>;
@@ -27,7 +27,7 @@ const StatusBadge = ({ status }: { status: BlogStatus }) => {
   }
 };
 
-const VerifyBadge = ({ isVerified }: { isVerified: boolean }) => {
+export const VerifyBadge = ({ isVerified }: { isVerified: boolean }) => {
   return isVerified ? (
     <Badge className="bg-blue-500/10 border-blue-500 text-blue-500 flex items-center gap-2">
       <ShieldCheck className="size-2" />
