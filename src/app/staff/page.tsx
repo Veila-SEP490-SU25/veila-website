@@ -16,6 +16,7 @@ import {
   Calendar,
 } from "lucide-react"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
 // Mock data for dashboard
 const stats = [
@@ -151,6 +152,7 @@ const topShops = [
 ]
 
 export default function StaffDashboard() {
+  redirect("/staff/shops");
   const getPriorityBadge = (priority: string) => {
     const config = {
       high: { label: "Cao", className: "bg-red-100 text-red-700" },
