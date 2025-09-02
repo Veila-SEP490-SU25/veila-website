@@ -28,12 +28,18 @@ import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
 import {
   useCancelOrderMutation,
   useCreateComplaintMutation,
+  useConfirmNoComplaintMutation,
+  useCreateUpdateRequestMutation,
+  useLazyGetUpdateRequestsQuery,
+  useDeleteUpdateRequestMutation,
+  useLazyGetUpdateRequestQuery,
 } from "@/services/apis";
 import { useGetComplaintReasonsCustomerQuery } from "@/services/apis/complaint.api";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -67,12 +73,47 @@ export const MilestonesTab = ({
   fetchMilestone,
   orderStatus,
   orderId,
-}: MilestonesTabProps & { orderStatus?: string; orderId?: string }) => {
+  orderType,
+  orderServiceDetail,
+}: MilestonesTabProps & {
+  orderStatus?: string;
+  orderId?: string;
+  orderType?: string;
+  orderServiceDetail?: any;
+}) => {
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
   const [showComplaintForm, setShowComplaintForm] = useState(false);
   const [complaintData, setComplaintData] = useState({
     reasonId: "",
     description: "",
+  });
+
+  const [showUpdateRequestForm, setShowUpdateRequestForm] = useState(false);
+  const [showUpdateRequestDetail, setShowUpdateRequestDetail] = useState<
+    string | null
+  >(null);
+  const [updateRequestData, setUpdateRequestData] = useState({
+    title: "",
+    description: "",
+    height: 170,
+    weight: 55,
+    bust: 85,
+    waist: 60,
+    hip: 90,
+    armpit: 40,
+    bicep: 30,
+    neck: 35,
+    shoulderWidth: 40,
+    sleeveLength: 60,
+    backLength: 40,
+    lowerWaist: 20,
+    waistToFloor: 60,
+    material: "Cotton",
+    color: "Đỏ",
+    length: "Dài",
+    neckline: "Cổ tròn",
+    sleeve: "Tay ngắn",
+    images: "",
   });
 
   // Fetch complaint reasons
@@ -84,6 +125,24 @@ export const MilestonesTab = ({
   // Create complaint mutation
   const [createComplaint, { isLoading: isCreatingComplaint }] =
     useCreateComplaintMutation();
+
+  // Confirm no complaint mutation
+  const [confirmNoComplaint, { isLoading: isConfirmingNoComplaint }] =
+    useConfirmNoComplaintMutation();
+
+  // Update request mutations
+  const [createUpdateRequest, { isLoading: isCreatingUpdateRequest }] =
+    useCreateUpdateRequestMutation();
+  const [
+    getUpdateRequests,
+    { data: updateRequestsData, isLoading: isUpdateRequestsLoading },
+  ] = useLazyGetUpdateRequestsQuery();
+  const [deleteUpdateRequest, { isLoading: isDeletingUpdateRequest }] =
+    useDeleteUpdateRequestMutation();
+  const [
+    getUpdateRequest,
+    { data: updateRequestDetail, isLoading: isUpdateRequestDetailLoading },
+  ] = useLazyGetUpdateRequestQuery();
 
   // Kiểm tra xem có thể hủy đơn hàng không
   const canCancelOrder = () => {
@@ -164,6 +223,122 @@ export const MilestonesTab = ({
         error?.data?.message ||
           "Có lỗi xảy ra khi tạo khiếu nại. Vui lòng thử lại sau."
       );
+    }
+  };
+
+  const handleConfirmNoComplaint = async () => {
+    if (!orderId) return;
+
+    try {
+      await confirmNoComplaint(orderId).unwrap();
+      toast.success("Đã xác nhận không có khiếu nại!");
+      setShowComplaintForm(false);
+      await fetchMilestone();
+    } catch (error: any) {
+      console.error("Error confirming no complaint:", error);
+      toast.error(
+        error?.data?.message ||
+          "Có lỗi xảy ra khi xác nhận. Vui lòng thử lại sau."
+      );
+    }
+  };
+
+  const handleCreateUpdateRequest = async () => {
+    if (!orderServiceDetail?.request?.id) return;
+
+    try {
+      await createUpdateRequest({
+        id: orderServiceDetail.request.id,
+        ...updateRequestData,
+      }).unwrap();
+      toast.success("Đã tạo yêu cầu chỉnh sửa thành công!");
+      setShowUpdateRequestForm(false);
+      setUpdateRequestData({
+        title: "",
+        description: "",
+        height: 170,
+        weight: 55,
+        bust: 85,
+        waist: 60,
+        hip: 90,
+        armpit: 40,
+        bicep: 30,
+        neck: 35,
+        shoulderWidth: 40,
+        sleeveLength: 60,
+        backLength: 40,
+        lowerWaist: 20,
+        waistToFloor: 60,
+        material: "Cotton",
+        color: "Đỏ",
+        length: "Dài",
+        neckline: "Cổ tròn",
+        sleeve: "Tay ngắn",
+        images: "",
+      });
+      // Refresh update requests
+      if (orderServiceDetail?.request?.id) {
+        getUpdateRequests({
+          requestId: orderServiceDetail.request.id,
+          page: 0,
+          size: 10,
+          filter: "",
+          sort: "",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error creating update request:", error);
+      toast.error(
+        error?.data?.message ||
+          "Có lỗi xảy ra khi tạo yêu cầu chỉnh sửa. Vui lòng thử lại sau."
+      );
+    }
+  };
+
+  const fetchUpdateRequests = useCallback(() => {
+    if (orderServiceDetail?.request?.id) {
+      getUpdateRequests({
+        requestId: orderServiceDetail.request.id,
+        page: 0,
+        size: 10,
+        filter: "",
+        sort: "",
+      });
+    }
+  }, [orderServiceDetail?.request?.id, getUpdateRequests]);
+
+  const handleDeleteUpdateRequest = async (updateRequestId: string) => {
+    if (!orderServiceDetail?.request?.id) return;
+
+    try {
+      await deleteUpdateRequest({
+        requestId: orderServiceDetail.request.id,
+        updateRequestId,
+      }).unwrap();
+      toast.success("Đã xóa yêu cầu chỉnh sửa thành công!");
+      // Refresh danh sách
+      fetchUpdateRequests();
+    } catch (error: any) {
+      console.error("Error deleting update request:", error);
+      toast.error(
+        error?.data?.message ||
+          "Có lỗi xảy ra khi xóa yêu cầu chỉnh sửa. Vui lòng thử lại sau."
+      );
+    }
+  };
+
+  const handleViewUpdateRequestDetail = async (updateRequestId: string) => {
+    if (!orderServiceDetail?.request?.id) return;
+
+    try {
+      await getUpdateRequest({
+        requestId: orderServiceDetail.request.id,
+        updateRequestId,
+      }).unwrap();
+      setShowUpdateRequestDetail(updateRequestId);
+    } catch (error: any) {
+      console.error("Error fetching update request detail:", error);
+      toast.error("Có lỗi xảy ra khi tải chi tiết yêu cầu");
     }
   };
   if (isMilestonesLoading) {
@@ -314,6 +489,16 @@ export const MilestonesTab = ({
                       {isCreatingComplaint ? "Đang tạo..." : "Gửi khiếu nại"}
                     </Button>
                     <Button
+                      onClick={handleConfirmNoComplaint}
+                      disabled={isConfirmingNoComplaint}
+                      variant="outline"
+                      className="border-green-300 text-green-700 hover:bg-green-50"
+                    >
+                      {isConfirmingNoComplaint
+                        ? "Đang xác nhận..."
+                        : "Xác nhận không có khiếu nại"}
+                    </Button>
+                    <Button
                       variant="outline"
                       onClick={() => {
                         setShowComplaintForm(false);
@@ -325,6 +510,447 @@ export const MilestonesTab = ({
                   </div>
                 </div>
               )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Form yêu cầu chỉnh sửa cho đơn hàng custom */}
+      {orderType === "CUSTOM" && orderServiceDetail?.request?.id && (
+        <Card className="border-blue-200 bg-blue-50/50">
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <AlertCircle className="h-5 w-5 text-blue-600" />
+                <div>
+                  <h4 className="font-medium text-blue-800">
+                    Yêu cầu chỉnh sửa thiết kế
+                  </h4>
+                  <p className="text-sm text-blue-700">
+                    Bạn có thể tạo yêu cầu chỉnh sửa thiết kế cho đơn hàng
+                    custom này
+                  </p>
+                </div>
+              </div>
+
+              {!showUpdateRequestForm ? (
+                <div className="flex space-x-2">
+                  <Button
+                    variant="outline"
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                    onClick={() => setShowUpdateRequestForm(true)}
+                  >
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    Tạo yêu cầu chỉnh sửa
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                    onClick={fetchUpdateRequests}
+                  >
+                    Xem danh sách yêu cầu
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4 border-t pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="update-title">Tiêu đề *</Label>
+                      <Input
+                        id="update-title"
+                        placeholder="Nhập tiêu đề yêu cầu..."
+                        value={updateRequestData.title}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-description">Mô tả *</Label>
+                      <Textarea
+                        id="update-description"
+                        placeholder="Mô tả chi tiết yêu cầu chỉnh sửa..."
+                        value={updateRequestData.description}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            description: e.target.value,
+                          })
+                        }
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="update-height">Chiều cao (cm)</Label>
+                      <Input
+                        id="update-height"
+                        type="number"
+                        value={updateRequestData.height}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            height: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-weight">Cân nặng (kg)</Label>
+                      <Input
+                        id="update-weight"
+                        type="number"
+                        value={updateRequestData.weight}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            weight: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-bust">Vòng ngực (cm)</Label>
+                      <Input
+                        id="update-bust"
+                        type="number"
+                        value={updateRequestData.height}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            bust: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-waist">Vòng eo (cm)</Label>
+                      <Input
+                        id="update-waist"
+                        type="number"
+                        value={updateRequestData.waist}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            waist: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="update-hip">Vòng mông (cm)</Label>
+                      <Input
+                        id="update-hip"
+                        type="number"
+                        value={updateRequestData.hip}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            hip: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-material">Chất liệu</Label>
+                      <Input
+                        id="update-material"
+                        value={updateRequestData.material}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            material: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-color">Màu sắc</Label>
+                      <Input
+                        id="update-color"
+                        value={updateRequestData.color}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            color: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="update-length">Độ dài</Label>
+                      <Input
+                        id="update-length"
+                        value={updateRequestData.length}
+                        onChange={(e) =>
+                          setUpdateRequestData({
+                            ...updateRequestData,
+                            length: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <Button
+                      onClick={handleCreateUpdateRequest}
+                      disabled={
+                        !updateRequestData.title ||
+                        !updateRequestData.description ||
+                        isCreatingUpdateRequest
+                      }
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {isCreatingUpdateRequest ? "Đang tạo..." : "Gửi yêu cầu"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setShowUpdateRequestForm(false);
+                        setUpdateRequestData({
+                          title: "",
+                          description: "",
+                          height: 170,
+                          weight: 55,
+                          bust: 85,
+                          waist: 60,
+                          hip: 90,
+                          armpit: 40,
+                          bicep: 30,
+                          neck: 35,
+                          shoulderWidth: 40,
+                          sleeveLength: 60,
+                          backLength: 40,
+                          lowerWaist: 20,
+                          waistToFloor: 60,
+                          material: "Cotton",
+                          color: "Đỏ",
+                          length: "Dài",
+                          neckline: "Cổ tròn",
+                          sleeve: "Tay ngắn",
+                          images: "",
+                        });
+                      }}
+                    >
+                      Hủy
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Danh sách yêu cầu chỉnh sửa */}
+              {updateRequestsData?.items &&
+                updateRequestsData.items.length > 0 && (
+                  <div className="border-t pt-4">
+                    <h5 className="font-medium text-blue-800 mb-3">
+                      Danh sách yêu cầu đã gửi:
+                    </h5>
+                    <div className="space-y-3">
+                      {updateRequestsData.items.map((request) => (
+                        <div
+                          key={request.id}
+                          className="bg-white p-3 rounded-lg border"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h6 className="font-medium">{request.title}</h6>
+                              <p className="text-sm text-gray-600">
+                                {request.description}
+                              </p>
+                              <div className="text-xs text-gray-500 mt-2">
+                                <span className="mr-4">
+                                  Chiều cao: {request.height}cm
+                                </span>
+                                <span className="mr-4">
+                                  Cân nặng: {request.weight}kg
+                                </span>
+                                <span className="mr-4">
+                                  Vòng ngực: {request.bust}cm
+                                </span>
+                                <span className="mr-4">
+                                  Vòng eo: {request.waist}cm
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-end space-y-2 ml-4">
+                              <Badge
+                                variant="outline"
+                                className={
+                                  request.status === "PENDING"
+                                    ? "border-yellow-300 text-yellow-700"
+                                    : request.status === "ACCEPTED"
+                                    ? "border-green-300 text-green-700"
+                                    : "border-red-300 text-red-700"
+                                }
+                              >
+                                {request.status === "PENDING"
+                                  ? "Chờ xử lý"
+                                  : request.status === "ACCEPTED"
+                                  ? "Đã chấp nhận"
+                                  : "Đã từ chối"}
+                              </Badge>
+                              <div className="flex space-x-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleViewUpdateRequestDetail(request.id)
+                                  }
+                                  className="text-xs"
+                                >
+                                  Xem chi tiết
+                                </Button>
+                                {request.status === "PENDING" && (
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleDeleteUpdateRequest(request.id)
+                                    }
+                                    disabled={isDeletingUpdateRequest}
+                                    className="text-xs"
+                                  >
+                                    {isDeletingUpdateRequest
+                                      ? "Đang xóa..."
+                                      : "Xóa"}
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Dialog xem chi tiết yêu cầu cập nhật */}
+      {showUpdateRequestDetail && updateRequestDetail?.item && (
+        <Card className="border-blue-200 bg-blue-50/50">
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-medium text-blue-800">
+                  Chi tiết yêu cầu chỉnh sửa
+                </h4>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowUpdateRequestDetail(null)}
+                >
+                  Đóng
+                </Button>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg border">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h6 className="font-medium text-lg">
+                      {updateRequestDetail.item.title}
+                    </h6>
+                    <p className="text-gray-600 mt-2">
+                      {updateRequestDetail.item.description}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <Badge
+                      variant="outline"
+                      className={
+                        updateRequestDetail.item.status === "PENDING"
+                          ? "border-yellow-300 text-yellow-700"
+                          : updateRequestDetail.item.status === "ACCEPTED"
+                          ? "border-green-300 text-green-700"
+                          : "border-red-300 text-red-700"
+                      }
+                    >
+                      {updateRequestDetail.item.status === "PENDING"
+                        ? "Chờ xử lý"
+                        : updateRequestDetail.item.status === "ACCEPTED"
+                        ? "Đã chấp nhận"
+                        : "Đã từ chối"}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                  <div>
+                    <Label className="text-xs text-gray-500">Chiều cao</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.height} cm
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Cân nặng</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.weight} kg
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Vòng ngực</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.bust} cm
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Vòng eo</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.waist} cm
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Vòng mông</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.hip} cm
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Chất liệu</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.material}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Màu sắc</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.color}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Độ dài</Label>
+                    <p className="font-medium">
+                      {updateRequestDetail.item.length}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-xs text-gray-500">
+                  <p>
+                    Ngày tạo:{" "}
+                    {new Date(
+                      updateRequestDetail.item.createdAt
+                    ).toLocaleDateString("vi-VN")}
+                  </p>
+                  <p>
+                    Cập nhật lần cuối:{" "}
+                    {new Date(
+                      updateRequestDetail.item.updatedAt
+                    ).toLocaleDateString("vi-VN")}
+                  </p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

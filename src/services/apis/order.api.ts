@@ -240,6 +240,13 @@ export const orderApi = createApi({
       }),
     }),
 
+    confirmNoComplaint: builder.mutation<IItemResponse<null>, string>({
+      query: (orderId) => ({
+        url: `orders/${orderId}/confirm-no-complaint`,
+        method: "PUT",
+      }),
+    }),
+
     getOrderOfShop: builder.query<IListResponse<IOrder>, IGetOrdersOfShop>({
       query: ({ shopId, sort = "", filter = "", page = 0, size = 10 }) => ({
         url: `orders/shops/${shopId}`,
@@ -268,6 +275,7 @@ export const {
   useLazyGetOrderTransactionsQuery,
   useLazyGetOrderComplaintsQuery,
   useCreateOrderComplaintMutation,
+  useConfirmNoComplaintMutation,
   useLazyGetOrderOfShopQuery,
   useLazyGetShopIncomeQuery,
 } = orderApi;

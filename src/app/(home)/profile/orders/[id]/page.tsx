@@ -323,6 +323,8 @@ const OrderDetailPage = () => {
                 fetchMilestone={fetchMilestone}
                 orderStatus={order.status}
                 orderId={order.id}
+                orderType={order.type}
+                orderServiceDetail={_orderService}
               />
             </TabsContent>
 

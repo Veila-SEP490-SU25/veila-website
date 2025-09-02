@@ -1,5 +1,6 @@
 import { baseQueryWithRefresh } from "@/services/apis/base.query";
 import { IItemResponse, IMembership, IListResponse } from "@/services/types";
+import { IMembershipResponse } from "@/services/types/membership.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export interface IRegisterMembership {
@@ -36,8 +37,8 @@ export const membershipApi = createApi({
       }),
     }),
 
-    // Lấy danh sách membership của user
-    getMyMemberships: builder.query<IListResponse<IMembership>, void>({
+    // Lấy thông tin membership của user
+    getMyMemberships: builder.query<IItemResponse<IMembership>, void>({
       query: () => ({
         url: "memberships/me",
         method: "GET",
