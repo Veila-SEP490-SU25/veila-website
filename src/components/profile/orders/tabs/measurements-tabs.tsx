@@ -33,7 +33,10 @@ export const MeasurementsTab = ({
   orderService,
   orderType,
 }: MeasurementsTabProps) => {
-  if (!currentOrderDressDetail) {
+  if (
+    (orderType === OrderType.CUSTOM && !orderService) ||
+    (orderType !== OrderType.CUSTOM && !currentOrderDressDetail)
+  ) {
     return (
       <Card>
         <CardContent className="text-center py-12">
@@ -55,7 +58,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.height
-          : currentOrderDressDetail.height,
+          : currentOrderDressDetail?.height,
       unit: "cm",
       icon: <Ruler className="h-4 w-4 text-blue-500" />,
     },
@@ -64,7 +67,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.weight
-          : currentOrderDressDetail.weight,
+          : currentOrderDressDetail?.weight,
       unit: "kg",
       icon: <Weight className="h-4 w-4 text-green-500" />,
     },
@@ -73,7 +76,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.bust
-          : currentOrderDressDetail.bust,
+          : currentOrderDressDetail?.bust,
       unit: "cm",
       icon: <User className="h-4 w-4 text-purple-500" />,
     },
@@ -82,7 +85,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.waist
-          : currentOrderDressDetail.waist,
+          : currentOrderDressDetail?.waist,
       unit: "cm",
       icon: <Circle className="h-4 w-4 text-orange-500" />,
     },
@@ -91,7 +94,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.hip
-          : currentOrderDressDetail.hip,
+          : currentOrderDressDetail?.hip,
       unit: "cm",
       icon: <Circle className="h-4 w-4 text-pink-500" />,
     },
@@ -100,7 +103,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.armpit
-          : currentOrderDressDetail.armpit,
+          : currentOrderDressDetail?.armpit,
       unit: "cm",
       icon: <Shirt className="h-4 w-4 text-indigo-500" />,
     },
@@ -109,7 +112,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.bicep
-          : currentOrderDressDetail.bicep,
+          : currentOrderDressDetail?.bicep,
       unit: "cm",
       icon: <Muscle className="h-4 w-4 text-red-500" />,
     },
@@ -118,7 +121,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.neck
-          : currentOrderDressDetail.neck,
+          : currentOrderDressDetail?.neck,
       unit: "cm",
       icon: <Circle className="h-4 w-4 text-teal-500" />,
     },
@@ -127,7 +130,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.shoulderWidth
-          : currentOrderDressDetail.shoulderWidth,
+          : currentOrderDressDetail?.shoulderWidth,
       unit: "cm",
       icon: <Shirt className="h-4 w-4 text-cyan-500" />,
     },
@@ -136,7 +139,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.sleeveLength
-          : currentOrderDressDetail.sleeveLength,
+          : currentOrderDressDetail?.sleeveLength,
       unit: "cm",
       icon: <Shirt className="h-4 w-4 text-amber-500" />,
     },
@@ -145,7 +148,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.backLength
-          : currentOrderDressDetail.backLength,
+          : currentOrderDressDetail?.backLength,
       unit: "cm",
       icon: <Ruler className="h-4 w-4 text-emerald-500" />,
     },
@@ -154,7 +157,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.lowerWaist
-          : currentOrderDressDetail.lowerWaist,
+          : currentOrderDressDetail?.lowerWaist,
       unit: "cm",
       icon: <Ruler className="h-4 w-4 text-violet-500" />,
     },
@@ -163,7 +166,7 @@ export const MeasurementsTab = ({
       value:
         orderType === OrderType.CUSTOM
           ? orderService?.request.waistToFloor
-          : currentOrderDressDetail.waistToFloor,
+          : currentOrderDressDetail?.waistToFloor,
       unit: "cm",
       icon: <Ruler className="h-4 w-4 text-rose-500" />,
     },
@@ -182,20 +185,20 @@ export const MeasurementsTab = ({
       </CardHeader>
       <CardContent>
         {/* Dress Info */}
-        {currentOrderDressDetail.dress && (
+        {currentOrderDressDetail?.dress && (
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <h4 className="font-semibold text-blue-900 mb-2">Thông tin váy</h4>
             <div className="space-y-2">
               <div className="flex items-start gap-2">
                 <strong className="text-blue-800 shrink-0">Tên váy:</strong>
                 <p className="text-blue-800 truncate max-w-full">
-                  {currentOrderDressDetail.dress.name}
+                  {currentOrderDressDetail?.dress.name}
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <strong className="text-blue-800 shrink-0">Mô tả:</strong>
                 <p className="text-blue-800 max-w-full break-words">
-                  {currentOrderDressDetail.dress.description ||
+                  {currentOrderDressDetail?.dress.description ||
                     "Không có mô tả"}
                 </p>
               </div>
@@ -205,7 +208,7 @@ export const MeasurementsTab = ({
                   {new Intl.NumberFormat("vi-VN", {
                     style: "currency",
                     currency: "VND",
-                  }).format(Number(currentOrderDressDetail.price))}
+                  }).format(Number(currentOrderDressDetail?.price))}
                 </span>
               </div>
             </div>

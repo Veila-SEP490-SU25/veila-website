@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Ruler, Package, Settings, Tag } from "lucide-react";
+import { Ruler, Package, Settings, Tag, Weight, User, Circle, Shirt, Hand } from "lucide-react";
 import { IOrderDressDetail, IOrder, OrderType } from "@/services/types";
 import { formatCurrency } from "@/lib/order-util";
 
@@ -11,7 +11,7 @@ interface MeasurementsTabProps {
   order: IOrder;
   orderDressDetails?: any[];
   orderAccessories?: any[];
-  orderServiceDetails?: any;
+  orderService?: any;
 }
 
 export const MeasurementsTab = ({
@@ -19,86 +19,126 @@ export const MeasurementsTab = ({
   order,
   orderDressDetails = [],
   orderAccessories = [],
-  orderServiceDetails,
+  orderService : orderService,
 }: MeasurementsTabProps) => {
-  const measurementFields = [
+  const orderType = order.type;
+  const measurements = [
     {
       label: "Chiều cao",
-      value: currentOrderDressDetail?.height,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.height
+          : currentOrderDressDetail?.height,
       unit: "cm",
-      icon: "📏",
+      icon: <Ruler className="h-4 w-4 text-blue-500" />,
     },
     {
       label: "Cân nặng",
-      value: currentOrderDressDetail?.weight,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.weight
+          : currentOrderDressDetail?.weight,
       unit: "kg",
-      icon: "⚖️",
+      icon: <Weight className="h-4 w-4 text-green-500" />,
     },
     {
       label: "Vòng ngực",
-      value: currentOrderDressDetail?.bust,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.bust
+          : currentOrderDressDetail?.bust,
       unit: "cm",
-      icon: "👗",
+      icon: <User className="h-4 w-4 text-purple-500" />,
     },
     {
       label: "Vòng eo",
-      value: currentOrderDressDetail?.waist,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.waist
+          : currentOrderDressDetail?.waist,
       unit: "cm",
-      icon: "👗",
+      icon: <Circle className="h-4 w-4 text-orange-500" />,
     },
     {
       label: "Vòng hông",
-      value: currentOrderDressDetail?.hip,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.hip
+          : currentOrderDressDetail?.hip,
       unit: "cm",
-      icon: "👗",
+      icon: <Circle className="h-4 w-4 text-pink-500" />,
     },
     {
       label: "Nách",
-      value: currentOrderDressDetail?.armpit,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.armpit
+          : currentOrderDressDetail?.armpit,
       unit: "cm",
-      icon: "👕",
+      icon: <Shirt className="h-4 w-4 text-indigo-500" />,
     },
     {
       label: "Bắp tay",
-      value: currentOrderDressDetail?.bicep,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.bicep
+          : currentOrderDressDetail?.bicep,
       unit: "cm",
-      icon: "💪",
+      icon: <Hand className="h-4 w-4 text-red-500" />,
     },
     {
       label: "Cổ",
-      value: currentOrderDressDetail?.neck,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.neck
+          : currentOrderDressDetail?.neck,
       unit: "cm",
-      icon: "👔",
+      icon: <Circle className="h-4 w-4 text-teal-500" />,
     },
     {
       label: "Vai",
-      value: currentOrderDressDetail?.shoulderWidth,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.shoulderWidth
+          : currentOrderDressDetail?.shoulderWidth,
       unit: "cm",
-      icon: "👕",
+      icon: <Shirt className="h-4 w-4 text-cyan-500" />,
     },
     {
       label: "Tay áo",
-      value: currentOrderDressDetail?.sleeveLength,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.sleeveLength
+          : currentOrderDressDetail?.sleeveLength,
       unit: "cm",
-      icon: "👕",
+      icon: <Shirt className="h-4 w-4 text-amber-500" />,
     },
     {
       label: "Dài lưng",
-      value: currentOrderDressDetail?.backLength,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.backLength
+          : currentOrderDressDetail?.backLength,
       unit: "cm",
-      icon: "👗",
+      icon: <Ruler className="h-4 w-4 text-emerald-500" />,
     },
     {
       label: "Eo thấp",
-      value: currentOrderDressDetail?.lowerWaist,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.lowerWaist
+          : currentOrderDressDetail?.lowerWaist,
       unit: "cm",
-      icon: "📐",
+      icon: <Ruler className="h-4 w-4 text-violet-500" />,
     },
     {
       label: "Eo xuống sàn",
-      value: currentOrderDressDetail?.waistToFloor,
+      value:
+        orderType === OrderType.CUSTOM
+          ? orderService?.request.waistToFloor
+          : currentOrderDressDetail?.waistToFloor,
       unit: "cm",
-      icon: "📐",
+      icon: <Ruler className="h-4 w-4 text-rose-500" />,
     },
   ];
 
@@ -118,35 +158,35 @@ export const MeasurementsTab = ({
             </p>
           </CardHeader>
           <CardContent>
-            {orderServiceDetails ? (
+            {orderService ? (
               <div className="space-y-4">
                 <div className="p-4 border rounded-lg bg-blue-50/50">
                   <h4 className="font-semibold text-lg mb-2">
-                    {orderServiceDetails.service?.name || "Dịch vụ đặt may"}
+                    {orderService.service?.name || "Dịch vụ đặt may"}
                   </h4>
                   <p className="text-sm text-gray-700 mb-3">
-                    {orderServiceDetails.service?.description ||
+                    {orderService.service?.description ||
                       "Không có mô tả"}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Giá dịch vụ:</span>
                     <span className="font-bold text-lg text-green-600">
-                      {formatCurrency(orderServiceDetails.price || 0)}
+                      {formatCurrency(orderService.price || 0)}
                     </span>
                   </div>
                 </div>
 
-                {orderServiceDetails.request && (
+                {orderService.request && (
                   <div className="p-4 border rounded-lg bg-orange-50/50">
                     <h5 className="font-semibold text-blue-800 mb-2">
                       Yêu cầu đặc biệt
                     </h5>
                     <p className="text-sm text-blue-700 mb-2">
-                      {orderServiceDetails.request.title}
+                      {orderService.request.title}
                     </p>
-                    {orderServiceDetails.request.description && (
+                    {orderService.request.description && (
                       <p className="text-sm text-blue-600">
-                        {orderServiceDetails.request.description}
+                        {orderService.request.description}
                       </p>
                     )}
                   </div>
@@ -268,7 +308,7 @@ export const MeasurementsTab = ({
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {measurementFields.map((measurement) => (
+              {measurements.map((measurement) => (
                 <div
                   key={measurement.label}
                   className="p-3 border rounded-lg bg-gray-50/50"
