@@ -7,6 +7,7 @@ import { getCoverImage } from "@/lib/products-utils";
 import { BlogStatus, IBlog } from "@/services/types";
 import { Calendar, Eye, Shield, ShieldCheck } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface BlogCardProps {
   blog: IBlog;
@@ -79,9 +80,15 @@ export const BlogCard = ({ blog, onUpdate }: BlogCardProps) => {
               </div>
             </div>
           </div>
-          <Button className="flex items-center w-max gap-2" variant="outline">
-            <Eye className="size-4" />
-            Xem chi tiết
+          <Button
+            className="flex items-center w-max gap-2"
+            variant="outline"
+            asChild
+          >
+            <Link href={`/staff/blogs/${blog.id}`}>
+              <Eye className="size-4" />
+              Xem chi tiết
+            </Link>
           </Button>
         </div>
       </div>
