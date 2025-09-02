@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useGetMyMembershipsQuery } from "@/services/apis";
 import { MembershipStatus } from "@/services/types";
+import { MembershipPackagesDialog } from "./membership-packages-dialog";
 
 export const MembershipInfo = () => {
   const {
@@ -99,15 +100,12 @@ export const MembershipInfo = () => {
     );
   }
 
-  const memberships = membershipsData?.items || [];
-  const activeMembership = memberships.find(
-    (m) => m.status === MembershipStatus.ACTIVE
-  );
-  const inactiveMemberships = memberships.filter(
-    (m) => m.status === MembershipStatus.INACTIVE
-  );
+  // API trả về IItemResponse<IMembership> nên dùng .item thay vì .items
+  const membership = membershipsData?.item;
+  const hasActiveMembership =
+    membership && membership.status === MembershipStatus.ACTIVE;
 
-  if (memberships.length === 0) {
+  if (!membership) {
     return (
       <div className="space-y-6">
         <Card>
@@ -153,19 +151,21 @@ export const MembershipInfo = () => {
                   <p>
                     •{" "}
                     <strong>
-                      Chỉ được đăng ký 1 gói dịch vụ tại một thời điểm
+                      Có thể đăng ký gói mới ngay cả khi đang có gói hoạt động
                     </strong>
                   </p>
                   <p>
                     •{" "}
                     <strong>
-                      Phải hủy gói hiện tại trước khi đăng ký gói mới
+                      Gói mới phải có giá trị lớn hơn gói hiện tại để được đăng
+                      ký
                     </strong>
                   </p>
                   <p>
                     •{" "}
                     <strong>
-                      Gói đang hoạt động sẽ tự động kết thúc khi đăng ký gói mới
+                      Gói cũ sẽ tự động bị hủy khi đăng ký gói mới (force =
+                      true)
                     </strong>
                   </p>
                   <p>
@@ -174,7 +174,8 @@ export const MembershipInfo = () => {
                   <p>
                     •{" "}
                     <strong>
-                      Chỉ có thể đăng ký gói mới sau khi gói hiện tại kết thúc
+                      Có thể đăng ký gói mới bất cứ lúc nào nếu đáp ứng điều
+                      kiện
                     </strong>
                   </p>
                 </div>
@@ -189,13 +190,13 @@ export const MembershipInfo = () => {
   return (
     <div className="space-y-6">
       {/* Active Membership */}
-      {activeMembership && (
+      {membership && hasActiveMembership && (
         <Card className="border-green-200 bg-green-50/50">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2 text-green-800">
               <Crown className="h-5 w-5" />
               <span>Gói dịch vụ đang hoạt động</span>
-              {getStatusBadge(activeMembership.status)}
+              {getStatusBadge(membership.status)}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -205,7 +206,7 @@ export const MembershipInfo = () => {
                 <div>
                   <p className="text-sm text-gray-600">Ngày bắt đầu</p>
                   <p className="font-medium">
-                    {formatDate(activeMembership.startDate)}
+                    {formatDate(membership.startDate)}
                   </p>
                 </div>
               </div>
@@ -214,70 +215,22 @@ export const MembershipInfo = () => {
                 <div>
                   <p className="text-sm text-gray-600">Ngày kết thúc</p>
                   <p className="font-medium">
-                    {formatDate(activeMembership.endDate)}
+                    {formatDate(membership.endDate)}
                   </p>
                 </div>
               </div>
             </div>
 
-            {activeMembership.subscription && (
+            {membership.subscription && (
               <div className="pt-4 border-t border-green-200">
                 <h4 className="font-medium text-green-800 mb-2">
-                  Thông tin gói: {activeMembership.subscription.name}
+                  Thông tin gói: {membership.subscription.name}
                 </h4>
                 <p className="text-sm text-green-700">
-                  {activeMembership.subscription.description}
+                  {membership.subscription.description}
                 </p>
               </div>
             )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Inactive Memberships History */}
-      {inactiveMemberships.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-gray-600" />
-              <span>Lịch sử gói dịch vụ</span>
-              <Badge variant="outline" className="text-gray-600">
-                {inactiveMemberships.length} gói
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {inactiveMemberships.map((membership) => (
-                <div
-                  key={membership.id}
-                  className="flex items-center justify-between p-4 border rounded-lg bg-gray-50"
-                >
-                  <div className="flex items-center space-x-3">
-                    {getStatusIcon(membership.status)}
-                    <div>
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className="font-medium">
-                          {membership.subscription?.name || "Gói dịch vụ"}
-                        </span>
-                        {getStatusBadge(membership.status)}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {formatDate(membership.startDate)} -{" "}
-                        {formatDate(membership.endDate)}
-                      </div>
-                    </div>
-                  </div>
-
-                  {membership.subscription && (
-                    <Button variant="outline" size="sm">
-                      <Crown className="h-4 w-4 mr-2" />
-                      Gia hạn
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       )}
@@ -297,19 +250,19 @@ export const MembershipInfo = () => {
                 <p>
                   •{" "}
                   <strong>
-                    Chỉ được đăng ký 1 gói dịch vụ tại một thời điểm
+                    Có thể đăng ký gói mới ngay cả khi đang có gói hoạt động
                   </strong>
                 </p>
                 <p>
                   •{" "}
                   <strong>
-                    Phải hủy gói hiện tại trước khi đăng ký gói mới
+                    Gói mới phải có giá trị lớn hơn gói hiện tại để được đăng ký
                   </strong>
                 </p>
                 <p>
                   •{" "}
                   <strong>
-                    Gói đang hoạt động sẽ tự động kết thúc khi đăng ký gói mới
+                    Gói cũ sẽ tự động bị hủy khi đăng ký gói mới (force = true)
                   </strong>
                 </p>
                 <p>
@@ -318,7 +271,7 @@ export const MembershipInfo = () => {
                 <p>
                   •{" "}
                   <strong>
-                    Chỉ có thể đăng ký gói mới sau khi gói hiện tại kết thúc
+                    Có thể đăng ký gói mới bất cứ lúc nào nếu đáp ứng điều kiện
                   </strong>
                 </p>
               </div>
@@ -329,7 +282,7 @@ export const MembershipInfo = () => {
 
       {/* Action Buttons */}
       <div className="flex items-center justify-center space-x-4">
-        {activeMembership ? (
+        {hasActiveMembership && (
           <Button
             variant="outline"
             className="border-red-300 text-red-700 hover:bg-red-50"
@@ -341,17 +294,18 @@ export const MembershipInfo = () => {
             <XCircle className="h-4 w-4 mr-2" />
             Hủy gói hiện tại
           </Button>
-        ) : (
-          <Button
-            className="bg-yellow-600 hover:bg-yellow-700"
-            onClick={() => (window.location.href = "/shops/my")}
-          >
-            <Crown className="h-4 w-4 mr-2" />
-            Đăng ký gói mới
-          </Button>
         )}
 
-        {activeMembership && (
+        <MembershipPackagesDialog
+          trigger={
+            <Button className="bg-yellow-600 hover:bg-yellow-700">
+              <Crown className="h-4 w-4 mr-2" />
+              {hasActiveMembership ? "Đăng ký gói mới" : "Đăng ký gói dịch vụ"}
+            </Button>
+          }
+        />
+
+        {hasActiveMembership && (
           <Button
             variant="outline"
             disabled

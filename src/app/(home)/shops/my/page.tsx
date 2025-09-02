@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShopOverview } from "@/components/shops/my/shop-overview";
 import { ShopInformation } from "@/components/shops/my/shop-information";
+import { MyShopOrders } from "@/components/shops/my/shop-orders";
+import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
+import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
+import { ShopBlogsTabs } from "@/components/shops/my/blogs/shop-blogs-tabs";
 
 import { SuspendedShopDashboard } from "@/components/shops/suspended-shop-dashboard";
 import { useLazyGetMyShopQuery } from "@/services/apis";
@@ -148,14 +152,38 @@ const MyShopPage = () => {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+          <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
+          <TabsTrigger value="dresses">Váy cưới</TabsTrigger>
+          <TabsTrigger value="accessories">Phụ kiện</TabsTrigger>
+          <TabsTrigger value="blogs">Blogs</TabsTrigger>
           <TabsTrigger value="info">Thông tin</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
           <ShopOverview shop={shop} />
+        </TabsContent>
+
+        {/* Orders Tab */}
+        <TabsContent value="orders" className="space-y-6">
+          <MyShopOrders />
+        </TabsContent>
+
+        {/* Dresses Tab */}
+        <TabsContent value="dresses" className="space-y-6">
+          <ShopDressesTabs />
+        </TabsContent>
+
+        {/* Accessories Tab */}
+        <TabsContent value="accessories" className="space-y-6">
+          <ShopAccessoriesTabs />
+        </TabsContent>
+
+        {/* Blogs Tab */}
+        <TabsContent value="blogs" className="space-y-6">
+          <ShopBlogsTabs />
         </TabsContent>
 
         {/* Shop Information Tab */}
