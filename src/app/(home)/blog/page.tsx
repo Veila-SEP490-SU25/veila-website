@@ -320,7 +320,6 @@ export default function BlogListPage() {
                     <SelectItem value="ALL">Tất cả</SelectItem>
                     <SelectItem value="PUBLISHED">Đã xuất bản</SelectItem>
                     <SelectItem value="DRAFT">Bản nháp</SelectItem>
-                    <SelectItem value="UNPUBLISHED">Chưa xuất bản</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

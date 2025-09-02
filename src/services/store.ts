@@ -20,6 +20,7 @@ import {
   subscriptionApi,
   transactionApi,
   userApi,
+  vonageApi,
   walletApi,
 } from "@/services/apis";
 import { configureStore } from "@reduxjs/toolkit";
@@ -49,6 +50,7 @@ const store = configureStore({
     [walletApi.reducerPath]: walletApi.reducer,
     [localeApi.reducerPath]: localeApi.reducer,
     [membershipApi.reducerPath]: membershipApi.reducer,
+    [vonageApi.reducerPath]: vonageApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -73,7 +75,8 @@ const store = configureStore({
       userApi.middleware,
       walletApi.middleware,
       localeApi.middleware,
-      membershipApi.middleware
+      membershipApi.middleware,
+      vonageApi.middleware
     ),
 });
 
