@@ -64,8 +64,6 @@ const OrderDetailPage = () => {
     useLazyGetOrderAccessoriesQuery();
   const [getOrderService, { isLoading: isOrderServiceLoading }] =
     useLazyGetOrderServiceQuery();
-  const [checkoutOrder, { isLoading: isCheckingOut }] =
-    useCheckoutOrderMutation();
 
   // Fetch functions
   const fetchOrder = useCallback(async () => {
