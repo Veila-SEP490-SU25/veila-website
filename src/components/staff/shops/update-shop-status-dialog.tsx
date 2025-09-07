@@ -52,7 +52,7 @@ export const UpdateShopStatusDialog = ({
     } else {
       toast.error(errorMessage || "Cập nhật trạng thái thất bại");
     }
-  }, [onConfirm]);
+  }, [onConfirm, errorMessage, successMessage]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

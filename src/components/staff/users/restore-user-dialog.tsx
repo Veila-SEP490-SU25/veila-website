@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { isSuccess } from "@/lib/utils";
-import { useDeleteUserMutation, useRestoreUserMutation } from "@/services/apis";
+import { useRestoreUserMutation } from "@/services/apis";
 import { IUser } from "@/services/types";
-import { ArchiveRestore, Check, Trash, X } from "lucide-react";
+import { ArchiveRestore, Check, X } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
 import { toast } from "sonner";
 

@@ -5,8 +5,6 @@ import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
 import { OrderCard } from "@/components/staff/orders/order-card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,
@@ -27,7 +25,6 @@ import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetOrderOfShopQuery } from "@/services/apis";
 import { IOrder, IShop } from "@/services/types";
 import {
-  AlertCircleIcon,
   FileText,
   Package,
   RefreshCw,
@@ -54,7 +51,7 @@ interface IStats {
   totalCustomValue: number;
 }
 
-export const OrdersTabs = ({ shop, onUpdate }: OrdersTabsProps) => {
+export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [trigger, { isLoading }] = useLazyGetOrderOfShopQuery();
   const [isError, setIsError] = useState<boolean>(false);
@@ -104,18 +101,27 @@ export const OrdersTabs = ({ shop, onUpdate }: OrdersTabsProps) => {
       setIsError(true);
       setError("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
     }
-  }, [pageIndex, pageSize, setPaging, setIsError, setError, filter]);
+  }, [
+    pageIndex,
+    pageSize,
+    setPaging,
+    setIsError,
+    setError,
+    filter,
+    shop,
+    trigger,
+  ]);
 
   useEffect(() => {
     resetPaging();
     fetchOrders();
-  }, [filter]);
+  }, [filter, fetchOrders, resetPaging]);
 
   useEffect(() => {
     fetchOrders();
-  }, [pageIndex, pageSize, filter]);
+  }, [pageIndex, pageSize, filter, fetchOrders]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     const allOrders = await trigger({
       shopId: shop.id,
       filter: ``,
@@ -166,11 +172,11 @@ export const OrdersTabs = ({ shop, onUpdate }: OrdersTabsProps) => {
         .map((o) => Number(o.amount))
         .reduce((a, b) => a + b, 0),
     });
-  };
+  }, [shop, trigger, pageIndex, pageSize]);
 
   useEffect(() => {
     fetchStats();
-  }, [shop]);
+  }, [shop, fetchStats]);
 
   if (isError) {
     return (

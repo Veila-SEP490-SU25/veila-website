@@ -33,8 +33,8 @@ export const RequestSmartOtpDialog = ({
   const [open, setOpen] = useState<boolean>(false);
   const [walletPin, setWalletPin] = useState<string>("");
   const [requestOtp, { isLoading }] = useRequestSmartOtpMutation();
-  const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [, setIsError] = useState<boolean>(false);
+  const [, setError] = useState<string>("");
 
   const handleCancel = () => {
     setWalletPin("");
@@ -62,6 +62,7 @@ export const RequestSmartOtpDialog = ({
     } catch (error) {
       setIsError(true);
       setError("Có lỗi xảy ra, vui lòng thử lại sau");
+      console.error(error);
     }
   };
 

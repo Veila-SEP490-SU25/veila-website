@@ -80,7 +80,7 @@ export const MilestonesTab = ({
 
   return (
     <div className="space-y-4">
-      {milestones.map((milestone, index) => (
+      {milestones.map((milestone) => (
         <Card key={milestone.id} className="relative">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">

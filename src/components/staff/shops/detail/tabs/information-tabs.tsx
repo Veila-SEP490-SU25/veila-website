@@ -123,9 +123,10 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
         toast.error(
           "Có lỗi xảy ra khi cập nhật thông tin cửa hàng vui lòng thử lại sau"
         );
+        console.error(error);
       }
     },
-    [info, updateShopInfo]
+    [updateShopInfo]
   );
 
   useEffect(() => {

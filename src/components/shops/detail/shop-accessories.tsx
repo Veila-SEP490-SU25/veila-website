@@ -15,7 +15,7 @@ import { IAccessory, IPaginationResponse } from "@/services/types";
 import { Eye, Heart, ShoppingBag, Sparkles, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -49,7 +49,7 @@ export const ShopAccessories = ({ id }: Props) => {
     }));
   };
 
-  const fetchAccessories = async () => {
+  const fetchAccessories = useCallback(async () => {
     try {
       const { statusCode, message, items, ...pagination } =
         await getAccessories({
@@ -69,8 +69,10 @@ export const ShopAccessories = ({ id }: Props) => {
           totalPages: pagination.totalPages,
         }));
       }
-    } catch (error) {}
-  };
+    } catch (error) {
+      console.error("Error fetching accessories:", error);
+    }
+  }, [getAccessories, id, paging.pageIndex, paging.pageSize]);
 
   const getAvailabilityBadge = (accessory: IAccessory) => {
     if (accessory.isSellable && accessory.isRentable) {
@@ -85,7 +87,7 @@ export const ShopAccessories = ({ id }: Props) => {
 
   useEffect(() => {
     fetchAccessories();
-  }, [id, paging.pageIndex, paging.pageSize]);
+  }, [id, paging.pageIndex, paging.pageSize, fetchAccessories]);
 
   return (
     <div className="space-y-6">

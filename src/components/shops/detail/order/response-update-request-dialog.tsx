@@ -13,13 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { isSuccess } from "@/lib/utils";
 import {
   useApproveUpdateRequestMutation,
-  useStaffHandleCreateShopMutation,
 } from "@/services/apis";
-import { IShop, IUpdateRequest, UpdateRequestStatus } from "@/services/types";
+import { IUpdateRequest, UpdateRequestStatus } from "@/services/types";
 import { Check, X } from "lucide-react";
 import { ReactNode, useCallback, useState } from "react";
 import { toast } from "sonner";

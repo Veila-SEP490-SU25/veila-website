@@ -17,7 +17,6 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Eye,
-  Edit,
   Trash2,
   DollarSign,
   Ruler,
@@ -67,6 +66,7 @@ export function DeleteDressDialog({
         toast.error(message);
       }
     } catch (error) {
+      console.error(error);
       toast.error("Có lỗi xảy ra khi xóa sản phẩm");
     }
   };

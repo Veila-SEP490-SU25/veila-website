@@ -15,9 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
 import { isSuccess } from "@/lib/utils";
-import {
-  useUpdateSubscriptionMutation,
-} from "@/services/apis";
+import { useUpdateSubscriptionMutation } from "@/services/apis";
 import {
   ICreateSubscription,
   ISubscription,
@@ -49,6 +47,17 @@ export const UpdateSubscriptionDialog = ({
     amount: subscription.amount,
     images: subscription.images || "",
   });
+
+  const resetForm = useCallback(() => {
+    setFormData({
+      id: subscription.id,
+      name: subscription.name,
+      description: subscription.description,
+      duration: subscription.duration,
+      amount: subscription.amount,
+      images: subscription.images || "",
+    });
+  }, [setFormData, subscription]);
 
   const handleConfirm = useCallback(async () => {
     if (!formData.name || !formData.description || !formData.images) {
@@ -83,18 +92,7 @@ export const UpdateSubscriptionDialog = ({
     } catch (error) {
       console.error("Failed to respond to complaint:", error);
     }
-  }, [formData, onSuccess, trigger, setOpen]);
-
-  const resetForm = useCallback(() => {
-    setFormData({
-      id: subscription.id,
-      name: subscription.name,
-      description: subscription.description,
-      duration: subscription.duration,
-      amount: subscription.amount,
-      images: subscription.images || "",
-    });
-  }, [setFormData]);
+  }, [formData, onSuccess, trigger, setOpen, resetForm]);
 
   const handleCancel = useCallback(() => {
     setOpen(false);

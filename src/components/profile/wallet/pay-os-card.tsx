@@ -16,7 +16,7 @@ interface IPayOsCardProps {
 
 export const PayOsCard = ({ transfer, onUpdate }: IPayOsCardProps) => {
   const [webhookTrigger, { isLoading }] = usePostWebhookMutation();
-  const [config, setConfig] = useState<PayOSConfig>({
+  const [config] = useState<PayOSConfig>({
     RETURN_URL: window.location.origin,
     ELEMENT_ID: "embedded-container",
     CHECKOUT_URL: transfer.checkoutUrl,
@@ -47,7 +47,7 @@ export const PayOsCard = ({ transfer, onUpdate }: IPayOsCardProps) => {
         );
       }
     },
-    [webhookTrigger, transfer.transactionId]
+    [webhookTrigger, transfer.transactionId, onUpdate]
   );
 
   const { open: openPayOS, exit: closePayOS } = usePayOS(config);
@@ -57,7 +57,7 @@ export const PayOsCard = ({ transfer, onUpdate }: IPayOsCardProps) => {
       openPayOS();
       hasOpenedRef.current = true;
     }
-  }, [transfer.checkoutUrl]);
+  }, [transfer.checkoutUrl, openPayOS]);
 
   return (
     <div className="w-full grid grid-cols-1 justify-center items-center">

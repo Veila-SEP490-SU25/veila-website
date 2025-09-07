@@ -41,7 +41,7 @@ export const VerifyBadge = ({ isVerified }: { isVerified: boolean }) => {
   );
 };
 
-export const BlogCard = ({ blog, onUpdate }: BlogCardProps) => {
+export const BlogCard = ({ blog }: BlogCardProps) => {
   const shop = blog.user.shop;
   return (
     <Card className="grid grid-cols-1 md:grid-cols-3 gap-4 p-0 overflow-hidden">

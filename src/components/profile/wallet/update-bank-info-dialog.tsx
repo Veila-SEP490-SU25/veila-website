@@ -22,7 +22,7 @@ import { IUpdateBankInfo, useUpdateBankInfoMutation } from "@/services/apis";
 import { IWallet } from "@/services/types";
 import { Loader2, Save, X } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface UpdateBankInfoDialogProps {
@@ -56,12 +56,12 @@ export const UpdateBankInfoDialog = ({
     }));
   };
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setBankData({
       bankNumber: wallet.bankNumber || "",
       bin: wallet.bin || "",
     });
-  };
+  }, [wallet, setBankData]);
 
   const handleCancel = () => {
     setOpen(false);
@@ -70,7 +70,7 @@ export const UpdateBankInfoDialog = ({
 
   useEffect(() => {
     if (open) resetForm();
-  }, [open]);
+  }, [open, resetForm]);
 
   const handleSubmit = async () => {
     try {

@@ -61,8 +61,9 @@ export const UpdateUserStatusDialog = ({
       }
     } catch (error) {
       toast.error("Đã xảy ra lỗi khi cập nhật trạng thái giao dịch");
+      console.error(error);
     }
-  }, [trigger, user, status, onUpdate, updateInfo]);
+  }, [trigger, onUpdate, updateInfo, successMessage]);
 
   const defaultTrigger = (
     <Button variant="outline" onClick={() => setOpen(true)}>
@@ -82,7 +83,7 @@ export const UpdateUserStatusDialog = ({
       status: status,
       username: user.username,
     });
-  }, [user, open, setUpdateInfo]);
+  }, [user, open, setUpdateInfo, status]);
 
   const handleCancel = useCallback(() => {
     setOpen(false);

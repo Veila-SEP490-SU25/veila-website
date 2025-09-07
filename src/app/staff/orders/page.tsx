@@ -94,18 +94,18 @@ const StaffOrderPage = () => {
       setIsError(true);
       setError("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
     }
-  }, [pageIndex, pageSize, setPaging, setIsError, setError, filter]);
+  }, [pageIndex, pageSize, setPaging, setIsError, setError, filter, trigger]);
 
   useEffect(() => {
     resetPaging();
     fetchOrders();
-  }, [filter]);
+  }, [filter, resetPaging, fetchOrders]);
 
   useEffect(() => {
     fetchOrders();
-  }, [pageIndex, pageSize, filter]);
+  }, [pageIndex, pageSize, filter, fetchOrders]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     const allOrders = await trigger({
       filter: ``,
       sort: `updatedAt:desc`,
@@ -152,11 +152,11 @@ const StaffOrderPage = () => {
         .map((o) => Number(o.amount))
         .reduce((a, b) => a + b, 0),
     });
-  };
+  }, [trigger, pageIndex, pageSize]);
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [fetchStats]);
 
   if (isError) {
     return (

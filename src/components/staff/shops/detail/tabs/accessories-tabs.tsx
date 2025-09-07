@@ -43,7 +43,7 @@ interface AccessoriesTabsProps {
   onUpdate?: () => void;
 }
 
-export const AccessoriesTabs = ({ shop, onUpdate }: AccessoriesTabsProps) => {
+export const AccessoriesTabs = ({ shop }: AccessoriesTabsProps) => {
   const [accessories, setAccessories] = useState<IAccessory[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [trigger, { isLoading }] = useLazyGetShopAccessoriesQuery();
@@ -85,6 +85,8 @@ export const AccessoriesTabs = ({ shop, onUpdate }: AccessoriesTabsProps) => {
       setError("Đã xảy ra lỗi khi tải dữ liệu phụ kiện của cửa hàng");
     }
   }, [
+    shop,
+    trigger,
     debouncedSearchTerm,
     pageIndex,
     pageSize,
@@ -96,11 +98,11 @@ export const AccessoriesTabs = ({ shop, onUpdate }: AccessoriesTabsProps) => {
   useEffect(() => {
     resetPaging();
     fetchAccessories();
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, resetPaging, fetchAccessories]);
 
   useEffect(() => {
     fetchAccessories();
-  }, [debouncedSearchTerm, pageIndex, pageSize]);
+  }, [debouncedSearchTerm, pageIndex, pageSize, fetchAccessories]);
 
   if (isError) {
     return (

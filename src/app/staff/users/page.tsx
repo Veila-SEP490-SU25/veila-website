@@ -24,74 +24,6 @@ import { PagingComponent } from "@/components/paging-component";
 import { UserCard } from "@/components/staff/users/user-card";
 import { CreateUserDialog } from "@/components/staff/users/create-user-dialog";
 
-const users = [
-  {
-    id: 1,
-    name: "Nguyễn Thị Lan",
-    email: "lan@gmail.com",
-    phone: "+84901234567",
-    userType: "customer",
-    status: "active",
-    joinDate: "2024-01-15",
-    lastLogin: "2024-01-25",
-    totalOrders: 3,
-    totalSpent: 15000000,
-    avatar: null,
-  },
-  {
-    id: 2,
-    name: "Trần Văn Minh",
-    email: "minh@gmail.com",
-    phone: "+84987654321",
-    userType: "supplier",
-    status: "active",
-    joinDate: "2023-12-10",
-    lastLogin: "2024-01-24",
-    totalOrders: 0,
-    totalSpent: 0,
-    avatar: null,
-  },
-  {
-    id: 3,
-    name: "Lê Thị Hương",
-    email: "huong@gmail.com",
-    phone: "+84912345678",
-    userType: "customer",
-    status: "suspended",
-    joinDate: "2024-01-20",
-    lastLogin: "2024-01-22",
-    totalOrders: 1,
-    totalSpent: 2500000,
-    avatar: null,
-  },
-  {
-    id: 4,
-    name: "Phạm Văn Nam",
-    email: "nam@gmail.com",
-    phone: "+84923456789",
-    userType: "customer",
-    status: "active",
-    joinDate: "2024-01-18",
-    lastLogin: "2024-01-25",
-    totalOrders: 5,
-    totalSpent: 25000000,
-    avatar: null,
-  },
-  {
-    id: 5,
-    name: "Võ Thị Mai",
-    email: "mai@gmail.com",
-    phone: "+84934567890",
-    userType: "supplier",
-    status: "pending",
-    joinDate: "2024-01-22",
-    lastLogin: "2024-01-23",
-    totalOrders: 0,
-    totalSpent: 0,
-    avatar: null,
-  },
-];
-
 export default function UsersManagement() {
   const [users, setUsers] = useState<IUser[]>([]);
   const [trigger, { isLoading }] = useLazyGetUsersQuery();
@@ -127,6 +59,7 @@ export default function UsersManagement() {
         setError(message);
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
       setError("Có lỗi xảy ra trong quá trình tải dữ liệu khiếu nại");
     }

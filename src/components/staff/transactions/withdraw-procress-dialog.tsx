@@ -53,9 +53,10 @@ export const WithdrawProcessDialog = ({
         toast.error(message);
       }
     } catch (error) {
+      console.error(error);
       toast.error("Xảy ra lỗi khi hoàn thành giao dịch. Vui lòng thử lại sau.");
     }
-  }, [transaction, appproveTrigger]);
+  }, [transaction, appproveTrigger, onUpdate]);
 
   const handleCancel = useCallback(async () => {
     try {
@@ -71,8 +72,9 @@ export const WithdrawProcessDialog = ({
       }
     } catch (error) {
       toast.error("Xảy ra lỗi khi huỷ giao dịch. Vui lòng thử lại sau.");
+      console.error(error);
     }
-  }, [transaction, cancelTrigger]);
+  }, [transaction, cancelTrigger, onUpdate]);
 
   const { generateQRImage } = useVietQR();
 

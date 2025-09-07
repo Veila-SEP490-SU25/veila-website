@@ -38,7 +38,7 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
   const handleUpdateStatus = useCallback(
     async (status: ShopStatus) => {
       try {
-        const { statusCode, message } = await trigger({
+        const { statusCode } = await trigger({
           shopId: shop.id,
           status,
         }).unwrap();
@@ -53,7 +53,7 @@ export const ShopCard = ({ shop, onUpdate }: ShopCardProps) => {
         return false;
       }
     },
-    [trigger]
+    [trigger, shop, onUpdate]
   );
 
   const getVerificationBadge = (isVerified: boolean) => {

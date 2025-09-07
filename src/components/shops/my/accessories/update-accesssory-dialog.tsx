@@ -95,6 +95,7 @@ export function UpdateAccessoryDialog({
         toast.error(message || "Có lỗi xảy ra khi cập nhật phụ kiện");
       }
     } catch (error) {
+      console.error("Error updating accessory:", error);
       toast.error("Có lỗi xảy ra khi cập nhật phụ kiện");
     }
   };

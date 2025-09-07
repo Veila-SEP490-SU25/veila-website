@@ -85,6 +85,7 @@ export function CreateAccessoryDialog({
         toast.error(message || "Có lỗi xảy ra khi tạo phụ kiện");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Có lỗi xảy ra khi tạo phụ kiện");
     }
   };

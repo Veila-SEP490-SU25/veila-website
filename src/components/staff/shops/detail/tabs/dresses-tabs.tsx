@@ -5,7 +5,6 @@ import { GoBackButton } from "@/components/go-back-button";
 import { LoadingItem } from "@/components/loading-item";
 import { PagingComponent } from "@/components/paging-component";
 import { DressDetailDialog } from "@/components/shops/my/dresses/dress-detail-dialog";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,20 +34,18 @@ import {
 } from "@/lib/products-utils";
 import { usePaging } from "@/providers/paging.provider";
 import {
-  useLazyGetMyShopDressesQuery,
   useLazyGetShopDressesQuery,
 } from "@/services/apis";
 import { IDress, IShop } from "@/services/types";
-import { AlertCircleIcon, Eye, RefreshCw, Search } from "lucide-react";
+import { Eye, RefreshCw, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
 
 interface DressesTabsProps {
   shop: IShop;
   onUpdate?: () => void;
 }
 
-export const DressesTabs = ({ shop, onUpdate }: DressesTabsProps) => {
+export const DressesTabs = ({ shop }: DressesTabsProps) => {
   const [dresses, setDresses] = useState<IDress[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [trigger, { isLoading }] = useLazyGetShopDressesQuery();
@@ -90,6 +87,8 @@ export const DressesTabs = ({ shop, onUpdate }: DressesTabsProps) => {
       setError("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
     }
   }, [
+    shop,
+    trigger,
     debouncedSearchTerm,
     pageIndex,
     pageSize,
@@ -101,11 +100,11 @@ export const DressesTabs = ({ shop, onUpdate }: DressesTabsProps) => {
   useEffect(() => {
     resetPaging();
     fetchDresses();
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, fetchDresses, resetPaging]);
 
   useEffect(() => {
     fetchDresses();
-  }, [debouncedSearchTerm, pageIndex, pageSize]);
+  }, [debouncedSearchTerm, pageIndex, pageSize, fetchDresses]);
 
   if (isError) {
     return (

@@ -9,11 +9,9 @@ import { UserRole } from "@/services/types";
 import {
   CreditCard,
   FileText,
-  LayoutDashboard,
   LogOut,
   Menu,
   MessageSquare,
-  Settings,
   ShoppingBag,
   Store,
   TrendingUpDown,

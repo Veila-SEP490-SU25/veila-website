@@ -10,7 +10,7 @@ import {
   getTypeText,
 } from "@/lib/order-util";
 import { formatPrice } from "@/lib/products-utils";
-import { IOrder, OrderStatus, OrderType } from "@/services/types";
+import { IOrder, OrderStatus } from "@/services/types";
 import {
   AlertCircle,
   Calendar,
@@ -44,7 +44,7 @@ const getStatusIcon = (status: OrderStatus) => {
   }
 };
 
-export const OrderCard = ({ order, onUpdate }: IOrderCardProps) => {
+export const OrderCard = ({ order }: IOrderCardProps) => {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">

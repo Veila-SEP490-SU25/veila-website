@@ -58,10 +58,11 @@ export default function StaffSubscriptionPage() {
         setError(message);
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
       setError("Có lỗi xảy ra trong quá trình tải dữ liệu khiếu nại");
     }
-  }, [filter, pageSize, pageIndex, setPaging, trigger, setError, setIsError]);
+  }, [debouncedFilter, pageSize, pageIndex, setPaging, trigger, setError, setIsError]);
 
   useEffect(() => {
     fetchSubscriptions();
@@ -141,7 +142,7 @@ export default function StaffSubscriptionPage() {
           ) : (
             <div className="p-6 max-w-full ">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {subscriptions.map((subscription, index) => (
+                {subscriptions.map((subscription) => (
                   <div className="w-full col-span-1" key={subscription.id}>
                     <SubscriptionCard
                       subscription={subscription}

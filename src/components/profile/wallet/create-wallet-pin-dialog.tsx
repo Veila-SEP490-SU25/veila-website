@@ -7,9 +7,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   InputOTP,
   InputOTPGroup,
@@ -17,7 +15,7 @@ import {
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { useCreateWalletPINMutation } from "@/services/apis";
-import { Edit, Loader2, Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -81,6 +79,7 @@ export const CreateWalletPINDialog = ({
         toast.error(message || "Có lỗi xảy ra khi tạo mã PIN");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Có lỗi xảy ra khi tạo mã PIN");
     }
   };

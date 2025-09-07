@@ -49,7 +49,14 @@ export const ResponseComplaintDialog = ({
     } catch (error) {
       console.error("Failed to respond to complaint:", error);
     }
-  }, [complaintId, onSuccess, responseTrigger, setOpen]);
+  }, [
+    complaintId,
+    onSuccess,
+    responseTrigger,
+    setOpen,
+    isApproved,
+    successMessage,
+  ]);
 
   const handleCancel = useCallback(() => {
     setOpen(false);

@@ -14,7 +14,7 @@ import { IDress, IPaginationResponse } from "@/services/types";
 import { Heart, Eye, Star, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -32,7 +32,7 @@ export const ShopDresses = ({ id }: Props) => {
     totalPages: 0,
   });
 
-  const fetchDresses = async () => {
+  const fetchDresses = useCallback(async () => {
     try {
       const { statusCode, message, items, ...pagination } = await getDress({
         filter: "",
@@ -51,8 +51,10 @@ export const ShopDresses = ({ id }: Props) => {
           totalPages: pagination.totalPages,
         }));
       }
-    } catch (error) {}
-  };
+    } catch (error) {
+      console.error("Error fetching dresses:", error);
+    }
+  }, [getDress, id, paging.pageIndex, paging.pageSize]);
 
   const handlePageChange = (newPageIndex: number) => {
     setPaging((prev) => ({
@@ -83,7 +85,7 @@ export const ShopDresses = ({ id }: Props) => {
 
   useEffect(() => {
     fetchDresses();
-  }, [id, paging.pageIndex, paging.pageSize]);
+  }, [id, paging.pageIndex, paging.pageSize, fetchDresses]);
 
   return (
     <div className="space-y-6">

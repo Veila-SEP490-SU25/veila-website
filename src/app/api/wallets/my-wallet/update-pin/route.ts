@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFirebaseConfig } from "@/lib/utils/index";
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
 
 export async function PUT(request: NextRequest) {
   try {
@@ -22,9 +20,6 @@ export async function PUT(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
 
     // For now, we'll trust the token from the client
     // In production, you should verify the token server-side

@@ -1,7 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { formatDateShort } from "@/lib/order-util";
 import { formatPrice } from "@/lib/products-utils";
 import { IOrder, OrderStatus, OrderType } from "@/services/types";
@@ -10,10 +8,7 @@ import {
   Calendar,
   CheckCircle,
   Clock,
-  Eye,
-  Mail,
   MapPin,
-  Phone,
   XCircle,
 } from "lucide-react";
 
@@ -77,7 +72,7 @@ const getStatusIcon = (status: OrderStatus) => {
   }
 };
 
-export const OrderCollapse = ({ order, onUpdate }: IOrderCardProps) => {
+export const OrderCollapse = ({ order }: IOrderCardProps) => {
   return (
     <Card className="hover:shadow-md transition-shadow p-4">
       <div className="flex items-start justify-between">

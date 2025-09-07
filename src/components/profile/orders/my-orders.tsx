@@ -30,12 +30,8 @@ import { useLazyGetOrdersQuery } from "@/services/apis";
 import {
   IOrder,
   IPaginationResponse,
-  OrderStatus,
-  OrderType,
 } from "@/services/types";
 import {
-  AlertCircle,
-  CheckCircle,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -47,7 +43,6 @@ import {
   Package,
   Phone,
   Search,
-  XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";

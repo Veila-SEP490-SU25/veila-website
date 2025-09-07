@@ -4,13 +4,10 @@ import { GoBackButton } from "@/components/go-back-button";
 import { TextLogo } from "@/components/text-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, Search, ArrowLeft } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export const StaffNotFound = () => {
-  const router = useRouter();
-
   return (
     <div className="min-h-screen h-full flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl shadow-xl border-0">

@@ -15,11 +15,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
 import { isSuccess } from "@/lib/utils";
-import {
-  useCreateSubscriptionMutation,
-  useRestoreSubscriptionMutation,
-} from "@/services/apis";
-import { ICreateSubscription, ISubscription } from "@/services/types";
+import { useCreateSubscriptionMutation } from "@/services/apis";
+import { ICreateSubscription } from "@/services/types";
 import { Check, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { ReactNode, useCallback, useState } from "react";
@@ -43,6 +40,16 @@ export const CreateSubscriptionDialog = ({
     amount: 0,
     images: "",
   });
+
+  const resetForm = useCallback(() => {
+    setFormData({
+      name: "",
+      description: "",
+      duration: 0,
+      amount: 0,
+      images: "",
+    });
+  }, [setFormData]);
 
   const handleConfirm = useCallback(async () => {
     if (!formData.name || !formData.description || !formData.images) {
@@ -77,17 +84,7 @@ export const CreateSubscriptionDialog = ({
     } catch (error) {
       console.error("Failed to respond to complaint:", error);
     }
-  }, [formData, onSuccess, trigger, setOpen]);
-
-  const resetForm = useCallback(() => {
-    setFormData({
-      name: "",
-      description: "",
-      duration: 0,
-      amount: 0,
-      images: "",
-    });
-  }, [setFormData]);
+  }, [formData, onSuccess, trigger, setOpen, resetForm]);
 
   const handleCancel = useCallback(() => {
     setOpen(false);

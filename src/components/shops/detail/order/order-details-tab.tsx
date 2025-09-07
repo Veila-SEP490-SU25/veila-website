@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Settings, MapPin, Phone, Mail, Package, Tag } from "lucide-react";
 import { IOrder, IOrderDressDetail } from "@/services/types";
 import { ImageGallery } from "@/components/image-gallery";
-import { formatCurrency, formatDateShort } from "@/lib/order-util";
+import { formatCurrency } from "@/lib/order-util";
 import { formatDateOnly } from "@/utils/format";
 import { EditOrderDialog } from "./edit-order-dialog";
 

@@ -15,7 +15,7 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({
   imageUrls,
   setImageUrls,
 }) => {
-  const { uploadFile, deleteFile } = useStorage();
+  const { uploadFile } = useStorage();
 
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState<string[]>([]);

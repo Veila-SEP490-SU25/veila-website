@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -16,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle, Clock, XCircle, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { IBlog } from "@/services/types";
 import { usePaging } from "@/providers/paging.provider";
 import { useLazyGetPublicBlogsQuery } from "@/services/apis";
@@ -63,19 +62,20 @@ export default function BlogsManagement() {
         setError(message);
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
       setError("Đã có lỗi xảy ra khi lấy danh sách bài viết");
     }
-  }, [filter, pageSize, pageIndex, trigger]);
+  }, [filter, pageSize, pageIndex, trigger, setPaging]);
 
   useEffect(() => {
     resetPaging();
     fetchBlogs();
-  }, [filter]);
+  }, [filter, resetPaging, fetchBlogs]);
 
   useEffect(() => {
     fetchBlogs();
-  }, [pageSize, pageIndex]);
+  }, [pageSize, pageIndex, fetchBlogs]);
 
   return (
     <div className="p-6 space-y-6">

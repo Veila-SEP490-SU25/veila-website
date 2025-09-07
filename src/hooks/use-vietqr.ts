@@ -2,7 +2,7 @@
 
 import { getVietQRConfig } from "@/lib/utils";
 import { IBank } from "@/services/types/bank.type";
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { VietQR } from "vietqr";
 
 interface IGetBanksResponse {
@@ -22,12 +22,12 @@ export const useVietQR = () => {
     }
   }, [clientId, apiKey]);
 
-  const fetchBanks = async () => {
+  const fetchBanks = useCallback(async () => {
     if (vietQR) {
       const supportedBanks = (await vietQR.getBanks()) as IGetBanksResponse;
       setBanks(supportedBanks.data);
     }
-  };
+  }, [vietQR]);
 
   const generateQRImage = async (
     bin: string,
@@ -50,7 +50,7 @@ export const useVietQR = () => {
 
   useEffect(() => {
     fetchBanks();
-  }, [vietQR]);
+  }, [vietQR, fetchBanks]);
 
   return { banks, getBank, generateQRImage };
 };

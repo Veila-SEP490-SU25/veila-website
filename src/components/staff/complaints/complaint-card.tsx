@@ -17,7 +17,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { formatDateShort } from "@/lib/order-util";
-import { getCoverImage } from "@/lib/products-utils";
 import { ComplaintStatus, IComplaint, IUser } from "@/services/types";
 import {
   Calendar,
@@ -32,7 +31,6 @@ import {
   Phone,
   X,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 

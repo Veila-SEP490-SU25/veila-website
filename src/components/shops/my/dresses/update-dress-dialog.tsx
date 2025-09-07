@@ -19,11 +19,9 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Plus, Loader2, Save } from "lucide-react";
 import {
-  useCreateDressMutation,
   useUpdateDressMutation,
 } from "@/services/apis";
 import {
-  DressStatus,
   IDress,
   IUpdateDress,
   type ICreateDress,
@@ -123,6 +121,7 @@ export function UpdateDressDialog({
         toast.error(message || "Có lỗi xảy ra khi cập nhật váy");
       }
     } catch (error) {
+      console.error("Error updating dress:", error);
       toast.error("Có lỗi xảy ra khi cập nhật váy");
     }
   };

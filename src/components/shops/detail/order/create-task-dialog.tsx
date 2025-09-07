@@ -2,8 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
-import { z } from "zod";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { Plus, FileText, AlertCircle } from "lucide-react";
 
@@ -52,7 +51,7 @@ export function CreateTaskDialog({
     dueDate: "",
   });
 
-  const fetchExistingTasks = async () => {
+  const fetchExistingTasks = useCallback(async () => {
     try {
       const response = await getMilestoneTasks({
         id: milestoneId,
@@ -66,7 +65,7 @@ export function CreateTaskDialog({
     } catch (error) {
       console.error("Error fetching existing tasks:", error);
     }
-  };
+  }, [getMilestoneTasks, milestoneId]);
 
   const validateDate = (newDate: string): boolean => {
     if (!newDate) return true;
@@ -113,7 +112,7 @@ export function CreateTaskDialog({
     if (open) {
       fetchExistingTasks();
     }
-  }, [open, milestoneId]);
+  }, [open, milestoneId, fetchExistingTasks]);
 
   const onSubmit = async (data: ICreateTask) => {
     // Validate ngày trước khi submit

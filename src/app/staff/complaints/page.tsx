@@ -62,6 +62,7 @@ export default function ComplaintsManagement() {
         setError(message);
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
       setError("Có lỗi xảy ra trong quá trình tải dữ liệu khiếu nại");
     }

@@ -18,7 +18,6 @@ import {
   MilestoneStatus,
 } from "@/services/types";
 import {
-  useCheckoutOrderMutation,
   useLazyGetOrderMilestoneQuery,
   useLazyGetOrderDressesQuery,
   useLazyGetOrderAccessoriesQuery,

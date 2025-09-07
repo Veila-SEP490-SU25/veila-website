@@ -6,7 +6,6 @@ export const PagingComponent = () => {
     pageIndex,
     totalPages,
     hasNext,
-    hasPrevious,
     goNext,
     goPrevious,
     gotoPage,

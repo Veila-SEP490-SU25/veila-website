@@ -58,7 +58,7 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     fetchBlog();
-  }, [blogId]);
+  }, [blogId, fetchBlog]);
 
   if (isNotFound)
     return (

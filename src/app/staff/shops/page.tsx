@@ -9,13 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Loader2,
-} from "lucide-react";
-import {
-  type IShop,
-  ShopStatus,
-} from "@/services/types";
+import { Loader2 } from "lucide-react";
+import { type IShop, ShopStatus } from "@/services/types";
 import { useLazyGetShopsQuery } from "@/services/apis";
 import { toast } from "sonner";
 import { usePaging } from "@/providers/paging.provider";
@@ -75,11 +70,12 @@ export default function ShopsManagement() {
         setError(message);
       }
     } catch (error) {
+      console.error(error);
       toast.error("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
       setIsError(true);
       setError("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
     }
-  }, [statusFilter, pageIndex, pageSize, setPaging, setShops]);
+  }, [statusFilter, pageIndex, pageSize, setPaging, setShops, getShops]);
 
   const handleStatusFilterChange = (value: string) => {
     setStatusFilter(value === "all" ? null : (value as ShopStatus));
@@ -87,11 +83,11 @@ export default function ShopsManagement() {
 
   useEffect(() => {
     fetchShops();
-  }, [statusFilter, pageIndex, pageSize]);
+  }, [statusFilter, pageIndex, pageSize, fetchShops]);
 
   useEffect(() => {
     resetPaging();
-  }, []);
+  }, [resetPaging, statusFilter]);
 
   return (
     <div className="p-4 space-y-6 max-w-full">

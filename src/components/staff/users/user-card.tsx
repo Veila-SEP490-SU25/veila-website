@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
-  CardFooter,
   CardTitle,
 } from "@/components/ui/card";
 import { formatDate } from "@/lib/order-util";

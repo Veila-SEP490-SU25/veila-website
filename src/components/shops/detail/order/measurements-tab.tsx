@@ -173,7 +173,7 @@ export const MeasurementsTab = ({
     },
   ]);
 
-  const [trigger, { isLoading }] = useLazyGetUpdateRequestsQuery();
+  const [trigger, {}] = useLazyGetUpdateRequestsQuery();
   const [updateRequests, setUpdateRequests] = useState<IUpdateRequest[]>([]);
 
   const fetchUpdateRequests = useCallback(async () => {
@@ -273,7 +273,7 @@ export const MeasurementsTab = ({
     } catch (error) {
       console.error(error);
     }
-  }, [setUpdateRequests, trigger, orderService]);
+  }, [setUpdateRequests, trigger, orderService, orderType]);
 
   useEffect(() => {
     fetchUpdateRequests();
@@ -354,7 +354,7 @@ export const MeasurementsTab = ({
                           updateRequest={request}
                           onUpdate={() => {
                             fetchUpdateRequests();
-                            onUpdate && onUpdate();
+                            onUpdate?.();
                           }}
                           trigger={
                             <Button

@@ -102,7 +102,7 @@ export default function VerifyOTPPage() {
         "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
       );
     }
-  }, [email, requestOtpMutation]);
+  }, [email, requestOtpMutation, form]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">

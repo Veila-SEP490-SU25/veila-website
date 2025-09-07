@@ -16,7 +16,7 @@ import {
 import { isSuccess } from "@/lib/utils";
 import { useLazyGetShopQuery } from "@/services/apis";
 import { IShop } from "@/services/types";
-import { Check, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -47,6 +47,7 @@ export default function StaffShopDetailPage() {
         setError(message);
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
       setError("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
     }

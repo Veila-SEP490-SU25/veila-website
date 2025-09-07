@@ -20,13 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { isSuccess } from "@/lib/utils";
-import {
-  ICreateUser,
-  IUpdateUser,
-  useCreateUserMutation,
-  useUpdateUserMutation,
-} from "@/services/apis";
-import { IUser, UserRole, UserStatus } from "@/services/types";
+import { ICreateUser, useCreateUserMutation } from "@/services/apis";
+import { UserRole, UserStatus } from "@/services/types";
 import { X, Check } from "lucide-react";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -66,6 +61,7 @@ export const CreateUserDialog = ({
       }
     } catch (error) {
       toast.error("Đã xảy ra lỗi khi tạo người dùng mới");
+      console.error(error);
     }
   }, [trigger, onUpdate, updateInfo]);
 

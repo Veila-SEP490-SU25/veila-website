@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { isSuccess } from "@/lib/utils";
 import { IUpdateUser, useUpdateUserMutation } from "@/services/apis";
-import { IUser, UserStatus } from "@/services/types";
+import { IUser } from "@/services/types";
 import { X, Check } from "lucide-react";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -63,8 +63,9 @@ export const UpdateUserDialog = ({
       }
     } catch (error) {
       toast.error("Đã xảy ra lỗi khi cập nhật người dùng");
+      console.error(error);
     }
-  }, [trigger, user, onUpdate, updateInfo]);
+  }, [trigger, onUpdate, updateInfo]);
 
   const defaultTrigger = (
     <Button variant="outline" onClick={() => setOpen(true)}>
