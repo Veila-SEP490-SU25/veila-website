@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLazyGetShopAccessoriesQuery } from "@/services/apis";
-import { IAccessory, IPaginationResponse } from "@/services/types";
-import { Eye, Heart, ShoppingBag, Sparkles, Star } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+} from '@/components/ui/select';
+import { useLazyGetShopAccessoriesQuery } from '@/services/apis';
+import { IAccessory, IPaginationResponse } from '@/services/types';
+import { Eye, Heart, ShoppingBag, Sparkles, Star } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   id: string;
@@ -51,14 +51,13 @@ export const ShopAccessories = ({ id }: Props) => {
 
   const fetchAccessories = useCallback(async () => {
     try {
-      const { statusCode, message, items, ...pagination } =
-        await getAccessories({
-          filter: "",
-          id,
-          page: paging.pageIndex,
-          size: paging.pageSize,
-          sort: "",
-        }).unwrap();
+      const { statusCode, message, items, ...pagination } = await getAccessories({
+        filter: '',
+        id,
+        page: paging.pageIndex,
+        size: paging.pageSize,
+        sort: '',
+      }).unwrap();
       if (statusCode === 200) {
         setAccessories(items);
         setPaging((prev) => ({
@@ -70,19 +69,19 @@ export const ShopAccessories = ({ id }: Props) => {
         }));
       }
     } catch (error) {
-      console.error("Error fetching accessories:", error);
+      console.error('Error fetching accessories:', error);
     }
   }, [getAccessories, id, paging.pageIndex, paging.pageSize]);
 
   const getAvailabilityBadge = (accessory: IAccessory) => {
     if (accessory.isSellable && accessory.isRentable) {
-      return { text: "Bán & Thuê", className: "bg-purple-600" };
+      return { text: 'Bán & Thuê', className: 'bg-purple-600' };
     } else if (accessory.isSellable) {
-      return { text: "Bán", className: "bg-green-600" };
+      return { text: 'Bán', className: 'bg-green-600' };
     } else if (accessory.isRentable) {
-      return { text: "Cho Thuê", className: "bg-blue-600" };
+      return { text: 'Cho Thuê', className: 'bg-blue-600' };
     }
-    return { text: "Không có sẵn", className: "bg-gray-600" };
+    return { text: 'Không có sẵn', className: 'bg-gray-600' };
   };
 
   useEffect(() => {
@@ -96,16 +95,11 @@ export const ShopAccessories = ({ id }: Props) => {
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold text-gray-900">Phụ Kiện Cưới</h2>
           {!isLoading && (
-            <span className="text-sm text-gray-600">
-              ({paging.totalItems} sản phẩm)
-            </span>
+            <span className="text-sm text-gray-600">({paging.totalItems} sản phẩm)</span>
           )}
         </div>
         <div className="flex flex-col gap-3 md:flex-row md:gap-4">
-          <Select
-            value={paging.pageSize.toString()}
-            onValueChange={handlePageSizeChange}
-          >
+          <Select value={paging.pageSize.toString()} onValueChange={handlePageSizeChange}>
             <SelectTrigger className="w-full md:w-32">
               <SelectValue />
             </SelectTrigger>
@@ -145,9 +139,7 @@ export const ShopAccessories = ({ id }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {accessories.map((accessory) => {
             const availabilityBadge = getAvailabilityBadge(accessory);
-            const userName = accessory.user
-              ? accessory.user.shop?.name
-              : "Unknown User";
+            const userName = accessory.user ? accessory.user.shop?.name : 'Unknown User';
 
             return (
               <Card
@@ -156,7 +148,7 @@ export const ShopAccessories = ({ id }: Props) => {
               >
                 <div className="relative">
                   <Image
-                    src={accessory.images || "/placeholder.svg"}
+                    src={accessory.images || '/placeholder.svg'}
                     alt={accessory.name}
                     width={300}
                     height={400}
@@ -201,9 +193,7 @@ export const ShopAccessories = ({ id }: Props) => {
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium ml-1">
-                          {accessory.ratingAverage}
-                        </span>
+                        <span className="text-sm font-medium ml-1">{accessory.ratingAverage}</span>
                       </div>
                       <span className="text-gray-400">•</span>
                       <span className="text-sm text-gray-600">
@@ -215,24 +205,20 @@ export const ShopAccessories = ({ id }: Props) => {
                       <div className="space-y-1">
                         {accessory.isSellable && (
                           <p className="text-lg font-bold text-gray-900">
-                            {accessory.sellPrice.toLocaleString("vi-VN")}₫
+                            {accessory.sellPrice.toLocaleString('vi-VN')}₫
                           </p>
                         )}
                         {accessory.isRentable && (
                           <p className="text-sm text-gray-600">
-                            Thuê:{" "}
-                            {accessory.rentalPrice.toLocaleString("vi-VN")}₫
+                            Thuê: {accessory.rentalPrice.toLocaleString('vi-VN')}₫
                           </p>
                         )}
                         <p className="text-xs text-gray-600">
-                          {accessory.category?.name || "Chưa phân loại"}
+                          {accessory.category?.name || 'Chưa phân loại'}
                         </p>
                       </div>
                       <Link href={`/accessory/${accessory.id}`}>
-                        <Button
-                          size="sm"
-                          className="bg-rose-600 hover:bg-rose-700"
-                        >
+                        <Button size="sm" className="bg-rose-600 hover:bg-rose-700">
                           <ShoppingBag className="h-4 w-4 mr-2" />
                           Xem
                         </Button>
@@ -252,12 +238,8 @@ export const ShopAccessories = ({ id }: Props) => {
           <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
             <Sparkles className="h-12 w-12 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Chưa có phụ kiện nào
-          </h3>
-          <p className="text-gray-500">
-            Cửa hàng này chưa có phụ kiện cưới nào được đăng tải.
-          </p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có phụ kiện nào</h3>
+          <p className="text-gray-500">Cửa hàng này chưa có phụ kiện cưới nào được đăng tải.</p>
         </div>
       )}
 

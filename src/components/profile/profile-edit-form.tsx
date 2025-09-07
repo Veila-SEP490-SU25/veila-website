@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Image } from "@/components/image";
-import { useAuth } from "@/providers/auth.provider";
-import { IUser, IUpdateProfile } from "@/services/types";
-import { useUpdateProfileMutation } from "@/services/apis/auth.api";
-import { ProfileInfoCard } from "@/components/profile/profile-info-card";
-import { LocationInput } from "@/components/location-input";
-import { toast } from "sonner";
-import { Camera, Save, X } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Image } from '@/components/image';
+import { useAuth } from '@/providers/auth.provider';
+import { IUser, IUpdateProfile } from '@/services/types';
+import { useUpdateProfileMutation } from '@/services/apis/auth.api';
+import { ProfileInfoCard } from '@/components/profile/profile-info-card';
+import { LocationInput } from '@/components/location-input';
+import { toast } from 'sonner';
+import { Camera, Save, X } from 'lucide-react';
 
 interface ProfileEditFormProps {
   onSave?: (user: IUser) => void;
@@ -25,27 +25,27 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
   const [showEditForm, setShowEditForm] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    address: "",
-    birthDate: "",
-    avatarUrl: "",
-    coverUrl: "",
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    address: '',
+    birthDate: '',
+    avatarUrl: '',
+    coverUrl: '',
   });
 
   useEffect(() => {
     if (currentUser) {
       setFormData({
-        firstName: currentUser.firstName || "",
-        middleName: currentUser.middleName || "",
-        lastName: currentUser.lastName || "",
-        address: currentUser.address || "",
+        firstName: currentUser.firstName || '',
+        middleName: currentUser.middleName || '',
+        lastName: currentUser.lastName || '',
+        address: currentUser.address || '',
         birthDate: currentUser.birthDate
-          ? new Date(currentUser.birthDate).toISOString().split("T")[0]
-          : "",
-        avatarUrl: currentUser.avatarUrl || "",
-        coverUrl: currentUser.coverUrl || "",
+          ? new Date(currentUser.birthDate).toISOString().split('T')[0]
+          : '',
+        avatarUrl: currentUser.avatarUrl || '',
+        coverUrl: currentUser.coverUrl || '',
       });
     }
   }, [currentUser]);
@@ -59,12 +59,12 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
 
   const handleSave = async () => {
     if (!formData.firstName?.trim()) {
-      toast.error("Vui lòng nhập tên!");
+      toast.error('Vui lòng nhập tên!');
       return;
     }
 
     if (!formData.lastName?.trim()) {
-      toast.error("Vui lòng nhập họ!");
+      toast.error('Vui lòng nhập họ!');
       return;
     }
 
@@ -74,19 +74,19 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
       const age = today.getFullYear() - birthDate.getFullYear();
 
       if (age < 13 || age > 120) {
-        toast.error("Ngày sinh không hợp lệ! Tuổi phải từ 13-120.");
+        toast.error('Ngày sinh không hợp lệ! Tuổi phải từ 13-120.');
         return;
       }
     }
 
     try {
       if (!formData.firstName?.trim()) {
-        toast.error("Vui lòng nhập tên!");
+        toast.error('Vui lòng nhập tên!');
         return;
       }
 
       if (!formData.lastName?.trim()) {
-        toast.error("Vui lòng nhập họ!");
+        toast.error('Vui lòng nhập họ!');
         return;
       }
 
@@ -95,11 +95,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
         try {
           const birthDate = new Date(formData.birthDate);
           if (isNaN(birthDate.getTime())) {
-            toast.error("Ngày sinh không hợp lệ!");
+            toast.error('Ngày sinh không hợp lệ!');
             return;
           }
         } catch {
-          toast.error("Ngày sinh không hợp lệ!");
+          toast.error('Ngày sinh không hợp lệ!');
           return;
         }
       }
@@ -110,18 +110,18 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
         lastName: formData.lastName.trim(),
         address: formData.address?.trim() || null,
         birthDate: formData.birthDate
-          ? new Date(formData.birthDate).toISOString().split("T")[0]
+          ? new Date(formData.birthDate).toISOString().split('T')[0]
           : null,
         avatarUrl: formData.avatarUrl?.trim() || null,
         coverUrl: formData.coverUrl?.trim() || null,
       };
 
-      console.log("Sending update data:", JSON.stringify(updateData, null, 2));
-      console.log("birthDate format:", updateData.birthDate);
+      console.log('Sending update data:', JSON.stringify(updateData, null, 2));
+      console.log('birthDate format:', updateData.birthDate);
 
       const response = await updateProfile(updateData).unwrap();
 
-      toast.success("Cập nhật thông tin thành công!");
+      toast.success('Cập nhật thông tin thành công!');
       setShowEditForm(false);
 
       if (reloadProfile) {
@@ -132,15 +132,15 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
         onSave(response.item);
       }
     } catch (error: any) {
-      console.error("Error updating profile:", error);
-      console.error("Error details:", {
+      console.error('Error updating profile:', error);
+      console.error('Error details:', {
         status: error?.status,
         data: error?.data,
         message: error?.message,
         error: error?.error,
       });
 
-      let errorMessage = "Có lỗi xảy ra khi cập nhật thông tin!";
+      let errorMessage = 'Có lỗi xảy ra khi cập nhật thông tin!';
 
       if (error?.data?.message) {
         errorMessage = String(error.data.message);
@@ -149,11 +149,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
       } else if (error?.message) {
         errorMessage = String(error.message);
       } else if (error?.status === 500) {
-        errorMessage = "Lỗi server. Vui lòng thử lại sau!";
+        errorMessage = 'Lỗi server. Vui lòng thử lại sau!';
       } else if (error?.status === 400) {
-        errorMessage = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin!";
+        errorMessage = 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin!';
       } else if (error?.status === 401) {
-        errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!";
+        errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!';
       }
 
       toast.error(errorMessage);
@@ -163,27 +163,23 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
   const handleCancel = () => {
     if (currentUser) {
       setFormData({
-        firstName: currentUser.firstName || "",
-        middleName: currentUser.middleName || "",
-        lastName: currentUser.lastName || "",
-        address: currentUser.address || "",
+        firstName: currentUser.firstName || '',
+        middleName: currentUser.middleName || '',
+        lastName: currentUser.lastName || '',
+        address: currentUser.address || '',
         birthDate: currentUser.birthDate
-          ? new Date(currentUser.birthDate).toISOString().split("T")[0]
-          : "",
-        avatarUrl: currentUser.avatarUrl || "",
-        coverUrl: currentUser.coverUrl || "",
+          ? new Date(currentUser.birthDate).toISOString().split('T')[0]
+          : '',
+        avatarUrl: currentUser.avatarUrl || '',
+        coverUrl: currentUser.coverUrl || '',
       });
     }
     setShowEditForm(false);
   };
 
   const getFullName = () => {
-    const parts = [
-      formData.firstName,
-      formData.middleName,
-      formData.lastName,
-    ].filter(Boolean);
-    return parts.join(" ") || "Chưa có tên";
+    const parts = [formData.firstName, formData.middleName, formData.lastName].filter(Boolean);
+    return parts.join(' ') || 'Chưa có tên';
   };
 
   const getInitials = () => {
@@ -192,7 +188,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
       formData.middleName?.charAt(0),
       formData.lastName?.charAt(0),
     ].filter(Boolean);
-    return parts.join("").toUpperCase() || "U";
+    return parts.join('').toUpperCase() || 'U';
   };
 
   if (!currentUser) {
@@ -274,17 +270,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
           <div className="flex items-center justify-between">
             <CardTitle>Chỉnh sửa thông tin cá nhân</CardTitle>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isLoading}
-              >
+              <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
                 <X className="h-4 w-4 mr-2" />
                 Hủy
               </Button>
               <Button onClick={handleSave} disabled={isLoading}>
                 <Save className="h-4 w-4 mr-2" />
-                {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+                {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
               </Button>
             </div>
           </div>
@@ -293,10 +285,8 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
           <div className="flex items-start gap-6">
             <div className="relative">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={formData.avatarUrl || ""} />
-                <AvatarFallback className="text-lg">
-                  {getInitials()}
-                </AvatarFallback>
+                <AvatarImage src={formData.avatarUrl || ''} />
+                <AvatarFallback className="text-lg">{getInitials()}</AvatarFallback>
               </Avatar>
               <Button
                 size="sm"
@@ -314,9 +304,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
                   <Input
                     id="firstName"
                     value={formData.firstName}
-                    onChange={(e) =>
-                      handleInputChange("firstName", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
                     placeholder="Nhập tên"
                   />
                 </div>
@@ -326,9 +314,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
                   <Input
                     id="middleName"
                     value={formData.middleName}
-                    onChange={(e) =>
-                      handleInputChange("middleName", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('middleName', e.target.value)}
                     placeholder="Nhập tên đệm"
                   />
                 </div>
@@ -338,9 +324,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
                   <Input
                     id="lastName"
                     value={formData.lastName}
-                    onChange={(e) =>
-                      handleInputChange("lastName", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
                     placeholder="Nhập họ"
                   />
                 </div>
@@ -348,12 +332,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
 
               <div className="space-y-2">
                 <Label htmlFor="fullName">Họ và tên</Label>
-                <Input
-                  id="fullName"
-                  value={getFullName()}
-                  disabled
-                  className="bg-gray-50"
-                />
+                <Input id="fullName" value={getFullName()} disabled className="bg-gray-50" />
               </div>
             </div>
           </div>
@@ -365,18 +344,13 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
                 id="birthDate"
                 type="date"
                 value={formData.birthDate}
-                onChange={(e) => handleInputChange("birthDate", e.target.value)}
+                onChange={(e) => handleInputChange('birthDate', e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                value={currentUser.email || ""}
-                disabled
-                className="bg-gray-50"
-              />
+              <Input id="email" value={currentUser.email || ''} disabled className="bg-gray-50" />
             </div>
           </div>
 
@@ -384,27 +358,19 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave }) => {
             <Label htmlFor="address">Địa chỉ</Label>
             <LocationInput
               location={formData.address}
-              setLocation={(address) => handleInputChange("address", address)}
+              setLocation={(address) => handleInputChange('address', address)}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div className="space-y-2">
               <Label>Tên đăng nhập</Label>
-              <Input
-                value={currentUser.username || ""}
-                disabled
-                className="bg-gray-50"
-              />
+              <Input value={currentUser.username || ''} disabled className="bg-gray-50" />
             </div>
 
             <div className="space-y-2">
               <Label>Số điện thoại</Label>
-              <Input
-                value={currentUser.phone || ""}
-                disabled
-                className="bg-gray-50"
-              />
+              <Input value={currentUser.phone || ''} disabled className="bg-gray-50" />
             </div>
           </div>
         </CardContent>

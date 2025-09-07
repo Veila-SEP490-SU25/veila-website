@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ChatFirestoreLoading() {
   return (
@@ -57,5 +57,5 @@ export default function ChatFirestoreLoading() {
         </div>
       </div>
     </div>
-  )
+  );
 }

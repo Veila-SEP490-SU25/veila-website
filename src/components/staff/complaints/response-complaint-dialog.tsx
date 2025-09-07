@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,13 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { isSuccess } from "@/lib/utils";
-import { useResponseComplaintMutation } from "@/services/apis";
-import { ComplaintStatus } from "@/services/types";
-import { Check, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { isSuccess } from '@/lib/utils';
+import { useResponseComplaintMutation } from '@/services/apis';
+import { ComplaintStatus } from '@/services/types';
+import { Check, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface IResponseComplaintDialogProps {
   complaintId: string;
@@ -28,7 +28,7 @@ export const ResponseComplaintDialog = ({
   onSuccess,
   isApproved,
   trigger,
-  successMessage = "Phản hồi khiếu nại thành công",
+  successMessage = 'Phản hồi khiếu nại thành công',
 }: IResponseComplaintDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const [responseTrigger, { isLoading }] = useResponseComplaintMutation();
@@ -47,16 +47,9 @@ export const ResponseComplaintDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      console.error("Failed to respond to complaint:", error);
+      console.error('Failed to respond to complaint:', error);
     }
-  }, [
-    complaintId,
-    onSuccess,
-    responseTrigger,
-    setOpen,
-    isApproved,
-    successMessage,
-  ]);
+  }, [complaintId, onSuccess, responseTrigger, setOpen, isApproved, successMessage]);
 
   const handleCancel = useCallback(() => {
     setOpen(false);

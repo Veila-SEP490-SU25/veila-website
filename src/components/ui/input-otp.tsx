@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { OTPInput, OTPInputContext } from "input-otp";
-import { MinusIcon } from "lucide-react";
+import * as React from 'react';
+import { OTPInput, OTPInputContext } from 'input-otp';
+import { MinusIcon } from 'lucide-react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 function InputOTP({
   className,
@@ -16,21 +16,18 @@ function InputOTP({
   return (
     <OTPInput
       data-slot="input-otp"
-      containerClassName={cn(
-        "flex items-center gap-3 has-disabled:opacity-50",
-        containerClassName
-      )}
-      className={cn("disabled:cursor-not-allowed", className)}
+      containerClassName={cn('flex items-center gap-3 has-disabled:opacity-50', containerClassName)}
+      className={cn('disabled:cursor-not-allowed', className)}
       {...props}
     />
   );
 }
 
-function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
+function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="input-otp-group"
-      className={cn("flex items-center gap-3", className)}
+      className={cn('flex items-center gap-3', className)}
       {...props}
     />
   );
@@ -39,11 +36,11 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
 function InputOTPSlot({
   index,
   className,
-  type = "text",
+  type = 'text',
   ...props
-}: React.ComponentProps<"div"> & {
+}: React.ComponentProps<'div'> & {
   index: number;
-  type?: "text" | "password";
+  type?: 'text' | 'password';
 }) {
   const inputOTPContext = React.useContext(OTPInputContext);
 
@@ -64,15 +61,13 @@ function InputOTPSlot({
       data-slot="input-otp-slot"
       data-active={isActive || false}
       className={cn(
-        "relative flex h-12 w-12 items-center justify-center border-2 border-gray-300 rounded-md text-lg font-medium text-gray-900 bg-white shadow-sm transition-all outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 data-[active=true]:border-rose-500 data-[active=true]:ring-2 data-[active=true]:ring-rose-500/20",
-        className
+        'relative flex h-12 w-12 items-center justify-center border-2 border-gray-300 rounded-md text-lg font-medium text-gray-900 bg-white shadow-sm transition-all outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 data-[active=true]:border-rose-500 data-[active=true]:ring-2 data-[active=true]:ring-rose-500/20',
+        className,
       )}
       {...domProps}
     >
-      <span
-        className={cn("text-gray-900 font-medium", !char && "text-gray-400")}
-      >
-        {type === "text" ? char || "" : char && char.trim() !== "" ? "•" : ""}
+      <span className={cn('text-gray-900 font-medium', !char && 'text-gray-400')}>
+        {type === 'text' ? char || '' : char && char.trim() !== '' ? '•' : ''}
       </span>
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -83,7 +78,7 @@ function InputOTPSlot({
   );
 }
 
-function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
+function InputOTPSeparator({ ...props }: React.ComponentProps<'div'>) {
   return (
     <div data-slot="input-otp-separator" role="separator" {...props}>
       <MinusIcon />

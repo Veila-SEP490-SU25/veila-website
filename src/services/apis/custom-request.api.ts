@@ -1,6 +1,6 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithRefresh } from "./base.query";
-import { IItemResponse, IListResponse } from "@/services/types";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithRefresh } from './base.query';
+import { IItemResponse, IListResponse } from '@/services/types';
 
 export interface ICreateCustomRequest {
   title: string;
@@ -24,7 +24,7 @@ export interface ICreateCustomRequest {
   length?: string;
   neckline?: string;
   sleeve?: string;
-  status: "DRAFT" | "SUBMIT";
+  status: 'DRAFT' | 'SUBMIT';
   isPrivate: boolean;
 }
 
@@ -40,45 +40,39 @@ export interface IUpdateCustomRequest extends Partial<ICreateCustomRequest> {
 }
 
 export const customRequestApi = createApi({
-  reducerPath: "customRequestApi",
+  reducerPath: 'customRequestApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
-    createCustomRequest: builder.mutation<
-      IItemResponse<any>,
-      ICreateCustomRequest
-    >({
+    createCustomRequest: builder.mutation<IItemResponse<any>, ICreateCustomRequest>({
       query: (data) => ({
-        url: "requests/me",
-        method: "POST",
+        url: 'requests/me',
+        method: 'POST',
         body: data,
       }),
     }),
     getMyCustomRequests: builder.query<IListResponse<ICustomRequest>, void>({
       query: () => ({
-        url: "requests/me",
-        method: "GET",
+        url: 'requests/me',
+        method: 'GET',
       }),
     }),
     getCustomRequestById: builder.query<IItemResponse<ICustomRequest>, string>({
       query: (id) => ({
         url: `requests/${id}/me`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
-    updateCustomRequest: builder.mutation<
-      IItemResponse<any>,
-      IUpdateCustomRequest
-    >({
+    updateCustomRequest: builder.mutation<IItemResponse<any>, IUpdateCustomRequest>({
       query: ({ id, ...data }) => ({
         url: `requests/${id}/me`,
-        method: "PUT",
+        method: 'PUT',
         body: data,
       }),
     }),
     deleteCustomRequest: builder.mutation<IItemResponse<any>, string>({
       query: (id) => ({
         url: `requests/${id}/me`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
   }),

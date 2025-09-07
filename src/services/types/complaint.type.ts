@@ -1,10 +1,10 @@
-import { IItem, IOrder, IPagination, IUser } from "@/services/types";
+import { IItem, IOrder, IPagination, IUser } from '@/services/types';
 
 export enum ComplaintStatus {
-  DRAFT = "DRAFT",
-  IN_PROGRESS = "IN_PROGRESS",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
+  DRAFT = 'DRAFT',
+  IN_PROGRESS = 'IN_PROGRESS',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
 }
 
 export interface IComplaint extends IItem {

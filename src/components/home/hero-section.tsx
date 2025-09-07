@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Image } from "@/components/image";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { Image } from '@/components/image';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Heart, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export const HeroSection = () => {
   return (
@@ -23,18 +23,16 @@ export const HeroSection = () => {
 
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Kết Nối
-                <span className="text-rose-600 block">
-                  Cô Dâu & Nhà Thiết Kế
-                </span>
+                <span className="text-rose-600 block">Cô Dâu & Nhà Thiết Kế</span>
                 <span className="text-2xl md:text-3xl text-gray-600 font-normal mt-2 block">
                   Tạo Nên Những Chiếc Váy Cưới Mơ Ước
                 </span>
               </h1>
 
               <p className="text-lg text-gray-600 leading-relaxed max-w-xl">
-                Veila - Nền tảng kết nối trực tiếp giữa cô dâu và các nhà thiết
-                kế chuyên nghiệp. Từ thiết kế riêng đến thuê mua, chúng tôi đảm
-                bảo mọi chiếc váy cưới đều là tác phẩm nghệ thuật hoàn hảo.
+                Veila - Nền tảng kết nối trực tiếp giữa cô dâu và các nhà thiết kế chuyên nghiệp. Từ
+                thiết kế riêng đến thuê mua, chúng tôi đảm bảo mọi chiếc váy cưới đều là tác phẩm
+                nghệ thuật hoàn hảo.
               </p>
             </div>
 
@@ -70,7 +68,7 @@ export const HeroSection = () => {
                 height={600}
                 priority
                 className="w-full h-auto object-cover"
-                style={{ height: "auto" }}
+                style={{ height: 'auto' }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
             </div>

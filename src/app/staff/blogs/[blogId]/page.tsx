@@ -1,37 +1,31 @@
-"use client";
+'use client';
 
-import { ErrorCard } from "@/components/error-card";
-import { GoBackButton } from "@/components/go-back-button";
-import { StaffNotFound } from "@/components/staff-not-found";
-import { StatusBadge, VerifyBadge } from "@/components/staff/blogs/blog-card";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { PageLoading } from "@/components/ui/page-loading";
-import { formatDateShort } from "@/lib/order-util";
-import { isSuccess } from "@/lib/utils";
-import { useLazyGetPublicBlogByIdQuery } from "@/services/apis";
-import { IBlog } from "@/services/types";
-import { Calendar, Check, Clock, RefreshCw, User } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import rehypeHighlight from "rehype-highlight";
-import Image from "next/image";
-import { BlogVerifyDialog } from "@/components/staff/blogs/blog-verify-dialog";
+import { ErrorCard } from '@/components/error-card';
+import { GoBackButton } from '@/components/go-back-button';
+import { StaffNotFound } from '@/components/staff-not-found';
+import { StatusBadge, VerifyBadge } from '@/components/staff/blogs/blog-card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageLoading } from '@/components/ui/page-loading';
+import { formatDateShort } from '@/lib/order-util';
+import { isSuccess } from '@/lib/utils';
+import { useLazyGetPublicBlogByIdQuery } from '@/services/apis';
+import { IBlog } from '@/services/types';
+import { Calendar, Check, Clock, RefreshCw, User } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeHighlight from 'rehype-highlight';
+import Image from 'next/image';
+import { BlogVerifyDialog } from '@/components/staff/blogs/blog-verify-dialog';
 
 export default function BlogDetailPage() {
   const { blogId } = useParams() as { blogId: string };
   const [blog, setBlog] = useState<IBlog>();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [getTrigger, { isLoading }] = useLazyGetPublicBlogByIdQuery();
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
@@ -42,7 +36,7 @@ export default function BlogDetailPage() {
         setBlog(item);
         setIsError(false);
         setIsNotFound(false);
-        setError("");
+        setError('');
       } else if (statusCode === 404) {
         setIsNotFound(true);
       } else {
@@ -52,7 +46,7 @@ export default function BlogDetailPage() {
     } catch (error) {
       console.error(error);
       setIsError(true);
-      setError("Đã có lỗi xảy ra khi lấy thông tin bài viết");
+      setError('Đã có lỗi xảy ra khi lấy thông tin bài viết');
     }
   }, [blogId, setBlog, setError, setIsError, setIsNotFound, getTrigger]);
 
@@ -72,18 +66,14 @@ export default function BlogDetailPage() {
       <div className="p-6 space-y-6 max-w-full">
         <Card>
           <CardHeader className="items-center justify-center">
-            <CardTitle className="text-red-500">
-              Đã có lỗi xảy ra khi tải dữ liệu
-            </CardTitle>
+            <CardTitle className="text-red-500">Đã có lỗi xảy ra khi tải dữ liệu</CardTitle>
             <CardDescription>
               <GoBackButton />
               <Button
                 className="flex items-center justify-center gap-2 bg-rose-500 text-white"
                 onClick={fetchBlog}
               >
-                <RefreshCw
-                  className={`size-4 ${isLoading ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Thử lại
               </Button>
             </CardDescription>
@@ -120,10 +110,7 @@ export default function BlogDetailPage() {
                   blog={blog}
                   onUpdate={fetchBlog}
                   trigger={
-                    <Button
-                      className="w-max flex items-center gap-2"
-                      variant="outline"
-                    >
+                    <Button className="w-max flex items-center gap-2" variant="outline">
                       <Check className="size-4" />
                       Phê duyệt bài viết
                     </Button>
@@ -149,9 +136,7 @@ export default function BlogDetailPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                <span>
-                  {Math.ceil((blog.content?.length || 0) / 1000)} phút đọc
-                </span>
+                <span>{Math.ceil((blog.content?.length || 0) / 1000)} phút đọc</span>
               </div>
             </div>
           </CardContent>
@@ -172,25 +157,19 @@ export default function BlogDetailPage() {
                     </h1>
                   ),
                   h2: ({ children }) => (
-                    <h2 className="text-2xl font-bold text-gray-800 mt-6 mb-3">
-                      {children}
-                    </h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mt-6 mb-3">{children}</h2>
                   ),
                   h3: ({ children }) => (
-                    <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">
-                      {children}
-                    </h3>
+                    <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">{children}</h3>
                   ),
                   p: ({ children }) => (
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      {children}
-                    </p>
+                    <p className="text-gray-700 leading-relaxed mb-4">{children}</p>
                   ),
                   img: ({ src, alt }) => (
                     <div className="my-6">
                       <Image
-                        src={(src as string) || ""}
-                        alt={alt || ""}
+                        src={(src as string) || ''}
+                        alt={alt || ''}
                         width={800}
                         height={400}
                         className="w-full rounded-lg shadow-md object-cover"
@@ -218,14 +197,10 @@ export default function BlogDetailPage() {
                     </pre>
                   ),
                   ul: ({ children }) => (
-                    <ul className="list-disc list-inside mb-4 text-gray-700">
-                      {children}
-                    </ul>
+                    <ul className="list-disc list-inside mb-4 text-gray-700">{children}</ul>
                   ),
                   ol: ({ children }) => (
-                    <ol className="list-decimal list-inside mb-4 text-gray-700">
-                      {children}
-                    </ol>
+                    <ol className="list-decimal list-inside mb-4 text-gray-700">{children}</ol>
                   ),
                   li: ({ children }) => <li className="mb-1">{children}</li>,
                   a: ({ href, children }) => (
@@ -240,7 +215,7 @@ export default function BlogDetailPage() {
                   ),
                 }}
               >
-                {blog.content || "Nội dung blog đang được cập nhật..."}
+                {blog.content || 'Nội dung blog đang được cập nhật...'}
               </ReactMarkdown>
             </div>
           </CardContent>
@@ -260,9 +235,7 @@ export default function BlogDetailPage() {
                 T
               </div>
               <div>
-                <h4 className="font-semibold text-lg text-gray-900 mb-1">
-                  Tác giả
-                </h4>
+                <h4 className="font-semibold text-lg text-gray-900 mb-1">Tác giả</h4>
                 <p className="text-gray-600">Thành viên của Veila</p>
               </div>
             </div>

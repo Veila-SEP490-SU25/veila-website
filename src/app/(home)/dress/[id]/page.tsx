@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { IDress } from "@/services/types";
+import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { IDress } from '@/services/types';
 import {
   useAddFavoriteMutation,
   useLazyGetDressQuery,
   useRemoveFavoriteMutation,
-} from "@/services/apis";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+} from '@/services/apis';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   CheckCircle,
@@ -22,74 +22,64 @@ import {
   ShoppingBag,
   Star,
   Truck,
-} from "lucide-react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateOrderDialog } from "@/components/order/create-order-dialog";
-import {
-  formatPrice,
-  getImages,
-  parseNumber,
-  formatRating,
-} from "@/lib/products-utils";
-import { ImageGallery } from "@/components/image-gallery";
-import { DressDescriptionTabs } from "@/components/dress/detail/dress-description-tabs";
-import { DressFeedbackTabs } from "@/components/dress/detail/dress-feedbacks-tabs";
-import { CreateChatButton } from "@/components/chat/create-chat-button";
+} from 'lucide-react';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { AvatarFallback } from '@radix-ui/react-avatar';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CreateOrderDialog } from '@/components/order/create-order-dialog';
+import { formatPrice, getImages, parseNumber, formatRating } from '@/lib/products-utils';
+import { ImageGallery } from '@/components/image-gallery';
+import { DressDescriptionTabs } from '@/components/dress/detail/dress-description-tabs';
+import { DressFeedbackTabs } from '@/components/dress/detail/dress-feedbacks-tabs';
+import { CreateChatButton } from '@/components/chat/create-chat-button';
 
 const DressDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState<"buy" | "rent" | null>(
-    null
-  );
+  const [selectedOption, setSelectedOption] = useState<'buy' | 'rent' | null>(null);
   const [dress, setDress] = useState<IDress | null>(null);
   const [getDress, { isLoading }] = useLazyGetDressQuery();
 
   const fetchDress = useCallback(async () => {
     try {
-      const { statusCode, message, item } = await getDress(
-        id as string
-      ).unwrap();
+      const { statusCode, message, item } = await getDress(id as string).unwrap();
       if (statusCode === 200) {
         setDress(item);
       } else {
-        console.error("Failed to fetch dress:", message);
+        console.error('Failed to fetch dress:', message);
       }
     } catch (error) {
-      console.error("Failed to fetch dress:", error);
+      console.error('Failed to fetch dress:', error);
     }
   }, [getDress, id]);
 
   const [favorDress, { isLoading: isFavoriting }] = useAddFavoriteMutation();
-  const [unfavorDress, { isLoading: isUnfavoriting }] =
-    useRemoveFavoriteMutation();
+  const [unfavorDress, { isLoading: isUnfavoriting }] = useRemoveFavoriteMutation();
   const toggleFavorite = useCallback(async () => {
     if (dress) {
       try {
         if (dress.isFavorite) {
           const { statusCode, message } = await unfavorDress(dress.id).unwrap();
           if (statusCode === 200) {
-            toast.success("Đã bỏ yêu thích váy cưới!");
+            toast.success('Đã bỏ yêu thích váy cưới!');
             setDress((prev) => (prev ? { ...prev, isFavorite: false } : null));
           } else {
-            toast.error("Không thể bỏ yêu thích: " + message);
+            toast.error('Không thể bỏ yêu thích: ' + message);
           }
         } else {
           const { statusCode, message } = await favorDress(dress.id).unwrap();
           if (statusCode === 200) {
-            toast.success("Đã thêm yêu thích váy cưới!");
+            toast.success('Đã thêm yêu thích váy cưới!');
             setDress((prev) => (prev ? { ...prev, isFavorite: true } : null));
           } else {
-            toast.error("Không thể thêm yêu thích: " + message);
+            toast.error('Không thể thêm yêu thích: ' + message);
           }
         }
       } catch (error) {
-        console.error("Failed to toggle favorite:", error);
-        toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+        console.error('Failed to toggle favorite:', error);
+        toast.error('Có lỗi xảy ra, vui lòng thử lại!');
       }
     }
   }, [dress, favorDress, unfavorDress]);
@@ -112,10 +102,7 @@ const DressDetailPage = () => {
             <div className="aspect-[3/4] bg-gray-200 rounded-lg animate-pulse"></div>
             <div className="grid grid-cols-4 gap-2">
               {[...Array(4)].map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square bg-gray-200 rounded-md animate-pulse"
-                ></div>
+                <div key={i} className="aspect-square bg-gray-200 rounded-md animate-pulse"></div>
               ))}
             </div>
           </div>
@@ -136,10 +123,7 @@ const DressDetailPage = () => {
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-4 w-4 bg-gray-200 rounded animate-pulse"
-                    ></div>
+                    <div key={i} className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
                   ))}
                 </div>
                 <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
@@ -174,10 +158,7 @@ const DressDetailPage = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="h-10 bg-gray-200 rounded animate-pulse"
-              ></div>
+              <div key={i} className="h-10 bg-gray-200 rounded animate-pulse"></div>
             ))}
           </div>
           <div className="space-y-4">
@@ -196,16 +177,11 @@ const DressDetailPage = () => {
           <div className="mx-auto w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <ShoppingBag className="h-16 w-16 text-gray-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Không tìm thấy váy cưới
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Không tìm thấy váy cưới</h1>
           <p className="text-gray-600 mb-6">
             Váy cưới bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
           </p>
-          <Button
-            onClick={() => router.push("/browse")}
-            className="bg-rose-600 hover:bg-rose-700"
-          >
+          <Button onClick={() => router.push('/browse')} className="bg-rose-600 hover:bg-rose-700">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại danh sách
           </Button>
@@ -214,14 +190,14 @@ const DressDetailPage = () => {
     );
   }
 
-  const images = getImages(dress?.images || "");
+  const images = getImages(dress?.images || '');
 
   const handleShare = async () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("Đã sao chép liên kết!");
+    toast.success('Đã sao chép liên kết!');
   };
 
-  const userName = dress?.user ? dress.user.shop?.name : "Unknown User";
+  const userName = dress?.user ? dress.user.shop?.name : 'Unknown User';
 
   if (!dress) {
     return null;
@@ -242,9 +218,7 @@ const DressDetailPage = () => {
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    {dress.name}
-                  </h1>
+                  <h1 className="text-3xl font-bold text-gray-900">{dress.name}</h1>
                   {dress.isFavorite && (
                     <Badge className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
                       <Heart className="h-3 w-3 mr-1 fill-current" />
@@ -255,16 +229,10 @@ const DressDetailPage = () => {
                 <div className="flex items-center gap-4 mb-4">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={dress.user?.shop?.logoUrl || "/placeholder.svg"}
-                      />
-                      <AvatarFallback>
-                        {(userName || "Shop").charAt(0)}
-                      </AvatarFallback>
+                      <AvatarImage src={dress.user?.shop?.logoUrl || '/placeholder.svg'} />
+                      <AvatarFallback>{(userName || 'Shop').charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <span className="text-gray-600">
-                      Thiết kế bởi {userName}
-                    </span>
+                    <span className="text-gray-600">Thiết kế bởi {userName}</span>
                   </div>
                 </div>
               </div>
@@ -276,24 +244,22 @@ const DressDetailPage = () => {
                   disabled={isFavoriting || isUnfavoriting}
                   className={`transition-all duration-200 group relative ${
                     dress.isFavorite
-                      ? "text-rose-500 border-rose-500 bg-rose-50 hover:bg-rose-100"
-                      : "hover:border-rose-300 hover:text-rose-500"
+                      ? 'text-rose-500 border-rose-500 bg-rose-50 hover:bg-rose-100'
+                      : 'hover:border-rose-300 hover:text-rose-500'
                   }`}
-                  aria-label={
-                    dress.isFavorite ? "Bỏ yêu thích" : "Thêm vào yêu thích"
-                  }
+                  aria-label={dress.isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}
                 >
                   {isFavoriting || isUnfavoriting ? (
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-rose-500"></div>
                   ) : (
                     <Heart
                       className={`h-4 w-4 transition-all duration-200 ${
-                        dress.isFavorite ? "fill-current" : ""
+                        dress.isFavorite ? 'fill-current' : ''
                       }`}
                     />
                   )}
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
-                    {dress.isFavorite ? "Bỏ yêu thích" : "Thêm yêu thích"}
+                    {dress.isFavorite ? 'Bỏ yêu thích' : 'Thêm yêu thích'}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                   </div>
                 </Button>
@@ -316,18 +282,14 @@ const DressDetailPage = () => {
                     key={i}
                     className={`h-4 w-4 ${
                       i < Math.floor(parseNumber(dress.ratingAverage))
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-300"
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-gray-300'
                     }`}
                   />
                 ))}
               </div>
-              <span className="font-medium">
-                {formatRating(dress.ratingAverage)}
-              </span>
-              <span className="text-gray-600">
-                ({dress.ratingCount} đánh giá)
-              </span>
+              <span className="font-medium">{formatRating(dress.ratingAverage)}</span>
+              <span className="text-gray-600">({dress.ratingCount} đánh giá)</span>
             </div>
           </div>
 
@@ -337,19 +299,17 @@ const DressDetailPage = () => {
             {dress.isSellable && (
               <Card
                 className={`cursor-pointer transition-all ${
-                  selectedOption === "buy"
-                    ? "border-rose-500 bg-rose-50"
-                    : "border-gray-200 hover:border-gray-300"
+                  selectedOption === 'buy'
+                    ? 'border-rose-500 bg-rose-50'
+                    : 'border-gray-200 hover:border-gray-300'
                 }`}
-                onClick={() => setSelectedOption("buy")}
+                onClick={() => setSelectedOption('buy')}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">Mua sở hữu</h4>
-                      <p className="text-sm text-gray-600">
-                        Sở hữu vĩnh viễn chiếc váy
-                      </p>
+                      <p className="text-sm text-gray-600">Sở hữu vĩnh viễn chiếc váy</p>
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-gray-900">
@@ -364,19 +324,17 @@ const DressDetailPage = () => {
             {dress.isRentable && (
               <Card
                 className={`cursor-pointer transition-all ${
-                  selectedOption === "rent"
-                    ? "border-rose-500 bg-rose-50"
-                    : "border-gray-200 hover:border-gray-300"
+                  selectedOption === 'rent'
+                    ? 'border-rose-500 bg-rose-50'
+                    : 'border-gray-200 hover:border-gray-300'
                 }`}
-                onClick={() => setSelectedOption("rent")}
+                onClick={() => setSelectedOption('rent')}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">Thuê váy</h4>
-                      <p className="text-sm text-gray-600">
-                        Thuê cho ngày cưới (3-7 ngày)
-                      </p>
+                      <p className="text-sm text-gray-600">Thuê cho ngày cưới (3-7 ngày)</p>
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-gray-900">
@@ -404,14 +362,14 @@ const DressDetailPage = () => {
                   ) : (
                     <ShoppingBag className="h-4 w-4 mr-2" />
                   )}
-                  {isLoading ? "Đang tải..." : "Đặt hàng ngay"}
+                  {isLoading ? 'Đang tải...' : 'Đặt hàng ngay'}
                 </Button>
               }
             />
             <CreateChatButton
-              shopId={dress.user?.shop?.id || ""}
-              shopName={dress.user?.shop?.name || ""}
-              shopAvatarUrl={dress.user?.shop?.logoUrl || ""}
+              shopId={dress.user?.shop?.id || ''}
+              shopName={dress.user?.shop?.name || ''}
+              shopAvatarUrl={dress.user?.shop?.logoUrl || ''}
               dressId={dress.id}
               dressName={dress.name}
               className="w-full bg-transparent"
@@ -434,7 +392,7 @@ const DressDetailPage = () => {
             <div className="text-center">
               <Heart className="h-6 w-6 mx-auto mb-2 text-rose-600" />
               <p className="text-xs text-gray-600">
-                {dress.isFavorite ? "Đã yêu thích" : "Thêm yêu thích"}
+                {dress.isFavorite ? 'Đã yêu thích' : 'Thêm yêu thích'}
               </p>
             </div>
           </div>
@@ -444,18 +402,16 @@ const DressDetailPage = () => {
       <Tabs defaultValue="description" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="description" disabled={isLoading}>
-            {isLoading ? "Đang tải..." : "Mô tả"}
+            {isLoading ? 'Đang tải...' : 'Mô tả'}
           </TabsTrigger>
           <TabsTrigger value="reviews" disabled={isLoading}>
-            {isLoading
-              ? "Đang tải..."
-              : `Đánh giá (${dress.feedbacks?.length || 0})`}
+            {isLoading ? 'Đang tải...' : `Đánh giá (${dress.feedbacks?.length || 0})`}
           </TabsTrigger>
           <TabsTrigger value="designer" disabled={isLoading}>
-            {isLoading ? "Đang tải..." : "Nhà thiết kế"}
+            {isLoading ? 'Đang tải...' : 'Nhà thiết kế'}
           </TabsTrigger>
           <TabsTrigger value="care" disabled={isLoading}>
-            {isLoading ? "Đang tải..." : "Hướng dẫn"}
+            {isLoading ? 'Đang tải...' : 'Hướng dẫn'}
           </TabsTrigger>
         </TabsList>
 
@@ -475,22 +431,18 @@ const DressDetailPage = () => {
             <CardContent>
               <div className="flex items-start gap-6">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage
-                    src={dress.user?.shop?.logoUrl || "/placeholder.svg"}
-                  />
+                  <AvatarImage src={dress.user?.shop?.logoUrl || '/placeholder.svg'} />
                   <AvatarFallback className="text-2xl">
-                    {(userName || "Shop").charAt(0)}
+                    {(userName || 'Shop').charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold mb-2">{userName}</h3>
-                  <p className="text-gray-600 mb-4">
-                    Nhà thiết kế váy cưới chuyên nghiệp
-                  </p>
+                  <p className="text-gray-600 mb-4">Nhà thiết kế váy cưới chuyên nghiệp</p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-gray-400" />
-                      <span>{dress.user?.email || "Không có thông tin"}</span>
+                      <span>{dress.user?.email || 'Không có thông tin'}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-green-500" />
@@ -505,7 +457,7 @@ const DressDetailPage = () => {
                         if (dress.user?.shop?.id) {
                           router.push(`/shops/detail/${dress.user.shop.id}`);
                         } else {
-                          toast.error("Không thể xem hồ sơ shop");
+                          toast.error('Không thể xem hồ sơ shop');
                         }
                       }}
                       disabled={!dress.user?.shop?.id}
@@ -513,9 +465,9 @@ const DressDetailPage = () => {
                       Xem hồ sơ
                     </Button>
                     <CreateChatButton
-                      shopId={dress.user?.shop?.id || ""}
-                      shopName={dress.user?.shop?.name || ""}
-                      shopAvatarUrl={dress.user?.shop?.logoUrl || ""}
+                      shopId={dress.user?.shop?.id || ''}
+                      shopName={dress.user?.shop?.name || ''}
+                      shopAvatarUrl={dress.user?.shop?.logoUrl || ''}
                       dressId={dress.id}
                       dressName={dress.name}
                       className="bg-transparent border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
@@ -540,9 +492,7 @@ const DressDetailPage = () => {
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-start gap-2">
                     <span className="text-rose-600 mt-1">•</span>
-                    <span>
-                      Giặt khô chuyên nghiệp để đảm bảo chất lượng vải
-                    </span>
+                    <span>Giặt khô chuyên nghiệp để đảm bảo chất lượng vải</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-rose-600 mt-1">•</span>

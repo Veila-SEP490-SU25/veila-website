@@ -1,53 +1,50 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Plus, Loader2, Save } from "lucide-react";
-import { useCreateAccessoryMutation } from "@/services/apis";
-import { AccessoryStatus, ICreateAccessory } from "@/services/types";
-import { toast } from "sonner";
-import { ImagesUpload } from "@/components/images-upload";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { X, Plus, Loader2, Save } from 'lucide-react';
+import { useCreateAccessoryMutation } from '@/services/apis';
+import { AccessoryStatus, ICreateAccessory } from '@/services/types';
+import { toast } from 'sonner';
+import { ImagesUpload } from '@/components/images-upload';
 
 interface CreateAccessoryDialogProps {
   trigger?: React.ReactNode;
   onSuccess?: () => void;
 }
 
-export function CreateAccessoryDialog({
-  trigger,
-  onSuccess,
-}: CreateAccessoryDialogProps) {
+export function CreateAccessoryDialog({ trigger, onSuccess }: CreateAccessoryDialogProps) {
   const [open, setOpen] = useState(false);
   const [createAccessory, { isLoading }] = useCreateAccessoryMutation();
 
   const [accessoryData, setAccessoryData] = useState<ICreateAccessory>({
     categoryId: null,
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     sellPrice: 0,
     rentalPrice: 0,
     isSellable: true,
     isRentable: true,
     status: AccessoryStatus.AVAILABLE,
-    images: "",
+    images: '',
   });
 
-  const [imageUrls, setImageUrls] = useState<string>("");
+  const [imageUrls, setImageUrls] = useState<string>('');
 
   const handleInputChange = (field: keyof ICreateAccessory, value: any) => {
     setAccessoryData((prev) => ({
@@ -59,34 +56,32 @@ export function CreateAccessoryDialog({
   const resetForm = () => {
     setAccessoryData({
       categoryId: null,
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       sellPrice: 0,
       rentalPrice: 0,
       isSellable: true,
       isRentable: true,
       status: AccessoryStatus.AVAILABLE,
-      images: "",
+      images: '',
     });
-    setImageUrls("");
+    setImageUrls('');
   };
 
   const handleSubmit = async () => {
     try {
-      const { statusCode, message } = await createAccessory(
-        accessoryData
-      ).unwrap();
+      const { statusCode, message } = await createAccessory(accessoryData).unwrap();
       if (statusCode === 201 || statusCode == 200) {
-        toast.success("Tạo phụ kiện thành công!");
+        toast.success('Tạo phụ kiện thành công!');
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi tạo phụ kiện");
+        toast.error(message || 'Có lỗi xảy ra khi tạo phụ kiện');
       }
     } catch (error) {
       console.error(error);
-      toast.error("Có lỗi xảy ra khi tạo phụ kiện");
+      toast.error('Có lỗi xảy ra khi tạo phụ kiện');
     }
   };
 
@@ -96,7 +91,7 @@ export function CreateAccessoryDialog({
   };
 
   useEffect(() => {
-    handleInputChange("images", imageUrls);
+    handleInputChange('images', imageUrls);
   }, [imageUrls]);
 
   const defaultTrigger = (
@@ -111,9 +106,7 @@ export function CreateAccessoryDialog({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
-            Tạo phụ kiện mới
-          </DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Tạo phụ kiện mới</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">
@@ -130,7 +123,7 @@ export function CreateAccessoryDialog({
                     id="name"
                     placeholder="Nhập tên phụ kiện"
                     value={accessoryData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                   />
                 </div>
 
@@ -140,9 +133,7 @@ export function CreateAccessoryDialog({
                     id="description"
                     placeholder="Nhập mô tả chi tiết về phụ kiện"
                     value={accessoryData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('description', e.target.value)}
                     rows={3}
                   />
                 </div>
@@ -160,9 +151,7 @@ export function CreateAccessoryDialog({
                   </div>
                   <Switch
                     checked={accessoryData.isSellable}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isSellable", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isSellable', checked)}
                   />
                 </div>
 
@@ -173,12 +162,9 @@ export function CreateAccessoryDialog({
                       id="sellPrice"
                       type="number"
                       placeholder="0"
-                      value={accessoryData.sellPrice || ""}
+                      value={accessoryData.sellPrice || ''}
                       onChange={(e) =>
-                        handleInputChange(
-                          "sellPrice",
-                          Number.parseInt(e.target.value) || 0
-                        )
+                        handleInputChange('sellPrice', Number.parseInt(e.target.value) || 0)
                       }
                     />
                   </div>
@@ -195,9 +181,7 @@ export function CreateAccessoryDialog({
                   </div>
                   <Switch
                     checked={accessoryData.isRentable}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isRentable", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isRentable', checked)}
                   />
                 </div>
 
@@ -208,12 +192,9 @@ export function CreateAccessoryDialog({
                       id="rentalPrice"
                       type="number"
                       placeholder="0"
-                      value={accessoryData.rentalPrice || ""}
+                      value={accessoryData.rentalPrice || ''}
                       onChange={(e) =>
-                        handleInputChange(
-                          "rentalPrice",
-                          Number.parseInt(e.target.value) || 0
-                        )
+                        handleInputChange('rentalPrice', Number.parseInt(e.target.value) || 0)
                       }
                     />
                   </div>

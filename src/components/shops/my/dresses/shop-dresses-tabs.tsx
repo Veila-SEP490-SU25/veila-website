@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import { LoadingItem } from "@/components/loading-item";
-import { PagingComponent } from "@/components/paging-component";
-import { CreateDressDialog } from "@/components/shops/my/dresses/create-dress-dialog";
-import { DeleteDressDialog } from "@/components/shops/my/dresses/delete-dress-dialog";
-import { DressDetailDialog } from "@/components/shops/my/dresses/dress-detail-dialog";
-import { UpdateDressDialog } from "@/components/shops/my/dresses/update-dress-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { LoadingItem } from '@/components/loading-item';
+import { PagingComponent } from '@/components/paging-component';
+import { CreateDressDialog } from '@/components/shops/my/dresses/create-dress-dialog';
+import { DeleteDressDialog } from '@/components/shops/my/dresses/delete-dress-dialog';
+import { DressDetailDialog } from '@/components/shops/my/dresses/dress-detail-dialog';
+import { UpdateDressDialog } from '@/components/shops/my/dresses/update-dress-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -33,20 +33,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useDebounce } from "@/hooks/use-debounce";
+} from '@/components/ui/table';
+import { useDebounce } from '@/hooks/use-debounce';
 import {
   dressStatusColors,
   dressStatusLabels,
   formatPrice,
   getCoverImage,
-} from "@/lib/products-utils";
-import { usePaging } from "@/providers/paging.provider";
-import {
-  useLazyGetMyShopDressesQuery,
-  useUpdateDressMutation,
-} from "@/services/apis";
-import { IDress, DressStatus } from "@/services/types";
+} from '@/lib/products-utils';
+import { usePaging } from '@/providers/paging.provider';
+import { useLazyGetMyShopDressesQuery, useUpdateDressMutation } from '@/services/apis';
+import { IDress, DressStatus } from '@/services/types';
 import {
   AlertCircleIcon,
   Edit,
@@ -57,18 +54,18 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
-} from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export const ShopDressesTabs = () => {
   const [dresses, setDresses] = useState<IDress[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [trigger, { isLoading }] = useLazyGetMyShopDressesQuery();
   const [updateDress, { isLoading: isUpdating }] = useUpdateDressMutation();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [updateTrigger, setUpdateTrigger] = useState<number>(0);
 
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
@@ -76,12 +73,12 @@ export const ShopDressesTabs = () => {
 
   const fetchDresses = useCallback(async () => {
     try {
-      let filter = "";
+      let filter = '';
       if (debouncedSearchTerm) {
         filter += `name:like:${debouncedSearchTerm}`;
       }
-      if (statusFilter !== "ALL") {
-        if (filter) filter += ",";
+      if (statusFilter !== 'ALL') {
+        if (filter) filter += ',';
         filter += `status:eq:${statusFilter}`;
       }
 
@@ -99,14 +96,14 @@ export const ShopDressesTabs = () => {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
       } else {
         setIsError(true);
         setError(message);
       }
     } catch {
-      toast.error("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
+      toast.error('Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng');
     }
   }, [
     debouncedSearchTerm,
@@ -126,35 +123,35 @@ export const ShopDressesTabs = () => {
           id: dressId,
           categoryId: dress.categoryId,
           name: dress.name,
-          description: dress.description || "",
+          description: dress.description || '',
           sellPrice:
-            typeof dress.sellPrice === "string"
+            typeof dress.sellPrice === 'string'
               ? parseFloat(dress.sellPrice) || 0
               : dress.sellPrice,
           rentalPrice:
-            typeof dress.rentalPrice === "string"
+            typeof dress.rentalPrice === 'string'
               ? parseFloat(dress.rentalPrice) || 0
               : dress.rentalPrice,
           isSellable: dress.isSellable,
           isRentable: dress.isRentable,
           status: newStatus as DressStatus,
-          images: dress.images || "",
+          images: dress.images || '',
           bust: dress.bust || 0,
           waist: dress.waist || 0,
           hip: dress.hip || 0,
-          material: dress.material || "",
-          color: dress.color || "",
-          length: dress.length || "",
-          neckline: dress.neckline || "",
-          sleeve: dress.sleeve || "",
+          material: dress.material || '',
+          color: dress.color || '',
+          length: dress.length || '',
+          neckline: dress.neckline || '',
+          sleeve: dress.sleeve || '',
         }).unwrap();
         if (statusCode === 200) {
           // Force update state ngay lập tức
           setDresses((prevDresses) => {
             const updatedDresses = prevDresses.map((d) =>
-              d.id === dressId ? { ...d, status: newStatus as DressStatus } : d
+              d.id === dressId ? { ...d, status: newStatus as DressStatus } : d,
             );
-            console.log("🔄 Updating dress status:", {
+            console.log('🔄 Updating dress status:', {
               dressId,
               newStatus,
               updatedDresses,
@@ -165,15 +162,15 @@ export const ShopDressesTabs = () => {
           // Force re-render bằng cách trigger update
           setUpdateTrigger((prev) => prev + 1);
 
-          toast.success("Cập nhật trạng thái váy thành công!");
+          toast.success('Cập nhật trạng thái váy thành công!');
         } else {
-          toast.error(message || "Có lỗi xảy ra khi cập nhật trạng thái");
+          toast.error(message || 'Có lỗi xảy ra khi cập nhật trạng thái');
         }
       } catch {
-        toast.error("Có lỗi xảy ra khi cập nhật trạng thái váy");
+        toast.error('Có lỗi xảy ra khi cập nhật trạng thái váy');
       }
     },
-    [updateDress]
+    [updateDress],
   );
 
   useEffect(() => {
@@ -187,12 +184,12 @@ export const ShopDressesTabs = () => {
 
   // Debug: Log khi dresses state thay đổi
   useEffect(() => {
-    console.log("🔄 Dresses state updated:", dresses);
+    console.log('🔄 Dresses state updated:', dresses);
   }, [dresses]);
 
   // Debug: Log khi updateTrigger thay đổi
   useEffect(() => {
-    console.log("🔄 Update trigger changed:", updateTrigger);
+    console.log('🔄 Update trigger changed:', updateTrigger);
   }, [updateTrigger]);
 
   return (
@@ -230,11 +227,9 @@ export const ShopDressesTabs = () => {
         {isLoading ? (
           <LoadingItem />
         ) : isError ? (
-          <Alert variant={"destructive"} className="mb-4 h-full">
+          <Alert variant={'destructive'} className="mb-4 h-full">
             <AlertCircleIcon />
-            <AlertTitle>
-              Đã có lỗi xảy ra trong quá trình lấy dữ liệu
-            </AlertTitle>
+            <AlertTitle>Đã có lỗi xảy ra trong quá trình lấy dữ liệu</AlertTitle>
             <AlertDescription>
               <p>Chi tiết lỗi:</p>
               <ul className="list-inside list-disc text-sm">
@@ -263,10 +258,7 @@ export const ShopDressesTabs = () => {
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-12 w-12 rounded-lg">
                             <AvatarImage
-                              src={
-                                getCoverImage(dress.images) ||
-                                "/placeholder.svg"
-                              }
+                              src={getCoverImage(dress.images) || '/placeholder.svg'}
                               alt={dress.name}
                             />
                             <AvatarFallback className="rounded-lg">
@@ -285,45 +277,35 @@ export const ShopDressesTabs = () => {
                         {dress.isSellable && dress.sellPrice ? (
                           <span className="font-medium">
                             {formatPrice(
-                              typeof dress.sellPrice === "string"
+                              typeof dress.sellPrice === 'string'
                                 ? parseFloat(dress.sellPrice) || 0
-                                : dress.sellPrice || 0
+                                : dress.sellPrice || 0,
                             )}
                           </span>
                         ) : (
-                          <span className="text-muted-foreground">
-                            Không bán
-                          </span>
+                          <span className="text-muted-foreground">Không bán</span>
                         )}
                       </TableCell>
                       <TableCell>
                         {dress.isRentable && dress.rentalPrice ? (
                           <span className="font-medium">
                             {formatPrice(
-                              typeof dress.rentalPrice === "string"
+                              typeof dress.rentalPrice === 'string'
                                 ? parseFloat(dress.rentalPrice) || 0
-                                : dress.rentalPrice || 0
+                                : dress.rentalPrice || 0,
                             )}
                           </span>
                         ) : (
-                          <span className="text-muted-foreground">
-                            Không cho thuê
-                          </span>
+                          <span className="text-muted-foreground">Không cho thuê</span>
                         )}
                       </TableCell>
                       <TableCell>
                         <Badge
                           className={
-                            dressStatusColors[
-                              dress.status as keyof typeof dressStatusColors
-                            ]
+                            dressStatusColors[dress.status as keyof typeof dressStatusColors]
                           }
                         >
-                          {
-                            dressStatusLabels[
-                              dress.status as keyof typeof dressStatusLabels
-                            ]
-                          }
+                          {dressStatusLabels[dress.status as keyof typeof dressStatusLabels]}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -333,9 +315,7 @@ export const ShopDressesTabs = () => {
                               {dress.bust}-{dress.waist}-{dress.hip}
                             </span>
                           ) : (
-                            <span className="text-muted-foreground">
-                              Chưa có
-                            </span>
+                            <span className="text-muted-foreground">Chưa có</span>
                           )}
                         </div>
                       </TableCell>
@@ -381,11 +361,7 @@ export const ShopDressesTabs = () => {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(
-                                  dress.id,
-                                  DressStatus.AVAILABLE,
-                                  dress
-                                )
+                                handleStatusUpdate(dress.id, DressStatus.AVAILABLE, dress)
                               }
                               className="text-green-600"
                               disabled={isUpdating}
@@ -399,11 +375,7 @@ export const ShopDressesTabs = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(
-                                  dress.id,
-                                  DressStatus.UNAVAILABLE,
-                                  dress
-                                )
+                                handleStatusUpdate(dress.id, DressStatus.UNAVAILABLE, dress)
                               }
                               className="text-orange-600"
                               disabled={isUpdating}
@@ -417,11 +389,7 @@ export const ShopDressesTabs = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(
-                                  dress.id,
-                                  DressStatus.OUT_OF_STOCK,
-                                  dress
-                                )
+                                handleStatusUpdate(dress.id, DressStatus.OUT_OF_STOCK, dress)
                               }
                               className="text-red-600"
                               disabled={isUpdating}

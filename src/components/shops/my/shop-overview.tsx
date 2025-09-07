@@ -1,25 +1,17 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IShop } from "@/services/types";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IShop } from '@/services/types';
 import {
   useLazyGetMyShopDressesQuery,
   useLazyGetMyShopAccessoriesQuery,
   useLazyGetMyShopBlogsQuery,
   useLazyGetOrdersQuery,
   useLazyGetShopIncomeQuery,
-} from "@/services/apis";
-import {
-  DollarSign,
-  Mail,
-  MapPin,
-  Package,
-  Phone,
-  ShoppingBag,
-  FileText,
-} from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+} from '@/services/apis';
+import { DollarSign, Mail, MapPin, Package, Phone, ShoppingBag, FileText } from 'lucide-react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface ShopOverViewProps {
   shop: IShop;
@@ -41,9 +33,9 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
   const [getShopIncome] = useLazyGetShopIncomeQuery();
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
     }).format(price);
   };
 
@@ -53,32 +45,32 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
         const dressesResponse = await getDresses({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const dressesCount = dressesResponse.items?.length || 0;
 
         const accessoriesResponse = await getAccessories({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const accessoriesCount = accessoriesResponse.items?.length || 0;
 
         const blogsResponse = await getBlogs({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const blogsCount = blogsResponse.items?.length || 0;
 
         const ordersResponse = await getOrders({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const ordersCount = ordersResponse.items?.length || 0;
 
@@ -94,7 +86,7 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
           income: incomeAmount,
         });
       } catch (error) {
-        console.error("Error fetching metrics:", error);
+        console.error('Error fetching metrics:', error);
       }
     };
 
@@ -106,7 +98,7 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
       <Card className="pt-0">
         <div className="relative h-48 md:h-64 overflow-hidden rounded-t-lg">
           <Image
-            src={shop.coverUrl || "/placeholder.svg"}
+            src={shop.coverUrl || '/placeholder.svg'}
             alt="Shop Cover"
             width={500}
             height={300}
@@ -121,17 +113,13 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-shrink-0">
               <Avatar className="h-24 w-24 border-4 border-white shadow-lg -mt-16 relative z-10">
-                <AvatarImage src={shop.logoUrl || "/placeholder.svg"} />
-                <AvatarFallback className="text-2xl">
-                  {shop.name.charAt(0)}
-                </AvatarFallback>
+                <AvatarImage src={shop.logoUrl || '/placeholder.svg'} />
+                <AvatarFallback className="text-2xl">{shop.name.charAt(0)}</AvatarFallback>
               </Avatar>
             </div>
             <div className="flex-1 space-y-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {shop.name}
-                </h2>
+                <h2 className="text-2xl font-bold text-gray-900">{shop.name}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2">
@@ -155,15 +143,11 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Doanh thu tháng
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Doanh thu tháng</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {formatPrice(metrics.income)}
-            </div>
+            <div className="text-2xl font-bold">{formatPrice(metrics.income)}</div>
           </CardContent>
         </Card>
         <Card>
@@ -172,9 +156,7 @@ export const ShopOverview = ({ shop }: ShopOverViewProps) => {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {metrics.dresses + metrics.accessories}
-            </div>
+            <div className="text-2xl font-bold">{metrics.dresses + metrics.accessories}</div>
           </CardContent>
         </Card>
       </div>

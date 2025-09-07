@@ -1,24 +1,20 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Label } from "@/components/ui/label";
-import { useUpdateWalletPINMutation } from "@/services/apis";
-import { IUpdateWalletPIN } from "@/services/types";
-import { Loader2, Save, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Label } from '@/components/ui/label';
+import { useUpdateWalletPINMutation } from '@/services/apis';
+import { IUpdateWalletPIN } from '@/services/types';
+import { Loader2, Save, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UpdateWalletPINDialogProps {
   open?: boolean;
@@ -37,8 +33,8 @@ export const UpdateWalletPINDialog = ({
   const [updateWalletPIN, { isLoading }] = useUpdateWalletPINMutation();
 
   const [pinData, setPinData] = useState<IUpdateWalletPIN>({
-    oldPin: "",
-    pin: "",
+    oldPin: '',
+    pin: '',
   });
 
   const handleInputChange = (field: keyof IUpdateWalletPIN, value: any) => {
@@ -50,8 +46,8 @@ export const UpdateWalletPINDialog = ({
 
   const resetForm = () => {
     setPinData({
-      oldPin: "",
-      pin: "",
+      oldPin: '',
+      pin: '',
     });
   };
 
@@ -68,15 +64,15 @@ export const UpdateWalletPINDialog = ({
     try {
       const { statusCode, message } = await updateWalletPIN(pinData).unwrap();
       if ([200, 201, 204, 203].includes(statusCode)) {
-        toast.success("Cập nhật mật khẩu ví thành công!");
+        toast.success('Cập nhật mật khẩu ví thành công!');
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi cập nhật thông tin ví");
+        toast.error(message || 'Có lỗi xảy ra khi cập nhật thông tin ví');
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi cập nhật thông tin ví");
+      toast.error('Có lỗi xảy ra khi cập nhật thông tin ví');
     }
   };
 
@@ -92,7 +88,7 @@ export const UpdateWalletPINDialog = ({
           <InputOTP
             maxLength={6}
             value={pinData.oldPin}
-            onChange={(value) => handleInputChange("oldPin", value)}
+            onChange={(value) => handleInputChange('oldPin', value)}
             className="gap-2"
             type="password"
           >
@@ -135,7 +131,7 @@ export const UpdateWalletPINDialog = ({
           <InputOTP
             maxLength={6}
             value={pinData.pin}
-            onChange={(value) => handleInputChange("pin", value)}
+            onChange={(value) => handleInputChange('pin', value)}
             className="gap-2"
             type="password"
           >

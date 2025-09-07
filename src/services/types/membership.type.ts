@@ -1,8 +1,8 @@
-import { IItem, IShop, ISubscription, ITransaction } from "@/services/types";
+import { IItem, IShop, ISubscription, ITransaction } from '@/services/types';
 
 export enum MembershipStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
 }
 
 export interface IMembership extends IItem {

@@ -1,20 +1,20 @@
-"use client";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+'use client';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLazyGetShopDressesQuery } from "@/services/apis";
-import { IDress, IPaginationResponse } from "@/services/types";
-import { Heart, Eye, Star, ShoppingBag } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+} from '@/components/ui/select';
+import { useLazyGetShopDressesQuery } from '@/services/apis';
+import { IDress, IPaginationResponse } from '@/services/types';
+import { Heart, Eye, Star, ShoppingBag } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   id: string;
@@ -35,11 +35,11 @@ export const ShopDresses = ({ id }: Props) => {
   const fetchDresses = useCallback(async () => {
     try {
       const { statusCode, message, items, ...pagination } = await getDress({
-        filter: "",
+        filter: '',
         id,
         page: paging.pageIndex,
         size: paging.pageSize,
-        sort: "",
+        sort: '',
       }).unwrap();
       if (statusCode === 200) {
         setDresses(items);
@@ -52,7 +52,7 @@ export const ShopDresses = ({ id }: Props) => {
         }));
       }
     } catch (error) {
-      console.error("Error fetching dresses:", error);
+      console.error('Error fetching dresses:', error);
     }
   }, [getDress, id, paging.pageIndex, paging.pageSize]);
 
@@ -74,13 +74,13 @@ export const ShopDresses = ({ id }: Props) => {
 
   const getAvailabilityBadge = (dress: IDress) => {
     if (dress.isSellable && dress.isRentable) {
-      return { text: "Bán & Thuê", className: "bg-purple-600" };
+      return { text: 'Bán & Thuê', className: 'bg-purple-600' };
     } else if (dress.isSellable) {
-      return { text: "Bán", className: "bg-green-600" };
+      return { text: 'Bán', className: 'bg-green-600' };
     } else if (dress.isRentable) {
-      return { text: "Cho Thuê", className: "bg-blue-600" };
+      return { text: 'Cho Thuê', className: 'bg-blue-600' };
     }
-    return { text: "Không có sẵn", className: "bg-gray-600" };
+    return { text: 'Không có sẵn', className: 'bg-gray-600' };
   };
 
   useEffect(() => {
@@ -94,16 +94,11 @@ export const ShopDresses = ({ id }: Props) => {
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold text-gray-900">Váy Cưới</h2>
           {!isLoading && (
-            <span className="text-sm text-gray-600">
-              ({paging.totalItems} sản phẩm)
-            </span>
+            <span className="text-sm text-gray-600">({paging.totalItems} sản phẩm)</span>
           )}
         </div>
         <div className="flex flex-col gap-3 md:flex-row md:gap-4">
-          <Select
-            value={paging.pageSize.toString()}
-            onValueChange={handlePageSizeChange}
-          >
+          <Select value={paging.pageSize.toString()} onValueChange={handlePageSizeChange}>
             <SelectTrigger className="w-full md:w-32">
               <SelectValue />
             </SelectTrigger>
@@ -151,7 +146,7 @@ export const ShopDresses = ({ id }: Props) => {
               >
                 <div className="relative">
                   <Image
-                    src={dress.images || "/placeholder.svg"}
+                    src={dress.images || '/placeholder.svg'}
                     alt={dress.name}
                     width={300}
                     height={400}
@@ -195,37 +190,28 @@ export const ShopDresses = ({ id }: Props) => {
                     <div className="flex items-center space-x-2">
                       <div className="flex items-center">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium ml-1">
-                          {dress.ratingAverage}
-                        </span>
+                        <span className="text-sm font-medium ml-1">{dress.ratingAverage}</span>
                       </div>
                       <span className="text-gray-400">•</span>
-                      <span className="text-sm text-gray-600">
-                        {dress.ratingCount} đánh giá
-                      </span>
+                      <span className="text-sm text-gray-600">{dress.ratingCount} đánh giá</span>
                     </div>
 
                     <div className="flex items-center justify-between pt-2">
                       <div className="space-y-1">
                         {dress.isSellable && (
                           <p className="text-lg font-bold text-gray-900">
-                            {dress.sellPrice.toLocaleString("vi-VN")}₫
+                            {dress.sellPrice.toLocaleString('vi-VN')}₫
                           </p>
                         )}
                         {dress.isRentable && (
                           <p className="text-sm text-gray-600">
-                            Thuê: {dress.rentalPrice.toLocaleString("vi-VN")}₫
+                            Thuê: {dress.rentalPrice.toLocaleString('vi-VN')}₫
                           </p>
                         )}
-                        <p className="text-xs text-gray-600">
-                          {dress.category?.name}
-                        </p>
+                        <p className="text-xs text-gray-600">{dress.category?.name}</p>
                       </div>
                       <Link href={`/dress/${dress.id}`}>
-                        <Button
-                          size="sm"
-                          className="bg-rose-600 hover:bg-rose-700"
-                        >
+                        <Button size="sm" className="bg-rose-600 hover:bg-rose-700">
                           <ShoppingBag className="h-4 w-4 mr-2" />
                           Xem
                         </Button>
@@ -245,12 +231,8 @@ export const ShopDresses = ({ id }: Props) => {
           <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
             <ShoppingBag className="h-12 w-12 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Chưa có váy cưới nào
-          </h3>
-          <p className="text-gray-500">
-            Cửa hàng này chưa có sản phẩm nào được đăng tải.
-          </p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có váy cưới nào</h3>
+          <p className="text-gray-500">Cửa hàng này chưa có sản phẩm nào được đăng tải.</p>
         </div>
       )}
 

@@ -1,30 +1,21 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useLazyGetPublicBlogByIdQuery } from "@/services/apis/blog.api";
-import { IBlog, BlogStatus } from "@/services/types";
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import Image from "next/image";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import rehypeHighlight from "rehype-highlight";
-import {
-  ArrowLeft,
-  Calendar,
-  User,
-  Share2,
-  BookOpen,
-  CheckCircle,
-  Clock,
-  Tag,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import "highlight.js/styles/github.css";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useLazyGetPublicBlogByIdQuery } from '@/services/apis/blog.api';
+import { IBlog, BlogStatus } from '@/services/types';
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeHighlight from 'rehype-highlight';
+import { ArrowLeft, Calendar, User, Share2, BookOpen, CheckCircle, Clock, Tag } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import 'highlight.js/styles/github.css';
 
 export default function BlogDetailPage() {
   const router = useRouter();
@@ -47,37 +38,37 @@ export default function BlogDetailPage() {
   }, [data]);
 
   const formatDate = (date: string | Date) => {
-    const dateObj = typeof date === "string" ? new Date(date) : date;
-    return dateObj.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
   const getStatusColor = (status: BlogStatus) => {
     switch (status) {
       case BlogStatus.PUBLISHED:
-        return "bg-green-100 text-green-800 border-green-200";
+        return 'bg-green-100 text-green-800 border-green-200';
       case BlogStatus.DRAFT:
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case BlogStatus.UNPUBLISHED:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   const getStatusText = (status: BlogStatus) => {
     switch (status) {
       case BlogStatus.PUBLISHED:
-        return "Đã xuất bản";
+        return 'Đã xuất bản';
       case BlogStatus.DRAFT:
-        return "Bản nháp";
+        return 'Bản nháp';
       case BlogStatus.UNPUBLISHED:
-        return "Chưa xuất bản";
+        return 'Chưa xuất bản';
       default:
         return status;
     }
@@ -92,7 +83,7 @@ export default function BlogDetailPage() {
           url: window.location.href,
         });
       } catch (error) {
-        console.log("Error sharing:", error);
+        console.log('Error sharing:', error);
       }
     } else {
       // Fallback: copy to clipboard
@@ -137,9 +128,7 @@ export default function BlogDetailPage() {
         <Card className="max-w-md">
           <CardContent className="p-6 text-center">
             <p className="text-red-500 mb-4">Có lỗi xảy ra khi tải blog này</p>
-            <Button onClick={() => router.push("/blog")}>
-              Quay lại danh sách blog
-            </Button>
+            <Button onClick={() => router.push('/blog')}>Quay lại danh sách blog</Button>
           </CardContent>
         </Card>
       </div>
@@ -153,9 +142,7 @@ export default function BlogDetailPage() {
           <CardContent className="p-6 text-center">
             <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">Không tìm thấy blog này</p>
-            <Button onClick={() => router.push("/blog")}>
-              Quay lại danh sách blog
-            </Button>
+            <Button onClick={() => router.push('/blog')}>Quay lại danh sách blog</Button>
           </CardContent>
         </Card>
       </div>
@@ -169,7 +156,7 @@ export default function BlogDetailPage() {
         <div className="container mx-auto px-4 py-4">
           <Button
             variant="ghost"
-            onClick={() => router.push("/blog")}
+            onClick={() => router.push('/blog')}
             className="hover:bg-pink-100"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -185,7 +172,7 @@ export default function BlogDetailPage() {
             <CardContent className="p-8">
               {/* Status and Meta */}
               <div className="flex flex-wrap items-center gap-3 mb-6">
-                <Badge className={cn("text-sm", getStatusColor(blog.status))}>
+                <Badge className={cn('text-sm', getStatusColor(blog.status))}>
                   {getStatusText(blog.status)}
                 </Badge>
                 {blog.isVerified && (
@@ -195,10 +182,7 @@ export default function BlogDetailPage() {
                   </Badge>
                 )}
                 {blog.categoryId && (
-                  <Badge
-                    variant="outline"
-                    className="border-purple-200 text-purple-700"
-                  >
+                  <Badge variant="outline" className="border-purple-200 text-purple-700">
                     <Tag className="h-3 w-3 mr-1" />
                     {blog.categoryId}
                   </Badge>
@@ -214,9 +198,7 @@ export default function BlogDetailPage() {
               <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-6">
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5" />
-                  <span className="font-medium">
-                    Tác giả
-                  </span>
+                  <span className="font-medium">Tác giả</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
@@ -224,9 +206,7 @@ export default function BlogDetailPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  <span>
-                    {Math.ceil((blog.content?.length || 0) / 1000)} phút đọc
-                  </span>
+                  <span>{Math.ceil((blog.content?.length || 0) / 1000)} phút đọc</span>
                 </div>
               </div>
 
@@ -255,33 +235,25 @@ export default function BlogDetailPage() {
                       </h1>
                     ),
                     h2: ({ children }) => (
-                      <h2 className="text-2xl font-bold text-gray-800 mt-6 mb-3">
-                        {children}
-                      </h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mt-6 mb-3">{children}</h2>
                     ),
                     h3: ({ children }) => (
-                      <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">
-                        {children}
-                      </h3>
+                      <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">{children}</h3>
                     ),
                     p: ({ children }) => (
-                      <p className="text-gray-700 leading-relaxed mb-4">
-                        {children}
-                      </p>
+                      <p className="text-gray-700 leading-relaxed mb-4">{children}</p>
                     ),
                     img: ({ src, alt }) => (
                       <div className="my-6">
                         <Image
-                          src={(src as string) || ""}
-                          alt={alt || ""}
+                          src={(src as string) || ''}
+                          alt={alt || ''}
                           width={800}
                           height={400}
                           className="w-full rounded-lg shadow-md"
                         />
                         {alt && (
-                          <p className="text-center text-sm text-gray-500 mt-2 italic">
-                            {alt}
-                          </p>
+                          <p className="text-center text-sm text-gray-500 mt-2 italic">{alt}</p>
                         )}
                       </div>
                     ),
@@ -306,14 +278,10 @@ export default function BlogDetailPage() {
                       </pre>
                     ),
                     ul: ({ children }) => (
-                      <ul className="list-disc list-inside mb-4 text-gray-700">
-                        {children}
-                      </ul>
+                      <ul className="list-disc list-inside mb-4 text-gray-700">{children}</ul>
                     ),
                     ol: ({ children }) => (
-                      <ol className="list-decimal list-inside mb-4 text-gray-700">
-                        {children}
-                      </ol>
+                      <ol className="list-decimal list-inside mb-4 text-gray-700">{children}</ol>
                     ),
                     li: ({ children }) => <li className="mb-1">{children}</li>,
                     a: ({ href, children }) => (
@@ -328,7 +296,7 @@ export default function BlogDetailPage() {
                     ),
                   }}
                 >
-                  {blog.content || "Nội dung blog đang được cập nhật..."}
+                  {blog.content || 'Nội dung blog đang được cập nhật...'}
                 </ReactMarkdown>
               </div>
             </CardContent>
@@ -348,12 +316,8 @@ export default function BlogDetailPage() {
                   T
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg text-gray-900 mb-1">
-                    Tác giả
-                  </h4>
-                  <p className="text-gray-600">
-                    Thành viên của Veila
-                  </p>
+                  <h4 className="font-semibold text-lg text-gray-900 mb-1">Tác giả</h4>
+                  <p className="text-gray-600">Thành viên của Veila</p>
                 </div>
               </div>
             </CardContent>
@@ -362,7 +326,7 @@ export default function BlogDetailPage() {
           {/* Related Actions */}
           <div className="mt-8 text-center">
             <Button
-              onClick={() => router.push("/blog")}
+              onClick={() => router.push('/blog')}
               size="lg"
               className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
             >

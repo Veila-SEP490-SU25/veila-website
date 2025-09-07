@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 interface SpanTimerProps {
   totalTime: number;
@@ -14,7 +14,7 @@ export const SpanTimer = ({
   totalTime,
   isTimerStarted,
   onTimeUp,
-  className = "",
+  className = '',
 }: SpanTimerProps) => {
   const [timeLeft, setTimeLeft] = useState(totalTime);
 
@@ -41,19 +41,13 @@ export const SpanTimer = ({
 
     // If hours is 0, don't show it
     if (hours === 0) {
-      return `${minutes.toString().padStart(2, "0")}:${secs
-        .toString()
-        .padStart(2, "0")}`;
+      return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
-    return `${hours.toString().padStart(2, "0")}:${minutes
+    return `${hours.toString().padStart(2, '0')}:${minutes
       .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+      .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  return (
-    <span className={cn("text-maroon-500 font-bold", className)}>
-      {formatTime(timeLeft)}
-    </span>
-  );
+  return <span className={cn('text-maroon-500 font-bold', className)}>{formatTime(timeLeft)}</span>;
 };

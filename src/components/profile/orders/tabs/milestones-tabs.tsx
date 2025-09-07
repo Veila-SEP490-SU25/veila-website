@@ -1,30 +1,13 @@
-"use client";
+'use client';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Clock,
-  CheckCircle,
-  PlayCircle,
-  XCircle,
-  AlertCircle,
-  Ban,
-} from "lucide-react";
-import { IMilestone, MilestoneStatus, ComplaintStatus } from "@/services/types";
-import {
-  formatDateShort,
-  getMilestoneStatusColor,
-  getMilestoneStatusText,
-} from "@/lib/order-util";
-import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Clock, CheckCircle, PlayCircle, XCircle, AlertCircle, Ban } from 'lucide-react';
+import { IMilestone, MilestoneStatus, ComplaintStatus } from '@/services/types';
+import { formatDateShort, getMilestoneStatusColor, getMilestoneStatusText } from '@/lib/order-util';
+import { MilestoneTask } from '@/components/shops/detail/order/milestone-task';
 import {
   useCancelOrderMutation,
   useCreateComplaintMutation,
@@ -33,20 +16,20 @@ import {
   useLazyGetUpdateRequestsQuery,
   useDeleteUpdateRequestMutation,
   useLazyGetUpdateRequestQuery,
-} from "@/services/apis";
-import { useGetComplaintReasonsCustomerQuery } from "@/services/apis/complaint.api";
-import { toast } from "sonner";
-import { useState, useCallback } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+} from '@/services/apis';
+import { useGetComplaintReasonsCustomerQuery } from '@/services/apis/complaint.api';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 interface MilestonesTabProps {
   milestones: IMilestone[];
@@ -84,17 +67,15 @@ export const MilestonesTab = ({
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
   const [showComplaintForm, setShowComplaintForm] = useState(false);
   const [complaintData, setComplaintData] = useState({
-    reasonId: "",
-    description: "",
+    reasonId: '',
+    description: '',
   });
 
   const [showUpdateRequestForm, setShowUpdateRequestForm] = useState(false);
-  const [showUpdateRequestDetail, setShowUpdateRequestDetail] = useState<
-    string | null
-  >(null);
+  const [showUpdateRequestDetail, setShowUpdateRequestDetail] = useState<string | null>(null);
   const [updateRequestData, setUpdateRequestData] = useState({
-    title: "",
-    description: "",
+    title: '',
+    description: '',
     height: 170,
     weight: 55,
     bust: 85,
@@ -108,12 +89,12 @@ export const MilestonesTab = ({
     backLength: 40,
     lowerWaist: 20,
     waistToFloor: 60,
-    material: "Cotton",
-    color: "Đỏ",
-    length: "Dài",
-    neckline: "Cổ tròn",
-    sleeve: "Tay ngắn",
-    images: "",
+    material: 'Cotton',
+    color: 'Đỏ',
+    length: 'Dài',
+    neckline: 'Cổ tròn',
+    sleeve: 'Tay ngắn',
+    images: '',
   });
 
   // Fetch complaint reasons
@@ -123,8 +104,7 @@ export const MilestonesTab = ({
     });
 
   // Create complaint mutation
-  const [createComplaint, { isLoading: isCreatingComplaint }] =
-    useCreateComplaintMutation();
+  const [createComplaint, { isLoading: isCreatingComplaint }] = useCreateComplaintMutation();
 
   // Confirm no complaint mutation
   const [confirmNoComplaint, { isLoading: isConfirmingNoComplaint }] =
@@ -133,12 +113,10 @@ export const MilestonesTab = ({
   // Update request mutations
   const [createUpdateRequest, { isLoading: isCreatingUpdateRequest }] =
     useCreateUpdateRequestMutation();
-  const [getUpdateRequests, { data: updateRequestsData }] =
-    useLazyGetUpdateRequestsQuery();
+  const [getUpdateRequests, { data: updateRequestsData }] = useLazyGetUpdateRequestsQuery();
   const [deleteUpdateRequest, { isLoading: isDeletingUpdateRequest }] =
     useDeleteUpdateRequestMutation();
-  const [getUpdateRequest, { data: updateRequestDetail }] =
-    useLazyGetUpdateRequestQuery();
+  const [getUpdateRequest, { data: updateRequestDetail }] = useLazyGetUpdateRequestQuery();
 
   // Kiểm tra xem có thể hủy đơn hàng không
   const canCancelOrder = () => {
@@ -147,9 +125,9 @@ export const MilestonesTab = ({
     // Tìm milestone "Đang giao hàng" hoặc tương tự
     const deliveryMilestone = milestones.find(
       (milestone) =>
-        milestone.title.toLowerCase().includes("giao hàng") ||
-        milestone.title.toLowerCase().includes("delivery") ||
-        milestone.title.toLowerCase().includes("shipping")
+        milestone.title.toLowerCase().includes('giao hàng') ||
+        milestone.title.toLowerCase().includes('delivery') ||
+        milestone.title.toLowerCase().includes('shipping'),
     );
 
     // Chỉ cho phép hủy trước khi milestone giao hàng bắt đầu
@@ -158,7 +136,7 @@ export const MilestonesTab = ({
     }
 
     // Nếu không tìm thấy milestone giao hàng, cho phép hủy khi đơn hàng còn ở trạng thái PENDING
-    return orderStatus === "PENDING";
+    return orderStatus === 'PENDING';
   };
 
   // Kiểm tra xem có thể hiển thị form complaint không
@@ -175,15 +153,12 @@ export const MilestonesTab = ({
 
     try {
       await cancelOrder(orderId).unwrap();
-      toast.success("Đã hủy đơn hàng thành công!");
+      toast.success('Đã hủy đơn hàng thành công!');
       // Refresh data
       await fetchMilestone();
     } catch (error: any) {
-      console.error("Error cancelling order:", error);
-      toast.error(
-        error?.data?.message ||
-          "Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại sau."
-      );
+      console.error('Error cancelling order:', error);
+      toast.error(error?.data?.message || 'Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại sau.');
     }
   };
 
@@ -192,11 +167,11 @@ export const MilestonesTab = ({
 
     try {
       const selectedReason = complaintReasons?.items?.find(
-        (reason) => reason.id === complaintData.reasonId
+        (reason) => reason.id === complaintData.reasonId,
       );
 
       if (!selectedReason) {
-        toast.error("Vui lòng chọn lý do khiếu nại");
+        toast.error('Vui lòng chọn lý do khiếu nại');
         return;
       }
 
@@ -205,20 +180,17 @@ export const MilestonesTab = ({
         title: selectedReason.code,
         description: complaintData.description,
         reason: complaintData.description,
-        images: "",
+        images: '',
         status: ComplaintStatus.IN_PROGRESS, // Auto SUBMIT như yêu cầu
       }).unwrap();
 
-      toast.success("Đã tạo khiếu nại thành công!");
+      toast.success('Đã tạo khiếu nại thành công!');
       setShowComplaintForm(false);
-      setComplaintData({ reasonId: "", description: "" });
+      setComplaintData({ reasonId: '', description: '' });
       await fetchMilestone();
     } catch (error: any) {
-      console.error("Error creating complaint:", error);
-      toast.error(
-        error?.data?.message ||
-          "Có lỗi xảy ra khi tạo khiếu nại. Vui lòng thử lại sau."
-      );
+      console.error('Error creating complaint:', error);
+      toast.error(error?.data?.message || 'Có lỗi xảy ra khi tạo khiếu nại. Vui lòng thử lại sau.');
     }
   };
 
@@ -227,15 +199,12 @@ export const MilestonesTab = ({
 
     try {
       await confirmNoComplaint(orderId).unwrap();
-      toast.success("Đã xác nhận không có khiếu nại!");
+      toast.success('Đã xác nhận không có khiếu nại!');
       setShowComplaintForm(false);
       await fetchMilestone();
     } catch (error: any) {
-      console.error("Error confirming no complaint:", error);
-      toast.error(
-        error?.data?.message ||
-          "Có lỗi xảy ra khi xác nhận. Vui lòng thử lại sau."
-      );
+      console.error('Error confirming no complaint:', error);
+      toast.error(error?.data?.message || 'Có lỗi xảy ra khi xác nhận. Vui lòng thử lại sau.');
     }
   };
 
@@ -247,11 +216,11 @@ export const MilestonesTab = ({
         id: orderServiceDetail.request.id,
         ...updateRequestData,
       }).unwrap();
-      toast.success("Đã tạo yêu cầu chỉnh sửa thành công!");
+      toast.success('Đã tạo yêu cầu chỉnh sửa thành công!');
       setShowUpdateRequestForm(false);
       setUpdateRequestData({
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         height: 170,
         weight: 55,
         bust: 85,
@@ -265,12 +234,12 @@ export const MilestonesTab = ({
         backLength: 40,
         lowerWaist: 20,
         waistToFloor: 60,
-        material: "Cotton",
-        color: "Đỏ",
-        length: "Dài",
-        neckline: "Cổ tròn",
-        sleeve: "Tay ngắn",
-        images: "",
+        material: 'Cotton',
+        color: 'Đỏ',
+        length: 'Dài',
+        neckline: 'Cổ tròn',
+        sleeve: 'Tay ngắn',
+        images: '',
       });
       // Refresh update requests
       if (orderServiceDetail?.request?.id) {
@@ -278,15 +247,14 @@ export const MilestonesTab = ({
           requestId: orderServiceDetail.request.id,
           page: 0,
           size: 10,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         });
       }
     } catch (error: any) {
-      console.error("Error creating update request:", error);
+      console.error('Error creating update request:', error);
       toast.error(
-        error?.data?.message ||
-          "Có lỗi xảy ra khi tạo yêu cầu chỉnh sửa. Vui lòng thử lại sau."
+        error?.data?.message || 'Có lỗi xảy ra khi tạo yêu cầu chỉnh sửa. Vui lòng thử lại sau.',
       );
     }
   };
@@ -297,8 +265,8 @@ export const MilestonesTab = ({
         requestId: orderServiceDetail.request.id,
         page: 0,
         size: 10,
-        filter: "",
-        sort: "",
+        filter: '',
+        sort: '',
       });
     }
   }, [orderServiceDetail?.request?.id, getUpdateRequests]);
@@ -311,14 +279,13 @@ export const MilestonesTab = ({
         requestId: orderServiceDetail.request.id,
         updateRequestId,
       }).unwrap();
-      toast.success("Đã xóa yêu cầu chỉnh sửa thành công!");
+      toast.success('Đã xóa yêu cầu chỉnh sửa thành công!');
       // Refresh danh sách
       fetchUpdateRequests();
     } catch (error: any) {
-      console.error("Error deleting update request:", error);
+      console.error('Error deleting update request:', error);
       toast.error(
-        error?.data?.message ||
-          "Có lỗi xảy ra khi xóa yêu cầu chỉnh sửa. Vui lòng thử lại sau."
+        error?.data?.message || 'Có lỗi xảy ra khi xóa yêu cầu chỉnh sửa. Vui lòng thử lại sau.',
       );
     }
   };
@@ -333,8 +300,8 @@ export const MilestonesTab = ({
       }).unwrap();
       setShowUpdateRequestDetail(updateRequestId);
     } catch (error: any) {
-      console.error("Error fetching update request detail:", error);
-      toast.error("Có lỗi xảy ra khi tải chi tiết yêu cầu");
+      console.error('Error fetching update request detail:', error);
+      toast.error('Có lỗi xảy ra khi tải chi tiết yêu cầu');
     }
   };
   if (isMilestonesLoading) {
@@ -392,7 +359,7 @@ export const MilestonesTab = ({
                 disabled={isCancelling}
               >
                 <Ban className="h-4 w-4 mr-2" />
-                {isCancelling ? "Đang hủy..." : "Hủy đơn hàng"}
+                {isCancelling ? 'Đang hủy...' : 'Hủy đơn hàng'}
               </Button>
             </div>
           </CardContent>
@@ -407,9 +374,7 @@ export const MilestonesTab = ({
               <div className="flex items-center space-x-3">
                 <AlertCircle className="h-5 w-5 text-orange-600" />
                 <div>
-                  <h4 className="font-medium text-orange-800">
-                    Khiếu nại đơn hàng
-                  </h4>
+                  <h4 className="font-medium text-orange-800">Khiếu nại đơn hàng</h4>
                   <p className="text-sm text-orange-700">
                     Bạn có thể tạo khiếu nại nếu có vấn đề với đơn hàng này
                   </p>
@@ -455,9 +420,7 @@ export const MilestonesTab = ({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="complaint-description">
-                      Mô tả chi tiết *
-                    </Label>
+                    <Label htmlFor="complaint-description">Mô tả chi tiết *</Label>
                     <Textarea
                       id="complaint-description"
                       placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."
@@ -476,13 +439,11 @@ export const MilestonesTab = ({
                     <Button
                       onClick={handleCreateComplaint}
                       disabled={
-                        !complaintData.reasonId ||
-                        !complaintData.description ||
-                        isCreatingComplaint
+                        !complaintData.reasonId || !complaintData.description || isCreatingComplaint
                       }
                       className="bg-orange-600 hover:bg-orange-700"
                     >
-                      {isCreatingComplaint ? "Đang tạo..." : "Gửi khiếu nại"}
+                      {isCreatingComplaint ? 'Đang tạo...' : 'Gửi khiếu nại'}
                     </Button>
                     <Button
                       onClick={handleConfirmNoComplaint}
@@ -490,15 +451,13 @@ export const MilestonesTab = ({
                       variant="outline"
                       className="border-green-300 text-green-700 hover:bg-green-50"
                     >
-                      {isConfirmingNoComplaint
-                        ? "Đang xác nhận..."
-                        : "Xác nhận không có khiếu nại"}
+                      {isConfirmingNoComplaint ? 'Đang xác nhận...' : 'Xác nhận không có khiếu nại'}
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => {
                         setShowComplaintForm(false);
-                        setComplaintData({ reasonId: "", description: "" });
+                        setComplaintData({ reasonId: '', description: '' });
                       }}
                     >
                       Hủy
@@ -512,19 +471,16 @@ export const MilestonesTab = ({
       )}
 
       {/* Form yêu cầu chỉnh sửa cho đơn hàng custom */}
-      {orderType === "CUSTOM" && orderServiceDetail?.request?.id && (
+      {orderType === 'CUSTOM' && orderServiceDetail?.request?.id && (
         <Card className="border-blue-200 bg-blue-50/50">
           <CardContent className="p-4">
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <AlertCircle className="h-5 w-5 text-blue-600" />
                 <div>
-                  <h4 className="font-medium text-blue-800">
-                    Yêu cầu chỉnh sửa thiết kế
-                  </h4>
+                  <h4 className="font-medium text-blue-800">Yêu cầu chỉnh sửa thiết kế</h4>
                   <p className="text-sm text-blue-700">
-                    Bạn có thể tạo yêu cầu chỉnh sửa thiết kế cho đơn hàng
-                    custom này
+                    Bạn có thể tạo yêu cầu chỉnh sửa thiết kế cho đơn hàng custom này
                   </p>
                 </div>
               </div>
@@ -706,15 +662,15 @@ export const MilestonesTab = ({
                       }
                       className="bg-blue-600 hover:bg-blue-700"
                     >
-                      {isCreatingUpdateRequest ? "Đang tạo..." : "Gửi yêu cầu"}
+                      {isCreatingUpdateRequest ? 'Đang tạo...' : 'Gửi yêu cầu'}
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => {
                         setShowUpdateRequestForm(false);
                         setUpdateRequestData({
-                          title: "",
-                          description: "",
+                          title: '',
+                          description: '',
                           height: 170,
                           weight: 55,
                           bust: 85,
@@ -728,12 +684,12 @@ export const MilestonesTab = ({
                           backLength: 40,
                           lowerWaist: 20,
                           waistToFloor: 60,
-                          material: "Cotton",
-                          color: "Đỏ",
-                          length: "Dài",
-                          neckline: "Cổ tròn",
-                          sleeve: "Tay ngắn",
-                          images: "",
+                          material: 'Cotton',
+                          color: 'Đỏ',
+                          length: 'Dài',
+                          neckline: 'Cổ tròn',
+                          sleeve: 'Tay ngắn',
+                          images: '',
                         });
                       }}
                     >
@@ -744,90 +700,68 @@ export const MilestonesTab = ({
               )}
 
               {/* Danh sách yêu cầu chỉnh sửa */}
-              {updateRequestsData?.items &&
-                updateRequestsData.items.length > 0 && (
-                  <div className="border-t pt-4">
-                    <h5 className="font-medium text-blue-800 mb-3">
-                      Danh sách yêu cầu đã gửi:
-                    </h5>
-                    <div className="space-y-3">
-                      {updateRequestsData.items.map((request) => (
-                        <div
-                          key={request.id}
-                          className="bg-white p-3 rounded-lg border"
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <h6 className="font-medium">{request.title}</h6>
-                              <p className="text-sm text-gray-600">
-                                {request.description}
-                              </p>
-                              <div className="text-xs text-gray-500 mt-2">
-                                <span className="mr-4">
-                                  Chiều cao: {request.height}cm
-                                </span>
-                                <span className="mr-4">
-                                  Cân nặng: {request.weight}kg
-                                </span>
-                                <span className="mr-4">
-                                  Vòng ngực: {request.bust}cm
-                                </span>
-                                <span className="mr-4">
-                                  Vòng eo: {request.waist}cm
-                                </span>
-                              </div>
+              {updateRequestsData?.items && updateRequestsData.items.length > 0 && (
+                <div className="border-t pt-4">
+                  <h5 className="font-medium text-blue-800 mb-3">Danh sách yêu cầu đã gửi:</h5>
+                  <div className="space-y-3">
+                    {updateRequestsData.items.map((request) => (
+                      <div key={request.id} className="bg-white p-3 rounded-lg border">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h6 className="font-medium">{request.title}</h6>
+                            <p className="text-sm text-gray-600">{request.description}</p>
+                            <div className="text-xs text-gray-500 mt-2">
+                              <span className="mr-4">Chiều cao: {request.height}cm</span>
+                              <span className="mr-4">Cân nặng: {request.weight}kg</span>
+                              <span className="mr-4">Vòng ngực: {request.bust}cm</span>
+                              <span className="mr-4">Vòng eo: {request.waist}cm</span>
                             </div>
-                            <div className="flex flex-col items-end space-y-2 ml-4">
-                              <Badge
+                          </div>
+                          <div className="flex flex-col items-end space-y-2 ml-4">
+                            <Badge
+                              variant="outline"
+                              className={
+                                request.status === 'PENDING'
+                                  ? 'border-yellow-300 text-yellow-700'
+                                  : request.status === 'ACCEPTED'
+                                    ? 'border-green-300 text-green-700'
+                                    : 'border-red-300 text-red-700'
+                              }
+                            >
+                              {request.status === 'PENDING'
+                                ? 'Chờ xử lý'
+                                : request.status === 'ACCEPTED'
+                                  ? 'Đã chấp nhận'
+                                  : 'Đã từ chối'}
+                            </Badge>
+                            <div className="flex space-x-2">
+                              <Button
                                 variant="outline"
-                                className={
-                                  request.status === "PENDING"
-                                    ? "border-yellow-300 text-yellow-700"
-                                    : request.status === "ACCEPTED"
-                                    ? "border-green-300 text-green-700"
-                                    : "border-red-300 text-red-700"
-                                }
+                                size="sm"
+                                onClick={() => handleViewUpdateRequestDetail(request.id)}
+                                className="text-xs"
                               >
-                                {request.status === "PENDING"
-                                  ? "Chờ xử lý"
-                                  : request.status === "ACCEPTED"
-                                  ? "Đã chấp nhận"
-                                  : "Đã từ chối"}
-                              </Badge>
-                              <div className="flex space-x-2">
+                                Xem chi tiết
+                              </Button>
+                              {request.status === 'PENDING' && (
                                 <Button
-                                  variant="outline"
+                                  variant="destructive"
                                   size="sm"
-                                  onClick={() =>
-                                    handleViewUpdateRequestDetail(request.id)
-                                  }
+                                  onClick={() => handleDeleteUpdateRequest(request.id)}
+                                  disabled={isDeletingUpdateRequest}
                                   className="text-xs"
                                 >
-                                  Xem chi tiết
+                                  {isDeletingUpdateRequest ? 'Đang xóa...' : 'Xóa'}
                                 </Button>
-                                {request.status === "PENDING" && (
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() =>
-                                      handleDeleteUpdateRequest(request.id)
-                                    }
-                                    disabled={isDeletingUpdateRequest}
-                                    className="text-xs"
-                                  >
-                                    {isDeletingUpdateRequest
-                                      ? "Đang xóa..."
-                                      : "Xóa"}
-                                  </Button>
-                                )}
-                              </div>
+                              )}
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -839,9 +773,7 @@ export const MilestonesTab = ({
           <CardContent className="p-4">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="font-medium text-blue-800">
-                  Chi tiết yêu cầu chỉnh sửa
-                </h4>
+                <h4 className="font-medium text-blue-800">Chi tiết yêu cầu chỉnh sửa</h4>
                 <Button
                   variant="outline"
                   size="sm"
@@ -854,29 +786,25 @@ export const MilestonesTab = ({
               <div className="bg-white p-4 rounded-lg border">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h6 className="font-medium text-lg">
-                      {updateRequestDetail.item.title}
-                    </h6>
-                    <p className="text-gray-600 mt-2">
-                      {updateRequestDetail.item.description}
-                    </p>
+                    <h6 className="font-medium text-lg">{updateRequestDetail.item.title}</h6>
+                    <p className="text-gray-600 mt-2">{updateRequestDetail.item.description}</p>
                   </div>
                   <div className="text-right">
                     <Badge
                       variant="outline"
                       className={
-                        updateRequestDetail.item.status === "PENDING"
-                          ? "border-yellow-300 text-yellow-700"
-                          : updateRequestDetail.item.status === "ACCEPTED"
-                          ? "border-green-300 text-green-700"
-                          : "border-red-300 text-red-700"
+                        updateRequestDetail.item.status === 'PENDING'
+                          ? 'border-yellow-300 text-yellow-700'
+                          : updateRequestDetail.item.status === 'ACCEPTED'
+                            ? 'border-green-300 text-green-700'
+                            : 'border-red-300 text-red-700'
                       }
                     >
-                      {updateRequestDetail.item.status === "PENDING"
-                        ? "Chờ xử lý"
-                        : updateRequestDetail.item.status === "ACCEPTED"
-                        ? "Đã chấp nhận"
-                        : "Đã từ chối"}
+                      {updateRequestDetail.item.status === 'PENDING'
+                        ? 'Chờ xử lý'
+                        : updateRequestDetail.item.status === 'ACCEPTED'
+                          ? 'Đã chấp nhận'
+                          : 'Đã từ chối'}
                     </Badge>
                   </div>
                 </div>
@@ -884,66 +812,46 @@ export const MilestonesTab = ({
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                   <div>
                     <Label className="text-xs text-gray-500">Chiều cao</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.height} cm
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.height} cm</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Cân nặng</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.weight} kg
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.weight} kg</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Vòng ngực</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.bust} cm
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.bust} cm</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Vòng eo</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.waist} cm
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.waist} cm</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Vòng mông</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.hip} cm
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.hip} cm</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Chất liệu</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.material}
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.material}</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Màu sắc</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.color}
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.color}</p>
                   </div>
                   <div>
                     <Label className="text-xs text-gray-500">Độ dài</Label>
-                    <p className="font-medium">
-                      {updateRequestDetail.item.length}
-                    </p>
+                    <p className="font-medium">{updateRequestDetail.item.length}</p>
                   </div>
                 </div>
 
                 <div className="mt-4 text-xs text-gray-500">
                   <p>
-                    Ngày tạo:{" "}
-                    {new Date(
-                      updateRequestDetail.item.createdAt
-                    ).toLocaleDateString("vi-VN")}
+                    Ngày tạo:{' '}
+                    {new Date(updateRequestDetail.item.createdAt).toLocaleDateString('vi-VN')}
                   </p>
                   <p>
-                    Cập nhật lần cuối:{" "}
-                    {new Date(
-                      updateRequestDetail.item.updatedAt
-                    ).toLocaleDateString("vi-VN")}
+                    Cập nhật lần cuối:{' '}
+                    {new Date(updateRequestDetail.item.updatedAt).toLocaleDateString('vi-VN')}
                   </p>
                 </div>
               </div>
@@ -967,17 +875,12 @@ export const MilestonesTab = ({
                   </p>
                 </div>
               </div>
-              <Badge
-                variant="outline"
-                className={getMilestoneStatusColor(milestone.status)}
-              >
+              <Badge variant="outline" className={getMilestoneStatusColor(milestone.status)}>
                 {getMilestoneStatusText(milestone.status)}
               </Badge>
             </CardTitle>
             {milestone.description && (
-              <CardDescription className="text-base">
-                {milestone.description}
-              </CardDescription>
+              <CardDescription className="text-base">{milestone.description}</CardDescription>
             )}
           </CardHeader>
           <CardContent>

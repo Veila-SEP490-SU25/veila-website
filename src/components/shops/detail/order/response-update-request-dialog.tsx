@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,18 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { isSuccess } from "@/lib/utils";
-import {
-  useApproveUpdateRequestMutation,
-} from "@/services/apis";
-import { IUpdateRequest, UpdateRequestStatus } from "@/services/types";
-import { Check, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { isSuccess } from '@/lib/utils';
+import { useApproveUpdateRequestMutation } from '@/services/apis';
+import { IUpdateRequest, UpdateRequestStatus } from '@/services/types';
+import { Check, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ResponseUpdateRequestDialogProps {
   requestId: string;
@@ -42,7 +40,7 @@ export const ResponseUpdateRequestDialog = ({
 
   const handleConfirm = useCallback(async () => {
     if (!isApproved && amount <= 0) {
-      toast.error("Vui lòng nhập số tiền");
+      toast.error('Vui lòng nhập số tiền');
       return;
     }
 
@@ -50,24 +48,22 @@ export const ResponseUpdateRequestDialog = ({
       const { message, statusCode } = await verifyTrigger({
         requestId: requestId,
         updateRequestId: updateRequest.id,
-        status: isApproved
-          ? UpdateRequestStatus.ACCEPTED
-          : UpdateRequestStatus.REJECTED,
+        status: isApproved ? UpdateRequestStatus.ACCEPTED : UpdateRequestStatus.REJECTED,
         price: amount,
       }).unwrap();
       if (isSuccess(statusCode)) {
-        toast.success("Phê duyệt yêu cầu chỉnh sửa thành công");
+        toast.success('Phê duyệt yêu cầu chỉnh sửa thành công');
         onUpdate?.();
         setOpen(false);
       } else {
-        toast.error("Phê duyệt yêu cầu chỉnh sửa thất bại", {
+        toast.error('Phê duyệt yêu cầu chỉnh sửa thất bại', {
           description: message,
         });
       }
     } catch (error) {
       console.error(error);
-      toast.error("Đã xảy ra lỗi khi phê duyệt yêu cầu chỉnh sửa", {
-        description: "Vui lòng thử lại sau",
+      toast.error('Đã xảy ra lỗi khi phê duyệt yêu cầu chỉnh sửa', {
+        description: 'Vui lòng thử lại sau',
       });
     }
   }, [isApproved, updateRequest, requestId, amount, verifyTrigger, onUpdate]);
@@ -87,7 +83,7 @@ export const ResponseUpdateRequestDialog = ({
       setIsApproved(value);
       if (!value) setAmount(0);
     },
-    [setIsApproved]
+    [setIsApproved],
   );
 
   const defaultTrigger = (
@@ -102,9 +98,7 @@ export const ResponseUpdateRequestDialog = ({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader className="text-center">
-          <DialogTitle className="w-full text-center">
-            Phê duyệt yêu cầu chỉnh sửa
-          </DialogTitle>
+          <DialogTitle className="w-full text-center">Phê duyệt yêu cầu chỉnh sửa</DialogTitle>
           <DialogDescription className="w-full text-center">
             Xác nhận phê duyệt yêu cầu chỉnh sửa
           </DialogDescription>
@@ -112,16 +106,11 @@ export const ResponseUpdateRequestDialog = ({
         <div className="grid grid-cols-1 items-center gap-4 px-8 w-full py-4">
           <div className="flex items-center justify-between w-full">
             <Label htmlFor="is-approved">Phê duyệt</Label>
-            <Switch
-              id="is-approved"
-              checked={isApproved}
-              onCheckedChange={handleSwitch}
-            />
+            <Switch id="is-approved" checked={isApproved} onCheckedChange={handleSwitch} />
           </div>
           <div className="w-full space-y-2">
             <Label htmlFor="reject-reason" className="flex items-start gap-1">
-              Giá tiền{" "}
-              {!isApproved && <span className="text-red-500 text-xs">*</span>}
+              Giá tiền {!isApproved && <span className="text-red-500 text-xs">*</span>}
             </Label>
             <Input
               id="reject-reason"

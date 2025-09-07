@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   IIdentifyUser,
   IItemResponse,
@@ -7,8 +7,8 @@ import {
   IUser,
   UserRole,
   UserStatus,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export interface ICreateUser {
   username: string;
@@ -36,21 +36,21 @@ export interface IUpdateUser {
 }
 
 export const userApi = createApi({
-  reducerPath: "userApi",
+  reducerPath: 'userApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     identify: builder.mutation<IItemResponse<null>, IIdentifyUser>({
       query: (body) => ({
-        url: "users/identify",
-        method: "PUT",
+        url: 'users/identify',
+        method: 'PUT',
         body,
       }),
     }),
 
     getUsers: builder.query<IListResponse<IUser>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "users",
-        method: "GET",
+      query: ({ sort = '', filter = '', page = 0, size = 10 }) => ({
+        url: 'users',
+        method: 'GET',
         params: { sort, filter, page, size },
       }),
     }),
@@ -58,14 +58,14 @@ export const userApi = createApi({
     getUser: builder.query<IItemResponse<IUser>, string>({
       query: (id) => ({
         url: `users/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     createUser: builder.mutation<IItemResponse<IUser>, ICreateUser>({
       query: (body) => ({
-        url: "users",
-        method: "POST",
+        url: 'users',
+        method: 'POST',
         body,
       }),
     }),
@@ -73,7 +73,7 @@ export const userApi = createApi({
     updateUser: builder.mutation<IItemResponse<IUser>, IUpdateUser>({
       query: (body) => ({
         url: `users/${body.id}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -81,14 +81,14 @@ export const userApi = createApi({
     deleteUser: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `users/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     restoreUser: builder.mutation<IItemResponse<IUser>, string>({
       query: (id) => ({
         url: `users/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
   }),

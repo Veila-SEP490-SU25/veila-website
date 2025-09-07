@@ -1,61 +1,58 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Plus, Loader2, Save } from "lucide-react";
-import { useCreateDressMutation } from "@/services/apis";
-import { DressStatus, type ICreateDress } from "@/services/types";
-import { toast } from "sonner";
-import { ImagesUpload } from "@/components/images-upload";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { X, Plus, Loader2, Save } from 'lucide-react';
+import { useCreateDressMutation } from '@/services/apis';
+import { DressStatus, type ICreateDress } from '@/services/types';
+import { toast } from 'sonner';
+import { ImagesUpload } from '@/components/images-upload';
 
 interface CreateDressDialogProps {
   trigger?: React.ReactNode;
   onSuccess?: () => void;
 }
 
-export function CreateDressDialog({
-  trigger,
-  onSuccess,
-}: CreateDressDialogProps) {
+export function CreateDressDialog({ trigger, onSuccess }: CreateDressDialogProps) {
   const [open, setOpen] = useState(false);
   const [createDress, { isLoading }] = useCreateDressMutation();
 
   const [dressData, setDressData] = useState<ICreateDress>({
     categoryId: null,
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     sellPrice: 0,
     rentalPrice: 0,
     isSellable: true,
     isRentable: true,
     status: DressStatus.AVAILABLE,
-    images: "",
+    images: '',
     bust: 0,
     waist: 0,
     hip: 0,
-    material: "",
-    color: "",
-    length: "",
-    neckline: "",
-    sleeve: "",
+    material: '',
+    color: '',
+    length: '',
+    neckline: '',
+    sleeve: '',
   });
 
-  const [imageUrls, setImageUrls] = useState<string>("");
+  const [imageUrls, setImageUrls] = useState<string>('');
 
   const handleInputChange = (field: keyof ICreateDress, value: any) => {
     setDressData((prev) => ({
@@ -67,57 +64,57 @@ export function CreateDressDialog({
   const resetForm = () => {
     setDressData({
       categoryId: null,
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       sellPrice: 0,
       rentalPrice: 0,
       isSellable: true,
       isRentable: true,
       status: DressStatus.AVAILABLE,
-      images: "",
+      images: '',
       bust: 0,
       waist: 0,
       hip: 0,
-      material: "",
-      color: "",
-      length: "",
-      neckline: "",
-      sleeve: "",
+      material: '',
+      color: '',
+      length: '',
+      neckline: '',
+      sleeve: '',
     });
-    setImageUrls("");
+    setImageUrls('');
   };
 
   const handleSubmit = async () => {
     if (!dressData.bust || dressData.bust < 50 || dressData.bust > 150) {
-      toast.error("Ngực phải từ 50-150cm");
+      toast.error('Ngực phải từ 50-150cm');
       return;
     }
     if (!dressData.waist || dressData.waist < 40 || dressData.waist > 100) {
-      toast.error("Eo phải từ 40-100cm");
+      toast.error('Eo phải từ 40-100cm');
       return;
     }
     if (!dressData.hip || dressData.hip < 40 || dressData.hip > 150) {
-      toast.error("Hông phải từ 40-150cm");
+      toast.error('Hông phải từ 40-150cm');
       return;
     }
 
     try {
       const { statusCode, message } = await createDress(dressData).unwrap();
       if (statusCode === 201 || statusCode == 200) {
-        toast.success("Tạo váy thành công!");
+        toast.success('Tạo váy thành công!');
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi tạo váy");
+        toast.error(message || 'Có lỗi xảy ra khi tạo váy');
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi tạo váy");
+      toast.error('Có lỗi xảy ra khi tạo váy');
     }
   };
 
   useEffect(() => {
-    handleInputChange("images", imageUrls);
+    handleInputChange('images', imageUrls);
   }, [imageUrls]);
 
   const handleCancel = () => {
@@ -154,7 +151,7 @@ export function CreateDressDialog({
                     id="name"
                     placeholder="Nhập tên váy"
                     value={dressData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                   />
                 </div>
 
@@ -164,9 +161,7 @@ export function CreateDressDialog({
                     id="description"
                     placeholder="Nhập mô tả chi tiết về váy"
                     value={dressData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('description', e.target.value)}
                     rows={3}
                   />
                 </div>
@@ -178,15 +173,11 @@ export function CreateDressDialog({
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Có thể bán *</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Cho phép khách hàng mua váy này
-                    </p>
+                    <p className="text-sm text-muted-foreground">Cho phép khách hàng mua váy này</p>
                   </div>
                   <Switch
                     checked={dressData.isSellable}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isSellable", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isSellable', checked)}
                   />
                 </div>
 
@@ -197,12 +188,9 @@ export function CreateDressDialog({
                       id="sellPrice"
                       type="number"
                       placeholder="0"
-                      value={dressData.sellPrice || ""}
+                      value={dressData.sellPrice || ''}
                       onChange={(e) =>
-                        handleInputChange(
-                          "sellPrice",
-                          Number.parseInt(e.target.value) || 0
-                        )
+                        handleInputChange('sellPrice', Number.parseInt(e.target.value) || 0)
                       }
                     />
                   </div>
@@ -219,9 +207,7 @@ export function CreateDressDialog({
                   </div>
                   <Switch
                     checked={dressData.isRentable}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isRentable", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isRentable', checked)}
                   />
                 </div>
 
@@ -232,12 +218,9 @@ export function CreateDressDialog({
                       id="rentalPrice"
                       type="number"
                       placeholder="0"
-                      value={dressData.rentalPrice || ""}
+                      value={dressData.rentalPrice || ''}
                       onChange={(e) =>
-                        handleInputChange(
-                          "rentalPrice",
-                          Number.parseInt(e.target.value) || 0
-                        )
+                        handleInputChange('rentalPrice', Number.parseInt(e.target.value) || 0)
                       }
                     />
                   </div>
@@ -256,31 +239,27 @@ export function CreateDressDialog({
                       min="50"
                       max="150"
                       placeholder="0"
-                      value={dressData.bust || ""}
+                      value={dressData.bust || ''}
                       onChange={(e) => {
                         const value = Number.parseInt(e.target.value) || 0;
                         if (value >= 50 && value <= 150) {
-                          handleInputChange("bust", value);
+                          handleInputChange('bust', value);
                         }
                       }}
                       onBlur={(e) => {
                         const value = Number.parseInt(e.target.value) || 0;
                         if (value < 50) {
-                          handleInputChange("bust", 50);
+                          handleInputChange('bust', 50);
                         } else if (value > 150) {
-                          handleInputChange("bust", 150);
+                          handleInputChange('bust', 150);
                         }
                       }}
                     />
                     {dressData.bust && dressData.bust < 50 && (
-                      <p className="text-sm text-red-500">
-                        Ngực phải từ 50-150cm
-                      </p>
+                      <p className="text-sm text-red-500">Ngực phải từ 50-150cm</p>
                     )}
                     {dressData.bust && dressData.bust > 150 && (
-                      <p className="text-sm text-red-500">
-                        Ngực phải từ 50-150cm
-                      </p>
+                      <p className="text-sm text-red-500">Ngực phải từ 50-150cm</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -291,31 +270,27 @@ export function CreateDressDialog({
                       min="40"
                       max="100"
                       placeholder="0"
-                      value={dressData.waist || ""}
+                      value={dressData.waist || ''}
                       onChange={(e) => {
                         const value = Number.parseInt(e.target.value) || 0;
                         if (value >= 40 && value <= 100) {
-                          handleInputChange("waist", value);
+                          handleInputChange('waist', value);
                         }
                       }}
                       onBlur={(e) => {
                         const value = Number.parseInt(e.target.value) || 0;
                         if (value < 40) {
-                          handleInputChange("waist", 40);
+                          handleInputChange('waist', 40);
                         } else if (value > 100) {
-                          handleInputChange("waist", 100);
+                          handleInputChange('waist', 100);
                         }
                       }}
                     />
                     {dressData.waist && dressData.waist < 40 && (
-                      <p className="text-sm text-red-500">
-                        Eo phải từ 40-100cm
-                      </p>
+                      <p className="text-sm text-red-500">Eo phải từ 40-100cm</p>
                     )}
                     {dressData.waist && dressData.waist > 100 && (
-                      <p className="text-sm text-red-500">
-                        Eo phải từ 40-100cm
-                      </p>
+                      <p className="text-sm text-red-500">Eo phải từ 40-100cm</p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -326,31 +301,27 @@ export function CreateDressDialog({
                       min="40"
                       max="150"
                       placeholder="0"
-                      value={dressData.hip || ""}
+                      value={dressData.hip || ''}
                       onChange={(e) => {
                         const value = Number.parseInt(e.target.value) || 0;
                         if (value >= 40 && value <= 150) {
-                          handleInputChange("hip", value);
+                          handleInputChange('hip', value);
                         }
                       }}
                       onBlur={(e) => {
                         const value = Number.parseInt(e.target.value) || 0;
                         if (value < 40) {
-                          handleInputChange("hip", 40);
+                          handleInputChange('hip', 40);
                         } else if (value > 150) {
-                          handleInputChange("hip", 150);
+                          handleInputChange('hip', 150);
                         }
                       }}
                     />
                     {dressData.hip && dressData.hip < 40 && (
-                      <p className="text-sm text-red-500">
-                        Hông phải từ 40-150cm
-                      </p>
+                      <p className="text-sm text-red-500">Hông phải từ 40-150cm</p>
                     )}
                     {dressData.hip && dressData.hip > 150 && (
-                      <p className="text-sm text-red-500">
-                        Hông phải từ 40-150cm
-                      </p>
+                      <p className="text-sm text-red-500">Hông phải từ 40-150cm</p>
                     )}
                   </div>
                 </div>
@@ -367,10 +338,8 @@ export function CreateDressDialog({
                     <Input
                       id="material"
                       placeholder="Ví dụ: Cotton, Lụa, Voan..."
-                      value={dressData.material || ""}
-                      onChange={(e) =>
-                        handleInputChange("material", e.target.value)
-                      }
+                      value={dressData.material || ''}
+                      onChange={(e) => handleInputChange('material', e.target.value)}
                     />
                   </div>
 
@@ -379,10 +348,8 @@ export function CreateDressDialog({
                     <Input
                       id="color"
                       placeholder="Ví dụ: Đỏ, Xanh, Trắng..."
-                      value={dressData.color || ""}
-                      onChange={(e) =>
-                        handleInputChange("color", e.target.value)
-                      }
+                      value={dressData.color || ''}
+                      onChange={(e) => handleInputChange('color', e.target.value)}
                     />
                   </div>
 
@@ -391,10 +358,8 @@ export function CreateDressDialog({
                     <Input
                       id="length"
                       placeholder="Ví dụ: Ngắn, Dài, Midi..."
-                      value={dressData.length || ""}
-                      onChange={(e) =>
-                        handleInputChange("length", e.target.value)
-                      }
+                      value={dressData.length || ''}
+                      onChange={(e) => handleInputChange('length', e.target.value)}
                     />
                   </div>
 
@@ -403,10 +368,8 @@ export function CreateDressDialog({
                     <Input
                       id="neckline"
                       placeholder="Ví dụ: Cổ tròn, Cổ V, Cổ vuông..."
-                      value={dressData.neckline || ""}
-                      onChange={(e) =>
-                        handleInputChange("neckline", e.target.value)
-                      }
+                      value={dressData.neckline || ''}
+                      onChange={(e) => handleInputChange('neckline', e.target.value)}
                     />
                   </div>
 
@@ -415,10 +378,8 @@ export function CreateDressDialog({
                     <Input
                       id="sleeve"
                       placeholder="Ví dụ: Tay ngắn, Tay dài, Không tay..."
-                      value={dressData.sleeve || ""}
-                      onChange={(e) =>
-                        handleInputChange("sleeve", e.target.value)
-                      }
+                      value={dressData.sleeve || ''}
+                      onChange={(e) => handleInputChange('sleeve', e.target.value)}
                     />
                   </div>
                 </div>
@@ -429,10 +390,7 @@ export function CreateDressDialog({
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Hình ảnh *</h3>
                 <div className="flex gap-2">
-                  <ImagesUpload
-                    imageUrls={imageUrls}
-                    setImageUrls={(urls) => setImageUrls(urls)}
-                  />
+                  <ImagesUpload imageUrls={imageUrls} setImageUrls={(urls) => setImageUrls(urls)} />
                 </div>
               </div>
 
@@ -444,10 +402,8 @@ export function CreateDressDialog({
                     <Input
                       id="categoryId"
                       placeholder="Chọn danh mục (tùy chọn)"
-                      value={dressData.categoryId || ""}
-                      onChange={(e) =>
-                        handleInputChange("categoryId", e.target.value)
-                      }
+                      value={dressData.categoryId || ''}
+                      onChange={(e) => handleInputChange('categoryId', e.target.value)}
                     />
                   </div>
                 </div>

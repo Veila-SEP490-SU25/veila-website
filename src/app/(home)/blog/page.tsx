@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLazyGetPublicBlogsQuery } from "@/services/apis";
-import { IBlog } from "@/services/types";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+} from '@/components/ui/select';
+import { useLazyGetPublicBlogsQuery } from '@/services/apis';
+import { IBlog } from '@/services/types';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Search,
   Calendar,
@@ -28,20 +28,20 @@ import {
   SortAsc,
   SortDesc,
   Filter,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function BlogListPage() {
   const router = useRouter();
   const [trigger, { data, isLoading, error }] = useLazyGetPublicBlogsQuery();
   const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortField, setSortField] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortField, setSortField] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
-  const safeStatusFilter = statusFilter || "ALL";
+  const safeStatusFilter = statusFilter || 'ALL';
   const pageSize = 12;
 
   useEffect(() => {
@@ -51,24 +51,17 @@ export default function BlogListPage() {
       filters.push(`title:like:${searchTerm}`);
     }
 
-    if (safeStatusFilter && safeStatusFilter !== "ALL") {
+    if (safeStatusFilter && safeStatusFilter !== 'ALL') {
       filters.push(`status:eq:${safeStatusFilter}`);
     }
 
     trigger({
       page: currentPage,
       size: pageSize,
-      filter: filters.join(","),
+      filter: filters.join(','),
       sort: `${sortField}:${sortOrder}`,
     });
-  }, [
-    trigger,
-    currentPage,
-    searchTerm,
-    sortField,
-    sortOrder,
-    safeStatusFilter,
-  ]);
+  }, [trigger, currentPage, searchTerm, sortField, sortOrder, safeStatusFilter]);
 
   useEffect(() => {
     if (data?.items) {
@@ -83,10 +76,10 @@ export default function BlogListPage() {
 
   const handleSortChange = (field: string) => {
     if (field === sortField) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortOrder("desc");
+      setSortOrder('desc');
     }
     setCurrentPage(0);
   };
@@ -97,11 +90,11 @@ export default function BlogListPage() {
   };
 
   const formatDate = (date: string | Date) => {
-    const dateObj = typeof date === "string" ? new Date(date) : date;
-    return dateObj.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   };
 
@@ -112,16 +105,14 @@ export default function BlogListPage() {
   };
 
   const extractExcerpt = (content?: string): string => {
-    if (!content) return "Không có nội dung xem trước...";
+    if (!content) return 'Không có nội dung xem trước...';
 
     const textContent = content
-      .replace(/!\[.*?\]\(.*?\)/g, "")
-      .replace(/\[.*?\]\(.*?\)/g, "")
-      .replace(/[#*`]/g, "")
+      .replace(/!\[.*?\]\(.*?\)/g, '')
+      .replace(/\[.*?\]\(.*?\)/g, '')
+      .replace(/[#*`]/g, '')
       .trim();
-    return textContent.length > 150
-      ? textContent.substring(0, 150) + "..."
-      : textContent;
+    return textContent.length > 150 ? textContent.substring(0, 150) + '...' : textContent;
   };
 
   const LoadingSkeleton = () => (
@@ -158,7 +149,7 @@ export default function BlogListPage() {
               width={400}
               height={192}
               className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-              style={{ height: "auto" }}
+              style={{ height: 'auto' }}
             />
           ) : (
             <div className="w-full h-48 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
@@ -225,7 +216,7 @@ export default function BlogListPage() {
                 width={192}
                 height={128}
                 className="w-full  h-full object-cover"
-                style={{ height: "auto" }}
+                style={{ height: 'auto' }}
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
@@ -285,8 +276,7 @@ export default function BlogListPage() {
         <div className="container mx-auto px-4 py-16 text-center text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog Veila</h1>
           <p className="text-xl max-w-2xl mx-auto">
-            Khám phá những câu chuyện, xu hướng và kinh nghiệm về váy cưới từ
-            cộng đồng Veila
+            Khám phá những câu chuyện, xu hướng và kinh nghiệm về váy cưới từ cộng đồng Veila
           </p>
         </div>
       </div>
@@ -327,28 +317,28 @@ export default function BlogListPage() {
               {/* Sort Options */}
               <div className="flex items-center gap-1">
                 <Button
-                  variant={sortField === "createdAt" ? "default" : "outline"}
+                  variant={sortField === 'createdAt' ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => handleSortChange("createdAt")}
+                  onClick={() => handleSortChange('createdAt')}
                   className="text-sm"
                 >
                   Ngày tạo
-                  {sortField === "createdAt" &&
-                    (sortOrder === "desc" ? (
+                  {sortField === 'createdAt' &&
+                    (sortOrder === 'desc' ? (
                       <SortDesc className="ml-1 h-3 w-3" />
                     ) : (
                       <SortAsc className="ml-1 h-3 w-3" />
                     ))}
                 </Button>
                 <Button
-                  variant={sortField === "title" ? "default" : "outline"}
+                  variant={sortField === 'title' ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => handleSortChange("title")}
+                  onClick={() => handleSortChange('title')}
                   className="text-sm"
                 >
                   Tiêu đề
-                  {sortField === "title" &&
-                    (sortOrder === "desc" ? (
+                  {sortField === 'title' &&
+                    (sortOrder === 'desc' ? (
                       <SortDesc className="ml-1 h-3 w-3" />
                     ) : (
                       <SortAsc className="ml-1 h-3 w-3" />
@@ -361,16 +351,16 @@ export default function BlogListPage() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">Hiển thị:</span>
               <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setViewMode("grid")}
+                onClick={() => setViewMode('grid')}
               >
                 <Grid className="h-4 w-4" />
               </Button>
               <Button
-                variant={viewMode === "list" ? "default" : "outline"}
+                variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setViewMode("list")}
+                onClick={() => setViewMode('list')}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -378,16 +368,14 @@ export default function BlogListPage() {
           </div>
 
           {/* Active Filters Display */}
-          {(searchTerm || (safeStatusFilter && safeStatusFilter !== "ALL")) && (
+          {(searchTerm || (safeStatusFilter && safeStatusFilter !== 'ALL')) && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-gray-500">
-                Bộ lọc đang áp dụng:
-              </span>
+              <span className="text-sm text-gray-500">Bộ lọc đang áp dụng:</span>
               {searchTerm && (
                 <Badge variant="secondary" className="gap-1">
                   Tìm kiếm: "{searchTerm}"
                   <button
-                    onClick={() => handleSearch("")}
+                    onClick={() => handleSearch('')}
                     className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
                   >
                     ×
@@ -404,18 +392,16 @@ export default function BlogListPage() {
         ) : blogs.length === 0 ? (
           <div className="text-center py-16">
             <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
-              Không tìm thấy blog nào
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">Không tìm thấy blog nào</h3>
             <p className="text-gray-500">
               {searchTerm
                 ? `Không có blog nào phù hợp với "${searchTerm}"`
-                : "Chưa có blog nào được xuất bản"}
+                : 'Chưa có blog nào được xuất bản'}
             </p>
           </div>
         ) : (
           <>
-            {viewMode === "grid" ? (
+            {viewMode === 'grid' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {blogs.map((blog) => (
                   <BlogCard key={blog.id} blog={blog} />
@@ -440,39 +426,25 @@ export default function BlogListPage() {
                   Trước
                 </Button>
 
-                {Array.from({ length: Math.min(5, data.totalPages) }).map(
-                  (_, i) => {
-                    const pageNum =
-                      Math.max(
-                        0,
-                        Math.min(
-                          data.totalPages - 5,
-                          currentPage - Math.floor(5 / 2)
-                        )
-                      ) + i;
+                {Array.from({ length: Math.min(5, data.totalPages) }).map((_, i) => {
+                  const pageNum =
+                    Math.max(0, Math.min(data.totalPages - 5, currentPage - Math.floor(5 / 2))) + i;
 
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={
-                          currentPage === pageNum ? "default" : "outline"
-                        }
-                        onClick={() => setCurrentPage(pageNum)}
-                        className="w-10"
-                      >
-                        {pageNum + 1}
-                      </Button>
-                    );
-                  }
-                )}
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? 'default' : 'outline'}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className="w-10"
+                    >
+                      {pageNum + 1}
+                    </Button>
+                  );
+                })}
 
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    setCurrentPage(
-                      Math.min(data.totalPages - 1, currentPage + 1)
-                    )
-                  }
+                  onClick={() => setCurrentPage(Math.min(data.totalPages - 1, currentPage + 1))}
                   disabled={currentPage === data.totalPages - 1}
                 >
                   Sau

@@ -1,14 +1,8 @@
-"use client";
+'use client';
 
-import { GoogleButton } from "@/app/(auth)/components/google-button";
-import { TextLogo } from "@/components/text-logo";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { GoogleButton } from '@/app/(auth)/components/google-button';
+import { TextLogo } from '@/components/text-logo';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import {
   Form,
   FormField,
@@ -16,16 +10,16 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { loginSchema, LoginSchema } from "@/lib/validations";
-import { useAuth } from "@/providers/auth.provider";
-import { Mail, EyeOff, Eye, Lock, ArrowLeft } from "lucide-react";
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { loginSchema, LoginSchema } from '@/lib/validations';
+import { useAuth } from '@/providers/auth.provider';
+import { Mail, EyeOff, Eye, Lock, ArrowLeft } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const LoginPage = () => {
   const { login, isAuthenticating } = useAuth();
@@ -35,24 +29,21 @@ const LoginPage = () => {
     async (data: LoginSchema) => {
       await login(data);
     },
-    [login]
+    [login],
   );
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
       <Link href="/" className="absolute top-6 left-6">
-        <Button
-          variant="ghost"
-          className="text-gray-600 hover:text-gray-800 hover:bg-white/50"
-        >
+        <Button variant="ghost" className="text-gray-600 hover:text-gray-800 hover:bg-white/50">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Quay về trang chủ
         </Button>
@@ -68,19 +59,14 @@ const LoginPage = () => {
 
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl text-center">
-              Đăng Nhập Tài Khoản
-            </CardTitle>
+            <CardTitle className="text-xl text-center">Đăng Nhập Tài Khoản</CardTitle>
             <CardDescription className="text-center">
               Nhập thông tin đăng nhập của bạn để tiếp tục
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleLogin)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="email"
@@ -112,7 +98,7 @@ const LoginPage = () => {
                         <div className="relative">
                           <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                           <Input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="Nhập mật khẩu của bạn"
                             className="pl-10 pr-10 h-11"
                             {...field}
@@ -146,7 +132,7 @@ const LoginPage = () => {
                       Đang đăng nhập...
                     </>
                   ) : (
-                    "Đăng Nhập"
+                    'Đăng Nhập'
                   )}
                 </Button>
               </form>
@@ -180,7 +166,7 @@ const LoginPage = () => {
             {/* Register Link */}
             <div className="text-center mt-6 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                Chưa có tài khoản?{" "}
+                Chưa có tài khoản?{' '}
                 <Link
                   href="/register"
                   className="text-rose-600 hover:text-rose-700 font-medium hover:underline"

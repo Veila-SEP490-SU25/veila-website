@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { GoBackButton } from "@/components/go-back-button";
-import { TextLogo } from "@/components/text-logo";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Home } from "lucide-react";
-import Link from "next/link";
+import { GoBackButton } from '@/components/go-back-button';
+import { TextLogo } from '@/components/text-logo';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Home } from 'lucide-react';
+import Link from 'next/link';
 
 export const StaffNotFound = () => {
   return (
@@ -15,9 +15,7 @@ export const StaffNotFound = () => {
           {/* 404 Illustration */}
           <div className="mb-8">
             <div className="relative">
-              <h1 className="text-8xl md:text-9xl font-bold text-rose-100 select-none">
-                404
-              </h1>
+              <h1 className="text-8xl md:text-9xl font-bold text-rose-100 select-none">404</h1>
               <div className="absolute inset-0 flex items-center justify-center">
                 <TextLogo />
               </div>
@@ -26,12 +24,10 @@ export const StaffNotFound = () => {
 
           {/* Error Message */}
           <div className="mb-8 space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-              Trang không tồn tại
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Trang không tồn tại</h2>
             <p className="text-gray-600 text-lg leading-relaxed max-w-md mx-auto">
-              Rất tiếc, trang bạn đang tìm kiếm không tồn tại hoặc đã được di
-              chuyển. Hãy thử tìm kiếm những chiếc váy cưới tuyệt đẹp khác nhé!
+              Rất tiếc, trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển. Hãy thử tìm
+              kiếm những chiếc váy cưới tuyệt đẹp khác nhé!
             </p>
           </div>
 
@@ -40,10 +36,7 @@ export const StaffNotFound = () => {
             <GoBackButton />
 
             <Link href="/staff" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="w-full bg-rose-600 hover:bg-rose-700"
-              >
+              <Button size="lg" className="w-full bg-rose-600 hover:bg-rose-700">
                 <Home className="h-5 w-5 mr-2" />
                 Trang chủ
               </Button>

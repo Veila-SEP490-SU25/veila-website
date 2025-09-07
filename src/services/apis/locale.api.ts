@@ -5,15 +5,15 @@ import {
   IPaging,
   IProvince,
   IWard,
-} from "@/services/types";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://open.oapi.vn/",
+  baseUrl: 'https://open.oapi.vn/',
 });
 
 export const localeApi = createApi({
-  reducerPath: "localeApi",
+  reducerPath: 'localeApi',
   baseQuery: async (args, api, extraOptions) => {
     return await baseQuery(args, api, extraOptions);
   },
@@ -53,8 +53,5 @@ export const localeApi = createApi({
   }),
 });
 
-export const {
-  useLazyGetDistrictsQuery,
-  useLazyGetProvincesQuery,
-  useLazyGetWardsQuery,
-} = localeApi;
+export const { useLazyGetDistrictsQuery, useLazyGetProvincesQuery, useLazyGetWardsQuery } =
+  localeApi;

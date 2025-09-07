@@ -1,20 +1,17 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Package, Eye, Settings, MapPin, Phone, Mail } from "lucide-react";
-import { IOrder, IOrderDressDetail } from "@/services/types";
-import { formatCurrency, getTypeText, parseImages } from "@/lib/order-util";
-import { formatDateOnly } from "@/utils/format";
-import { ImageGallery } from "@/components/image-gallery";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Package, Eye, Settings, MapPin, Phone, Mail } from 'lucide-react';
+import { IOrder, IOrderDressDetail } from '@/services/types';
+import { formatCurrency, getTypeText, parseImages } from '@/lib/order-util';
+import { formatDateOnly } from '@/utils/format';
+import { ImageGallery } from '@/components/image-gallery';
 
 interface OrderDetailsTabProps {
   order: IOrder;
   currentOrderDressDetail: IOrderDressDetail | null;
 }
 
-export const OrderDetailsTab = ({
-  order,
-  currentOrderDressDetail,
-}: OrderDetailsTabProps) => {
+export const OrderDetailsTab = ({ order, currentOrderDressDetail }: OrderDetailsTabProps) => {
   return (
     <div className="space-y-4">
       {/* Order Information */}
@@ -28,26 +25,18 @@ export const OrderDetailsTab = ({
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-muted-foreground">
-                Loại đơn hàng
-              </label>
+              <label className="text-sm font-medium text-muted-foreground">Loại đơn hàng</label>
               <p className="font-medium">{getTypeText(order.type)}</p>
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium text-muted-foreground">
-                Ngày giao hàng
-              </label>
+              <label className="text-sm font-medium text-muted-foreground">Ngày giao hàng</label>
               <p className="font-medium">{formatDateOnly(order.dueDate)}</p>
             </div>
 
             {order.returnDate && (
               <div className="space-y-1">
-                <label className="text-sm font-medium text-muted-foreground">
-                  Ngày trả hàng
-                </label>
-                <p className="font-medium">
-                  {formatDateOnly(order.returnDate)}
-                </p>
+                <label className="text-sm font-medium text-muted-foreground">Ngày trả hàng</label>
+                <p className="font-medium">{formatDateOnly(order.returnDate)}</p>
               </div>
             )}
           </div>
@@ -60,18 +49,14 @@ export const OrderDetailsTab = ({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1">
                 <label className="text-sm font-medium text-blue-700">
-                  {order.type === "RENT" ? "Tiền thuê" : "Tiền mua"}
+                  {order.type === 'RENT' ? 'Tiền thuê' : 'Tiền mua'}
                 </label>
-                <p className="font-bold text-lg text-blue-900">
-                  {formatCurrency(order.amount)}
-                </p>
+                <p className="font-bold text-lg text-blue-900">{formatCurrency(order.amount)}</p>
               </div>
 
-              {order.type === "RENT" && parseFloat(order.deposit) > 0 && (
+              {order.type === 'RENT' && parseFloat(order.deposit) > 0 && (
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-blue-700">
-                    Tiền cọc
-                  </label>
+                  <label className="text-sm font-medium text-blue-700">Tiền cọc</label>
                   <p className="font-bold text-lg text-orange-600">
                     {formatCurrency(parseFloat(order.deposit))}
                   </p>
@@ -91,12 +76,8 @@ export const OrderDetailsTab = ({
                 {/* Image Gallery */}
                 <div className="lg:col-span-1">
                   <ImageGallery
-                    images={
-                      parseImages(
-                        currentOrderDressDetail.dress?.images || ""
-                      ) || []
-                    }
-                    alt={currentOrderDressDetail.dress?.name || "Sản phẩm"}
+                    images={parseImages(currentOrderDressDetail.dress?.images || '') || []}
+                    alt={currentOrderDressDetail.dress?.name || 'Sản phẩm'}
                   />
                 </div>
 
@@ -108,16 +89,14 @@ export const OrderDetailsTab = ({
                       Váy cưới
                     </span>
                     <h5 className="font-bold text-2xl text-gray-900 mt-1 break-words leading-tight">
-                      {currentOrderDressDetail.dress?.name || "Không có tên"}
+                      {currentOrderDressDetail.dress?.name || 'Không có tên'}
                     </h5>
                   </div>
 
                   {/* Description */}
                   {currentOrderDressDetail.dress?.description && (
                     <div>
-                      <span className="text-sm font-medium text-gray-500 block mb-2">
-                        Mô tả
-                      </span>
+                      <span className="text-sm font-medium text-gray-500 block mb-2">Mô tả</span>
                       <p className="text-sm text-gray-700 leading-relaxed break-words">
                         {currentOrderDressDetail.dress.description}
                       </p>
@@ -127,15 +106,13 @@ export const OrderDetailsTab = ({
                   {/* Price and Status */}
                   <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                     <div>
-                      <span className="text-sm text-gray-500 block mb-1">
-                        Giá
-                      </span>
+                      <span className="text-sm text-gray-500 block mb-1">Giá</span>
                       <p className="font-bold text-2xl text-green-600">
                         {formatCurrency(currentOrderDressDetail.price)}
                       </p>
                     </div>
                     <Badge variant="outline" className="text-xs px-3 py-1">
-                      {currentOrderDressDetail.dress?.status || "AVAILABLE"}
+                      {currentOrderDressDetail.dress?.status || 'AVAILABLE'}
                     </Badge>
                   </div>
                 </div>
@@ -145,9 +122,7 @@ export const OrderDetailsTab = ({
                   <label className="text-sm font-semibold text-blue-800 block mb-1">
                     Yêu cầu đặc biệt
                   </label>
-                  <p className="text-sm text-blue-700">
-                    {currentOrderDressDetail.description}
-                  </p>
+                  <p className="text-sm text-blue-700">{currentOrderDressDetail.description}</p>
                 </div>
               )}
             </div>
@@ -160,9 +135,7 @@ export const OrderDetailsTab = ({
                 Dịch vụ
               </h4>
               <div className="p-4 border rounded-lg bg-gray-50/50">
-                <h5 className="font-semibold text-lg">
-                  {order.orderServiceDetail.service.name}
-                </h5>
+                <h5 className="font-semibold text-lg">{order.orderServiceDetail.service.name}</h5>
                 <p className="text-sm text-muted-foreground mt-1">
                   {order.orderServiceDetail.service.description}
                 </p>

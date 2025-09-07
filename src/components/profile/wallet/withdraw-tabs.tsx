@@ -1,64 +1,53 @@
-"use client";
+'use client';
 
-import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { formatPrice } from "@/lib/products-utils";
-import { useRequestWithdrawMutation } from "@/services/apis";
-import { IWallet } from "@/services/types";
-import { Minus } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { RequestSmartOtpDialog } from '@/components/request-smart-otp-dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { formatPrice } from '@/lib/products-utils';
+import { useRequestWithdrawMutation } from '@/services/apis';
+import { IWallet } from '@/services/types';
+import { Minus } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface WithdrawTabsProps {
   wallet: IWallet;
   onWithdrawSuccess?: () => void;
 }
 
-export const WithdrawTabs = ({
-  wallet,
-  onWithdrawSuccess,
-}: WithdrawTabsProps) => {
+export const WithdrawTabs = ({ wallet, onWithdrawSuccess }: WithdrawTabsProps) => {
   const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
   const [isError, setIsError] = useState<boolean>(false);
-  const [, setError] = useState<string>("");
+  const [, setError] = useState<string>('');
   const [trigger, { isLoading }] = useRequestWithdrawMutation();
 
   useEffect(() => {
     setIsError(false);
-    setError("");
+    setError('');
 
     if (!wallet.bin || !wallet.bankNumber) {
       setIsError(true);
-      setError(
-        "Vui lòng cập nhật thông tin tài khoản ngân hàng trước khi rút tiền"
-      );
+      setError('Vui lòng cập nhật thông tin tài khoản ngân hàng trước khi rút tiền');
       return;
     }
 
     if (withdrawAmount <= 0) {
       setIsError(true);
-      setError("Số tiền rút phải lớn hơn 0");
+      setError('Số tiền rút phải lớn hơn 0');
       return;
     }
 
     if (withdrawAmount < 50000) {
       setIsError(true);
-      setError("Số tiền rút tối thiểu là 50,000 VNĐ");
+      setError('Số tiền rút tối thiểu là 50,000 VNĐ');
       return;
     }
 
     if (withdrawAmount > wallet.availableBalance) {
       setIsError(true);
-      setError("Số tiền rút không được lớn hơn số dư khả dụng");
+      setError('Số tiền rút không được lớn hơn số dư khả dụng');
       return;
     }
   }, [withdrawAmount, wallet]);
@@ -72,21 +61,21 @@ export const WithdrawTabs = ({
           note: `Giao dịch rút tiền về tài khoản cá nhân`,
         }).unwrap();
         if ([201, 202, 203, 204, 200].includes(statusCode)) {
-          toast.success("Rút tiền thành công");
+          toast.success('Rút tiền thành công');
           onWithdrawSuccess?.();
           return true;
         } else {
-          toast.error("Rút tiền thất bại", {
+          toast.error('Rút tiền thất bại', {
             description: message,
           });
           return false;
         }
       } catch {
-        toast.error("Xác thực không thành công, vui lòng thử lại");
+        toast.error('Xác thực không thành công, vui lòng thử lại');
         return false;
       }
     },
-    [onWithdrawSuccess, trigger, withdrawAmount]
+    [onWithdrawSuccess, trigger, withdrawAmount],
   );
 
   return (
@@ -96,9 +85,7 @@ export const WithdrawTabs = ({
           <Minus className="h-5 w-5 text-red-600" />
           Rút Tiền Từ Ví
         </CardTitle>
-        <CardDescription>
-          Chuyển tiền về tài khoản ngân hàng của bạn
-        </CardDescription>
+        <CardDescription>Chuyển tiền về tài khoản ngân hàng của bạn</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -114,16 +101,12 @@ export const WithdrawTabs = ({
               min={50000}
               step={1000}
             />
-            <span className="absolute left-3 top-3 text-sm text-gray-400">
-              ₫
-            </span>
+            <span className="absolute left-3 top-3 text-sm text-gray-400">₫</span>
           </div>
           <p className="text-xs text-gray-600">
             Số dư khả dụng: {formatPrice(wallet.availableBalance)}
           </p>
-          <p className="text-xs text-orange-600 font-medium">
-            Số tiền rút tối thiểu: 50,000 VNĐ
-          </p>
+          <p className="text-xs text-orange-600 font-medium">Số tiền rút tối thiểu: 50,000 VNĐ</p>
         </div>
 
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -133,10 +116,7 @@ export const WithdrawTabs = ({
         </div>
         <RequestSmartOtpDialog
           trigger={
-            <Button
-              className="w-full bg-red-600 hover:bg-red-700"
-              disabled={isError || isLoading}
-            >
+            <Button className="w-full bg-red-600 hover:bg-red-700" disabled={isError || isLoading}>
               <Minus className="h-4 w-4 mr-2" />
               Yêu Cầu Rút Tiền
             </Button>

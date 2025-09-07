@@ -1,4 +1,4 @@
-import { IItem, IPagination, IUser } from "@/services/types";
+import { IItem, IPagination, IUser } from '@/services/types';
 
 export enum CategoryType {
   BLOG = 'BLOG',
@@ -9,7 +9,7 @@ export enum CategoryType {
 
 export interface ICategory extends IItem {
   userId: string;
-  
+
   user: IUser;
   name: string;
   type: CategoryType;
@@ -19,7 +19,7 @@ export interface ICategoryGetRequest extends IPagination {
   id: string;
 }
 
-export interface ICreateCategory{
+export interface ICreateCategory {
   name: string;
   description: string;
   images: string;

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { toast } from "sonner";
-import { Edit, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { Edit, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -12,11 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/date-picker";
-import { IMilestone } from "@/services/types";
-import { useUpdateMilestoneInfoMutation } from "@/services/apis";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { DatePicker } from '@/components/date-picker';
+import { IMilestone } from '@/services/types';
+import { useUpdateMilestoneInfoMutation } from '@/services/apis';
 
 interface EditMilestoneDialogProps {
   milestone: IMilestone;
@@ -35,12 +35,12 @@ export function EditMilestoneDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [updateMilestoneInfo] = useUpdateMilestoneInfoMutation();
   const [dueDate, setDueDate] = useState<Date | undefined>(
-    milestone.dueDate ? new Date(milestone.dueDate) : undefined
+    milestone.dueDate ? new Date(milestone.dueDate) : undefined,
   );
 
   const handleSubmit = async () => {
     if (!dueDate) {
-      toast.error("Vui lòng chọn ngày hạn hoàn thành");
+      toast.error('Vui lòng chọn ngày hạn hoàn thành');
       return;
     }
 
@@ -49,7 +49,7 @@ export function EditMilestoneDialog({
     today.setHours(0, 0, 0, 0);
 
     if (dueDate < today) {
-      toast.error("Ngày hạn hoàn thành không được trong quá khứ");
+      toast.error('Ngày hạn hoàn thành không được trong quá khứ');
       return;
     }
 
@@ -57,7 +57,7 @@ export function EditMilestoneDialog({
     if (previousMilestoneDueDate) {
       const prevDate = new Date(previousMilestoneDueDate);
       if (dueDate <= prevDate) {
-        toast.error("Ngày hạn hoàn thành phải lớn hơn milestone trước đó");
+        toast.error('Ngày hạn hoàn thành phải lớn hơn milestone trước đó');
         return;
       }
     }
@@ -70,17 +70,17 @@ export function EditMilestoneDialog({
       }).unwrap();
 
       if (response.statusCode === 200) {
-        toast.success("Cập nhật thời hạn thành công");
+        toast.success('Cập nhật thời hạn thành công');
         setOpen(false);
         onSuccess?.();
       } else {
-        toast.error("Không thể cập nhật thời hạn", {
+        toast.error('Không thể cập nhật thời hạn', {
           description: response.message,
         });
       }
     } catch (error) {
-      console.error("Error updating milestone:", error);
-      toast.error("Có lỗi xảy ra khi cập nhật thời hạn");
+      console.error('Error updating milestone:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật thời hạn');
     } finally {
       setIsLoading(false);
     }

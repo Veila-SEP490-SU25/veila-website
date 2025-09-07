@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Image from "next/image";
-import { useChat } from "@/providers/chat.provider";
-import type { IChatroom } from "@/services/types/chat.type";
-import { MessageType } from "@/services/types/chat.type";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import Image from 'next/image';
+import { useChat } from '@/providers/chat.provider';
+import type { IChatroom } from '@/services/types/chat.type';
+import { MessageType } from '@/services/types/chat.type';
 import {
   MoreVertical,
   Send,
@@ -18,30 +18,21 @@ import {
   Image as ImageIcon,
   Minimize2,
   Maximize2,
-} from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import { ChatMessage } from "@/components/chat/chat-message";
-import { useAuth } from "@/providers/auth.provider";
+} from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ChatMessage } from '@/components/chat/chat-message';
+import { useAuth } from '@/providers/auth.provider';
 
 interface ChatroomProps {
   isMinimized?: boolean;
   onToggleMinimize?: () => void;
 }
 
-export function Chatroom({
-  isMinimized = false,
-  onToggleMinimize,
-}: ChatroomProps) {
-  const {
-    currentRoom,
-    currentRoomId,
-    messages,
-    sendMessage,
-    currentUserId,
-    markAsRead,
-  } = useChat();
+export function Chatroom({ isMinimized = false, onToggleMinimize }: ChatroomProps) {
+  const { currentRoom, currentRoomId, messages, sendMessage, currentUserId, markAsRead } =
+    useChat();
   const { currentUser } = useAuth();
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState('');
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -134,29 +125,28 @@ export function Chatroom({
     const isCustomer = chatroom.customerId === currentUserId;
     const isShop =
       chatroom.shopId === currentUserId ||
-      (currentUser?.role === "SHOP" && chatroom.shopId === undefined);
+      (currentUser?.role === 'SHOP' && chatroom.shopId === undefined);
 
     if (isCustomer) {
       // Current user is customer, show shop info
       return {
-        id: chatroom.shopId || "",
-        name:
-          chatroom.shopName || chatroom.lastMessage?.shopName || "Unknown Shop",
+        id: chatroom.shopId || '',
+        name: chatroom.shopName || chatroom.lastMessage?.shopName || 'Unknown Shop',
         avatarUrl: chatroom.shopAvatarUrl || null,
-        type: "shop" as const,
+        type: 'shop' as const,
       };
     } else if (isShop) {
       // Current user is shop, show customer info
       return {
         id: chatroom.customerId,
-        name: chatroom.customerName || "Unknown Customer",
+        name: chatroom.customerName || 'Unknown Customer',
         avatarUrl: chatroom.customerAvatarUrl || null,
-        type: "customer" as const,
+        type: 'customer' as const,
       };
     }
 
     // Fallback for other cases - this should not happen with proper role checking
-    console.warn("Unexpected chatroom structure in chatroom:", {
+    console.warn('Unexpected chatroom structure in chatroom:', {
       chatroom,
       currentUserId,
       customerId: chatroom.customerId,
@@ -168,27 +158,26 @@ export function Chatroom({
       // This is a customer chatroom
       return {
         id: chatroom.customerId,
-        name: chatroom.customerName || "Unknown Customer",
+        name: chatroom.customerName || 'Unknown Customer',
         avatarUrl: chatroom.customerAvatarUrl || null,
-        type: "customer" as const,
+        type: 'customer' as const,
       };
     } else if (chatroom.customerId && chatroom.customerId !== currentUserId) {
       // This is a shop chatroom
       return {
-        id: chatroom.shopId || "",
-        name:
-          chatroom.shopName || chatroom.lastMessage?.shopName || "Unknown Shop",
+        id: chatroom.shopId || '',
+        name: chatroom.shopName || chatroom.lastMessage?.shopName || 'Unknown Shop',
         avatarUrl: chatroom.shopAvatarUrl || null,
-        type: "shop" as const,
+        type: 'shop' as const,
       };
     }
 
     // Last resort fallback
     return {
-      id: "unknown",
-      name: "Unknown Participant",
+      id: 'unknown',
+      name: 'Unknown Participant',
       avatarUrl: null,
-      type: "unknown" as const,
+      type: 'unknown' as const,
     };
   };
 
@@ -196,18 +185,18 @@ export function Chatroom({
     if (senderId === currentRoom.customerId) {
       return {
         id: currentRoom.customerId,
-        name: currentRoom.customerName || "Unknown Customer",
+        name: currentRoom.customerName || 'Unknown Customer',
         avatarUrl: currentRoom.customerAvatarUrl || null,
-        type: "customer",
+        type: 'customer',
       };
     }
 
     if (senderId === currentRoom.shopId) {
       return {
-        id: currentRoom.shopId || "",
-        name: currentRoom.shopName || "Unknown Shop",
+        id: currentRoom.shopId || '',
+        name: currentRoom.shopName || 'Unknown Shop',
         avatarUrl: currentRoom.shopAvatarUrl || null,
-        type: "shop",
+        type: 'shop',
       };
     }
 
@@ -215,37 +204,28 @@ export function Chatroom({
     if (senderId === currentRoom.lastMessage?.shopId) {
       return {
         id: currentRoom.lastMessage.shopId,
-        name:
-          currentRoom.lastMessage.shopName ||
-          currentRoom.shopName ||
-          "Unknown Shop",
+        name: currentRoom.lastMessage.shopName || currentRoom.shopName || 'Unknown Shop',
         avatarUrl: currentRoom.shopAvatarUrl || null,
-        type: "shop",
+        type: 'shop',
       };
     }
 
     // Check if current user is shop and sender is customer
-    if (
-      currentUserId === currentRoom.shopId &&
-      senderId === currentRoom.customerId
-    ) {
+    if (currentUserId === currentRoom.shopId && senderId === currentRoom.customerId) {
       return {
         id: currentRoom.customerId,
-        name: currentRoom.customerName || "Unknown Customer",
+        name: currentRoom.customerName || 'Unknown Customer',
         avatarUrl: currentRoom.customerAvatarUrl || null,
-        type: "customer",
+        type: 'customer',
       };
     }
 
     // Default fallback
     return {
       id: senderId,
-      name:
-        currentRoom.shopName ||
-        currentRoom.lastMessage?.shopName ||
-        "Unknown Shop",
+      name: currentRoom.shopName || currentRoom.lastMessage?.shopName || 'Unknown Shop',
       avatarUrl: currentRoom.shopAvatarUrl || null,
-      type: "shop",
+      type: 'shop',
     };
   };
 
@@ -257,15 +237,15 @@ export function Chatroom({
 
     try {
       await sendMessage(newMessage.trim(), MessageType.TEXT);
-      setNewMessage("");
+      setNewMessage('');
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
     }
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file && file.type.startsWith('image/')) {
       setSelectedImage(file);
     }
   };
@@ -282,12 +262,12 @@ export function Chatroom({
         setSelectedImage(null);
         setIsUploadingImage(false);
         if (fileInputRef.current) {
-          fileInputRef.current.value = "";
+          fileInputRef.current.value = '';
         }
       };
       reader.readAsDataURL(selectedImage);
     } catch (error) {
-      console.error("Error sending image:", error);
+      console.error('Error sending image:', error);
       setIsUploadingImage(false);
     }
   };
@@ -295,7 +275,7 @@ export function Chatroom({
   const handleRemoveImage = () => {
     setSelectedImage(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -307,11 +287,9 @@ export function Chatroom({
             <div className="relative">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={otherParticipant.avatarUrl || undefined} />
-                <AvatarFallback>
-                  {otherParticipant.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
+                <AvatarFallback>{otherParticipant.name.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
-              {otherParticipant.type === "shop" ? (
+              {otherParticipant.type === 'shop' ? (
                 <Store className="absolute -bottom-1 -right-1 h-4 w-4 bg-background rounded-full p-0.5" />
               ) : (
                 <User className="absolute -bottom-1 -right-1 h-4 w-4 bg-background rounded-full p-0.5" />
@@ -338,13 +316,9 @@ export function Chatroom({
               variant="ghost"
               size="sm"
               onClick={onToggleMinimize}
-              title={isMinimized ? "Mở rộng" : "Thu nhỏ"}
+              title={isMinimized ? 'Mở rộng' : 'Thu nhỏ'}
             >
-              {isMinimized ? (
-                <Maximize2 className="h-4 w-4" />
-              ) : (
-                <Minimize2 className="h-4 w-4" />
-              )}
+              {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
             </Button>
             <Button variant="ghost" size="sm">
               <MoreVertical className="h-4 w-4" />
@@ -371,7 +345,7 @@ export function Chatroom({
                   (msg) =>
                     msg.chatRoomId === currentRoomId ||
                     msg.chatRoomId === currentRoom?.id ||
-                    msg.chatRoomId === currentRoom?.docId
+                    msg.chatRoomId === currentRoom?.docId,
                 );
 
                 if (roomMessages.length === 0) {
@@ -380,12 +354,9 @@ export function Chatroom({
                       <div className="mb-4">
                         <Send className="h-12 w-12 mx-auto text-muted-foreground/50" />
                       </div>
-                      <p className="text-lg font-medium mb-2">
-                        Chưa có tin nhắn nào
-                      </p>
+                      <p className="text-lg font-medium mb-2">Chưa có tin nhắn nào</p>
                       <p className="text-sm">
-                        Hãy bắt đầu cuộc trò chuyện bằng cách gửi tin nhắn đầu
-                        tiên!
+                        Hãy bắt đầu cuộc trò chuyện bằng cách gửi tin nhắn đầu tiên!
                       </p>
                     </div>
                   );
@@ -446,7 +417,7 @@ export function Chatroom({
                   {isUploadingImage ? (
                     <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    "Gửi hình ảnh"
+                    'Gửi hình ảnh'
                   )}
                 </Button>
               </div>
@@ -478,10 +449,7 @@ export function Chatroom({
             >
               <ImageIcon className="h-4 w-4" />
             </Button>
-            <Button
-              type="submit"
-              disabled={!newMessage.trim() || isUploadingImage}
-            >
+            <Button type="submit" disabled={!newMessage.trim() || isUploadingImage}>
               <Send className="h-4 w-4" />
             </Button>
           </form>

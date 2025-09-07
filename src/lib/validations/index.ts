@@ -1,2 +1,1 @@
-export * from "./auth.chema";
-  
+export * from './auth.chema';

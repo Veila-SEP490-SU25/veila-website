@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   ICreateRequest,
   ICreateUpdateRequest,
@@ -9,8 +9,8 @@ import {
   IUpdateRequest,
   IUpdateRequestInfo,
   UpdateRequestStatus,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export interface IGetUpdateRequests extends IPagination {
   requestId: string;
@@ -27,14 +27,14 @@ export interface IApproveUpdateRequest extends IGetUpdateRequest {
 }
 
 export const requestApi = createApi({
-  reducerPath: "requestApi",
+  reducerPath: 'requestApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     //Request
     shopGetRequests: builder.query<IListResponse<IRequest>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
+      query: ({ sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `requests`,
-        method: "GET",
+        method: 'GET',
         params: { sort, filter, page, size },
       }),
     }),
@@ -42,21 +42,21 @@ export const requestApi = createApi({
     shopGetRequest: builder.query<IItemResponse<IRequest>, string>({
       query: (id) => ({
         url: `requests/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getMyRequest: builder.query<IItemResponse<IRequest>, string>({
       query: (id) => ({
         url: `requests/${id}/me`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getMyRequests: builder.query<IListResponse<IRequest>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
+      query: ({ sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `requests/me`,
-        method: "GET",
+        method: 'GET',
         params: { sort, filter, page, size },
       }),
     }),
@@ -64,7 +64,7 @@ export const requestApi = createApi({
     updateMyRequest: builder.mutation<IItemResponse<null>, IUpdateRequestInfo>({
       query: ({ id, ...body }) => ({
         url: `requests/${id}/me`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -72,68 +72,53 @@ export const requestApi = createApi({
     deleteMyRequest: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `requests/${id}/me`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     createRequest: builder.mutation<IItemResponse<IRequest>, ICreateRequest>({
       query: (body) => ({
         url: `requests/me`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),
 
     //Update Request
-    getUpdateRequests: builder.query<
-      IListResponse<IUpdateRequest>,
-      IGetUpdateRequests
-    >({
-      query: ({ requestId, sort = "", filter = "", page = 0, size = 10 }) => ({
+    getUpdateRequests: builder.query<IListResponse<IUpdateRequest>, IGetUpdateRequests>({
+      query: ({ requestId, sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `requests/${requestId}/updates`,
-        method: "GET",
+        method: 'GET',
         params: { sort, filter, page, size },
       }),
     }),
 
-    getUpdateRequest: builder.query<
-      IItemResponse<IUpdateRequest>,
-      IGetUpdateRequest
-    >({
+    getUpdateRequest: builder.query<IItemResponse<IUpdateRequest>, IGetUpdateRequest>({
       query: ({ requestId, updateRequestId }) => ({
         url: `requests/${requestId}/updates/${updateRequestId}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
-    createUpdateRequest: builder.mutation<
-      IItemResponse<IUpdateRequest>,
-      ICreateUpdateRequest
-    >({
+    createUpdateRequest: builder.mutation<IItemResponse<IUpdateRequest>, ICreateUpdateRequest>({
       query: ({ id, ...body }) => ({
         url: `requests/${id}/updates`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),
 
-    deleteUpdateRequest: builder.mutation<
-      IItemResponse<null>,
-      IGetUpdateRequest
-    >({
+    deleteUpdateRequest: builder.mutation<IItemResponse<null>, IGetUpdateRequest>({
       query: ({ requestId, updateRequestId }) => ({
         url: `requests/${requestId}/updates/${updateRequestId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
-    approveUpdateRequest: builder.mutation<
-      IItemResponse<null>,
-      IApproveUpdateRequest
-    >({
+    approveUpdateRequest: builder.mutation<IItemResponse<null>, IApproveUpdateRequest>({
       query: ({ requestId, updateRequestId, status, price }) => ({
         url: `requests/${requestId}/updates/${updateRequestId}`,
-        method: "PUT",
+        method: 'PUT',
         body: { status, price },
       }),
     }),

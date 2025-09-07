@@ -1,18 +1,12 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -20,15 +14,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Mail, User, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { registerSchema, RegisterSchema } from "@/lib/validations";
-import { GoogleButton } from "@/app/(auth)/components/google-button";
-import { TextLogo } from "@/components/text-logo";
-import { useRegisterMutation } from "@/services/apis";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+} from '@/components/ui/form';
+import { Mail, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { registerSchema, RegisterSchema } from '@/lib/validations';
+import { GoogleButton } from '@/app/(auth)/components/google-button';
+import { TextLogo } from '@/components/text-logo';
+import { useRegisterMutation } from '@/services/apis';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -39,12 +33,12 @@ export default function RegisterPage() {
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      email: "",
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
+      email: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      password: '',
+      confirmPassword: '',
       agreeTerms: false,
     },
   });
@@ -61,21 +55,18 @@ export default function RegisterPage() {
       if (statusCode === 200) {
         router.push(`/verify-otp?userId=${item}&email=${data.email}`);
       } else {
-        toast.error("Đăng ký thất bại.", {
+        toast.error('Đăng ký thất bại.', {
           description: message,
         });
       }
     },
-    [registerMutation, router]
+    [registerMutation, router],
   );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-purple-50 flex items-center justify-center p-4">
       <Link href="/" className="absolute top-6 left-6">
-        <Button
-          variant="ghost"
-          className="text-gray-600 hover:text-gray-800 hover:bg-white/50"
-        >
+        <Button variant="ghost" className="text-gray-600 hover:text-gray-800 hover:bg-white/50">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Quay về trang chủ
         </Button>
@@ -92,19 +83,14 @@ export default function RegisterPage() {
 
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl text-center">
-              Đăng Ký Tài Khoản
-            </CardTitle>
+            <CardTitle className="text-xl text-center">Đăng Ký Tài Khoản</CardTitle>
             <CardDescription className="text-center">
               Điền thông tin để tạo tài khoản mới
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 {/* Email */}
                 <FormField
                   control={form.control}
@@ -138,11 +124,7 @@ export default function RegisterPage() {
                         <FormControl>
                           <div className="relative">
                             <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                            <Input
-                              placeholder="Họ"
-                              className="pl-10 h-11"
-                              {...field}
-                            />
+                            <Input placeholder="Họ" className="pl-10 h-11" {...field} />
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -156,11 +138,7 @@ export default function RegisterPage() {
                       <FormItem>
                         <FormLabel>Tên *</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Tên"
-                            className="h-11"
-                            {...field}
-                          />
+                          <Input placeholder="Tên" className="h-11" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -176,11 +154,7 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Tên Đệm (Tùy chọn)</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Tên đệm"
-                          className="h-11"
-                          {...field}
-                        />
+                        <Input placeholder="Tên đệm" className="h-11" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,7 +171,7 @@ export default function RegisterPage() {
                       <FormControl>
                         <div className="relative">
                           <Input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="Tạo mật khẩu"
                             className="pr-10 h-11"
                             {...field}
@@ -230,16 +204,14 @@ export default function RegisterPage() {
                       <FormControl>
                         <div className="relative">
                           <Input
-                            type={showConfirmPassword ? "text" : "password"}
+                            type={showConfirmPassword ? 'text' : 'password'}
                             placeholder="Nhập lại mật khẩu"
                             className="pr-10 h-11"
                             {...field}
                           />
                           <button
                             type="button"
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                           >
                             {showConfirmPassword ? (
@@ -270,20 +242,20 @@ export default function RegisterPage() {
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel className="text-sm leading-5 inline-block">
-                          Tôi đồng ý với{" "}
+                          Tôi đồng ý với{' '}
                           <Link
                             href="/terms"
                             className="text-rose-600 hover:text-rose-700 hover:underline inline-block"
                           >
                             Điều Khoản Sử Dụng
-                          </Link>{" "}
-                          và{" "}
+                          </Link>{' '}
+                          và{' '}
                           <Link
                             href="/privacy"
                             className="text-rose-600 hover:text-rose-700 hover:underline inline-block"
                           >
                             Chính Sách Bảo Mật
-                          </Link>{" "}
+                          </Link>{' '}
                           của Veila
                         </FormLabel>
                         <FormMessage />
@@ -303,7 +275,7 @@ export default function RegisterPage() {
                       Đang tạo tài khoản...
                     </>
                   ) : (
-                    "Tạo Tài Khoản"
+                    'Tạo Tài Khoản'
                   )}
                 </Button>
               </form>
@@ -315,9 +287,7 @@ export default function RegisterPage() {
                 <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Hoặc đăng ký với Google
-                </span>
+                <span className="px-2 bg-white text-gray-500">Hoặc đăng ký với Google</span>
               </div>
             </div>
             {/* Google Register Button */}
@@ -328,7 +298,7 @@ export default function RegisterPage() {
             {/* Login Link */}
             <div className="text-center mt-6 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                Đã có tài khoản?{" "}
+                Đã có tài khoản?{' '}
                 <Link
                   href="/login"
                   className="text-rose-600 hover:text-rose-700 font-medium hover:underline"

@@ -1,11 +1,11 @@
-import { IItem } from "@/services/types/base.type";
-import { ICategory } from "@/services/types/category.type";
-import { IUser } from "@/services/types/user.type";
+import { IItem } from '@/services/types/base.type';
+import { ICategory } from '@/services/types/category.type';
+import { IUser } from '@/services/types/user.type';
 
 export enum BlogStatus {
-  DRAFT = "DRAFT",
-  PUBLISHED = "PUBLISHED",
-  UNPUBLISHED = "UNPUBLISHED",
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  UNPUBLISHED = 'UNPUBLISHED',
 }
 
 export interface IBlog extends IItem {
@@ -38,13 +38,13 @@ export interface IUpdateBlog {
 }
 
 export const blogStatusColors = {
-  [BlogStatus.DRAFT]: "bg-gray-100 text-gray-800",
-  [BlogStatus.PUBLISHED]: "bg-green-100 text-green-800",
-  [BlogStatus.UNPUBLISHED]: "bg-red-100 text-red-800",
+  [BlogStatus.DRAFT]: 'bg-gray-100 text-gray-800',
+  [BlogStatus.PUBLISHED]: 'bg-green-100 text-green-800',
+  [BlogStatus.UNPUBLISHED]: 'bg-red-100 text-red-800',
 };
 
 export const blogStatusLabels = {
-  [BlogStatus.DRAFT]: "Bản nháp",
-  [BlogStatus.PUBLISHED]: "Đã xuất bản",
-  [BlogStatus.UNPUBLISHED]: "Chưa xuất bản",
+  [BlogStatus.DRAFT]: 'Bản nháp',
+  [BlogStatus.PUBLISHED]: 'Đã xuất bản',
+  [BlogStatus.UNPUBLISHED]: 'Chưa xuất bản',
 };

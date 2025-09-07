@@ -1,42 +1,35 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { useCreateRequestMutation } from "@/services/apis/request.api";
-import { RequestStatus } from "@/services/types/request.type";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { RequireAuth } from "@/components/auth/require-auth";
-import { ArrowLeft, Scissors, Save, Send } from "lucide-react";
-import Link from "next/link";
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { useCreateRequestMutation } from '@/services/apis/request.api';
+import { RequestStatus } from '@/services/types/request.type';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { RequireAuth } from '@/components/auth/require-auth';
+import { ArrowLeft, Scissors, Save, Send } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CustomOrderPage() {
   const router = useRouter();
   const [createRequest, { isLoading }] = useCreateRequestMutation();
 
   const [formData, setFormData] = useState({
-    title: "Yêu cầu thiết kế váy cưới",
-    description:
-      "Tôi muốn thiết kế một chiếc váy cưới theo phong cách cổ điển.",
-    images: "",
+    title: 'Yêu cầu thiết kế váy cưới',
+    description: 'Tôi muốn thiết kế một chiếc váy cưới theo phong cách cổ điển.',
+    images: '',
     height: 170,
     weight: 55,
     bust: 85,
@@ -50,11 +43,11 @@ export default function CustomOrderPage() {
     backLength: 40,
     lowerWaist: 90,
     waistToFloor: 60,
-    material: "Cotton",
-    color: "Đỏ",
-    length: "Dài",
-    neckline: "Cổ tròn",
-    sleeve: "Tay ngắn",
+    material: 'Cotton',
+    color: 'Đỏ',
+    length: 'Dài',
+    neckline: 'Cổ tròn',
+    sleeve: 'Tay ngắn',
     status: RequestStatus.DRAFT,
     isPrivate: false,
   });
@@ -76,13 +69,13 @@ export default function CustomOrderPage() {
       await createRequest(requestData).unwrap();
 
       if (status === RequestStatus.SUBMIT) {
-        toast.success("Yêu cầu đặt may đã được gửi thành công!");
-        router.push("/profile");
+        toast.success('Yêu cầu đặt may đã được gửi thành công!');
+        router.push('/profile');
       } else {
-        toast.success("Bản nháp đã được lưu!");
+        toast.success('Bản nháp đã được lưu!');
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi tạo yêu cầu đặt may.");
+      toast.error('Có lỗi xảy ra khi tạo yêu cầu đặt may.');
     }
   };
 
@@ -97,12 +90,8 @@ export default function CustomOrderPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay về trang chủ
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Đặt May Váy Cưới
-          </h1>
-          <p className="text-gray-600">
-            Tạo yêu cầu thiết kế váy cưới riêng theo ý muốn của bạn
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Đặt May Váy Cưới</h1>
+          <p className="text-gray-600">Tạo yêu cầu thiết kế váy cưới riêng theo ý muốn của bạn</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -125,7 +114,7 @@ export default function CustomOrderPage() {
                   <Input
                     id="title"
                     value={formData.title}
-                    onChange={(e) => handleInputChange("title", e.target.value)}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
                     placeholder="Nhập tiêu đề yêu cầu"
                   />
                 </div>
@@ -135,9 +124,7 @@ export default function CustomOrderPage() {
                   <Textarea
                     id="description"
                     value={formData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('description', e.target.value)}
                     placeholder="Mô tả chi tiết về váy cưới bạn muốn thiết kế..."
                     rows={4}
                   />
@@ -148,9 +135,7 @@ export default function CustomOrderPage() {
                   <Input
                     id="images"
                     value={formData.images}
-                    onChange={(e) =>
-                      handleInputChange("images", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('images', e.target.value)}
                     placeholder="URL hình ảnh tham khảo (phân cách bằng dấu phẩy)"
                   />
                 </div>
@@ -161,9 +146,7 @@ export default function CustomOrderPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Số Đo Cơ Thể</CardTitle>
-                <CardDescription>
-                  Cung cấp số đo chính xác để thiết kế váy phù hợp
-                </CardDescription>
+                <CardDescription>Cung cấp số đo chính xác để thiết kế váy phù hợp</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -173,9 +156,7 @@ export default function CustomOrderPage() {
                       id="height"
                       type="number"
                       value={formData.height}
-                      onChange={(e) =>
-                        handleInputChange("height", Number(e.target.value))
-                      }
+                      onChange={(e) => handleInputChange('height', Number(e.target.value))}
                     />
                   </div>
                   <div>
@@ -184,9 +165,7 @@ export default function CustomOrderPage() {
                       id="weight"
                       type="number"
                       value={formData.weight}
-                      onChange={(e) =>
-                        handleInputChange("weight", Number(e.target.value))
-                      }
+                      onChange={(e) => handleInputChange('weight', Number(e.target.value))}
                     />
                   </div>
                   <div>
@@ -195,9 +174,7 @@ export default function CustomOrderPage() {
                       id="bust"
                       type="number"
                       value={formData.bust}
-                      onChange={(e) =>
-                        handleInputChange("bust", Number(e.target.value))
-                      }
+                      onChange={(e) => handleInputChange('bust', Number(e.target.value))}
                     />
                   </div>
                   <div>
@@ -206,9 +183,7 @@ export default function CustomOrderPage() {
                       id="waist"
                       type="number"
                       value={formData.waist}
-                      onChange={(e) =>
-                        handleInputChange("waist", Number(e.target.value))
-                      }
+                      onChange={(e) => handleInputChange('waist', Number(e.target.value))}
                     />
                   </div>
                   <div>
@@ -217,9 +192,7 @@ export default function CustomOrderPage() {
                       id="hip"
                       type="number"
                       value={formData.hip}
-                      onChange={(e) =>
-                        handleInputChange("hip", Number(e.target.value))
-                      }
+                      onChange={(e) => handleInputChange('hip', Number(e.target.value))}
                     />
                   </div>
                   <div>
@@ -228,9 +201,7 @@ export default function CustomOrderPage() {
                       id="neck"
                       type="number"
                       value={formData.neck}
-                      onChange={(e) =>
-                        handleInputChange("neck", Number(e.target.value))
-                      }
+                      onChange={(e) => handleInputChange('neck', Number(e.target.value))}
                     />
                   </div>
                 </div>
@@ -241,9 +212,7 @@ export default function CustomOrderPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Thiết Kế & Màu Sắc</CardTitle>
-                <CardDescription>
-                  Chọn phong cách và màu sắc cho váy cưới
-                </CardDescription>
+                <CardDescription>Chọn phong cách và màu sắc cho váy cưới</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -251,9 +220,7 @@ export default function CustomOrderPage() {
                     <Label htmlFor="material">Chất liệu</Label>
                     <Select
                       value={formData.material}
-                      onValueChange={(value) =>
-                        handleInputChange("material", value)
-                      }
+                      onValueChange={(value) => handleInputChange('material', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -272,9 +239,7 @@ export default function CustomOrderPage() {
                     <Label htmlFor="color">Màu sắc</Label>
                     <Select
                       value={formData.color}
-                      onValueChange={(value) =>
-                        handleInputChange("color", value)
-                      }
+                      onValueChange={(value) => handleInputChange('color', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -293,9 +258,7 @@ export default function CustomOrderPage() {
                     <Label htmlFor="length">Độ dài</Label>
                     <Select
                       value={formData.length}
-                      onValueChange={(value) =>
-                        handleInputChange("length", value)
-                      }
+                      onValueChange={(value) => handleInputChange('length', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -312,9 +275,7 @@ export default function CustomOrderPage() {
                     <Label htmlFor="neckline">Kiểu cổ</Label>
                     <Select
                       value={formData.neckline}
-                      onValueChange={(value) =>
-                        handleInputChange("neckline", value)
-                      }
+                      onValueChange={(value) => handleInputChange('neckline', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -345,9 +306,7 @@ export default function CustomOrderPage() {
                   <Switch
                     id="isPrivate"
                     checked={formData.isPrivate}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isPrivate", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isPrivate', checked)}
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-2">

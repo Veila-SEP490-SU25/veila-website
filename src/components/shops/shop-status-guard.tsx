@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/providers/auth.provider";
-import { ShopStatus } from "@/services/types";
-import { SuspendedShopDashboard } from "./suspended-shop-dashboard";
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/providers/auth.provider';
+import { ShopStatus } from '@/services/types';
+import { SuspendedShopDashboard } from './suspended-shop-dashboard';
 
 interface ShopStatusGuardProps {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ interface ShopStatusGuardProps {
 
 // Danh sách các route được phép truy cập khi shop bị SUSPENDED
 const ALLOWED_ROUTES_WHEN_SUSPENDED = [
-  "/shops/my", // Dashboard
-  "/profile", // Profile
+  '/shops/my', // Dashboard
+  '/profile', // Profile
 ];
 
 export const ShopStatusGuard = ({ children }: ShopStatusGuardProps) => {
@@ -29,7 +29,7 @@ export const ShopStatusGuard = ({ children }: ShopStatusGuardProps) => {
   }, [currentUser]);
 
   // Nếu đang check hoặc không phải shop, render children
-  if (isChecking || currentUser?.role !== "SHOP") {
+  if (isChecking || currentUser?.role !== 'SHOP') {
     return <>{children}</>;
   }
 
@@ -38,18 +38,18 @@ export const ShopStatusGuard = ({ children }: ShopStatusGuardProps) => {
 
   // Nếu shop bị SUSPENDED và đang truy cập route không được phép
   if (shopStatus === ShopStatus.SUSPENDED) {
-    const isAllowedRoute = ALLOWED_ROUTES_WHEN_SUSPENDED.some(route => 
-      pathname.startsWith(route)
+    const isAllowedRoute = ALLOWED_ROUTES_WHEN_SUSPENDED.some((route) =>
+      pathname.startsWith(route),
     );
 
     if (!isAllowedRoute) {
       // Redirect về dashboard
-      router.push("/shops/my");
+      router.push('/shops/my');
       return null;
     }
 
     // Nếu đang ở dashboard, hiển thị SuspendedShopDashboard
-    if (pathname === "/shops/my") {
+    if (pathname === '/shops/my') {
       return <SuspendedShopDashboard />;
     }
   }

@@ -1,22 +1,14 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useGetCustomOrderRequestByIdQuery } from "@/services/apis/custom-order.api";
+import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useGetCustomOrderRequestByIdQuery } from '@/services/apis/custom-order.api';
 
-import { formatDateDetailed } from "@/utils/format";
-import {
-  ArrowLeft,
-  Calendar,
-  User,
-  Ruler,
-  MessageCircle,
-  Eye,
-  Download,
-} from "lucide-react";
+import { formatDateDetailed } from '@/utils/format';
+import { ArrowLeft, Calendar, User, Ruler, MessageCircle, Eye, Download } from 'lucide-react';
 
 export function CustomOrderDetail() {
   const params = useParams();
@@ -55,16 +47,14 @@ export function CustomOrderDetail() {
   }
 
   if (error) {
-    console.error("CustomOrderDetail - Detailed error:", error);
+    console.error('CustomOrderDetail - Detailed error:', error);
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="text-muted-foreground mb-4">
             <User className="h-12 w-12 mx-auto opacity-50" />
             <p className="text-lg font-medium mb-2">Lỗi khi tải dữ liệu</p>
-            <p className="text-sm text-red-600">
-              Có lỗi xảy ra khi tải thông tin yêu cầu
-            </p>
+            <p className="text-sm text-red-600">Có lỗi xảy ra khi tải thông tin yêu cầu</p>
             <pre className="text-xs mt-2 p-2 bg-gray-100 rounded text-left overflow-auto">
               {JSON.stringify(error, null, 2)}
             </pre>
@@ -85,9 +75,7 @@ export function CustomOrderDetail() {
           <div className="text-muted-foreground mb-4">
             <User className="h-12 w-12 mx-auto opacity-50" />
             <p className="text-lg font-medium mb-2">Không tìm thấy yêu cầu</p>
-            <p className="text-sm">
-              Yêu cầu này có thể đã bị xóa hoặc không tồn tại
-            </p>
+            <p className="text-sm">Yêu cầu này có thể đã bị xóa hoặc không tồn tại</p>
           </div>
           <Button onClick={handleBack} variant="outline">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -116,9 +104,7 @@ export function CustomOrderDetail() {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-2xl mb-2">
-                    {request.title}
-                  </CardTitle>
+                  <CardTitle className="text-2xl mb-2">{request.title}</CardTitle>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
@@ -129,9 +115,7 @@ export function CustomOrderDetail() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 leading-relaxed">
-                {request.description}
-              </p>
+              <p className="text-gray-700 leading-relaxed">{request.description}</p>
             </CardContent>
           </Card>
 
@@ -145,94 +129,56 @@ export function CustomOrderDetail() {
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.height}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Chiều cao (cm)
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.height}</div>
+                  <div className="text-sm text-muted-foreground">Chiều cao (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.weight}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Cân nặng (kg)
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.weight}</div>
+                  <div className="text-sm text-muted-foreground">Cân nặng (kg)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.bust}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.bust}</div>
                   <div className="text-sm text-muted-foreground">Ngực (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.waist}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.waist}</div>
                   <div className="text-sm text-muted-foreground">Eo (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.hip}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.hip}</div>
                   <div className="text-sm text-muted-foreground">Mông (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.armpit}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.armpit}</div>
                   <div className="text-sm text-muted-foreground">Nách (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.bicep}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Bắp tay (cm)
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.bicep}</div>
+                  <div className="text-sm text-muted-foreground">Bắp tay (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.neck}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.neck}</div>
                   <div className="text-sm text-muted-foreground">Cổ (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.shoulderWidth}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.shoulderWidth}</div>
                   <div className="text-sm text-muted-foreground">Vai (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.sleeveLength}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Tay áo (cm)
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.sleeveLength}</div>
+                  <div className="text-sm text-muted-foreground">Tay áo (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.backLength}
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.backLength}</div>
                   <div className="text-sm text-muted-foreground">Lưng (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.lowerWaist}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Eo dưới (cm)
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.lowerWaist}</div>
+                  <div className="text-sm text-muted-foreground">Eo dưới (cm)</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">
-                    {request.waistToFloor}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Eo đến sàn (cm)
-                  </div>
+                  <div className="text-2xl font-bold text-primary">{request.waistToFloor}</div>
+                  <div className="text-sm text-muted-foreground">Eo đến sàn (cm)</div>
                 </div>
               </div>
             </CardContent>
@@ -249,21 +195,11 @@ export function CustomOrderDetail() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {request.material && (
-                    <Badge variant="outline">{request.material}</Badge>
-                  )}
-                  {request.color && (
-                    <Badge variant="outline">{request.color}</Badge>
-                  )}
-                  {request.length && (
-                    <Badge variant="outline">{request.length}</Badge>
-                  )}
-                  {request.neckline && (
-                    <Badge variant="outline">{request.neckline}</Badge>
-                  )}
-                  {request.sleeve && (
-                    <Badge variant="outline">{request.sleeve}</Badge>
-                  )}
+                  {request.material && <Badge variant="outline">{request.material}</Badge>}
+                  {request.color && <Badge variant="outline">{request.color}</Badge>}
+                  {request.length && <Badge variant="outline">{request.length}</Badge>}
+                  {request.neckline && <Badge variant="outline">{request.neckline}</Badge>}
+                  {request.sleeve && <Badge variant="outline">{request.sleeve}</Badge>}
                 </div>
               </CardContent>
             </Card>
@@ -282,7 +218,7 @@ export function CustomOrderDetail() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {request.images.split(",").map((image, index) => (
+                  {request.images.split(',').map((image, index) => (
                     <div key={index} className="relative group">
                       <Image
                         src={image.trim()}
@@ -296,7 +232,7 @@ export function CustomOrderDetail() {
                           variant="secondary"
                           size="sm"
                           className="opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => window.open(image.trim(), "_blank")}
+                          onClick={() => window.open(image.trim(), '_blank')}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>

@@ -1,4 +1,4 @@
-export const isBrowser = typeof window !== "undefined";
+export const isBrowser = typeof window !== 'undefined';
 
 export const runOnlyInBrowser = (callback: () => void) => {
   if (isBrowser) {
@@ -21,8 +21,7 @@ export function getFromLocalStorage<T>(key: string): T | null {
 export function setToLocalStorage<T>(key: string, value: T): void {
   if (isBrowser) {
     try {
-      const valueToStore =
-        typeof value === "string" ? value : JSON.stringify(value);
+      const valueToStore = typeof value === 'string' ? value : JSON.stringify(value);
       window.localStorage.setItem(key, valueToStore);
     } catch (error) {
       console.error(`Error setting localStorage item "${key}":`, error);
@@ -45,7 +44,7 @@ export function clearLocalStorage(): void {
     try {
       window.localStorage.clear();
     } catch (error) {
-      console.error("Error clearing localStorage:", error);
+      console.error('Error clearing localStorage:', error);
     }
   }
 }

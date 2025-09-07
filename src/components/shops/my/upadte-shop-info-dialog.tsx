@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Edit, Loader2, Save, X } from "lucide-react";
-import { toast } from "sonner";
-import type { IShop, IUpdateShopInfo } from "@/services/types";
-import { LocationInput } from "@/components/location-input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Edit, Loader2, Save, X } from 'lucide-react';
+import { toast } from 'sonner';
+import type { IShop, IUpdateShopInfo } from '@/services/types';
+import { LocationInput } from '@/components/location-input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface UpdateShopInfoDialogProps {
   shop: IShop;
@@ -39,13 +39,13 @@ export function UpdateShopInfoDialog({
 }: UpdateShopInfoDialogProps) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<IUpdateShopInfo>({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    description: "",
-    logoUrl: "",
-    coverUrl: "",
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    description: '',
+    logoUrl: '',
+    coverUrl: '',
   });
   const [errors, setErrors] = useState<Partial<IUpdateShopInfo>>({});
 
@@ -53,13 +53,13 @@ export function UpdateShopInfoDialog({
   useEffect(() => {
     if (open && shop) {
       setFormData({
-        name: shop.name || "",
-        phone: shop.phone || "",
-        email: shop.email || "",
-        address: shop.address || "",
-        description: shop.description || "",
-        logoUrl: shop.logoUrl || "",
-        coverUrl: shop.coverUrl || "",
+        name: shop.name || '',
+        phone: shop.phone || '',
+        email: shop.email || '',
+        address: shop.address || '',
+        description: shop.description || '',
+        logoUrl: shop.logoUrl || '',
+        coverUrl: shop.coverUrl || '',
       });
       setErrors({});
     }
@@ -70,30 +70,30 @@ export function UpdateShopInfoDialog({
 
     // Name validation
     if (!formData.name.trim()) {
-      newErrors.name = "Tên cửa hàng là bắt buộc";
+      newErrors.name = 'Tên cửa hàng là bắt buộc';
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Tên cửa hàng phải có ít nhất 2 ký tự";
+      newErrors.name = 'Tên cửa hàng phải có ít nhất 2 ký tự';
     }
 
     // Phone validation
     if (!formData.phone.trim()) {
-      newErrors.phone = "Số điện thoại là bắt buộc";
-    } else if (!/^[0-9]{10,11}$/.test(formData.phone.replace(/\s/g, ""))) {
-      newErrors.phone = "Số điện thoại không hợp lệ";
+      newErrors.phone = 'Số điện thoại là bắt buộc';
+    } else if (!/^[0-9]{10,11}$/.test(formData.phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'Số điện thoại không hợp lệ';
     }
 
     // Email validation
     if (!formData.email.trim()) {
-      newErrors.email = "Email là bắt buộc";
+      newErrors.email = 'Email là bắt buộc';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Email không hợp lệ";
+      newErrors.email = 'Email không hợp lệ';
     }
 
     // Description validation
     if (!formData.description.trim()) {
-      newErrors.description = "Mô tả là bắt buộc";
+      newErrors.description = 'Mô tả là bắt buộc';
     } else if (formData.description.trim().length < 20) {
-      newErrors.description = "Mô tả phải có ít nhất 20 ký tự";
+      newErrors.description = 'Mô tả phải có ít nhất 20 ký tự';
     }
 
     setErrors(newErrors);
@@ -116,11 +116,11 @@ export function UpdateShopInfoDialog({
 
   const handleSubmit = async () => {
     if (!validateForm()) {
-      toast.error("Vui lòng kiểm tra lại thông tin");
+      toast.error('Vui lòng kiểm tra lại thông tin');
       return;
     }
 
-    console.log("Form data:", formData);
+    console.log('Form data:', formData);
     setInfo(formData);
     try {
       // Use the handleUpdateInfo function passed from parent component
@@ -130,7 +130,7 @@ export function UpdateShopInfoDialog({
       setOpen(false);
       onSuccess?.();
     } catch (error: any) {
-      console.error("Update shop info error:", error);
+      console.error('Update shop info error:', error);
       // Error handling is done in the parent component's handleUpdateInfo
     }
   };
@@ -168,15 +168,11 @@ export function UpdateShopInfoDialog({
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
+                onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="Nhập tên cửa hàng"
-                className={
-                  errors.name ? "border-red-500 focus:border-red-500" : ""
-                }
+                className={errors.name ? 'border-red-500 focus:border-red-500' : ''}
               />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name}</p>
-              )}
+              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
             </div>
 
             {/* Phone */}
@@ -187,15 +183,11 @@ export function UpdateShopInfoDialog({
               <Input
                 id="phone"
                 value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="Nhập số điện thoại"
-                className={
-                  errors.phone ? "border-red-500 focus:border-red-500" : ""
-                }
+                className={errors.phone ? 'border-red-500 focus:border-red-500' : ''}
               />
-              {errors.phone && (
-                <p className="text-sm text-red-500">{errors.phone}</p>
-              )}
+              {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
             </div>
 
             {/* Email */}
@@ -207,15 +199,11 @@ export function UpdateShopInfoDialog({
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
+                onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="Nhập địa chỉ email"
-                className={
-                  errors.email ? "border-red-500 focus:border-red-500" : ""
-                }
+                className={errors.email ? 'border-red-500 focus:border-red-500' : ''}
               />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
 
             {/* Address */}
@@ -225,11 +213,9 @@ export function UpdateShopInfoDialog({
               </Label>
               <LocationInput
                 location={formData.address}
-                setLocation={(value) => handleInputChange("address", value)}
+                setLocation={(value) => handleInputChange('address', value)}
               />
-              {errors.address && (
-                <p className="text-sm text-red-500">{errors.address}</p>
-              )}
+              {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
             </div>
 
             {/* Description */}
@@ -240,23 +226,13 @@ export function UpdateShopInfoDialog({
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
+                onChange={(e) => handleInputChange('description', e.target.value)}
                 placeholder="Nhập mô tả về cửa hàng"
                 rows={4}
-                className={
-                  errors.description
-                    ? "border-red-500 focus:border-red-500"
-                    : ""
-                }
+                className={errors.description ? 'border-red-500 focus:border-red-500' : ''}
               />
-              {errors.description && (
-                <p className="text-sm text-red-500">{errors.description}</p>
-              )}
-              <p className="text-xs text-gray-500">
-                {formData.description.length}/500 ký tự
-              </p>
+              {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+              <p className="text-xs text-gray-500">{formData.description.length}/500 ký tự</p>
             </div>
 
             {/* Current vs New Info Comparison */}
@@ -281,11 +257,7 @@ export function UpdateShopInfoDialog({
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3 pt-4 border-t">
-            <Button
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isUpdating}
-            >
+            <Button variant="outline" onClick={handleCancel} disabled={isUpdating}>
               <X className="h-4 w-4 mr-2" />
               Hủy
             </Button>

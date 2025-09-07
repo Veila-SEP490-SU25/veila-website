@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { HeroSection } from "@/components/home/hero-section";
-import { HowItWorkSection } from "@/components/home/how-it-work-section";
-import { ServiceSection } from "@/components/home/service-section";
-import { CTASection } from "@/components/home/cta-section";
-import { ShopDashboard } from "@/components/shops/my/shop-dashboard";
-import { useAuth } from "@/providers/auth.provider";
-import { UserRole } from "@/services/types/user.type";
-import { useLazyGetMyShopQuery } from "@/services/apis";
-import { useEffect, useState } from "react";
-import { IShop } from "@/services/types";
-import { Card, CardContent } from "@/components/ui/card";
+import { HeroSection } from '@/components/home/hero-section';
+import { HowItWorkSection } from '@/components/home/how-it-work-section';
+import { ServiceSection } from '@/components/home/service-section';
+import { CTASection } from '@/components/home/cta-section';
+import { ShopDashboard } from '@/components/shops/my/shop-dashboard';
+import { useAuth } from '@/providers/auth.provider';
+import { UserRole } from '@/services/types/user.type';
+import { useLazyGetMyShopQuery } from '@/services/apis';
+import { useEffect, useState } from 'react';
+import { IShop } from '@/services/types';
+import { Card, CardContent } from '@/components/ui/card';
 
 const HomePage = () => {
   const { currentUser } = useAuth();
@@ -30,7 +30,7 @@ const HomePage = () => {
             setShop(response.item);
           }
         } catch (error) {
-          console.error("Error fetching shop:", error);
+          console.error('Error fetching shop:', error);
         } finally {
           setIsLoading(false);
         }

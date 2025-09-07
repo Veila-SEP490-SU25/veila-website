@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useFirebase } from "@/services/firebase";
-import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useCallback, useState } from "react";
+import { useFirebase } from '@/services/firebase';
+import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { useCallback, useState } from 'react';
 
 interface FileData {
   url: string;
@@ -19,7 +19,7 @@ export const useStorage = () => {
 
   // Upload file
   const uploadFile = useCallback(
-    (file: File, path = "uploads", replacePath?: string) => {
+    (file: File, path = 'uploads', replacePath?: string) => {
       if (!storage || !file) return;
 
       return new Promise<FileData>((resolve, reject) => {
@@ -30,7 +30,7 @@ export const useStorage = () => {
         // If replacing an existing file
         if (replacePath) {
           deleteObject(ref(storage, replacePath)).catch((err) => {
-            console.warn("Could not delete old file:", err);
+            console.warn('Could not delete old file:', err);
           });
         }
 
@@ -39,7 +39,7 @@ export const useStorage = () => {
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on(
-          "state_changed",
+          'state_changed',
           (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             setUploadProgress(progress);
@@ -55,11 +55,11 @@ export const useStorage = () => {
             setFileData(data);
             setIsUploading(false);
             resolve(data);
-          }
+          },
         );
       });
     },
-    [storage]
+    [storage],
   );
 
   // Delete file
@@ -75,7 +75,7 @@ export const useStorage = () => {
         return false;
       }
     },
-    [storage]
+    [storage],
   );
 
   return {

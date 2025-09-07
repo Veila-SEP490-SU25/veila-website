@@ -1,15 +1,15 @@
-import { ICategory, IFeedback, IItem, IUser } from "@/services/types";
+import { ICategory, IFeedback, IItem, IUser } from '@/services/types';
 
 export enum ServiceStatus {
-  AVAILABLE = "AVAILABLE",
-  UNAVAILABLE = "UNAVAILABLE",
-  DRAFT = "DRAFT",
+  AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE',
+  DRAFT = 'DRAFT',
 }
 
 export interface IService extends IItem {
   userId: string;
   categoryId: string | null;
-  
+
   user: IUser;
   category: ICategory | null;
   name: string;

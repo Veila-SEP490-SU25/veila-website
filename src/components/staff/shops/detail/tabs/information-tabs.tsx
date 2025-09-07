@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { ImageGallery } from "@/components/image-gallery";
-import { UpdateShopInfoDialog } from "@/components/shops/my/upadte-shop-info-dialog";
-import { ActionButton } from "@/components/staff/shops/detail/action-button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { TabsContent } from "@/components/ui/tabs";
-import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
-import { formatDateShort } from "@/lib/order-util";
-import { getImages } from "@/lib/products-utils";
-import { cn } from "@/lib/utils";
-import { useUpdateShopInfoMutation } from "@/services/apis";
+import { ImageGallery } from '@/components/image-gallery';
+import { UpdateShopInfoDialog } from '@/components/shops/my/upadte-shop-info-dialog';
+import { ActionButton } from '@/components/staff/shops/detail/action-button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { TabsContent } from '@/components/ui/tabs';
+import { SingleImageUploadDialog } from '@/components/upload-image-dialog';
+import { formatDateShort } from '@/lib/order-util';
+import { getImages } from '@/lib/products-utils';
+import { cn } from '@/lib/utils';
+import { useUpdateShopInfoMutation } from '@/services/apis';
 import {
   ILicense,
   IMembership,
@@ -23,7 +23,7 @@ import {
   IUser,
   LicenseStatus,
   ShopStatus,
-} from "@/services/types";
+} from '@/services/types';
 import {
   Award,
   Calendar,
@@ -40,10 +40,10 @@ import {
   ShieldCheck,
   UserRound,
   UserRoundCheck,
-} from "lucide-react";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from 'lucide-react';
+import Image from 'next/image';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface InformationTabsProps {
   shop: IShop;
@@ -67,24 +67,24 @@ const getVerificationBadge = (isVerified: boolean) => {
 const getStatusBadge = (status: ShopStatus) => {
   const statusConfig = {
     [ShopStatus.ACTIVE]: {
-      label: "Hoạt động",
-      className: "bg-green-100 text-green-700",
+      label: 'Hoạt động',
+      className: 'bg-green-100 text-green-700',
     },
     [ShopStatus.PENDING]: {
-      label: "Chờ duyệt",
-      className: "bg-yellow-100 text-yellow-700",
+      label: 'Chờ duyệt',
+      className: 'bg-yellow-100 text-yellow-700',
     },
     [ShopStatus.SUSPENDED]: {
-      label: "Tạm khóa",
-      className: "bg-red-100 text-red-700",
+      label: 'Tạm khóa',
+      className: 'bg-red-100 text-red-700',
     },
     [ShopStatus.INACTIVE]: {
-      label: "Tạm ngưng",
-      className: "bg-gray-100 text-gray-700",
+      label: 'Tạm ngưng',
+      className: 'bg-gray-100 text-gray-700',
     },
     [ShopStatus.BANNED]: {
-      label: "Bị cấm",
-      className: "bg-red-200 text-red-800",
+      label: 'Bị cấm',
+      className: 'bg-red-200 text-red-800',
     },
   };
   const config = statusConfig[status];
@@ -96,16 +96,15 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
   const [license, setLicense] = useState<ILicense | null>(null);
   const [memberships, setMemberships] = useState<IMembership[]>([]);
 
-  const [updateShopInfo, { isLoading: isUpdating }] =
-    useUpdateShopInfoMutation();
+  const [updateShopInfo, { isLoading: isUpdating }] = useUpdateShopInfoMutation();
   const [info, setInfo] = useState<IUpdateShopInfo>({
     name: shop.name,
     phone: shop.phone,
     email: shop.email,
     address: shop.address,
-    coverUrl: shop.coverUrl || "",
-    description: shop.description || "",
-    logoUrl: shop.logoUrl || "",
+    coverUrl: shop.coverUrl || '',
+    description: shop.description || '',
+    logoUrl: shop.logoUrl || '',
   });
 
   const handleUpdateInfo = useCallback(
@@ -113,20 +112,18 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
       try {
         const { statusCode, message } = await updateShopInfo(info).unwrap();
         if (statusCode === 200) {
-          toast.success("Cập nhật thông tin cửa hàng thành công");
+          toast.success('Cập nhật thông tin cửa hàng thành công');
         } else {
-          toast.error("Có lỗi xảy ra khi cập nhật thông tin cửa hàng", {
+          toast.error('Có lỗi xảy ra khi cập nhật thông tin cửa hàng', {
             description: message,
           });
         }
       } catch (error) {
-        toast.error(
-          "Có lỗi xảy ra khi cập nhật thông tin cửa hàng vui lòng thử lại sau"
-        );
+        toast.error('Có lỗi xảy ra khi cập nhật thông tin cửa hàng vui lòng thử lại sau');
         console.error(error);
       }
     },
-    [updateShopInfo]
+    [updateShopInfo],
   );
 
   useEffect(() => {
@@ -153,7 +150,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
         <CardHeader className="w-full p-0 relative space-y-6">
           <div className="aspect-[4/1] w-full relative">
             <Image
-              src={shop.coverUrl || "/placeholder.svg"}
+              src={shop.coverUrl || '/placeholder.svg'}
               alt="Shop Cover"
               width={300}
               height={100}
@@ -161,14 +158,14 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
             />
             <div
               className={cn(
-                "w-[calc(1/8*100%)] aspect-square absolute z-10 rounded-full border-4",
-                "overflow-hidden bottom-0 left-10 translate-y-1/2",
-                `border-white`
+                'w-[calc(1/8*100%)] aspect-square absolute z-10 rounded-full border-4',
+                'overflow-hidden bottom-0 left-10 translate-y-1/2',
+                `border-white`,
               )}
             >
               <Avatar className="size-full relative">
                 <AvatarImage
-                  src={shop.logoUrl || ""}
+                  src={shop.logoUrl || ''}
                   alt="Shop Avatar"
                   className="size-full object-cover"
                 />
@@ -178,9 +175,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
 
                 <SingleImageUploadDialog
                   imageUrl={shop.logoUrl || undefined}
-                  onImageChange={(url) =>
-                    setInfo((prev) => ({ ...prev, logoUrl: url }))
-                  }
+                  onImageChange={(url) => setInfo((prev) => ({ ...prev, logoUrl: url }))}
                   trigger={
                     <Button
                       className="absolute top-1/2 left-1/2 size-full -translate-1/2 text-transparent hover:bg-gray-600/50 hover:text-white"
@@ -195,9 +190,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
             </div>
             <SingleImageUploadDialog
               imageUrl={shop.coverUrl || undefined}
-              onImageChange={(url) =>
-                setInfo((prev) => ({ ...prev, coverUrl: url }))
-              }
+              onImageChange={(url) => setInfo((prev) => ({ ...prev, coverUrl: url }))}
               trigger={
                 <Button
                   className="flex items-center gap-2 absolute right-4 top-4"
@@ -215,8 +208,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
             <div className="px-4 flex items-start justify-center flex-col space-x-2 gap-2">
               <CardTitle>{shop.name}</CardTitle>
               <div className="flex items-center gap-2">
-                {getVerificationBadge(shop.isVerified)}{" "}
-                {getStatusBadge(shop.status)}
+                {getVerificationBadge(shop.isVerified)} {getStatusBadge(shop.status)}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -250,7 +242,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                 <Label>Giới thiệu</Label>
               </div>
               <div className="col-span-5">
-                <p className="text-sm">{shop.description || "Chưa có mô tả"}</p>
+                <p className="text-sm">{shop.description || 'Chưa có mô tả'}</p>
               </div>
             </div>
             <div className="grid grid-cols-6">
@@ -259,7 +251,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                 <Label>Email</Label>
               </div>
               <div className="col-span-5">
-                <p className="text-sm">{shop.email || "Chưa có email"}</p>
+                <p className="text-sm">{shop.email || 'Chưa có email'}</p>
               </div>
             </div>
             <div className="grid grid-cols-6">
@@ -268,9 +260,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                 <Label>Điện thoại</Label>
               </div>
               <div className="col-span-5">
-                <p className="text-sm">
-                  {shop.phone || "Chưa có số điện thoại"}
-                </p>
+                <p className="text-sm">{shop.phone || 'Chưa có số điện thoại'}</p>
               </div>
             </div>
             <div className="grid grid-cols-6">
@@ -279,7 +269,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                 <Label>Địa chỉ</Label>
               </div>
               <div className="col-span-5">
-                <p className="text-sm">{shop.address || "Chưa có địa chỉ"}</p>
+                <p className="text-sm">{shop.address || 'Chưa có địa chỉ'}</p>
               </div>
             </div>
             <div className="grid grid-cols-6">
@@ -313,9 +303,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                   <Label>Tên người dùng</Label>
                 </div>
                 <div className="col-span-5">
-                  <p className="text-sm">
-                    {owner.username || "Chưa có tên người dùng"}
-                  </p>
+                  <p className="text-sm">{owner.username || 'Chưa có tên người dùng'}</p>
                 </div>
               </div>
               <div className="grid grid-cols-6">
@@ -324,7 +312,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                   <Label>Email</Label>
                 </div>
                 <div className="col-span-5">
-                  <p className="text-sm">{owner.email || "Chưa có email"}</p>
+                  <p className="text-sm">{owner.email || 'Chưa có email'}</p>
                 </div>
               </div>
               <div className="grid grid-cols-6">
@@ -333,9 +321,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                   <Label>Điện thoại</Label>
                 </div>
                 <div className="col-span-5">
-                  <p className="text-sm">
-                    {owner.phone || "Chưa có số điện thoại"}
-                  </p>
+                  <p className="text-sm">{owner.phone || 'Chưa có số điện thoại'}</p>
                 </div>
               </div>
               <div className="grid grid-cols-6">
@@ -344,9 +330,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                   <Label>Địa chỉ</Label>
                 </div>
                 <div className="col-span-5">
-                  <p className="text-sm">
-                    {owner.address || "Chưa có địa chỉ"}
-                  </p>
+                  <p className="text-sm">{owner.address || 'Chưa có địa chỉ'}</p>
                 </div>
               </div>
             </div>
@@ -373,9 +357,7 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
                     <Label>Lý do từ chối</Label>
                   </div>
                   <div className="col-span-5">
-                    <p className="text-sm">
-                      {license.rejectReason || "Chưa có lý do"}
-                    </p>
+                    <p className="text-sm">{license.rejectReason || 'Chưa có lý do'}</p>
                   </div>
                 </div>
               )}
@@ -386,27 +368,18 @@ export const InformationTabs = ({ shop, onUpdate }: InformationTabsProps) => {
               <CardTitle>Thông tin gói thành viên</CardTitle>
               <Separator />
               {memberships.map((membership) => (
-                <div
-                  key={membership.id}
-                  className="grid grid-cols-6 items-start"
-                >
+                <div key={membership.id} className="grid grid-cols-6 items-start">
                   <div className="col-span-1 flex items-center gap-2">
                     <UserRoundCheck className="size-4 text-rose-500" />
-                    <Label>
-                      Gói thành viên #{membership.id.substring(0, 8)}
-                    </Label>
+                    <Label>Gói thành viên #{membership.id.substring(0, 8)}</Label>
                   </div>
                   <div className="col-span-5 space-y-4">
                     <div className="flex items-center gap-2">
                       <Calendar className="size-4 text-rose-500" />
                       <p className="text-sm">Thời hạn: </p>
-                      <p className="text-sm">
-                        {formatDateShort(membership.startDate)}
-                      </p>
+                      <p className="text-sm">{formatDateShort(membership.startDate)}</p>
                       <span className="text-sm">-</span>
-                      <p className="text-sm">
-                        {formatDateShort(membership.endDate)}
-                      </p>
+                      <p className="text-sm">{formatDateShort(membership.endDate)}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="size-4 text-rose-500" />

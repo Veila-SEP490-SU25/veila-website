@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { UserNav } from "@/components/header/user-nav";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, MessageCircle } from "lucide-react";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { UnreadBadge } from "@/components/chat/unread-badge";
-import { useAuth } from "@/providers/auth.provider";
-import { UserRole } from "@/services/types/user.type";
+import { UserNav } from '@/components/header/user-nav';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { UnreadBadge } from '@/components/chat/unread-badge';
+import { useAuth } from '@/providers/auth.provider';
+import { UserRole } from '@/services/types/user.type';
 
 export const Nav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,7 @@ export const Nav: React.FC = () => {
           href="/"
           className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
         >
-          {isShop ? "Dashboard" : "Trang chủ"}
+          {isShop ? 'Dashboard' : 'Trang chủ'}
         </Link>
         {!isShop && (
           <>
@@ -99,16 +99,13 @@ export const Nav: React.FC = () => {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent
-            side="right"
-            className="w-[300px] sm:w-[400px] font-cormorant font-medium"
-          >
+          <SheetContent side="right" className="w-[300px] sm:w-[400px] font-cormorant font-medium">
             <div className="flex flex-col space-y-4 mt-8 p-3">
               <Link
                 href="/"
                 className="text-gray-700 hover:text-crimson-700 transition-colors text-lg font-semibold"
               >
-                {isShop ? "Dashboard" : "Trang chủ"}
+                {isShop ? 'Dashboard' : 'Trang chủ'}
               </Link>
               {!isShop && (
                 <>

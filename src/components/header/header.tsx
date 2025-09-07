@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Nav } from "@/components/header/nav";
-import { TextLogo } from "@/components/text-logo";
-import { UserNav } from "@/components/header/user-nav";
-import React from "react";
+import { Nav } from '@/components/header/nav';
+import { TextLogo } from '@/components/text-logo';
+import { UserNav } from '@/components/header/user-nav';
+import React from 'react';
 
 export const Header: React.FC = () => {
   return (

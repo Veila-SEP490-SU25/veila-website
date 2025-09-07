@@ -1,25 +1,17 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import { useAuth } from "@/providers/auth.provider";
-import { useFirebase } from "@/services/firebase";
-import { useFirestore } from "@/hooks/use-firestore";
-import { FIREBASE_COLLECTIONS, FIREBASE_FIELDS } from "@/constants/firebase";
-import {
-  addDoc,
-  collection,
-  doc,
-  updateDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid";
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useAuth } from '@/providers/auth.provider';
+import { useFirebase } from '@/services/firebase';
+import { useFirestore } from '@/hooks/use-firestore';
+import { FIREBASE_COLLECTIONS, FIREBASE_FIELDS } from '@/constants/firebase';
+import { addDoc, collection, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 import type {
   IChatroom,
   IMessage,
   MessageType,
   CreateChatroomData,
-} from "@/services/types/chat.type";
-import type { Condition } from "@/hooks/use-firestore";
+} from '@/services/types/chat.type';
+import type { Condition } from '@/hooks/use-firestore';
 
 export const useChatData = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -30,19 +22,19 @@ export const useChatData = () => {
     async (collectionPath: string, docId: string, data: any) => {
       if (!firestore) return;
       const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined)
+        Object.entries(data).filter(([_, value]) => value !== undefined),
       );
       const docRef = doc(firestore, collectionPath, docId);
       await updateDoc(docRef, { ...cleanData, updatedAt: new Date() });
     },
-    [firestore]
+    [firestore],
   );
 
   const addDocument = useCallback(
     async (collectionPath: string, data: any) => {
       if (!firestore) return;
       const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined)
+        Object.entries(data).filter(([_, value]) => value !== undefined),
       );
       const query = collection(firestore, collectionPath);
       const docRef = await addDoc(query, {
@@ -51,26 +43,26 @@ export const useChatData = () => {
       });
       return docRef.id;
     },
-    [firestore]
+    [firestore],
   );
 
-  const currentUserId = currentUser?.id || "";
+  const currentUserId = currentUser?.id || '';
 
   const chatroomCondition = useMemo<Condition | undefined>(() => {
     if (!currentUserId || !isAuthenticated || !firestore) return undefined;
 
-    const isShop = currentUser?.role === "SHOP";
+    const isShop = currentUser?.role === 'SHOP';
 
     if (isShop) {
       return {
         field: FIREBASE_FIELDS.SHOP_ID,
-        operator: "==",
+        operator: '==',
         value: currentUserId,
       };
     } else {
       return {
         field: FIREBASE_FIELDS.CUSTOMER_ID,
-        operator: "==",
+        operator: '==',
         value: currentUserId,
       };
     }
@@ -79,8 +71,8 @@ export const useChatData = () => {
   const roomCondition = useMemo<Condition | undefined>(() => {
     if (!currentRoomId) return undefined;
     return {
-      field: "id",
-      operator: "==",
+      field: 'id',
+      operator: '==',
       value: currentRoomId,
     };
   }, [currentRoomId]);
@@ -90,30 +82,27 @@ export const useChatData = () => {
 
     return {
       field: FIREBASE_FIELDS.CHATROOM_ID,
-      operator: "==" as const,
+      operator: '==' as const,
       value: currentRoomId,
     };
   }, [currentRoomId]);
 
   const { data: rawChatrooms, error: chatroomsError } = useFirestore(
     FIREBASE_COLLECTIONS.CHATROOMS,
-    chatroomCondition
+    chatroomCondition,
   );
 
   // Fallback query for shop role if no data found
   const { data: fallbackChatrooms } = useFirestore(
     FIREBASE_COLLECTIONS.CHATROOMS,
-    currentUser?.role === "SHOP" && (!rawChatrooms || rawChatrooms.length === 0)
+    currentUser?.role === 'SHOP' && (!rawChatrooms || rawChatrooms.length === 0)
       ? undefined // Query all chatrooms without condition
-      : undefined
+      : undefined,
   );
 
   // Use main query data or fallback for shop role
   const effectiveChatrooms = useMemo(() => {
-    if (
-      currentUser?.role === "SHOP" &&
-      (!rawChatrooms || rawChatrooms.length === 0)
-    ) {
+    if (currentUser?.role === 'SHOP' && (!rawChatrooms || rawChatrooms.length === 0)) {
       return fallbackChatrooms || [];
     }
     return rawChatrooms || [];
@@ -121,32 +110,32 @@ export const useChatData = () => {
 
   const { data: _currentRoomData, error: roomError } = useFirestore(
     FIREBASE_COLLECTIONS.CHATROOMS,
-    roomCondition
+    roomCondition,
   );
   const { data: rawMessages, error: messagesError } = useFirestore(
     FIREBASE_COLLECTIONS.MESSAGES,
-    messageCondition
+    messageCondition,
   );
 
   useEffect(() => {
     if (chatroomsError) {
-      console.error("Error fetching chatrooms:", chatroomsError);
+      console.error('Error fetching chatrooms:', chatroomsError);
     }
     if (roomError) {
-      console.error("Error fetching current room:", roomError);
+      console.error('Error fetching current room:', roomError);
     }
     if (messagesError) {
-      console.error("Error fetching messages:", messagesError);
+      console.error('Error fetching messages:', messagesError);
     }
   }, [chatroomsError, roomError, messagesError]);
 
   useEffect(() => {
     // Only log when there are significant changes and not too frequently
     if (effectiveChatrooms && effectiveChatrooms.length > 0) {
-      console.log("=== CHATROOMS DEBUG ===");
-      console.log("Effective chatrooms count:", effectiveChatrooms.length);
-      console.log("Current user role:", currentUser?.role);
-      console.log("Current user ID:", currentUserId);
+      console.log('=== CHATROOMS DEBUG ===');
+      console.log('Effective chatrooms count:', effectiveChatrooms.length);
+      console.log('Current user role:', currentUser?.role);
+      console.log('Current user ID:', currentUserId);
 
       // Only log first few chatrooms to avoid spam
       effectiveChatrooms.slice(0, 2).forEach((chatroom, index) => {
@@ -157,7 +146,7 @@ export const useChatData = () => {
           customerName: chatroom.customerName,
           shopName: chatroom.shopName,
           isForCurrentUser:
-            currentUser?.role === "SHOP"
+            currentUser?.role === 'SHOP'
               ? chatroom.shopId === currentUserId
               : chatroom.customerId === currentUserId,
         });
@@ -171,14 +160,14 @@ export const useChatData = () => {
     const migrateData = async () => {
       try {
         const lowercaseQuery = query(
-          collection(firestore, "chatrooms"),
-          where(FIREBASE_FIELDS.MEMBERS, "array-contains", currentUserId)
+          collection(firestore, 'chatrooms'),
+          where(FIREBASE_FIELDS.MEMBERS, 'array-contains', currentUserId),
         );
         const lowercaseSnapshot = await getDocs(lowercaseQuery);
 
         if (lowercaseSnapshot.docs.length > 0) {
           console.log(
-            `Found ${lowercaseSnapshot.docs.length} chatrooms in lowercase collection, migrating...`
+            `Found ${lowercaseSnapshot.docs.length} chatrooms in lowercase collection, migrating...`,
           );
 
           for (const docSnapshot of lowercaseSnapshot.docs) {
@@ -192,10 +181,10 @@ export const useChatData = () => {
             console.log(`Migrated chatroom: ${docSnapshot.id}`);
           }
 
-          console.log("Migration completed");
+          console.log('Migration completed');
         }
       } catch (error) {
-        console.error("Migration error:", error);
+        console.error('Migration error:', error);
       }
     };
 
@@ -231,13 +220,9 @@ export const useChatData = () => {
 
       if (a.timestamp instanceof Date) {
         timeA = a.timestamp;
-      } else if (typeof a.timestamp === "string") {
+      } else if (typeof a.timestamp === 'string') {
         timeA = new Date(a.timestamp);
-      } else if (
-        a.timestamp &&
-        typeof a.timestamp === "object" &&
-        "toDate" in a.timestamp
-      ) {
+      } else if (a.timestamp && typeof a.timestamp === 'object' && 'toDate' in a.timestamp) {
         timeA = (a.timestamp as any).toDate();
       } else {
         timeA = new Date(0);
@@ -245,13 +230,9 @@ export const useChatData = () => {
 
       if (b.timestamp instanceof Date) {
         timeB = b.timestamp;
-      } else if (typeof b.timestamp === "string") {
+      } else if (typeof b.timestamp === 'string') {
         timeB = new Date(b.timestamp);
-      } else if (
-        b.timestamp &&
-        typeof b.timestamp === "object" &&
-        "toDate" in b.timestamp
-      ) {
+      } else if (b.timestamp && typeof b.timestamp === 'object' && 'toDate' in b.timestamp) {
         timeB = (b.timestamp as any).toDate();
       } else {
         timeB = new Date(0);
@@ -269,11 +250,9 @@ export const useChatData = () => {
     }
 
     const filteredChatrooms = effectiveChatrooms.filter((chatroom: any) => {
-      if (currentUser?.role === "SHOP") {
-        return (
-          chatroom.shopId === currentUserId || chatroom.shopId === undefined
-        );
-      } else if (currentUser?.role === "CUSTOMER") {
+      if (currentUser?.role === 'SHOP') {
+        return chatroom.shopId === currentUserId || chatroom.shopId === undefined;
+      } else if (currentUser?.role === 'CUSTOMER') {
         return chatroom.customerId === currentUserId;
       }
       return false;
@@ -294,13 +273,9 @@ export const useChatData = () => {
         const existing = uniqueMap.get(key);
 
         const existingDate =
-          existing.updatedAt ||
-          existing.createdAt ||
-          existing.lastMessage?.timestamp;
+          existing.updatedAt || existing.createdAt || existing.lastMessage?.timestamp;
         const currentDate =
-          chatroom.updatedAt ||
-          chatroom.createdAt ||
-          chatroom.lastMessage?.timestamp;
+          chatroom.updatedAt || chatroom.createdAt || chatroom.lastMessage?.timestamp;
 
         const existingTime = new Date(existingDate || 0).getTime();
         const currentTime = new Date(currentDate || 0).getTime();
@@ -312,12 +287,8 @@ export const useChatData = () => {
     });
 
     const sortedChatrooms = Array.from(uniqueMap.values()).sort((a, b) => {
-      const aTime = new Date(
-        a.updatedAt || a.createdAt || a.lastMessage?.timestamp || 0
-      ).getTime();
-      const bTime = new Date(
-        b.updatedAt || b.createdAt || b.lastMessage?.timestamp || 0
-      ).getTime();
+      const aTime = new Date(a.updatedAt || a.createdAt || a.lastMessage?.timestamp || 0).getTime();
+      const bTime = new Date(b.updatedAt || b.createdAt || b.lastMessage?.timestamp || 0).getTime();
       return bTime - aTime;
     });
 
@@ -328,7 +299,7 @@ export const useChatData = () => {
     if (!currentRoomId || !chatrooms.length) return null;
 
     const foundRoom = chatrooms.find(
-      (room) => room.id === currentRoomId || room.docId === currentRoomId
+      (room) => room.id === currentRoomId || room.docId === currentRoomId,
     );
 
     return foundRoom || null;
@@ -338,47 +309,38 @@ export const useChatData = () => {
     if (!currentRoomId && chatrooms.length > 0) {
       const firstChatroom = chatrooms[0];
       const roomIdToSelect = firstChatroom.id || firstChatroom.docId;
-      console.log("Auto-selecting room:", roomIdToSelect);
+      console.log('Auto-selecting room:', roomIdToSelect);
       setCurrentRoomId(roomIdToSelect);
     }
   }, [currentRoomId, chatrooms]);
 
   const selectRoom = useCallback(
     (id: string) => {
-      console.log("=== SELECT ROOM DEBUG ===");
-      console.log("Selecting room ID:", id);
+      console.log('=== SELECT ROOM DEBUG ===');
+      console.log('Selecting room ID:', id);
       console.log(
-        "Available chatrooms:",
-        chatrooms.map((room) => ({ id: room.id, docId: room.docId }))
+        'Available chatrooms:',
+        chatrooms.map((room) => ({ id: room.id, docId: room.docId })),
       );
 
-      const foundChatroom = chatrooms.find(
-        (room) => room.id === id || room.docId === id
-      );
-      console.log("Found chatroom:", foundChatroom);
+      const foundChatroom = chatrooms.find((room) => room.id === id || room.docId === id);
+      console.log('Found chatroom:', foundChatroom);
 
       setCurrentRoomId(id);
     },
-    [chatrooms]
+    [chatrooms],
   );
 
   const createChatroom = useCallback(
     async (data: CreateChatroomData): Promise<string | null> => {
       if (!firestore) return null;
 
-      if (
-        !data.customerId ||
-        !data.customerName ||
-        !data.shopId ||
-        !data.shopName
-      ) {
+      if (!data.customerId || !data.customerName || !data.shopId || !data.shopName) {
         return null;
       }
 
       const existingChatroom = chatrooms.find(
-        (room) =>
-          room.customerId === data.customerId &&
-          room.lastMessage?.shopId === data.shopId
+        (room) => room.customerId === data.customerId && room.lastMessage?.shopId === data.shopId,
       );
 
       if (existingChatroom) {
@@ -388,7 +350,7 @@ export const useChatData = () => {
 
       const chatroomId = uuidv4();
 
-      const newChatroom: Omit<IChatroom, "docId"> = {
+      const newChatroom: Omit<IChatroom, 'docId'> = {
         id: chatroomId,
         customerId: data.customerId,
         shopId: data.shopId,
@@ -408,21 +370,18 @@ export const useChatData = () => {
       };
 
       try {
-        const docId = await addDocument(
-          FIREBASE_COLLECTIONS.CHATROOMS,
-          newChatroom
-        );
-        console.log("Created chatroom:", docId);
+        const docId = await addDocument(FIREBASE_COLLECTIONS.CHATROOMS, newChatroom);
+        console.log('Created chatroom:', docId);
 
         setCurrentRoomId(chatroomId);
 
         return chatroomId;
       } catch (error) {
-        console.error("Error creating chatroom:", error);
+        console.error('Error creating chatroom:', error);
         return null;
       }
     },
-    [firestore, addDocument, setCurrentRoomId, chatrooms]
+    [firestore, addDocument, setCurrentRoomId, chatrooms],
   );
 
   const sendMessage = useCallback(
@@ -432,11 +391,11 @@ export const useChatData = () => {
       }
 
       try {
-        const newMessage: Omit<IMessage, "docId"> = {
+        const newMessage: Omit<IMessage, 'docId'> = {
           id: uuidv4(),
-          chatRoomId: currentRoomId || "",
+          chatRoomId: currentRoomId || '',
           senderId: currentUserId,
-          senderName: currentUser?.firstName || currentUser?.username || "User",
+          senderName: currentUser?.firstName || currentUser?.username || 'User',
           content: content,
           type: type,
           timestamp: new Date(),
@@ -452,23 +411,18 @@ export const useChatData = () => {
           updatedAt: new Date(),
           lastMessage: {
             content: content,
-            senderName:
-              currentUser?.firstName || currentUser?.username || "User",
+            senderName: currentUser?.firstName || currentUser?.username || 'User',
             timestamp: new Date(),
             lastMessageTime: new Date(),
-            shopId: currentRoom.lastMessage?.shopId || "",
-            shopName: currentRoom.lastMessage?.shopName || "",
+            shopId: currentRoom.lastMessage?.shopId || '',
+            shopName: currentRoom.lastMessage?.shopName || '',
             unreadCount: (currentRoom.lastMessage?.unreadCount || 0) + 1,
           },
         };
 
-        await updateDocument(
-          FIREBASE_COLLECTIONS.CHATROOMS,
-          currentRoom.docId || "",
-          updateData
-        );
+        await updateDocument(FIREBASE_COLLECTIONS.CHATROOMS, currentRoom.docId || '', updateData);
       } catch (error) {
-        console.error("Error sending message:", error);
+        console.error('Error sending message:', error);
       }
     },
     [
@@ -479,7 +433,7 @@ export const useChatData = () => {
       firestore,
       addDocument,
       updateDocument,
-    ]
+    ],
   );
 
   const markAsRead = useCallback(
@@ -507,17 +461,13 @@ export const useChatData = () => {
           updateData.shopUnreadCount = 0;
         }
 
-        await updateDocument(
-          FIREBASE_COLLECTIONS.CHATROOMS,
-          chatroom.docId || "",
-          updateData
-        );
-        console.log("Marked chatroom as read:", chatroomId);
+        await updateDocument(FIREBASE_COLLECTIONS.CHATROOMS, chatroom.docId || '', updateData);
+        console.log('Marked chatroom as read:', chatroomId);
       } catch (error) {
-        console.error("Error marking as read:", error);
+        console.error('Error marking as read:', error);
       }
     },
-    [firestore, currentUserId, chatrooms, updateDocument]
+    [firestore, currentUserId, chatrooms, updateDocument],
   );
 
   return {

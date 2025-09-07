@@ -1,4 +1,4 @@
-import { IItem, IUser } from "@/services/types";
+import { IItem, IUser } from '@/services/types';
 
 export interface IWallet extends IItem {
   userId: string;

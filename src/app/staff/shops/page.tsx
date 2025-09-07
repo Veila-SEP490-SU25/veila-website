@@ -1,48 +1,47 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, useCallback } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
-import { type IShop, ShopStatus } from "@/services/types";
-import { useLazyGetShopsQuery } from "@/services/apis";
-import { toast } from "sonner";
-import { usePaging } from "@/providers/paging.provider";
-import { isSuccess } from "@/lib/utils";
-import { PagingComponent } from "@/components/paging-component";
-import { ErrorCard } from "@/components/error-card";
-import { LoadingItem } from "@/components/loading-item";
-import { ShopList } from "@/components/staff/shops/shop-list";
+} from '@/components/ui/select';
+import { Loader2 } from 'lucide-react';
+import { type IShop, ShopStatus } from '@/services/types';
+import { useLazyGetShopsQuery } from '@/services/apis';
+import { toast } from 'sonner';
+import { usePaging } from '@/providers/paging.provider';
+import { isSuccess } from '@/lib/utils';
+import { PagingComponent } from '@/components/paging-component';
+import { ErrorCard } from '@/components/error-card';
+import { LoadingItem } from '@/components/loading-item';
+import { ShopList } from '@/components/staff/shops/shop-list';
 
 export default function ShopsManagement() {
   const [statusFilter, setStatusFilter] = useState<ShopStatus | null>(null);
   const [shops, setShops] = useState<IShop[]>([]);
   const [getShops, { isLoading }] = useLazyGetShopsQuery();
-  const { pageIndex, pageSize, totalItems, setPaging, resetPaging } =
-    usePaging();
+  const { pageIndex, pageSize, totalItems, setPaging, resetPaging } = usePaging();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   const getFilterText = (status: ShopStatus | null) => {
     switch (status) {
       case ShopStatus.ACTIVE:
-        return "status:eq:ACTIVE";
+        return 'status:eq:ACTIVE';
       case ShopStatus.PENDING:
-        return "status:eq:PENDING";
+        return 'status:eq:PENDING';
       case ShopStatus.SUSPENDED:
-        return "status:eq:SUSPENDED";
+        return 'status:eq:SUSPENDED';
       case ShopStatus.INACTIVE:
-        return "status:eq:INACTIVE";
+        return 'status:eq:INACTIVE';
       case ShopStatus.BANNED:
-        return "status:eq:BANNED";
+        return 'status:eq:BANNED';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -53,7 +52,7 @@ export default function ShopsManagement() {
         filter,
         page: pageIndex,
         size: pageSize,
-        sort: "updatedAt:desc",
+        sort: 'updatedAt:desc',
       }).unwrap();
       if (isSuccess(statusCode)) {
         setShops(items);
@@ -63,7 +62,7 @@ export default function ShopsManagement() {
           pagination.totalItems,
           pagination.totalPages,
           pagination.hasNextPage,
-          pagination.hasPrevPage
+          pagination.hasPrevPage,
         );
       } else {
         setIsError(true);
@@ -71,14 +70,14 @@ export default function ShopsManagement() {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
+      toast.error('Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.');
       setIsError(true);
-      setError("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
+      setError('Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.');
     }
   }, [statusFilter, pageIndex, pageSize, setPaging, setShops, getShops]);
 
   const handleStatusFilterChange = (value: string) => {
-    setStatusFilter(value === "all" ? null : (value as ShopStatus));
+    setStatusFilter(value === 'all' ? null : (value as ShopStatus));
   };
 
   useEffect(() => {
@@ -101,10 +100,7 @@ export default function ShopsManagement() {
 
       {/* Filters - mobile first: stack vertically, full width */}
       <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-end">
-        <Select
-          value={statusFilter || "all"}
-          onValueChange={handleStatusFilterChange}
-        >
+        <Select value={statusFilter || 'all'} onValueChange={handleStatusFilterChange}>
           <SelectTrigger className="w-full md:w-48">
             <SelectValue placeholder="Lọc theo trạng thái" />
           </SelectTrigger>

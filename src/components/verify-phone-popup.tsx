@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -18,44 +18,39 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Phone } from "lucide-react";
-import { phoneSchema, type PhoneSchema } from "@/lib/validations/auth.chema";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { useCallback, useEffect, useState } from "react";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { useAuth } from "@/providers/auth.provider";
-import { useVerifyPhonePopup } from "@/hooks/use-verify-phone-popup";
-import { useSendSmsMutation, useVerifyPhoneOtpMutation } from "@/services/apis";
+} from '@/components/ui/form';
+import { Phone } from 'lucide-react';
+import { phoneSchema, type PhoneSchema } from '@/lib/validations/auth.chema';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { useCallback, useEffect, useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { useAuth } from '@/providers/auth.provider';
+import { useVerifyPhonePopup } from '@/hooks/use-verify-phone-popup';
+import { useSendSmsMutation, useVerifyPhoneOtpMutation } from '@/services/apis';
 
 export function VerifyPhonePopup() {
   const { isOpen, closePopup } = useVerifyPhonePopup();
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [lastRequestTime, setLastRequestTime] = useState<number>(0);
   const [countdown, setCountdown] = useState<number>(0);
-  const [otp, setOtp] = useState<string>("");
+  const [otp, setOtp] = useState<string>('');
   const [attemptCount, setAttemptCount] = useState<number>(0);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const [blockUntil, setBlockUntil] = useState<number>(0);
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
 
   const [sendSms] = useSendSmsMutation();
-  const [verifyPhoneOtp, { isLoading: isVerifying }] =
-    useVerifyPhoneOtpMutation();
+  const [verifyPhoneOtp, { isLoading: isVerifying }] = useVerifyPhoneOtpMutation();
   const { reloadProfile } = useAuth();
 
   const form = useForm<PhoneSchema>({
     resolver: zodResolver(phoneSchema),
     defaultValues: {
-      phoneNumber: "",
+      phoneNumber: '',
     },
   });
 
@@ -96,22 +91,16 @@ export function VerifyPhonePopup() {
         if (now < blockUntil) {
           const remainingTime = Math.ceil((blockUntil - now) / 1000);
           setCountdown(remainingTime);
-          setError(
-            `Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`
-          );
+          setError(`Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`);
           return;
         }
       }
 
       // Check rate limiting (30 seconds between requests)
       if (currentTime - lastRequestTime < 30000) {
-        const remainingTime = Math.ceil(
-          (30000 - (currentTime - lastRequestTime)) / 1000
-        );
+        const remainingTime = Math.ceil((30000 - (currentTime - lastRequestTime)) / 1000);
         setCountdown(remainingTime);
-        setError(
-          `Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`
-        );
+        setError(`Vui lòng đợi ${remainingTime} giây trước khi gửi OTP tiếp theo.`);
         return;
       }
 
@@ -124,19 +113,19 @@ export function VerifyPhonePopup() {
         const blockTime = 60 * 60 * 1000; // 1 hour
         setIsBlocked(true);
         setBlockUntil(Date.now() + blockTime);
-        setError("Quá nhiều lần thử gửi OTP. Tài khoản bị khóa trong 1 giờ.");
+        setError('Quá nhiều lần thử gửi OTP. Tài khoản bị khóa trong 1 giờ.');
         return;
       }
 
       setLastRequestTime(currentTime);
       setIsLoading(true);
-      setError("");
+      setError('');
 
       try {
         let phoneNumber = data.phoneNumber;
 
         // Đảm bảo số điện thoại có số 0 ở đầu
-        if (!phoneNumber.startsWith("0")) {
+        if (!phoneNumber.startsWith('0')) {
           phoneNumber = `0${phoneNumber}`;
         }
 
@@ -144,7 +133,7 @@ export function VerifyPhonePopup() {
         setPhoneNumber(phoneNumber);
 
         // Chuyển đổi sang format +84 để gửi SMS
-        const vonagePhone = phoneNumber.startsWith("0")
+        const vonagePhone = phoneNumber.startsWith('0')
           ? `+84${phoneNumber.substring(1)}`
           : `+84${phoneNumber}`;
 
@@ -153,17 +142,15 @@ export function VerifyPhonePopup() {
 
         if (result) {
           setOtpSent(true);
-          toast.success("Mã OTP đã được gửi thành công!");
+          toast.success('Mã OTP đã được gửi thành công!');
         }
       } catch (error: any) {
-        setError(
-          error?.data?.message || "Không thể gửi mã xác thực. Vui lòng thử lại."
-        );
+        setError(error?.data?.message || 'Không thể gửi mã xác thực. Vui lòng thử lại.');
       } finally {
         setIsLoading(false);
       }
     },
-    [sendSms, isBlocked, blockUntil, attemptCount, lastRequestTime]
+    [sendSms, isBlocked, blockUntil, attemptCount, lastRequestTime],
   );
 
   const handleVerifyOTP = useCallback(async () => {
@@ -177,13 +164,13 @@ export function VerifyPhonePopup() {
       }).unwrap();
 
       if (result) {
-        toast.success("Xác thực số điện thoại thành công.");
+        toast.success('Xác thực số điện thoại thành công.');
         reloadProfile();
         closePopup();
       }
     } catch (error: any) {
-      toast.error("Xác thực số điện thoại thất bại", {
-        description: error?.data?.message || "Có lỗi xảy ra khi xác thực.",
+      toast.error('Xác thực số điện thoại thất bại', {
+        description: error?.data?.message || 'Có lỗi xảy ra khi xác thực.',
       });
     }
   }, [phoneNumber, otp, reloadProfile, closePopup, verifyPhoneOtp]);
@@ -239,20 +226,18 @@ export function VerifyPhonePopup() {
                           />
                           <Button
                             type="submit"
-                            disabled={
-                              isLoading || otpSent || countdown > 0 || isBlocked
-                            }
+                            disabled={isLoading || otpSent || countdown > 0 || isBlocked}
                             className="w-fit bg-rose-600 hover:bg-rose-700 h-11 text-base font-medium absolute right-0 top-0 disabled:opacity-50"
                           >
                             {isLoading
-                              ? "Đang gửi..."
+                              ? 'Đang gửi...'
                               : countdown > 0
-                              ? `Đợi ${countdown}s`
-                              : isBlocked
-                              ? "Đã bị khóa"
-                              : otpSent
-                              ? "Đã gửi OTP"
-                              : "Gửi OTP"}
+                                ? `Đợi ${countdown}s`
+                                : isBlocked
+                                  ? 'Đã bị khóa'
+                                  : otpSent
+                                    ? 'Đã gửi OTP'
+                                    : 'Gửi OTP'}
                           </Button>
                         </div>
                       </div>
@@ -268,8 +253,7 @@ export function VerifyPhonePopup() {
             <div className="space-y-4">
               <div className="p-3 bg-green-50 border border-green-200 rounded-md">
                 <p className="text-sm text-green-800">
-                  Mã OTP đã được gửi đến số điện thoại của bạn. Vui lòng kiểm
-                  tra tin nhắn.
+                  Mã OTP đã được gửi đến số điện thoại của bạn. Vui lòng kiểm tra tin nhắn.
                 </p>
               </div>
 
@@ -279,7 +263,7 @@ export function VerifyPhonePopup() {
                   value={otp}
                   onChange={(value) => {
                     setOtp(value);
-                    setError(""); // Clear error when user types
+                    setError(''); // Clear error when user types
                   }}
                   maxLength={6}
                   disabled={isVerifying}
@@ -296,11 +280,7 @@ export function VerifyPhonePopup() {
                           ))
                         : // Fallback khi slots chưa sẵn sàng
                           Array.from({ length: 6 }).map((_, index) => (
-                            <InputOTPSlot
-                              key={index}
-                              index={index}
-                              className="w-12 h-12 text-lg"
-                            />
+                            <InputOTPSlot key={index} index={index} className="w-12 h-12 text-lg" />
                           ))}
                     </InputOTPGroup>
                   )}
@@ -312,7 +292,7 @@ export function VerifyPhonePopup() {
                 disabled={!otp || otp.length !== 6 || isVerifying}
                 className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50"
               >
-                {isVerifying ? "Đang xác thực..." : "Xác thực OTP"}
+                {isVerifying ? 'Đang xác thực...' : 'Xác thực OTP'}
               </Button>
             </div>
           )}

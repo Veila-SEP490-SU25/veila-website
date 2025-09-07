@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Image } from "@/components/image";
-import { Star, Heart, ShoppingBag, MapPin, Phone, Mail } from "lucide-react";
-import { useLazyGetAccessoryQuery } from "@/services/apis/accessory.api";
-import { IAccessory } from "@/services/types/accessory.type";
+import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'next/navigation';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Image } from '@/components/image';
+import { Star, Heart, ShoppingBag, MapPin, Phone, Mail } from 'lucide-react';
+import { useLazyGetAccessoryQuery } from '@/services/apis/accessory.api';
+import { IAccessory } from '@/services/types/accessory.type';
 
 export default function AccessoryDetailPage() {
   const params = useParams();
@@ -27,7 +27,7 @@ export default function AccessoryDetailPage() {
       const response = await getAccessory(accessoryId).unwrap();
       setAccessory(response.item);
     } catch (error) {
-      console.error("Error fetching accessory:", error);
+      console.error('Error fetching accessory:', error);
     } finally {
       setIsLoading(false);
     }
@@ -62,12 +62,8 @@ export default function AccessoryDetailPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Không tìm thấy phụ kiện
-          </h1>
-          <p className="text-gray-600">
-            Phụ kiện bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Không tìm thấy phụ kiện</h1>
+          <p className="text-gray-600">Phụ kiện bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
         </div>
       </div>
     );
@@ -76,7 +72,7 @@ export default function AccessoryDetailPage() {
   const userName =
     accessory.user?.firstName && accessory.user?.lastName
       ? `${accessory.user.firstName} ${accessory.user.lastName}`
-      : accessory.user?.username || "Người dùng";
+      : accessory.user?.username || 'Người dùng';
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -86,7 +82,7 @@ export default function AccessoryDetailPage() {
           <div className="space-y-4">
             <div className="relative">
               <Image
-                src={accessory.images || "/placeholder.svg"}
+                src={accessory.images || '/placeholder.svg'}
                 alt={accessory.name}
                 className="w-full h-96 object-cover rounded-lg"
                 width={600}
@@ -107,33 +103,27 @@ export default function AccessoryDetailPage() {
           {/* Details Section */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {accessory.name}
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{accessory.name}</h1>
               <p className="text-gray-600 mb-4">by {userName}</p>
 
               <div className="flex items-center space-x-2 mb-4">
                 <div className="flex items-center">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium ml-1">
-                    {accessory.ratingAverage}
-                  </span>
+                  <span className="text-sm font-medium ml-1">{accessory.ratingAverage}</span>
                 </div>
                 <span className="text-gray-400">•</span>
-                <span className="text-sm text-gray-600">
-                  {accessory.ratingCount} đánh giá
-                </span>
+                <span className="text-sm text-gray-600">{accessory.ratingCount} đánh giá</span>
               </div>
 
               <div className="space-y-2">
                 {accessory.isSellable && (
                   <p className="text-2xl font-bold text-gray-900">
-                    {accessory.sellPrice.toLocaleString("vi-VN")}₫
+                    {accessory.sellPrice.toLocaleString('vi-VN')}₫
                   </p>
                 )}
                 {accessory.isRentable && (
                   <p className="text-lg text-gray-600">
-                    Thuê: {accessory.rentalPrice.toLocaleString("vi-VN")}₫
+                    Thuê: {accessory.rentalPrice.toLocaleString('vi-VN')}₫
                   </p>
                 )}
               </div>
@@ -144,9 +134,7 @@ export default function AccessoryDetailPage() {
             {/* Category */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Danh mục</h3>
-              <Badge variant="secondary">
-                {accessory.category?.name || "Chưa phân loại"}
-              </Badge>
+              <Badge variant="secondary">{accessory.category?.name || 'Chưa phân loại'}</Badge>
             </div>
 
             {/* Description */}
@@ -155,9 +143,7 @@ export default function AccessoryDetailPage() {
                 <Separator />
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Mô tả</h3>
-                  <p className="text-gray-600 whitespace-pre-wrap">
-                    {accessory.description}
-                  </p>
+                  <p className="text-gray-600 whitespace-pre-wrap">{accessory.description}</p>
                 </div>
               </>
             )}
@@ -167,25 +153,19 @@ export default function AccessoryDetailPage() {
               <>
                 <Separator />
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">
-                    Thông tin cửa hàng
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4">Thông tin cửa hàng</h3>
                   <Card>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3 mb-3">
                         <Image
-                          src={
-                            accessory.user.shop.logoUrl || "/placeholder.svg"
-                          }
+                          src={accessory.user.shop.logoUrl || '/placeholder.svg'}
                           alt={accessory.user.shop.name}
                           className="w-12 h-12 rounded-full object-cover"
                           width={48}
                           height={48}
                         />
                         <div>
-                          <h4 className="font-semibold">
-                            {accessory.user.shop.name}
-                          </h4>
+                          <h4 className="font-semibold">{accessory.user.shop.name}</h4>
                           <p className="text-sm text-gray-600">
                             Uy tín: {accessory.user.shop.reputation}
                           </p>

@@ -1,9 +1,9 @@
-import { IUser, IItem, ICategory, IDressFeedback } from "@/services/types";
+import { IUser, IItem, ICategory, IDressFeedback } from '@/services/types';
 
 export enum DressStatus {
-  AVAILABLE = "AVAILABLE",
-  UNAVAILABLE = "UNAVAILABLE",
-  OUT_OF_STOCK = "OUT_OF_STOCK",
+  AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE',
+  OUT_OF_STOCK = 'OUT_OF_STOCK',
 }
 
 export interface IDress extends IItem {

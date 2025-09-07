@@ -1,39 +1,36 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
-import { Eye, DollarSign, Star } from "lucide-react";
-import type { IAccessory } from "@/services/types";
-import { ImageGallery } from "@/components/image-gallery";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
+import { Eye, DollarSign, Star } from 'lucide-react';
+import type { IAccessory } from '@/services/types';
+import { ImageGallery } from '@/components/image-gallery';
 import {
   accessoryStatusColors,
   accessoryStatusLabels,
   formatPrice,
   getImages,
-} from "@/lib/products-utils";
+} from '@/lib/products-utils';
 
 interface AccessoryDetailDialogProps {
   accessory: IAccessory;
   trigger?: React.ReactNode;
 }
 
-export function AccessoryDetailDialog({
-  accessory,
-  trigger,
-}: AccessoryDetailDialogProps) {
+export function AccessoryDetailDialog({ accessory, trigger }: AccessoryDetailDialogProps) {
   const [open, setOpen] = useState(false);
 
   const defaultTrigger = (
@@ -48,7 +45,7 @@ export function AccessoryDetailDialog({
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
-            {accessory.name}{" "}
+            {accessory.name}{' '}
             <div className="flex items-center text-sm text-muted-foreground">
               <Star className="mr-2 text-yellow-300" />
               {accessory.ratingAverage} • {accessory.ratingCount} bài đánh giá
@@ -60,10 +57,7 @@ export function AccessoryDetailDialog({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Images Section */}
             <div className="space-y-4">
-              <ImageGallery
-                images={getImages(accessory.images)}
-                alt={accessory.name}
-              />
+              <ImageGallery images={getImages(accessory.images)} alt={accessory.name} />
             </div>
 
             {/* Details Section */}
@@ -72,20 +66,12 @@ export function AccessoryDetailDialog({
               <div className="flex items-center justify-between">
                 <Badge
                   className={
-                    accessoryStatusColors[
-                      accessory.status as keyof typeof accessoryStatusColors
-                    ]
+                    accessoryStatusColors[accessory.status as keyof typeof accessoryStatusColors]
                   }
                 >
-                  {
-                    accessoryStatusLabels[
-                      accessory.status as keyof typeof accessoryStatusLabels
-                    ]
-                  }
+                  {accessoryStatusLabels[accessory.status as keyof typeof accessoryStatusLabels]}
                 </Badge>
-                {accessory.category && (
-                  <Badge variant="outline">{accessory.category.name}</Badge>
-                )}
+                {accessory.category && <Badge variant="outline">{accessory.category.name}</Badge>}
               </div>
 
               {/* Description */}
@@ -104,9 +90,7 @@ export function AccessoryDetailDialog({
                   {accessory.isSellable && accessory.sellPrice && (
                     <Card>
                       <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground">
-                          Giá bán
-                        </div>
+                        <div className="text-sm text-muted-foreground">Giá bán</div>
                         <div className="text-xl font-bold text-green-600">
                           {formatPrice(accessory.sellPrice)}
                         </div>
@@ -116,9 +100,7 @@ export function AccessoryDetailDialog({
                   {accessory.isRentable && accessory.rentalPrice && (
                     <Card>
                       <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground">
-                          Giá thuê
-                        </div>
+                        <div className="text-sm text-muted-foreground">Giá thuê</div>
                         <div className="text-xl font-bold text-blue-600">
                           {formatPrice(accessory.rentalPrice)}
                         </div>
@@ -132,14 +114,8 @@ export function AccessoryDetailDialog({
 
               {/* Metadata */}
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>
-                  Tạo lúc:{" "}
-                  {new Date(accessory.createdAt).toLocaleDateString("vi-VN")}
-                </div>
-                <div>
-                  Cập nhật:{" "}
-                  {new Date(accessory.updatedAt).toLocaleDateString("vi-VN")}
-                </div>
+                <div>Tạo lúc: {new Date(accessory.createdAt).toLocaleDateString('vi-VN')}</div>
+                <div>Cập nhật: {new Date(accessory.updatedAt).toLocaleDateString('vi-VN')}</div>
               </div>
             </div>
           </div>

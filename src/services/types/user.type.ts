@@ -1,19 +1,19 @@
-import { IItem, IShop, IWallet } from "@/services/types";
-import { IContract } from "@/services/types/contract.type";
+import { IItem, IShop, IWallet } from '@/services/types';
+import { IContract } from '@/services/types/contract.type';
 
 export enum UserRole {
-  SUPER_ADMIN = "SUPER_ADMIN",
-  ADMIN = "ADMIN",
-  STAFF = "STAFF",
-  SHOP = "SHOP",
-  CUSTOMER = "CUSTOMER",
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  ADMIN = 'ADMIN',
+  STAFF = 'STAFF',
+  SHOP = 'SHOP',
+  CUSTOMER = 'CUSTOMER',
 }
 
 export enum UserStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  SUSPENDED = "SUSPENDED",
-  BANNED = "BANNED",
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  BANNED = 'BANNED',
 }
 
 export interface IUser extends IItem {

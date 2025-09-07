@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/providers/auth.provider";
-import { useVerifyPhonePopup } from "@/hooks/use-verify-phone-popup";
-import { useCallback } from "react";
-import { VerifyPhonePopup } from "@/components/verify-phone-popup";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/providers/auth.provider';
+import { useVerifyPhonePopup } from '@/hooks/use-verify-phone-popup';
+import { useCallback } from 'react';
+import { VerifyPhonePopup } from '@/components/verify-phone-popup';
 
 export const UserCard = () => {
   const { currentUser } = useAuth();
@@ -23,26 +23,22 @@ export const UserCard = () => {
           <Avatar className="w-16 h-16 aspect-square col-span-1">
             <AvatarImage
               className="aspect-square"
-              src={currentUser.avatarUrl || "/placeholder.svg"}
+              src={currentUser.avatarUrl || '/placeholder.svg'}
             />
             <AvatarFallback className="bg-rose-100 text-rose-600 aspect-square">
-              {(currentUser.firstName?.charAt(0) || "") +
-                (currentUser.lastName?.charAt(0) || "") || "U"}
+              {(currentUser.firstName?.charAt(0) || '') + (currentUser.lastName?.charAt(0) || '') ||
+                'U'}
             </AvatarFallback>
           </Avatar>
           <div className="col-span-4 space-y-2">
             <h3 className="font-semibold text-lg flex items-center gap-2">
-              {currentUser.firstName} {currentUser.middleName}{" "}
-              {currentUser.lastName}
+              {currentUser.firstName} {currentUser.middleName} {currentUser.lastName}
               <Badge className="" variant="info">
                 {currentUser.role}
               </Badge>
             </h3>
             {currentUser.isIdentified ? (
-              <Badge
-                className="w-fit text-wrap block h-fit cursor-pointer"
-                variant="success"
-              >
+              <Badge className="w-fit text-wrap block h-fit cursor-pointer" variant="success">
                 Đã xác minh
               </Badge>
             ) : (
@@ -64,10 +60,8 @@ export const UserCard = () => {
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={"/placeholder.svg"} />
-            <AvatarFallback className="bg-rose-100 text-rose-600">
-              {"U"}
-            </AvatarFallback>
+            <AvatarImage src={'/placeholder.svg'} />
+            <AvatarFallback className="bg-rose-100 text-rose-600">{'U'}</AvatarFallback>
           </Avatar>
           <div>
             <h3 className="font-semibold text-lg">User</h3>

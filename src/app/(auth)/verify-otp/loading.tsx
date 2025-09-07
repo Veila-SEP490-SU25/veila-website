@@ -1,4 +1,4 @@
-import { LoadingItem } from "@/components/loading-item";
+import { LoadingItem } from '@/components/loading-item';
 
 const VerifyOTPLoading = () => {
   return <LoadingItem />;

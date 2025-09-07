@@ -1,35 +1,24 @@
-"use client";
+'use client';
 
-import { toast } from "sonner";
-import {
-  Crown,
-  Calendar,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useGetMyMembershipsQuery } from "@/services/apis";
-import { MembershipStatus } from "@/services/types";
-import { MembershipPackagesDialog } from "./membership-packages-dialog";
+import { toast } from 'sonner';
+import { Crown, Calendar, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useGetMyMembershipsQuery } from '@/services/apis';
+import { MembershipStatus } from '@/services/types';
+import { MembershipPackagesDialog } from './membership-packages-dialog';
 
 export const MembershipInfo = () => {
-  const {
-    data: membershipsData,
-    isLoading,
-    error,
-  } = useGetMyMembershipsQuery();
+  const { data: membershipsData, isLoading, error } = useGetMyMembershipsQuery();
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+    return new Date(dateString).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
     });
   };
 
@@ -91,8 +80,7 @@ export const MembershipInfo = () => {
 
   // API trả về IItemResponse<IMembership> nên dùng .item thay vì .items
   const membership = membershipsData?.item;
-  const hasActiveMembership =
-    membership && membership.status === MembershipStatus.ACTIVE;
+  const hasActiveMembership = membership && membership.status === MembershipStatus.ACTIVE;
 
   if (!membership) {
     return (
@@ -108,16 +96,13 @@ export const MembershipInfo = () => {
             <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <Crown className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Chưa có gói dịch vụ nào
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Chưa có gói dịch vụ nào</h3>
             <p className="text-gray-600 mb-4">
-              Bạn chưa đăng ký gói dịch vụ nào. Hãy đăng ký để mở khóa tất cả
-              tính năng.
+              Bạn chưa đăng ký gói dịch vụ nào. Hãy đăng ký để mở khóa tất cả tính năng.
             </p>
             <Button
               className="bg-yellow-600 hover:bg-yellow-700"
-              onClick={() => (window.location.href = "/shops/my")}
+              onClick={() => (window.location.href = '/shops/my')}
             >
               <Crown className="h-4 w-4 mr-2" />
               Đăng ký gói dịch vụ
@@ -133,39 +118,22 @@ export const MembershipInfo = () => {
                 <AlertCircle className="h-4 w-4 text-blue-600" />
               </div>
               <div className="space-y-2">
-                <h4 className="font-medium text-blue-800">
-                  Quy tắc đăng ký gói dịch vụ
-                </h4>
+                <h4 className="font-medium text-blue-800">Quy tắc đăng ký gói dịch vụ</h4>
                 <div className="text-sm text-blue-700 space-y-1">
                   <p>
-                    •{" "}
-                    <strong>
-                      Có thể đăng ký gói mới ngay cả khi đang có gói hoạt động
-                    </strong>
+                    • <strong>Có thể đăng ký gói mới ngay cả khi đang có gói hoạt động</strong>
                   </p>
                   <p>
-                    •{" "}
-                    <strong>
-                      Gói mới phải có giá trị lớn hơn gói hiện tại để được đăng
-                      ký
-                    </strong>
+                    • <strong>Gói mới phải có giá trị lớn hơn gói hiện tại để được đăng ký</strong>
                   </p>
                   <p>
-                    •{" "}
-                    <strong>
-                      Gói cũ sẽ tự động bị hủy khi đăng ký gói mới (force =
-                      true)
-                    </strong>
+                    • <strong>Gói cũ sẽ tự động bị hủy khi đăng ký gói mới (force = true)</strong>
                   </p>
                   <p>
                     • <strong>Không thể gia hạn gói đang hoạt động</strong>
                   </p>
                   <p>
-                    •{" "}
-                    <strong>
-                      Có thể đăng ký gói mới bất cứ lúc nào nếu đáp ứng điều
-                      kiện
-                    </strong>
+                    • <strong>Có thể đăng ký gói mới bất cứ lúc nào nếu đáp ứng điều kiện</strong>
                   </p>
                 </div>
               </div>
@@ -194,18 +162,14 @@ export const MembershipInfo = () => {
                 <Calendar className="h-5 w-5 text-green-600" />
                 <div>
                   <p className="text-sm text-gray-600">Ngày bắt đầu</p>
-                  <p className="font-medium">
-                    {formatDate(membership.startDate)}
-                  </p>
+                  <p className="font-medium">{formatDate(membership.startDate)}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Clock className="h-5 w-5 text-green-600" />
                 <div>
                   <p className="text-sm text-gray-600">Ngày kết thúc</p>
-                  <p className="font-medium">
-                    {formatDate(membership.endDate)}
-                  </p>
+                  <p className="font-medium">{formatDate(membership.endDate)}</p>
                 </div>
               </div>
             </div>
@@ -215,9 +179,7 @@ export const MembershipInfo = () => {
                 <h4 className="font-medium text-green-800 mb-2">
                   Thông tin gói: {membership.subscription.name}
                 </h4>
-                <p className="text-sm text-green-700">
-                  {membership.subscription.description}
-                </p>
+                <p className="text-sm text-green-700">{membership.subscription.description}</p>
               </div>
             )}
           </CardContent>
@@ -232,36 +194,22 @@ export const MembershipInfo = () => {
               <AlertCircle className="h-4 w-4 text-blue-600" />
             </div>
             <div className="space-y-2">
-              <h4 className="font-medium text-blue-800">
-                Quy tắc đăng ký gói dịch vụ
-              </h4>
+              <h4 className="font-medium text-blue-800">Quy tắc đăng ký gói dịch vụ</h4>
               <div className="text-sm text-blue-700 space-y-1">
                 <p>
-                  •{" "}
-                  <strong>
-                    Có thể đăng ký gói mới ngay cả khi đang có gói hoạt động
-                  </strong>
+                  • <strong>Có thể đăng ký gói mới ngay cả khi đang có gói hoạt động</strong>
                 </p>
                 <p>
-                  •{" "}
-                  <strong>
-                    Gói mới phải có giá trị lớn hơn gói hiện tại để được đăng ký
-                  </strong>
+                  • <strong>Gói mới phải có giá trị lớn hơn gói hiện tại để được đăng ký</strong>
                 </p>
                 <p>
-                  •{" "}
-                  <strong>
-                    Gói cũ sẽ tự động bị hủy khi đăng ký gói mới (force = true)
-                  </strong>
+                  • <strong>Gói cũ sẽ tự động bị hủy khi đăng ký gói mới (force = true)</strong>
                 </p>
                 <p>
                   • <strong>Không thể gia hạn gói đang hoạt động</strong>
                 </p>
                 <p>
-                  •{" "}
-                  <strong>
-                    Có thể đăng ký gói mới bất cứ lúc nào nếu đáp ứng điều kiện
-                  </strong>
+                  • <strong>Có thể đăng ký gói mới bất cứ lúc nào nếu đáp ứng điều kiện</strong>
                 </p>
               </div>
             </div>
@@ -277,7 +225,7 @@ export const MembershipInfo = () => {
             className="border-red-300 text-red-700 hover:bg-red-50"
             onClick={() => {
               // TODO: Implement cancel membership
-              toast.info("Tính năng hủy gói sẽ được cập nhật sớm");
+              toast.info('Tính năng hủy gói sẽ được cập nhật sớm');
             }}
           >
             <XCircle className="h-4 w-4 mr-2" />
@@ -289,7 +237,7 @@ export const MembershipInfo = () => {
           trigger={
             <Button className="bg-yellow-600 hover:bg-yellow-700">
               <Crown className="h-4 w-4 mr-2" />
-              {hasActiveMembership ? "Đăng ký gói mới" : "Đăng ký gói dịch vụ"}
+              {hasActiveMembership ? 'Đăng ký gói mới' : 'Đăng ký gói dịch vụ'}
             </Button>
           }
         />

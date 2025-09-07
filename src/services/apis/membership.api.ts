@@ -1,6 +1,6 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import { IItemResponse, IMembership } from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
+import { IItemResponse, IMembership } from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export interface IRegisterMembership {
   subscriptionId: string;
@@ -15,32 +15,29 @@ export interface ICancelMembership {
 }
 
 export const membershipApi = createApi({
-  reducerPath: "membershipApi",
+  reducerPath: 'membershipApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
-    registerMembership: builder.mutation<
-      IItemResponse<IMembership>,
-      IRegisterMembership
-    >({
+    registerMembership: builder.mutation<IItemResponse<IMembership>, IRegisterMembership>({
       query: (body) => ({
-        url: "/memberships/register",
-        method: "POST",
+        url: '/memberships/register',
+        method: 'POST',
         body,
       }),
     }),
 
     cancelMembership: builder.mutation<IItemResponse<IMembership>, void>({
       query: () => ({
-        url: "/memberships/cancel",
-        method: "PUT",
+        url: '/memberships/cancel',
+        method: 'PUT',
       }),
     }),
 
     // Lấy thông tin membership của user
     getMyMemberships: builder.query<IItemResponse<IMembership>, void>({
       query: () => ({
-        url: "memberships/me",
-        method: "GET",
+        url: 'memberships/me',
+        method: 'GET',
       }),
     }),
   }),

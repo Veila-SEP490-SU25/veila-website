@@ -1,16 +1,14 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface PageLoadingProps {
-  type?: "default" | "profile" | "blog" | "shops" | "browse";
+  type?: 'default' | 'profile' | 'blog' | 'shops' | 'browse';
 }
 
-export const PageLoading: React.FC<PageLoadingProps> = ({
-  type = "default",
-}) => {
+export const PageLoading: React.FC<PageLoadingProps> = ({ type = 'default' }) => {
   const renderLoadingContent = () => {
     switch (type) {
-      case "profile":
+      case 'profile':
         return (
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
             {/* Header */}
@@ -44,7 +42,7 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
           </div>
         );
 
-      case "blog":
+      case 'blog':
         return (
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
             {/* Header */}
@@ -85,7 +83,7 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
           </div>
         );
 
-      case "shops":
+      case 'shops':
         return (
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
             {/* Header */}
@@ -128,7 +126,7 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
           </div>
         );
 
-      case "browse":
+      case 'browse':
         return (
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
             {/* Header */}
@@ -187,7 +185,5 @@ export const PageLoading: React.FC<PageLoadingProps> = ({
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">{renderLoadingContent()}</div>
-  );
+  return <div className="min-h-screen bg-gray-50">{renderLoadingContent()}</div>;
 };

@@ -1,8 +1,8 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/providers/auth.provider";
-import { LogOut, User2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+'use client';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/providers/auth.provider';
+import { LogOut, User2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export const UserNav: React.FC = () => {
   const { currentUser, isAuthenticating, isAuthenticated, logout } = useAuth();
@@ -21,13 +21,13 @@ export const UserNav: React.FC = () => {
       <Button
         variant="link"
         className="hover:cursor-pointer"
-        onClick={() => router.push("/profile")}
+        onClick={() => router.push('/profile')}
       >
         <User2 className="h-5 w-5 text-gray-700" />
         <span className="inline-block">
           {[currentUser.firstName, currentUser.middleName, currentUser.lastName]
             .filter(Boolean)
-            .join(" ") || "User"}
+            .join(' ') || 'User'}
         </span>
       </Button>
       <Button
@@ -43,7 +43,7 @@ export const UserNav: React.FC = () => {
     <Button
       disabled={isAuthenticating}
       onClick={() => {
-        router.push("/login");
+        router.push('/login');
       }}
       className="bg-maroon-400 text-white hover:bg-maroon-400/50 cursor-pointer rounded-full w-fit px-10 py-2"
     >

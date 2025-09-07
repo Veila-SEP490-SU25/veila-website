@@ -1,39 +1,36 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   useLazyGetDistrictsQuery,
   useLazyGetProvincesQuery,
   useLazyGetWardsQuery,
-} from "@/services/apis";
-import type { IDistrict, IProvince, IWard } from "@/services/types";
-import { useEffect, useState, useCallback, useRef } from "react";
+} from '@/services/apis';
+import type { IDistrict, IProvince, IWard } from '@/services/types';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 interface LocationInputProps {
   location: string;
   setLocation: (location: string) => void;
 }
 
-export const LocationInput = ({
-  location,
-  setLocation,
-}: LocationInputProps) => {
+export const LocationInput = ({ location, setLocation }: LocationInputProps) => {
   const [provinces, setProvinces] = useState<IProvince[]>([]);
   const [districts, setDistricts] = useState<IDistrict[]>([]);
   const [wards, setWards] = useState<IWard[]>([]);
-  const [detailAddress, setDetailAddress] = useState<string>("");
+  const [detailAddress, setDetailAddress] = useState<string>('');
 
-  const [selectedProvinceId, setSelectedProvinceId] = useState<string>("");
-  const [selectedDistrictId, setSelectedDistrictId] = useState<string>("");
-  const [selectedWardId, setSelectedWardId] = useState<string>("");
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string>('');
+  const [selectedDistrictId, setSelectedDistrictId] = useState<string>('');
+  const [selectedWardId, setSelectedWardId] = useState<string>('');
   const [isLoadingProvinces, setIsLoadingProvinces] = useState(false);
   const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
   const [isLoadingWards, setIsLoadingWards] = useState(false);
@@ -54,11 +51,11 @@ export const LocationInput = ({
         const { data } = await fetchProvinces({
           page: 0,
           size: 100,
-          query: "",
+          query: '',
         }).unwrap();
         setProvinces(data);
       } catch (error) {
-        console.error("Failed to load provinces:", error);
+        console.error('Failed to load provinces:', error);
       } finally {
         setIsLoadingProvinces(false);
       }
@@ -76,12 +73,12 @@ export const LocationInput = ({
         const { data } = await fetchDistricts({
           page: 0,
           size: 100,
-          query: "",
+          query: '',
           id: selectedProvinceId,
         }).unwrap();
         setDistricts(data);
       } catch (error) {
-        console.error("Failed to load districts:", error);
+        console.error('Failed to load districts:', error);
       } finally {
         setIsLoadingDistricts(false);
       }
@@ -99,12 +96,12 @@ export const LocationInput = ({
         const { data } = await fetchWards({
           page: 0,
           size: 100,
-          query: "",
+          query: '',
           id: selectedDistrictId,
         }).unwrap();
         setWards(data);
       } catch (error) {
-        console.error("Failed to load wards:", error);
+        console.error('Failed to load wards:', error);
       } finally {
         setIsLoadingWards(false);
       }
@@ -116,16 +113,14 @@ export const LocationInput = ({
   const updateLocation = useCallback(() => {
     const province = selectedProvinceId
       ? provinces.find((p) => p.id === selectedProvinceId)?.name
-      : "";
+      : '';
     const district = selectedDistrictId
       ? districts.find((d) => d.id === selectedDistrictId)?.name
-      : "";
-    const ward = selectedWardId
-      ? wards.find((w) => w.id === selectedWardId)?.name
-      : "";
+      : '';
+    const ward = selectedWardId ? wards.find((w) => w.id === selectedWardId)?.name : '';
 
     const parts = [detailAddress, ward, district, province].filter(Boolean);
-    const fullAddress = parts.join(", ");
+    const fullAddress = parts.join(', ');
 
     if (fullAddress) {
       setLocationRef.current(fullAddress);
@@ -146,18 +141,18 @@ export const LocationInput = ({
 
   const handleSelectProvinceId = (provinceId: string) => {
     setSelectedProvinceId(provinceId);
-    setSelectedDistrictId("");
-    setSelectedWardId("");
+    setSelectedDistrictId('');
+    setSelectedWardId('');
     setDistricts([]);
     setWards([]);
-    setDetailAddress("");
+    setDetailAddress('');
   };
 
   const handleSelectDistrictId = (districtId: string) => {
     setSelectedDistrictId(districtId);
-    setSelectedWardId("");
+    setSelectedWardId('');
     setWards([]);
-    setDetailAddress("");
+    setDetailAddress('');
   };
 
   const handleSelectWardId = (wardId: string) => {
@@ -175,15 +170,10 @@ export const LocationInput = ({
           <Label htmlFor="province" className="text-sm font-medium">
             Tỉnh/Thành phố <span className="text-destructive">*</span>
           </Label>
-          <Select
-            value={selectedProvinceId}
-            onValueChange={handleSelectProvinceId}
-          >
+          <Select value={selectedProvinceId} onValueChange={handleSelectProvinceId}>
             <SelectTrigger className="w-full">
               <SelectValue
-                placeholder={
-                  isLoadingProvinces ? "Đang tải..." : "Chọn tỉnh/thành phố"
-                }
+                placeholder={isLoadingProvinces ? 'Đang tải...' : 'Chọn tỉnh/thành phố'}
               />
             </SelectTrigger>
             <SelectContent>
@@ -213,11 +203,7 @@ export const LocationInput = ({
             disabled={!selectedProvinceId}
           >
             <SelectTrigger className="w-full disabled:opacity-50 disabled:cursor-not-allowed">
-              <SelectValue
-                placeholder={
-                  isLoadingDistricts ? "Đang tải..." : "Chọn quận/huyện"
-                }
-              />
+              <SelectValue placeholder={isLoadingDistricts ? 'Đang tải...' : 'Chọn quận/huyện'} />
             </SelectTrigger>
             <SelectContent>
               {isLoadingDistricts ? (
@@ -248,9 +234,7 @@ export const LocationInput = ({
             disabled={!selectedDistrictId}
           >
             <SelectTrigger className="w-full disabled:opacity-50 disabled:cursor-not-allowed">
-              <SelectValue
-                placeholder={isLoadingWards ? "Đang tải..." : "Chọn phường/xã"}
-              />
+              <SelectValue placeholder={isLoadingWards ? 'Đang tải...' : 'Chọn phường/xã'} />
             </SelectTrigger>
             <SelectContent>
               {isLoadingWards ? (
@@ -288,9 +272,7 @@ export const LocationInput = ({
         <div className="space-y-2">
           <Label className="text-sm font-medium">Địa chỉ đầy đủ:</Label>
           <div className="p-4 bg-muted/50 border border-border rounded-lg">
-            <p className="text-sm text-foreground leading-relaxed">
-              {location}
-            </p>
+            <p className="text-sm text-foreground leading-relaxed">{location}</p>
           </div>
         </div>
       )}

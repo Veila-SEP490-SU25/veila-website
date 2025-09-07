@@ -1,4 +1,4 @@
-import { Image } from "@/components/image";
+import { Image } from '@/components/image';
 
 interface PlacegolderImageProps {
   width?: number;
@@ -6,11 +6,7 @@ interface PlacegolderImageProps {
   className?: string;
 }
 
-export const PlaceholderImage = ({
-  width,
-  height,
-  className,
-}: PlacegolderImageProps) => {
+export const PlaceholderImage = ({ width, height, className }: PlacegolderImageProps) => {
   return (
     <Image
       src={`/placeholder.svg?width=${width}&height=${height}`}

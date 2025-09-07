@@ -1,32 +1,32 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
-import { Eye, DollarSign, Star, Trash2 } from "lucide-react";
-import type { IAccessory } from "@/services/types";
-import { ImageGallery } from "@/components/image-gallery";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
+import { Eye, DollarSign, Star, Trash2 } from 'lucide-react';
+import type { IAccessory } from '@/services/types';
+import { ImageGallery } from '@/components/image-gallery';
 import {
   accessoryStatusColors,
   accessoryStatusLabels,
   formatPrice,
   getImages,
-} from "@/lib/products-utils";
-import { useDeleteAccessoryMutation } from "@/services/apis";
-import { toast } from "sonner";
-import { ConfirmDialog } from "@/components/confirm-dialog.tsx";
+} from '@/lib/products-utils';
+import { useDeleteAccessoryMutation } from '@/services/apis';
+import { toast } from 'sonner';
+import { ConfirmDialog } from '@/components/confirm-dialog.tsx';
 
 interface DeleteAccessoryDialogProps {
   accessory: IAccessory;
@@ -45,9 +45,7 @@ export function DeleteAccessoryDialog({
 
   const handleDelete = async () => {
     try {
-      const { statusCode, message } = await deleteAccessory(
-        accessory.id
-      ).unwrap();
+      const { statusCode, message } = await deleteAccessory(accessory.id).unwrap();
       if (statusCode === 204) {
         toast.success(message);
         onSuccess?.();
@@ -56,7 +54,7 @@ export function DeleteAccessoryDialog({
       }
     } catch (error) {
       console.error(error);
-      toast.error("Có lỗi xảy ra khi xóa sản phẩm");
+      toast.error('Có lỗi xảy ra khi xóa sản phẩm');
     }
   };
 
@@ -72,7 +70,7 @@ export function DeleteAccessoryDialog({
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
-            {accessory.name}{" "}
+            {accessory.name}{' '}
             <div className="flex items-center text-sm text-muted-foreground">
               <Star className="mr-2 text-yellow-300" />
               {accessory.ratingAverage} • {accessory.ratingCount} bài đánh giá
@@ -84,10 +82,7 @@ export function DeleteAccessoryDialog({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Images Section */}
             <div className="space-y-4">
-              <ImageGallery
-                images={getImages(accessory.images)}
-                alt={accessory.name}
-              />
+              <ImageGallery images={getImages(accessory.images)} alt={accessory.name} />
             </div>
 
             {/* Details Section */}
@@ -96,20 +91,12 @@ export function DeleteAccessoryDialog({
               <div className="flex items-center justify-between">
                 <Badge
                   className={
-                    accessoryStatusColors[
-                      accessory.status as keyof typeof accessoryStatusColors
-                    ]
+                    accessoryStatusColors[accessory.status as keyof typeof accessoryStatusColors]
                   }
                 >
-                  {
-                    accessoryStatusLabels[
-                      accessory.status as keyof typeof accessoryStatusLabels
-                    ]
-                  }
+                  {accessoryStatusLabels[accessory.status as keyof typeof accessoryStatusLabels]}
                 </Badge>
-                {accessory.category && (
-                  <Badge variant="outline">{accessory.category.name}</Badge>
-                )}
+                {accessory.category && <Badge variant="outline">{accessory.category.name}</Badge>}
               </div>
 
               {/* Description */}
@@ -128,9 +115,7 @@ export function DeleteAccessoryDialog({
                   {accessory.isSellable && accessory.sellPrice && (
                     <Card>
                       <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground">
-                          Giá bán
-                        </div>
+                        <div className="text-sm text-muted-foreground">Giá bán</div>
                         <div className="text-xl font-bold text-green-600">
                           {formatPrice(accessory.sellPrice)}
                         </div>
@@ -140,9 +125,7 @@ export function DeleteAccessoryDialog({
                   {accessory.isRentable && accessory.rentalPrice && (
                     <Card>
                       <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground">
-                          Giá thuê
-                        </div>
+                        <div className="text-sm text-muted-foreground">Giá thuê</div>
                         <div className="text-xl font-bold text-blue-600">
                           {formatPrice(accessory.rentalPrice)}
                         </div>
@@ -156,14 +139,8 @@ export function DeleteAccessoryDialog({
 
               {/* Metadata */}
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>
-                  Tạo lúc:{" "}
-                  {new Date(accessory.createdAt).toLocaleDateString("vi-VN")}
-                </div>
-                <div>
-                  Cập nhật:{" "}
-                  {new Date(accessory.updatedAt).toLocaleDateString("vi-VN")}
-                </div>
+                <div>Tạo lúc: {new Date(accessory.createdAt).toLocaleDateString('vi-VN')}</div>
+                <div>Cập nhật: {new Date(accessory.updatedAt).toLocaleDateString('vi-VN')}</div>
               </div>
             </div>
           </div>
@@ -184,7 +161,7 @@ export function DeleteAccessoryDialog({
           >
             <Button variant="destructive" disabled={isLoading}>
               <Trash2 className="h-4 w-4 mr-2" />
-              {isLoading ? "Đang xóa..." : "Xóa"}
+              {isLoading ? 'Đang xóa...' : 'Xóa'}
             </Button>
           </ConfirmDialog>
         </div>

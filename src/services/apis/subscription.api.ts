@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   ICreateSubscription,
   IItemResponse,
@@ -6,17 +6,17 @@ import {
   IPagination,
   ISubscription,
   IUpdateSubscription,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export const subscriptionApi = createApi({
-  reducerPath: "subscriptionApi",
+  reducerPath: 'subscriptionApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getSubscriptions: builder.query<IListResponse<ISubscription>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "subscriptions",
-        method: "GET",
+      query: ({ sort = '', filter = '', page = 0, size = 10 }) => ({
+        url: 'subscriptions',
+        method: 'GET',
         params: { sort, filter, page, size },
       }),
     }),
@@ -24,28 +24,22 @@ export const subscriptionApi = createApi({
     getSubscription: builder.query<IItemResponse<ISubscription>, string>({
       query: (id) => ({
         url: `subscriptions/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
-    createSubscription: builder.mutation<
-      IItemResponse<ISubscription>,
-      ICreateSubscription
-    >({
+    createSubscription: builder.mutation<IItemResponse<ISubscription>, ICreateSubscription>({
       query: (body) => ({
-        url: "subscriptions",
-        method: "POST",
+        url: 'subscriptions',
+        method: 'POST',
         body,
       }),
     }),
 
-    updateSubscription: builder.mutation<
-      IItemResponse<ISubscription>,
-      IUpdateSubscription
-    >({
+    updateSubscription: builder.mutation<IItemResponse<ISubscription>, IUpdateSubscription>({
       query: ({ id, ...body }) => ({
         url: `subscriptions/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -53,18 +47,16 @@ export const subscriptionApi = createApi({
     deleteSubscription: builder.mutation<IItemResponse<ISubscription>, string>({
       query: (id) => ({
         url: `subscriptions/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
-    restoreSubscription: builder.mutation<IItemResponse<ISubscription>, string>(
-      {
-        query: (id) => ({
-          url: `subscriptions/${id}`,
-          method: "PATCH",
-        }),
-      }
-    ),
+    restoreSubscription: builder.mutation<IItemResponse<ISubscription>, string>({
+      query: (id) => ({
+        url: `subscriptions/${id}`,
+        method: 'PATCH',
+      }),
+    }),
   }),
 });
 

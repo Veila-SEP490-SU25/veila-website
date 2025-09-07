@@ -11,7 +11,7 @@ import {
   ITransaction,
   IUpdateRequest,
   IUser,
-} from "@/services/types";
+} from '@/services/types';
 
 export enum OrderStatus {
   PENDING = 'PENDING',
@@ -22,9 +22,9 @@ export enum OrderStatus {
 }
 
 export enum OrderType {
-  SELL = "SELL",
-  RENT = "RENT",
-  CUSTOM = "CUSTOM",
+  SELL = 'SELL',
+  RENT = 'RENT',
+  CUSTOM = 'CUSTOM',
 }
 
 export interface IOrder extends IItem {

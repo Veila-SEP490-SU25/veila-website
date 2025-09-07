@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { usePostWebhookMutation } from "@/services/apis";
-import { ITransfer, TransactionStatus } from "@/services/types";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { PayOSConfig, usePayOS } from "@payos/payos-checkout";
-import { toast } from "sonner";
-import { isSuccess } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { usePostWebhookMutation } from '@/services/apis';
+import { ITransfer, TransactionStatus } from '@/services/types';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { PayOSConfig, usePayOS } from '@payos/payos-checkout';
+import { toast } from 'sonner';
+import { isSuccess } from '@/lib/utils';
 
 interface IPayOsCardProps {
   transfer: ITransfer;
@@ -18,7 +18,7 @@ export const PayOsCard = ({ transfer, onUpdate }: IPayOsCardProps) => {
   const [webhookTrigger, { isLoading }] = usePostWebhookMutation();
   const [config] = useState<PayOSConfig>({
     RETURN_URL: window.location.origin,
-    ELEMENT_ID: "embedded-container",
+    ELEMENT_ID: 'embedded-container',
     CHECKOUT_URL: transfer.checkoutUrl,
     embedded: true,
     onSuccess: () => {
@@ -35,19 +35,17 @@ export const PayOsCard = ({ transfer, onUpdate }: IPayOsCardProps) => {
           status,
         }).unwrap();
         if (isSuccess(statusCode)) {
-          toast.success("Thanh toán thành công");
+          toast.success('Thanh toán thành công');
           onUpdate?.();
         } else {
           onUpdate?.();
         }
       } catch (error) {
         console.error(error);
-        toast.error(
-          "Có lỗi xảy ra khi thanh toán. Vui lòng liên hệ đội ngũ hỗ trợ."
-        );
+        toast.error('Có lỗi xảy ra khi thanh toán. Vui lòng liên hệ đội ngũ hỗ trợ.');
       }
     },
-    [webhookTrigger, transfer.transactionId, onUpdate]
+    [webhookTrigger, transfer.transactionId, onUpdate],
   );
 
   const { open: openPayOS, exit: closePayOS } = usePayOS(config);

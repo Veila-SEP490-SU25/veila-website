@@ -1,17 +1,11 @@
-"use client";
+'use client';
 
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -19,14 +13,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Mail, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { loginOTPSchema, LoginOTPSchema } from "@/lib/validations";
-import { useRouter } from "next/navigation";
-import { useRequestOtpMutation } from "@/services/apis";
-import { toast } from "sonner";
-import { TextLogo } from "@/components/text-logo";
+} from '@/components/ui/form';
+import { Mail, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { loginOTPSchema, LoginOTPSchema } from '@/lib/validations';
+import { useRouter } from 'next/navigation';
+import { useRequestOtpMutation } from '@/services/apis';
+import { toast } from 'sonner';
+import { TextLogo } from '@/components/text-logo';
 
 export default function LoginOTPPage() {
   const router = useRouter();
@@ -36,7 +30,7 @@ export default function LoginOTPPage() {
   const form = useForm<LoginOTPSchema>({
     resolver: zodResolver(loginOTPSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
@@ -49,17 +43,15 @@ export default function LoginOTPPage() {
         if (statusCode === 200) {
           router.push(`/verify-otp?userId=${item}&email=${data.email}`);
         } else {
-          toast.error("Không thể gửi mã xác thực đến email này.", {
+          toast.error('Không thể gửi mã xác thực đến email này.', {
             description: message,
           });
         }
       } catch {
-        toast.error(
-          "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
-        );
+        toast.error('Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau.');
       }
     },
-    [requestOtpMutation, router]
+    [requestOtpMutation, router],
   );
 
   return (
@@ -68,27 +60,20 @@ export default function LoginOTPPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <TextLogo />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Đăng Nhập Bằng OTP
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Đăng Nhập Bằng OTP</h1>
           <p className="text-gray-600">Nhập email để nhận mã xác thực OTP</p>
         </div>
 
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl text-center">
-              Xác Thực Email
-            </CardTitle>
+            <CardTitle className="text-xl text-center">Xác Thực Email</CardTitle>
             <CardDescription className="text-center">
               Chúng tôi sẽ gửi mã OTP 6 số đến email của bạn
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="email"
@@ -122,7 +107,7 @@ export default function LoginOTPPage() {
                       Đang gửi OTP...
                     </>
                   ) : (
-                    "Gửi Mã OTP"
+                    'Gửi Mã OTP'
                   )}
                 </Button>
               </form>
@@ -144,8 +129,7 @@ export default function LoginOTPPage() {
         {/* Info */}
         <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-sm text-blue-800 text-center">
-            Mã OTP sẽ có hiệu lực trong 5 phút. Kiểm tra cả thư mục spam nếu
-            không thấy email.
+            Mã OTP sẽ có hiệu lực trong 5 phút. Kiểm tra cả thư mục spam nếu không thấy email.
           </p>
         </div>
       </div>

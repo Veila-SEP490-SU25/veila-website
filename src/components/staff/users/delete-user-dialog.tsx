@@ -1,13 +1,21 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { isSuccess } from "@/lib/utils";
-import { useDeleteUserMutation } from "@/services/apis";
-import { IUser } from "@/services/types";
-import { Check, Trash, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { isSuccess } from '@/lib/utils';
+import { useDeleteUserMutation } from '@/services/apis';
+import { IUser } from '@/services/types';
+import { Check, Trash, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface DeleteUserDialogProps {
   user: IUser;
@@ -15,11 +23,7 @@ interface DeleteUserDialogProps {
   children?: ReactNode;
 }
 
-export const DeleteUserDialog = ({
-  user,
-  onUpdate,
-  children,
-}: DeleteUserDialogProps) => {
+export const DeleteUserDialog = ({ user, onUpdate, children }: DeleteUserDialogProps) => {
   const [trigger, { isLoading }] = useDeleteUserMutation();
   const [open, setOpen] = useState<boolean>(false);
 
@@ -34,7 +38,7 @@ export const DeleteUserDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      console.error("Failed to respond to complaint:", error);
+      console.error('Failed to respond to complaint:', error);
     }
   }, [user, onUpdate, trigger, setOpen]);
 

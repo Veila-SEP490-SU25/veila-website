@@ -1,14 +1,14 @@
-"use client"
+'use client';
 
-import { TextLogo } from "@/components/text-logo"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Home, Search, ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { TextLogo } from '@/components/text-logo';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Home, Search, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center p-4">
@@ -28,14 +28,19 @@ export default function NotFound() {
           <div className="mb-8 space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Trang không tồn tại</h2>
             <p className="text-gray-600 text-lg leading-relaxed max-w-md mx-auto">
-              Rất tiếc, trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển. Hãy thử tìm kiếm những chiếc váy
-              cưới tuyệt đẹp khác nhé!
+              Rất tiếc, trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển. Hãy thử tìm
+              kiếm những chiếc váy cưới tuyệt đẹp khác nhé!
             </p>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button onClick={() => router.back()} variant="outline" size="lg" className="w-full sm:w-auto">
+            <Button
+              onClick={() => router.back()}
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto"
+            >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Quay lại
             </Button>
@@ -67,5 +72,5 @@ export default function NotFound() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

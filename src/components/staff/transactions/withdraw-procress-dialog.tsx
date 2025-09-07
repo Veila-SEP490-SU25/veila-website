@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,18 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useVietQR } from "@/hooks/use-vietqr";
-import {
-  useApproveWithdrawMutation,
-  useCancelWithdrawMutation,
-} from "@/services/apis";
-import { ITransaction } from "@/services/types";
-import { Check, X } from "lucide-react";
-import Image from "next/image";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useVietQR } from '@/hooks/use-vietqr';
+import { useApproveWithdrawMutation, useCancelWithdrawMutation } from '@/services/apis';
+import { ITransaction } from '@/services/types';
+import { Check, X } from 'lucide-react';
+import Image from 'next/image';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface WithdrawProcessDialogProps {
   children?: ReactNode;
@@ -34,17 +31,13 @@ export const WithdrawProcessDialog = ({
   transaction,
 }: WithdrawProcessDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [appproveTrigger, { isLoading: isApproving }] =
-    useApproveWithdrawMutation();
-  const [cancelTrigger, { isLoading: isCanceling }] =
-    useCancelWithdrawMutation();
-  const [qr, setQR] = useState<string>("");
+  const [appproveTrigger, { isLoading: isApproving }] = useApproveWithdrawMutation();
+  const [cancelTrigger, { isLoading: isCanceling }] = useCancelWithdrawMutation();
+  const [qr, setQR] = useState<string>('');
 
   const handleApprove = useCallback(async () => {
     try {
-      const { statusCode, message } = await appproveTrigger(
-        transaction.id
-      ).unwrap();
+      const { statusCode, message } = await appproveTrigger(transaction.id).unwrap();
       if (statusCode === 200) {
         toast.success(message);
         onUpdate?.();
@@ -54,15 +47,13 @@ export const WithdrawProcessDialog = ({
       }
     } catch (error) {
       console.error(error);
-      toast.error("Xảy ra lỗi khi hoàn thành giao dịch. Vui lòng thử lại sau.");
+      toast.error('Xảy ra lỗi khi hoàn thành giao dịch. Vui lòng thử lại sau.');
     }
   }, [transaction, appproveTrigger, onUpdate]);
 
   const handleCancel = useCallback(async () => {
     try {
-      const { statusCode, message } = await cancelTrigger(
-        transaction.id
-      ).unwrap();
+      const { statusCode, message } = await cancelTrigger(transaction.id).unwrap();
       if (statusCode === 200) {
         toast.success(message);
         onUpdate?.();
@@ -71,7 +62,7 @@ export const WithdrawProcessDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      toast.error("Xảy ra lỗi khi huỷ giao dịch. Vui lòng thử lại sau.");
+      toast.error('Xảy ra lỗi khi huỷ giao dịch. Vui lòng thử lại sau.');
       console.error(error);
     }
   }, [transaction, cancelTrigger, onUpdate]);
@@ -85,7 +76,7 @@ export const WithdrawProcessDialog = ({
         transaction.wallet.bin,
         transaction.wallet.bankNumber,
         transaction.amount,
-        transaction.note || undefined
+        transaction.note || undefined,
       );
       setQR(qr);
     };

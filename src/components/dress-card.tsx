@@ -1,17 +1,12 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  formatPrice,
-  getCoverImage,
-  parseNumber,
-  formatRating,
-} from "@/lib/products-utils";
-import { IDress } from "@/services/types";
-import { Eye, ShoppingBag, Star, MapPin, Clock } from "lucide-react";
-import Link from "next/link";
-import { ImageWithFallback } from "@/components/ui/image-with-fallback";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { formatPrice, getCoverImage, parseNumber, formatRating } from '@/lib/products-utils';
+import { IDress } from '@/services/types';
+import { Eye, ShoppingBag, Star, MapPin, Clock } from 'lucide-react';
+import Link from 'next/link';
+import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 
 interface DressProps {
   dress: IDress;
@@ -21,32 +16,32 @@ export const DressCard = ({ dress }: DressProps) => {
   const getAvailabilityBadge = (dress: IDress) => {
     if (dress.isSellable && dress.isRentable) {
       return {
-        text: "Bán & Thuê",
-        className: "bg-gradient-to-r from-purple-600 to-pink-600",
+        text: 'Bán & Thuê',
+        className: 'bg-gradient-to-r from-purple-600 to-pink-600',
       };
     } else if (dress.isSellable) {
       return {
-        text: "Bán",
-        className: "bg-gradient-to-r from-green-600 to-emerald-600",
+        text: 'Bán',
+        className: 'bg-gradient-to-r from-green-600 to-emerald-600',
       };
     } else if (dress.isRentable) {
       return {
-        text: "Cho Thuê",
-        className: "bg-gradient-to-r from-blue-600 to-cyan-600",
+        text: 'Cho Thuê',
+        className: 'bg-gradient-to-r from-blue-600 to-cyan-600',
       };
     }
     return {
-      text: "Không có sẵn",
-      className: "bg-gradient-to-r from-gray-600 to-gray-700",
+      text: 'Không có sẵn',
+      className: 'bg-gradient-to-r from-gray-600 to-gray-700',
     };
   };
 
   const availabilityBadge = getAvailabilityBadge(dress);
   const userName =
     dress.user?.shop?.name ||
-    `${dress.user?.firstName || ""} ${dress.user?.lastName || ""}`.trim() ||
-    "Unknown";
-  const shopLocation = dress.user?.shop?.address || "Chưa có địa chỉ";
+    `${dress.user?.firstName || ''} ${dress.user?.lastName || ''}`.trim() ||
+    'Unknown';
+  const shopLocation = dress.user?.shop?.address || 'Chưa có địa chỉ';
 
   return (
     <Card className="group py-0 hover:shadow-xl transition-all duration-300 overflow-hidden bg-white border-0 shadow-md hover:shadow-2xl">
@@ -111,11 +106,7 @@ export const DressCard = ({ dress }: DressProps) => {
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8 ring-2 ring-rose-100">
               <AvatarImage
-                src={
-                  dress.user?.shop?.logoUrl ||
-                  dress.user?.avatarUrl ||
-                  "/placeholder.svg"
-                }
+                src={dress.user?.shop?.logoUrl || dress.user?.avatarUrl || '/placeholder.svg'}
               />
               <AvatarFallback className="text-sm font-semibold bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700">
                 {userName.charAt(0).toUpperCase()}
@@ -124,7 +115,7 @@ export const DressCard = ({ dress }: DressProps) => {
             <div>
               <p className="text-sm font-semibold text-gray-900">{userName}</p>
               <p className="text-xs text-gray-500">
-                {dress.user?.shop?.description || "Nhà thiết kế"}
+                {dress.user?.shop?.description || 'Nhà thiết kế'}
               </p>
             </div>
           </div>
@@ -138,9 +129,7 @@ export const DressCard = ({ dress }: DressProps) => {
               </span>
             </div>
             <span className="text-gray-400">•</span>
-            <span className="text-sm text-gray-600">
-              {dress.ratingCount || 0} đánh giá
-            </span>
+            <span className="text-sm text-gray-600">{dress.ratingCount || 0} đánh giá</span>
           </div>
 
           {/* Dress Details */}

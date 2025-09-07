@@ -1,21 +1,15 @@
-"use client";
+'use client';
 
-import { ErrorCard } from "@/components/error-card";
-import { GoBackButton } from "@/components/go-back-button";
-import { LoadingItem } from "@/components/loading-item";
-import { PagingComponent } from "@/components/paging-component";
-import { DressDetailDialog } from "@/components/shops/my/dresses/dress-detail-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { ErrorCard } from '@/components/error-card';
+import { GoBackButton } from '@/components/go-back-button';
+import { LoadingItem } from '@/components/loading-item';
+import { PagingComponent } from '@/components/paging-component';
+import { DressDetailDialog } from '@/components/shops/my/dresses/dress-detail-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -23,22 +17,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { TabsContent } from "@/components/ui/tabs";
-import { useDebounce } from "@/hooks/use-debounce";
+} from '@/components/ui/table';
+import { TabsContent } from '@/components/ui/tabs';
+import { useDebounce } from '@/hooks/use-debounce';
 import {
   dressStatusColors,
   dressStatusLabels,
   formatPrice,
   getCoverImage,
-} from "@/lib/products-utils";
-import { usePaging } from "@/providers/paging.provider";
-import {
-  useLazyGetShopDressesQuery,
-} from "@/services/apis";
-import { IDress, IShop } from "@/services/types";
-import { Eye, RefreshCw, Search } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+} from '@/lib/products-utils';
+import { usePaging } from '@/providers/paging.provider';
+import { useLazyGetShopDressesQuery } from '@/services/apis';
+import { IDress, IShop } from '@/services/types';
+import { Eye, RefreshCw, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface DressesTabsProps {
   shop: IShop;
@@ -47,20 +39,19 @@ interface DressesTabsProps {
 
 export const DressesTabs = ({ shop }: DressesTabsProps) => {
   const [dresses, setDresses] = useState<IDress[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [trigger, { isLoading }] = useLazyGetShopDressesQuery();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
-  const { setPaging, pageSize, pageIndex, totalItems, resetPaging } =
-    usePaging();
+  const { setPaging, pageSize, pageIndex, totalItems, resetPaging } = usePaging();
 
   const fetchDresses = useCallback(async () => {
     try {
       const { statusCode, message, items, ...paging } = await trigger({
         id: shop.id,
-        filter: debouncedSearchTerm ? `name:like:${debouncedSearchTerm}` : "",
+        filter: debouncedSearchTerm ? `name:like:${debouncedSearchTerm}` : '',
         sort: `updatedAt:desc`,
         page: pageIndex,
         size: pageSize,
@@ -73,9 +64,9 @@ export const DressesTabs = ({ shop }: DressesTabsProps) => {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
-        setError("");
+        setError('');
         setIsError(false);
       } else {
         setIsError(true);
@@ -84,18 +75,9 @@ export const DressesTabs = ({ shop }: DressesTabsProps) => {
     } catch (error) {
       console.error(error);
       setIsError(true);
-      setError("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
+      setError('Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng');
     }
-  }, [
-    shop,
-    trigger,
-    debouncedSearchTerm,
-    pageIndex,
-    pageSize,
-    setPaging,
-    setIsError,
-    setError,
-  ]);
+  }, [shop, trigger, debouncedSearchTerm, pageIndex, pageSize, setPaging, setIsError, setError]);
 
   useEffect(() => {
     resetPaging();
@@ -111,18 +93,14 @@ export const DressesTabs = ({ shop }: DressesTabsProps) => {
       <TabsContent value="dresses">
         <Card>
           <CardHeader className="items-center justify-center">
-            <CardTitle className="text-red-500">
-              Đã có lỗi xảy ra khi tải dữ liệu
-            </CardTitle>
+            <CardTitle className="text-red-500">Đã có lỗi xảy ra khi tải dữ liệu</CardTitle>
             <CardDescription className="flex items-center justify-center gap-4">
               <GoBackButton />
               <Button
                 className="flex items-center justify-center gap-2 bg-rose-500 text-white"
                 onClick={fetchDresses}
               >
-                <RefreshCw
-                  className={`size-4 ${isLoading ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Thử lại
               </Button>
             </CardDescription>
@@ -184,9 +162,7 @@ export const DressesTabs = ({ shop }: DressesTabsProps) => {
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-12 w-12 rounded-lg">
                           <AvatarImage
-                            src={
-                              getCoverImage(dress.images) || "/placeholder.svg"
-                            }
+                            src={getCoverImage(dress.images) || '/placeholder.svg'}
                             alt={dress.name}
                           />
                           <AvatarFallback className="rounded-lg">
@@ -205,9 +181,9 @@ export const DressesTabs = ({ shop }: DressesTabsProps) => {
                       {dress.isSellable && dress.sellPrice ? (
                         <span className="font-medium">
                           {formatPrice(
-                            typeof dress.sellPrice === "string"
+                            typeof dress.sellPrice === 'string'
                               ? parseFloat(dress.sellPrice) || 0
-                              : dress.sellPrice || 0
+                              : dress.sellPrice || 0,
                           )}
                         </span>
                       ) : (
@@ -218,30 +194,22 @@ export const DressesTabs = ({ shop }: DressesTabsProps) => {
                       {dress.isRentable && dress.rentalPrice ? (
                         <span className="font-medium">
                           {formatPrice(
-                            typeof dress.rentalPrice === "string"
+                            typeof dress.rentalPrice === 'string'
                               ? parseFloat(dress.rentalPrice) || 0
-                              : dress.rentalPrice || 0
+                              : dress.rentalPrice || 0,
                           )}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">
-                          Không cho thuê
-                        </span>
+                        <span className="text-muted-foreground">Không cho thuê</span>
                       )}
                     </TableCell>
                     <TableCell>
                       <Badge
                         className={
-                          dressStatusColors[
-                            dress.status as keyof typeof dressStatusColors
-                          ]
+                          dressStatusColors[dress.status as keyof typeof dressStatusColors]
                         }
                       >
-                        {
-                          dressStatusLabels[
-                            dress.status as keyof typeof dressStatusLabels
-                          ]
-                        }
+                        {dressStatusLabels[dress.status as keyof typeof dressStatusLabels]}
                       </Badge>
                     </TableCell>
                     <TableCell>

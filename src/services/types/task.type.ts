@@ -1,4 +1,4 @@
-import { IItem, IMilestone } from "@/services/types";
+import { IItem, IMilestone } from '@/services/types';
 
 export enum TaskStatus {
   PENDING = 'PENDING',
@@ -9,7 +9,7 @@ export enum TaskStatus {
 
 export interface ITask extends IItem {
   milestoneId: string;
-  
+
   milestone: IMilestone;
   title: string;
   description: string | null;

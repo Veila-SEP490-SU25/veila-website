@@ -1,23 +1,17 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IShop } from "@/services/types";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IShop } from '@/services/types';
 import {
   useLazyGetMyShopDressesQuery,
   useLazyGetMyShopAccessoriesQuery,
   useLazyGetMyShopBlogsQuery,
   useLazyGetOrdersQuery,
   useLazyGetShopIncomeQuery,
-} from "@/services/apis";
-import {
-  DollarSign,
-  Package,
-  ShoppingBag,
-  FileText,
-  TrendingUp,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/services/apis';
+import { DollarSign, Package, ShoppingBag, FileText, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
   BarChart,
   Bar,
@@ -29,7 +23,7 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts";
+} from 'recharts';
 
 interface ShopDashboardProps {
   shop: IShop;
@@ -52,9 +46,9 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
   const [getShopIncome] = useLazyGetShopIncomeQuery();
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
     }).format(price);
   };
 
@@ -67,8 +61,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
         const dressesResponse = await getDresses({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const dressesCount = dressesResponse.items?.length || 0;
 
@@ -76,8 +70,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
         const accessoriesResponse = await getAccessories({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const accessoriesCount = accessoriesResponse.items?.length || 0;
 
@@ -85,8 +79,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
         const blogsResponse = await getBlogs({
           page: 0,
           size: 1000,
-          filter: "",
-          sort: "",
+          filter: '',
+          sort: '',
         }).unwrap();
         const blogsCount = blogsResponse.items?.length || 0;
 
@@ -95,7 +89,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
           page: 0,
           size: 1000,
           filter: `shopId:eq:${shop.id}`,
-          sort: "",
+          sort: '',
         }).unwrap();
         const ordersCount = ordersResponse.items?.length || 0;
 
@@ -111,15 +105,15 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
           income: incomeAmount,
         });
       } catch (error: any) {
-        console.error("Error fetching metrics:", error);
+        console.error('Error fetching metrics:', error);
 
         // Xử lý error message an toàn
-        let errorMessage = "Không thể tải dữ liệu dashboard";
+        let errorMessage = 'Không thể tải dữ liệu dashboard';
         if (error?.data?.message) {
           errorMessage = error.data.message;
         } else if (error?.message) {
           errorMessage = error.message;
-        } else if (typeof error === "string") {
+        } else if (typeof error === 'string') {
           errorMessage = error;
         }
 
@@ -144,15 +138,15 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
 
   // Data for charts
   const productData = [
-    { name: "Váy cưới", value: metrics.dresses, color: "#ef4444" },
-    { name: "Phụ kiện", value: metrics.accessories, color: "#3b82f6" },
+    { name: 'Váy cưới', value: metrics.dresses, color: '#ef4444' },
+    { name: 'Phụ kiện', value: metrics.accessories, color: '#3b82f6' },
   ];
 
   const metricsData = [
-    { name: "Đơn hàng", value: metrics.orders, icon: ShoppingBag },
-    { name: "Blog", value: metrics.blogs, icon: FileText },
+    { name: 'Đơn hàng', value: metrics.orders, icon: ShoppingBag },
+    { name: 'Blog', value: metrics.blogs, icon: FileText },
     {
-      name: "Tổng sản phẩm",
+      name: 'Tổng sản phẩm',
       value: metrics.dresses + metrics.accessories,
       icon: Package,
     },
@@ -164,9 +158,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Tổng quan hoạt động kinh doanh của {shop.name}
-          </p>
+          <p className="text-muted-foreground">Tổng quan hoạt động kinh doanh của {shop.name}</p>
         </div>
       </div>
 
@@ -220,12 +212,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
-                  {formatPrice(metrics.income)}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Tổng doanh thu hiện tại
-                </p>
+                <div className="text-2xl font-bold">{formatPrice(metrics.income)}</div>
+                <p className="text-xs text-muted-foreground">Tổng doanh thu hiện tại</p>
               </CardContent>
             </Card>
             <Card>
@@ -235,9 +223,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{metrics.orders}</div>
-                <p className="text-xs text-muted-foreground">
-                  Tổng số đơn hàng
-                </p>
+                <p className="text-xs text-muted-foreground">Tổng số đơn hàng</p>
               </CardContent>
             </Card>
             <Card>
@@ -246,12 +232,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
-                  {metrics.dresses + metrics.accessories}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Tổng số sản phẩm
-                </p>
+                <div className="text-2xl font-bold">{metrics.dresses + metrics.accessories}</div>
+                <p className="text-xs text-muted-foreground">Tổng số sản phẩm</p>
               </CardContent>
             </Card>
             <Card>
@@ -261,9 +243,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{metrics.blogs}</div>
-                <p className="text-xs text-muted-foreground">
-                  Số bài viết blog
-                </p>
+                <p className="text-xs text-muted-foreground">Số bài viết blog</p>
               </CardContent>
             </Card>
           </div>
@@ -287,9 +267,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
-                        }
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
@@ -336,12 +314,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                 <CardTitle className="text-lg">Váy cưới</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-rose-600">
-                  {metrics.dresses}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Sản phẩm váy cưới
-                </p>
+                <div className="text-3xl font-bold text-rose-600">{metrics.dresses}</div>
+                <p className="text-sm text-muted-foreground">Sản phẩm váy cưới</p>
               </CardContent>
             </Card>
             <Card>
@@ -349,12 +323,8 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                 <CardTitle className="text-lg">Phụ kiện</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-blue-600">
-                  {metrics.accessories}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Sản phẩm phụ kiện
-                </p>
+                <div className="text-3xl font-bold text-blue-600">{metrics.accessories}</div>
+                <p className="text-sm text-muted-foreground">Sản phẩm phụ kiện</p>
               </CardContent>
             </Card>
             <Card>
@@ -365,9 +335,7 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                 <div className="text-3xl font-bold text-green-600">
                   {formatPrice(metrics.income)}
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Doanh thu hiện tại
-                </p>
+                <p className="text-sm text-muted-foreground">Doanh thu hiện tại</p>
               </CardContent>
             </Card>
           </div>

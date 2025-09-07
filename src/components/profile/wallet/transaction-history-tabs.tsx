@@ -1,53 +1,36 @@
-"use client";
-import { PagingComponent } from "@/components/paging-component";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+'use client';
+import { PagingComponent } from '@/components/paging-component';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { formatDateShort } from "@/lib/order-util";
-import { formatPrice } from "@/lib/products-utils";
-import { usePaging } from "@/providers/paging.provider";
-import { useLazyGetMyTransactionsQuery } from "@/services/apis";
-import {
-  ITransaction,
-  TransactionStatus,
-  TransactionType,
-} from "@/services/types";
-import {
-  ArrowDownLeft,
-  ArrowUpRight,
-  History,
-  Search,
-  SortAsc,
-  SortDesc,
-} from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { formatDateShort } from '@/lib/order-util';
+import { formatPrice } from '@/lib/products-utils';
+import { usePaging } from '@/providers/paging.provider';
+import { useLazyGetMyTransactionsQuery } from '@/services/apis';
+import { ITransaction, TransactionStatus, TransactionType } from '@/services/types';
+import { ArrowDownLeft, ArrowUpRight, History, Search, SortAsc, SortDesc } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 const getTransactionTypeLabel = (type: TransactionType): string => {
   switch (type) {
     case TransactionType.DEPOSIT:
-      return "Nạp tiền";
+      return 'Nạp tiền';
     case TransactionType.WITHDRAW:
-      return "Rút tiền";
+      return 'Rút tiền';
     case TransactionType.TRANSFER:
-      return "Chuyển tiền";
+      return 'Chuyển tiền';
     case TransactionType.RECEIVE:
-      return "Nhận tiền";
+      return 'Nhận tiền';
     case TransactionType.REFUND:
-      return "Hoàn tiền (Trừ)";
+      return 'Hoàn tiền (Trừ)';
     default:
       return type;
   }
@@ -56,17 +39,17 @@ const getTransactionTypeLabel = (type: TransactionType): string => {
 const getTransactionStatusLabel = (status: TransactionStatus): string => {
   switch (status) {
     case TransactionStatus.PENDING:
-      return "Đang chờ";
+      return 'Đang chờ';
     case TransactionStatus.COMPLETED:
-      return "Đã hoàn thành";
+      return 'Đã hoàn thành';
     case TransactionStatus.FAILED:
-      return "Thất bại";
+      return 'Thất bại';
     case TransactionStatus.CANCELLED:
-      return "Đã hủy";
+      return 'Đã hủy';
     case TransactionStatus.REFUNDED:
-      return "Đã hoàn tiền (Trừ)";
+      return 'Đã hoàn tiền (Trừ)';
     case TransactionStatus.DISPUTED:
-      return "Đang tranh chấp";
+      return 'Đang tranh chấp';
     default:
       return status;
   }
@@ -75,35 +58,31 @@ const getTransactionStatusLabel = (status: TransactionStatus): string => {
 const getStatusBadgeColor = (status: TransactionStatus): string => {
   switch (status) {
     case TransactionStatus.PENDING:
-      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case TransactionStatus.COMPLETED:
-      return "bg-green-100 text-green-800 border-green-200";
+      return 'bg-green-100 text-green-800 border-green-200';
     case TransactionStatus.FAILED:
-      return "bg-red-100 text-red-800 border-red-200";
+      return 'bg-red-100 text-red-800 border-red-200';
     case TransactionStatus.CANCELLED:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return 'bg-gray-100 text-gray-800 border-gray-200';
     case TransactionStatus.REFUNDED:
-      return "bg-red-100 text-red-800 border-red-200";
+      return 'bg-red-100 text-red-800 border-red-200';
     case TransactionStatus.DISPUTED:
-      return "bg-orange-100 text-orange-800 border-orange-200";
+      return 'bg-orange-100 text-orange-800 border-orange-200';
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return 'bg-gray-100 text-gray-800 border-gray-200';
   }
 };
 
 export const TransactionHistoryTabs = () => {
   const [trigger, { isLoading }] = useLazyGetMyTransactionsQuery();
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<
-    TransactionStatus | "all"
-  >("all");
-  const [selectedType, setSelectedType] = useState<TransactionType | "all">(
-    "all"
-  );
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedStatus, setSelectedStatus] = useState<TransactionStatus | 'all'>('all');
+  const [selectedType, setSelectedType] = useState<TransactionType | 'all'>('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [, setIsError] = useState<boolean>(false);
-  const [, setError] = useState<string>("");
+  const [, setError] = useState<string>('');
 
   const { setPaging, pageSize, pageIndex, resetPaging } = usePaging();
 
@@ -111,12 +90,12 @@ export const TransactionHistoryTabs = () => {
     try {
       const filters = [];
 
-      if (selectedStatus !== "all") {
+      if (selectedStatus !== 'all') {
         filters.push(`status:eq:${selectedStatus}`);
       }
 
       // Filter by type
-      if (selectedType !== "all") {
+      if (selectedType !== 'all') {
         filters.push(`type:eq:${selectedType}`);
       }
 
@@ -126,7 +105,7 @@ export const TransactionHistoryTabs = () => {
       }
 
       const { statusCode, message, items, ...paging } = await trigger({
-        filter: filters.join(","),
+        filter: filters.join(','),
         sort: `updatedAt:${sortOrder}`,
         page: pageIndex,
         size: pageSize,
@@ -139,14 +118,14 @@ export const TransactionHistoryTabs = () => {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
       } else {
         setIsError(true);
         setError(message);
       }
     } catch {
-      toast.error("Đã xảy ra lỗi khi tải dữ liệu giao dịch");
+      toast.error('Đã xảy ra lỗi khi tải dữ liệu giao dịch');
     }
   }, [
     selectedStatus,
@@ -177,24 +156,20 @@ export const TransactionHistoryTabs = () => {
                 <History className="h-5 w-5 text-blue-600" />
                 Lịch Sử Giao Dịch
               </CardTitle>
-              <CardDescription>
-                Xem lại lịch sử giao dịch của bạn
-              </CardDescription>
+              <CardDescription>Xem lại lịch sử giao dịch của bạn</CardDescription>
             </div>
             <Button
               variant="outline"
               size="sm"
-              onClick={() =>
-                setSortOrder(sortOrder === "desc" ? "asc" : "desc")
-              }
+              onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
               className="flex items-center gap-2"
             >
-              {sortOrder === "desc" ? (
+              {sortOrder === 'desc' ? (
                 <SortDesc className="h-4 w-4" />
               ) : (
                 <SortAsc className="h-4 w-4" />
               )}
-              {sortOrder === "desc" ? "Mới nhất" : "Cũ nhất"}
+              {sortOrder === 'desc' ? 'Mới nhất' : 'Cũ nhất'}
             </Button>
           </div>
 
@@ -214,9 +189,7 @@ export const TransactionHistoryTabs = () => {
             {/* Status Filter */}
             <Select
               value={selectedStatus}
-              onValueChange={(value) =>
-                setSelectedStatus(value as TransactionStatus | "all")
-              }
+              onValueChange={(value) => setSelectedStatus(value as TransactionStatus | 'all')}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Trạng thái" />
@@ -235,9 +208,7 @@ export const TransactionHistoryTabs = () => {
             {/* Type Filter */}
             <Select
               value={selectedType}
-              onValueChange={(value) =>
-                setSelectedType(value as TransactionType | "all")
-              }
+              onValueChange={(value) => setSelectedType(value as TransactionType | 'all')}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Loại giao dịch" />
@@ -264,9 +235,7 @@ export const TransactionHistoryTabs = () => {
           <div className="text-center py-8">
             <History className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <p className="text-gray-600">Không tìm thấy giao dịch nào</p>
-            <p className="text-sm text-gray-400">
-              Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
-            </p>
+            <p className="text-sm text-gray-400">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
           </div>
         ) : (
           transactions.map((transaction) => (
@@ -283,8 +252,8 @@ export const TransactionHistoryTabs = () => {
                       TransactionType.REFUND,
                     ].includes(transaction.type) ||
                     transaction.status === TransactionStatus.REFUNDED
-                      ? "bg-red-100"
-                      : "bg-green-100"
+                      ? 'bg-red-100'
+                      : 'bg-green-100'
                   }`}
                 >
                   {[
@@ -305,7 +274,7 @@ export const TransactionHistoryTabs = () => {
                     </p>
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusBadgeColor(
-                        transaction.status
+                        transaction.status,
                       )}`}
                     >
                       {getTransactionStatusLabel(transaction.status)}
@@ -314,20 +283,15 @@ export const TransactionHistoryTabs = () => {
 
                   <div className="space-y-1">
                     <p className="text-sm text-gray-500">
-                      Thời gian giao dịch:{" "}
-                      {formatDateShort(transaction.updatedAt)} -{" "}
-                      {new Date(transaction.updatedAt).toLocaleTimeString(
-                        "vi-VN",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        }
-                      )}
+                      Thời gian giao dịch: {formatDateShort(transaction.updatedAt)} -{' '}
+                      {new Date(transaction.updatedAt).toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                      })}
                     </p>
                     <p className="text-sm text-gray-500">
-                      Loại giao dịch:{" "}
-                      {getTransactionTypeLabel(transaction.type)}
+                      Loại giao dịch: {getTransactionTypeLabel(transaction.type)}
                       {(transaction.type === TransactionType.REFUND ||
                         transaction.status === TransactionStatus.REFUNDED) && (
                         <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
@@ -335,23 +299,19 @@ export const TransactionHistoryTabs = () => {
                         </span>
                       )}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      Người gửi: {transaction.from}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Người nhận: {transaction.to}
-                    </p>
+                    <p className="text-sm text-gray-500">Người gửi: {transaction.from}</p>
+                    <p className="text-sm text-gray-500">Người nhận: {transaction.to}</p>
                   </div>
 
                   <div className="mt-3 pt-2 border-t border-gray-100 space-y-1">
                     <p className="text-xs text-gray-400">
-                      Số dư khả dụng:{" "}
+                      Số dư khả dụng:{' '}
                       <span className="font-medium text-gray-600">
                         {formatPrice(transaction.availableBalanceSnapshot)}
                       </span>
                     </p>
                     <p className="text-xs text-gray-400">
-                      Số dư bị khóa:{" "}
+                      Số dư bị khóa:{' '}
                       <span className="font-medium text-gray-600">
                         {formatPrice(transaction.lockedBalanceSnapshot)}
                       </span>
@@ -377,9 +337,7 @@ export const TransactionHistoryTabs = () => {
                     <p className="text-2xl font-bold text-green-600">
                       + {formatPrice(transaction.amount)}
                     </p>
-                    <p className="text-xs text-green-500 font-medium">
-                      Tiền vào
-                    </p>
+                    <p className="text-xs text-green-500 font-medium">Tiền vào</p>
                   </div>
                 )}
 

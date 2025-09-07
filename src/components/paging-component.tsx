@@ -1,15 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { usePaging } from "@/providers/paging.provider";
+import { Button } from '@/components/ui/button';
+import { usePaging } from '@/providers/paging.provider';
 
 export const PagingComponent = () => {
-  const {
-    pageIndex,
-    totalPages,
-    hasNext,
-    goNext,
-    goPrevious,
-    gotoPage,
-  } = usePaging();
+  const { pageIndex, totalPages, hasNext, goNext, goPrevious, gotoPage } = usePaging();
 
   return (
     <div className="flex items-center justify-between mt-8">
@@ -17,12 +10,7 @@ export const PagingComponent = () => {
         Trang {pageIndex + 1} / {totalPages}
       </div>
       <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={pageIndex == 0}
-          onClick={goPrevious}
-        >
+        <Button variant="outline" size="sm" disabled={pageIndex == 0} onClick={goPrevious}>
           Trước
         </Button>
 
@@ -34,7 +22,7 @@ export const PagingComponent = () => {
             return (
               <Button
                 key={pageNum}
-                variant={pageNum === pageIndex ? "default" : "outline"}
+                variant={pageNum === pageIndex ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => gotoPage(pageNum)}
                 className="w-10"
@@ -45,12 +33,7 @@ export const PagingComponent = () => {
           })}
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={!hasNext}
-          onClick={goNext}
-        >
+        <Button variant="outline" size="sm" disabled={!hasNext} onClick={goNext}>
           Sau
         </Button>
       </div>

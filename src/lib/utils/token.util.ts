@@ -2,12 +2,12 @@ import {
   getFromLocalStorage,
   removeFromLocalStorage,
   setToLocalStorage,
-} from "@/lib/utils/local-storage.util";
+} from '@/lib/utils/local-storage.util';
 
 export const getAccessToken = () => {
-  const token = getFromLocalStorage<string>("accessToken");
+  const token = getFromLocalStorage<string>('accessToken');
 
-  if (token && typeof token === "string" && token.startsWith("eyJ")) {
+  if (token && typeof token === 'string' && token.startsWith('eyJ')) {
     return token;
   }
 
@@ -18,9 +18,9 @@ export const getAccessToken = () => {
 };
 
 export const getRefreshToken = () => {
-  const token = getFromLocalStorage<string>("refreshToken");
+  const token = getFromLocalStorage<string>('refreshToken');
 
-  if (token && typeof token === "string" && token.startsWith("eyJ")) {
+  if (token && typeof token === 'string' && token.startsWith('eyJ')) {
     return token;
   }
 
@@ -31,19 +31,19 @@ export const getRefreshToken = () => {
 };
 
 export const setAccessToken = (token: string) => {
-  setToLocalStorage<string>("accessToken", token);
+  setToLocalStorage<string>('accessToken', token);
 };
 
 export const setRefreshToken = (token: string) => {
-  setToLocalStorage<string>("refreshToken", token);
+  setToLocalStorage<string>('refreshToken', token);
 };
 
 export const delAccessToken = () => {
-  removeFromLocalStorage("accessToken");
+  removeFromLocalStorage('accessToken');
 };
 
 export const delRefreshToken = () => {
-  removeFromLocalStorage("refreshToken");
+  removeFromLocalStorage('refreshToken');
 };
 
 export const getTokens = () => {
@@ -66,21 +66,17 @@ export const delTokens = () => {
 export const cleanupCorruptTokens = () => {
   try {
     const rawAccessToken =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem("accessToken")
-        : null;
-    if (rawAccessToken && !rawAccessToken.startsWith("eyJ")) {
+      typeof window !== 'undefined' ? window.localStorage.getItem('accessToken') : null;
+    if (rawAccessToken && !rawAccessToken.startsWith('eyJ')) {
       delAccessToken();
     }
 
     const rawRefreshToken =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem("refreshToken")
-        : null;
-    if (rawRefreshToken && !rawRefreshToken.startsWith("eyJ")) {
+      typeof window !== 'undefined' ? window.localStorage.getItem('refreshToken') : null;
+    if (rawRefreshToken && !rawRefreshToken.startsWith('eyJ')) {
       delRefreshToken();
     }
   } catch (error) {
-    console.warn("Error during token cleanup:", error);
+    console.warn('Error during token cleanup:', error);
   }
 };

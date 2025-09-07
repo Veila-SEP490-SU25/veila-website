@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { getVietQRConfig } from "@/lib/utils";
-import { IBank } from "@/services/types/bank.type";
-import { useCallback, useEffect, useState } from "react";
-import { VietQR } from "vietqr";
+import { getVietQRConfig } from '@/lib/utils';
+import { IBank } from '@/services/types/bank.type';
+import { useCallback, useEffect, useState } from 'react';
+import { VietQR } from 'vietqr';
 
 interface IGetBanksResponse {
   code: string;
@@ -33,10 +33,10 @@ export const useVietQR = () => {
     bin: string,
     bankNumber: string,
     amount: number,
-    note?: string
+    note?: string,
   ) => {
     return `https://img.vietqr.io/image/${bin}-${bankNumber}-print.png?amount=${amount}${
-      note ? `&addInfo=${note}` : ""
+      note ? `&addInfo=${note}` : ''
     }`;
   };
 
@@ -45,7 +45,7 @@ export const useVietQR = () => {
       if (!bin || !banks) return null;
       return banks.find((bank) => bank.bin === bin) || null;
     },
-    [banks]
+    [banks],
   );
 
   useEffect(() => {

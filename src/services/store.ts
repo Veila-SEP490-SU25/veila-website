@@ -22,9 +22,9 @@ import {
   userApi,
   vonageApi,
   walletApi,
-} from "@/services/apis";
-import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
+} from '@/services/apis';
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
 const store = configureStore({
   reducer: {
@@ -76,7 +76,7 @@ const store = configureStore({
       walletApi.middleware,
       localeApi.middleware,
       membershipApi.middleware,
-      vonageApi.middleware
+      vonageApi.middleware,
     ),
 });
 

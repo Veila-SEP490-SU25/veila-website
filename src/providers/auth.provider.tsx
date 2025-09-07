@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   useGoogleAuthMutation,
@@ -7,8 +7,8 @@ import {
   useLogoutMutation,
   useRequestOtpMutation,
   useVerifyOtpMutation,
-} from "@/services/apis";
-import { IGoogleAuth, ILogin, IUser, IVerifyOtp } from "@/services/types";
+} from '@/services/apis';
+import { IGoogleAuth, ILogin, IUser, IVerifyOtp } from '@/services/types';
 import {
   delTokens,
   getAccessToken,
@@ -18,8 +18,8 @@ import {
   setTokens,
   setToLocalStorage,
   cleanupCorruptTokens,
-} from "@/lib/utils/index";
-import { usePathname, useRouter } from "next/navigation";
+} from '@/lib/utils/index';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
@@ -28,8 +28,8 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { toast } from "sonner";
+} from 'react';
+import { toast } from 'sonner';
 
 type AuthContextType = {
   login: (body: ILogin) => Promise<void>;
@@ -49,7 +49,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth cần được sử dụng trong AuthProvider.");
+    throw new Error('useAuth cần được sử dụng trong AuthProvider.');
   }
   return context;
 };
@@ -63,9 +63,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = () => {
       cleanupCorruptTokens();
 
-      const storedIsAuthenticated =
-        getFromLocalStorage<boolean>("isAuthenticated") || false;
-      const storedUser = getFromLocalStorage<IUser>("user");
+      const storedIsAuthenticated = getFromLocalStorage<boolean>('isAuthenticated') || false;
+      const storedUser = getFromLocalStorage<IUser>('user');
       const storedAccessToken = getAccessToken();
       const storedRefreshToken = getRefreshToken();
 
@@ -81,12 +80,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
-  const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(
-    null
-  );
-  const [currentRefreshToken, setCurrentRefreshToken] = useState<string | null>(
-    null
-  );
+  const [currentAccessToken, setCurrentAccessToken] = useState<string | null>(null);
+  const [currentRefreshToken, setCurrentRefreshToken] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
   const authCheckRef = useRef(false);
@@ -97,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setCurrentAccessToken(accessToken);
       setCurrentRefreshToken(refreshToken);
     },
-    [setCurrentAccessToken, setCurrentRefreshToken]
+    [setCurrentAccessToken, setCurrentRefreshToken],
   );
 
   const revokeTokens = useCallback(() => {
@@ -107,12 +102,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [setCurrentAccessToken, setCurrentRefreshToken]);
 
   const [loginMutation, { isLoading: isLoginLoading }] = useLoginMutation();
-  const [verifyOtpMutation, { isLoading: isVerifyOtpLoading }] =
-    useVerifyOtpMutation();
+  const [verifyOtpMutation, { isLoading: isVerifyOtpLoading }] = useVerifyOtpMutation();
   const [logoutMutation, { isLoading: isLogoutLoading }] = useLogoutMutation();
   const [getMeQuery, { isLoading: isGetMeLoading }] = useLazyGetMeQuery();
-  const [loginGoogleMutation, { isLoading: isGoogleLading }] =
-    useGoogleAuthMutation();
+  const [loginGoogleMutation, { isLoading: isGoogleLading }] = useGoogleAuthMutation();
 
   const [requestOtpMutation] = useRequestOtpMutation();
 
@@ -125,11 +118,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           authCheckRef.current = false;
           saveTokens(accessToken, refreshToken);
           setIsAuthenticated(true);
-          setToLocalStorage("isAuthenticated", true);
-          toast.success("Đăng nhập thành công.", {
-            description: "Chào mừng bạn quay trở lại.",
+          setToLocalStorage('isAuthenticated', true);
+          toast.success('Đăng nhập thành công.', {
+            description: 'Chào mừng bạn quay trở lại.',
           });
-          router.push("/");
+          router.push('/');
           return;
         } else if (statusCode === 401) {
           const { item, statusCode } = await requestOtpMutation({
@@ -138,32 +131,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (statusCode === 200) {
             router.push(`/verify-otp?userId=${item}&email=${body.email}`);
           } else {
-            toast.error("Đăng nhập thất bại.", {
-              description: "Có lỗi xảy ra trong quá trình đăng nhập.",
+            toast.error('Đăng nhập thất bại.', {
+              description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
             });
             return;
           }
         } else {
-          toast.error("Đăng nhập thất bại.", {
-            description: "Có lỗi xảy ra trong quá trình đăng nhập.",
+          toast.error('Đăng nhập thất bại.', {
+            description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
           });
           return;
         }
       } catch {
-        toast.error("Đăng nhập thất bại.", {
-          description:
-            "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
+        toast.error('Đăng nhập thất bại.', {
+          description: 'Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.',
         });
         return;
       }
     },
-    [
-      loginGoogleMutation,
-      saveTokens,
-      setIsAuthenticated,
-      router,
-      requestOtpMutation,
-    ]
+    [loginGoogleMutation, saveTokens, setIsAuthenticated, router, requestOtpMutation],
   );
 
   const login = useCallback(
@@ -175,11 +161,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           authCheckRef.current = false;
           saveTokens(accessToken, refreshToken);
           setIsAuthenticated(true);
-          setToLocalStorage("isAuthenticated", true);
-          toast.success("Đăng nhập thành công.", {
-            description: "Chào mừng bạn quay trở lại.",
+          setToLocalStorage('isAuthenticated', true);
+          toast.success('Đăng nhập thành công.', {
+            description: 'Chào mừng bạn quay trở lại.',
           });
-          router.push("/");
+          router.push('/');
           return;
         } else if (statusCode === 401) {
           const { item, statusCode } = await requestOtpMutation({
@@ -188,26 +174,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (statusCode === 200) {
             router.push(`/verify-otp?userId=${item}&email=${body.email}`);
           } else {
-            toast.error("Đăng nhập thất bại.", {
-              description: "Có lỗi xảy ra trong quá trình đăng nhập.",
+            toast.error('Đăng nhập thất bại.', {
+              description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
             });
             return;
           }
         } else {
-          toast.error("Đăng nhập thất bại.", {
-            description: "Có lỗi xảy ra trong quá trình đăng nhập.",
+          toast.error('Đăng nhập thất bại.', {
+            description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
           });
           return;
         }
       } catch {
-        toast.error("Đăng nhập thất bại.", {
-          description:
-            "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
+        toast.error('Đăng nhập thất bại.', {
+          description: 'Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.',
         });
         return;
       }
     },
-    [loginMutation, saveTokens, setIsAuthenticated, router, requestOtpMutation]
+    [loginMutation, saveTokens, setIsAuthenticated, router, requestOtpMutation],
   );
 
   const verifyOtp = useCallback(
@@ -219,27 +204,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           authCheckRef.current = false;
           saveTokens(accessToken, refreshToken);
           setIsAuthenticated(true);
-          setToLocalStorage("isAuthenticated", true);
-          toast.success("Đăng nhập thành công.", {
-            description: "Chào mừng bạn quay trở lại.",
+          setToLocalStorage('isAuthenticated', true);
+          toast.success('Đăng nhập thành công.', {
+            description: 'Chào mừng bạn quay trở lại.',
           });
-          router.push("/");
+          router.push('/');
           return;
         } else {
-          toast.error("Đăng nhập thất bại.", {
-            description: "Có lỗi xảy ra trong quá trình đăng nhập.",
+          toast.error('Đăng nhập thất bại.', {
+            description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
           });
           return;
         }
       } catch {
-        toast.error("Đăng nhập thất bại.", {
-          description:
-            "Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.",
+        toast.error('Đăng nhập thất bại.', {
+          description: 'Có lỗi xảy ra trong quá tình đăng nhập. Vui lòng thử lại sau ít phút.',
         });
         return;
       }
     },
-    [verifyOtpMutation, saveTokens, setIsAuthenticated, router]
+    [verifyOtpMutation, saveTokens, setIsAuthenticated, router],
   );
 
   const logout = useCallback(async () => {
@@ -247,40 +231,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { statusCode } = await logoutMutation().unwrap();
       revokeTokens();
       setIsAuthenticated(false);
-      removeFromLocalStorage("isAuthenticated");
+      removeFromLocalStorage('isAuthenticated');
       setCurrentUser(null);
-      removeFromLocalStorage("user");
+      removeFromLocalStorage('user');
 
       if (statusCode === 200) {
-        toast.success("Đăng xuất thành công.", {
-          description: "Hẹn gặp lại bạn lần sau.",
+        toast.success('Đăng xuất thành công.', {
+          description: 'Hẹn gặp lại bạn lần sau.',
         });
       } else {
-        toast.success("Đăng xuất thành công.", {
-          description: "Phiên đăng nhập đã hết hạn.",
+        toast.success('Đăng xuất thành công.', {
+          description: 'Phiên đăng nhập đã hết hạn.',
         });
       }
 
-      router.push("/");
+      router.push('/');
     } catch {
       revokeTokens();
       setIsAuthenticated(false);
-      removeFromLocalStorage("isAuthenticated");
+      removeFromLocalStorage('isAuthenticated');
       setCurrentUser(null);
-      removeFromLocalStorage("user");
-      toast.success("Đăng xuất thành công.", {
-        description: "Phiên đăng nhập đã được kết thúc.",
+      removeFromLocalStorage('user');
+      toast.success('Đăng xuất thành công.', {
+        description: 'Phiên đăng nhập đã được kết thúc.',
       });
 
-      router.push("/");
+      router.push('/');
     }
-  }, [
-    logoutMutation,
-    revokeTokens,
-    setIsAuthenticated,
-    setCurrentUser,
-    router,
-  ]);
+  }, [logoutMutation, revokeTokens, setIsAuthenticated, setCurrentUser, router]);
 
   const reloadProfile = useCallback(() => {
     authCheckRef.current = false;
@@ -299,29 +277,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { item, statusCode } = await getMeQuery().unwrap();
         if (statusCode === 200) {
           setCurrentUser(item);
-          setToLocalStorage("user", item);
-          setToLocalStorage("isAuthenticated", true);
+          setToLocalStorage('user', item);
+          setToLocalStorage('isAuthenticated', true);
           setIsAuthenticated(true);
           authCheckRef.current = true;
         } else {
           authCheckRef.current = false;
           revokeTokens();
           setIsAuthenticated(false);
-          removeFromLocalStorage("isAuthenticated");
+          removeFromLocalStorage('isAuthenticated');
           setCurrentUser(null);
-          removeFromLocalStorage("user");
+          removeFromLocalStorage('user');
         }
       } catch (error) {
-        console.error("Auth check error:", error);
-        toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
-          description:
-            "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
+        console.error('Auth check error:', error);
+        toast.error('Có lỗi xảy ra trong quá trình xác thực.', {
+          description: 'Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.',
         });
         revokeTokens();
         setIsAuthenticated(false);
-        removeFromLocalStorage("isAuthenticated");
+        removeFromLocalStorage('isAuthenticated');
         setCurrentUser(null);
-        removeFromLocalStorage("user");
+        removeFromLocalStorage('user');
       }
     };
 

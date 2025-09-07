@@ -1,19 +1,15 @@
-import { DeleteUserDialog } from "@/components/staff/users/delete-user-dialog";
-import { RestoreUserDialog } from "@/components/staff/users/restore-user-dialog";
-import { UpdateUserDialog } from "@/components/staff/users/update-user-dialog";
-import { UpdateUserStatusDialog } from "@/components/staff/users/update-user-status-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-import { formatDate } from "@/lib/order-util";
-import { cn } from "@/lib/utils";
-import { formatPhoneNumber } from "@/lib/utils/user-utils";
-import { IUser, UserRole, UserStatus } from "@/services/types";
+import { DeleteUserDialog } from '@/components/staff/users/delete-user-dialog';
+import { RestoreUserDialog } from '@/components/staff/users/restore-user-dialog';
+import { UpdateUserDialog } from '@/components/staff/users/update-user-dialog';
+import { UpdateUserStatusDialog } from '@/components/staff/users/update-user-status-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { formatDate } from '@/lib/order-util';
+import { cn } from '@/lib/utils';
+import { formatPhoneNumber } from '@/lib/utils/user-utils';
+import { IUser, UserRole, UserStatus } from '@/services/types';
 import {
   ArchiveRestore,
   Ban,
@@ -25,8 +21,8 @@ import {
   Shield,
   ShieldCheck,
   Trash,
-} from "lucide-react";
-import Image from "next/image";
+} from 'lucide-react';
+import Image from 'next/image';
 
 interface UserCardProps {
   user: IUser;
@@ -49,9 +45,7 @@ const StatusBadge = ({ status }: { status: UserStatus }) => {
       );
     case UserStatus.BANNED:
       return (
-        <Badge className="bg-rose-500/10 text-rose-500 border-rose-500 rounded-full">
-          Bị cấm
-        </Badge>
+        <Badge className="bg-rose-500/10 text-rose-500 border-rose-500 rounded-full">Bị cấm</Badge>
       );
     case UserStatus.SUSPENDED:
       return (
@@ -74,9 +68,7 @@ const RoleBadge = ({ role }: { role: UserRole }) => {
       );
     case UserRole.STAFF:
       return (
-        <Badge className="bg-sky-500/10 text-sky-500 border-sky-500 rounded-full">
-          Nhân viên
-        </Badge>
+        <Badge className="bg-sky-500/10 text-sky-500 border-sky-500 rounded-full">Nhân viên</Badge>
       );
     case UserRole.CUSTOMER:
       return (
@@ -120,7 +112,7 @@ export const UserCard = ({ user, onUpdate }: UserCardProps) => {
             </DeleteUserDialog>
           )}
           <Image
-            src={user.coverUrl || "/placeholder.svg"}
+            src={user.coverUrl || '/placeholder.svg'}
             alt={user.username}
             layout="responsive"
             width={500}
@@ -129,14 +121,14 @@ export const UserCard = ({ user, onUpdate }: UserCardProps) => {
           />
           <div
             className={cn(
-              "w-1/3 aspect-square absolute z-10 rounded-full border-4",
-              "overflow-hidden bottom-0 left-1/2 translate-y-1/2 -translate-x-1/2",
-              `border-white`
+              'w-1/3 aspect-square absolute z-10 rounded-full border-4',
+              'overflow-hidden bottom-0 left-1/2 translate-y-1/2 -translate-x-1/2',
+              `border-white`,
             )}
           >
             <Avatar className="size-full relative">
               <AvatarImage
-                src={user.avatarUrl || ""}
+                src={user.avatarUrl || ''}
                 alt="Shop Avatar"
                 className="size-full object-cover"
               />
@@ -150,12 +142,10 @@ export const UserCard = ({ user, onUpdate }: UserCardProps) => {
           <CardTitle className="text-center">
             {user.firstName} {user.middleName} {user.lastName}
           </CardTitle>
-          <CardDescription className="text-center">
-            {user.username}
-          </CardDescription>
+          <CardDescription className="text-center">{user.username}</CardDescription>
         </div>
         <div className="w-full items-center justify-center gap-1 flex">
-          <RoleBadge role={user.role} /> <StatusBadge status={user.status} />{" "}
+          <RoleBadge role={user.role} /> <StatusBadge status={user.status} />{' '}
           {user.isVerified ? (
             <ShieldCheck className="size-4 text-emerald-500" />
           ) : (
@@ -196,17 +186,13 @@ export const UserCard = ({ user, onUpdate }: UserCardProps) => {
         </div>
         <div className="flex items-center justify-center px-4 gap-2">
           <UpdateUserDialog onUpdate={onUpdate} user={user}>
-            <Button
-              variant="outline"
-              className=" flex items-center justify-center gap-2"
-            >
+            <Button variant="outline" className=" flex items-center justify-center gap-2">
               <Edit3 className="size-4" />
               Cập nhật
             </Button>
           </UpdateUserDialog>
 
-          {user.status === UserStatus.ACTIVE ||
-          user.status === UserStatus.INACTIVE ? (
+          {user.status === UserStatus.ACTIVE || user.status === UserStatus.INACTIVE ? (
             <div className="flex items-center justify-center gap-2">
               <UpdateUserStatusDialog
                 user={user}

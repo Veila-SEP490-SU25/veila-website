@@ -1,14 +1,7 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { usePathname } from 'next/navigation';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 
 type PagingContextType = {
   pageIndex: number;
@@ -26,7 +19,7 @@ type PagingContextType = {
     totalItems: number,
     totalPages: number,
     hasNext: boolean,
-    hasPrevious: boolean
+    hasPrevious: boolean,
   ) => void;
   resetPaging: () => void;
 };
@@ -36,7 +29,7 @@ const PagingContext = createContext<PagingContextType | undefined>(undefined);
 export const usePaging = () => {
   const context = useContext(PagingContext);
   if (!context) {
-    throw new Error("usePaging must be used within a PagingProvider");
+    throw new Error('usePaging must be used within a PagingProvider');
   }
   return context;
 };
@@ -57,7 +50,7 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
       totalItems: number,
       totalPages: number,
       hasNext: boolean,
-      hasPrevious: boolean
+      hasPrevious: boolean,
     ) => {
       setPageIndex(pageIndex);
       setPageSize(pageSize);
@@ -66,14 +59,7 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
       setHasNext(hasNext);
       setHasPrevious(hasPrevious);
     },
-    [
-      setHasNext,
-      setHasPrevious,
-      setPageIndex,
-      setPageSize,
-      setTotalItems,
-      setTotalPages,
-    ]
+    [setHasNext, setHasPrevious, setPageIndex, setPageSize, setTotalItems, setTotalPages],
   );
 
   const resetPaging = useCallback(() => {
@@ -83,14 +69,7 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
     setTotalPages(0);
     setHasNext(false);
     setHasPrevious(false);
-  }, [
-    setHasNext,
-    setHasPrevious,
-    setPageIndex,
-    setPageSize,
-    setTotalItems,
-    setTotalPages,
-  ]);
+  }, [setHasNext, setHasPrevious, setPageIndex, setPageSize, setTotalItems, setTotalPages]);
 
   const goNext = useCallback(() => {
     if (hasNext) {
@@ -110,7 +89,7 @@ export const PagingProvider = ({ children }: { children: ReactNode }) => {
         setPageIndex(page);
       }
     },
-    [totalPages, setPageIndex]
+    [totalPages, setPageIndex],
   );
 
   useEffect(() => {

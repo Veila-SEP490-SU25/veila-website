@@ -1,8 +1,8 @@
-"use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+'use client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,27 +10,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
-import {
-  getStatusColor,
-  getStatusText,
-  getTypeColor,
-  getTypeText,
-} from "@/lib/order-util";
-import { useLazyGetOrdersQuery } from "@/services/apis";
-import {
-  IOrder,
-  IPaginationResponse,
-} from "@/services/types";
+} from '@/components/ui/select';
+import { useDebounce } from '@/hooks/use-debounce';
+import { getStatusColor, getStatusText, getTypeColor, getTypeText } from '@/lib/order-util';
+import { useLazyGetOrdersQuery } from '@/services/apis';
+import { IOrder, IPaginationResponse } from '@/services/types';
 import {
   ChevronLeft,
   ChevronRight,
@@ -43,10 +35,10 @@ import {
   Package,
   Phone,
   Search,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export const MyOrders = () => {
   const router = useRouter();
@@ -61,12 +53,12 @@ export const MyOrders = () => {
     totalPages: 0,
   });
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [dateFilter, setDateFilter] = useState<
-    "all" | "today" | "week" | "month" | "custom"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month' | 'custom'>(
+    'all',
+  );
   const [customDateRange, setCustomDateRange] = useState<{
     from: Date | null;
     to: Date | null;
@@ -83,34 +75,30 @@ export const MyOrders = () => {
     }
 
     // Status filter
-    if (statusFilter !== "all") {
+    if (statusFilter !== 'all') {
       filters.push(`status:eq:${statusFilter}`);
     }
 
     // Date filter
-    if (dateFilter !== "all") {
+    if (dateFilter !== 'all') {
       const now = new Date();
       let fromDate: Date | null = null;
       let toDate: Date | null = null;
 
       switch (dateFilter) {
-        case "today":
+        case 'today':
           fromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-          toDate = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate() + 1
-          );
+          toDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
           break;
-        case "week":
+        case 'week':
           fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
           toDate = now;
           break;
-        case "month":
+        case 'month':
           fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
           toDate = now;
           break;
-        case "custom":
+        case 'custom':
           if (customDateRange.from && customDateRange.to) {
             fromDate = customDateRange.from;
             toDate = customDateRange.to;
@@ -124,7 +112,7 @@ export const MyOrders = () => {
       }
     }
 
-    return filters.join(",");
+    return filters.join(',');
   }, [debouncedSearchTerm, statusFilter, dateFilter, customDateRange]);
 
   const handlePageChange = (newPageIndex: number) => {
@@ -149,7 +137,7 @@ export const MyOrders = () => {
         page: paging.pageIndex,
         size: paging.pageSize,
         filter: buildFilterString(),
-        sort: "createdAt:desc", // Sort by creation date, newest first
+        sort: 'createdAt:desc', // Sort by creation date, newest first
       }).unwrap();
 
       if (statusCode === 200) {
@@ -162,40 +150,34 @@ export const MyOrders = () => {
           totalPages: pagination.totalPages,
         }));
       } else {
-        toast.error("Không thể tải danh sách đơn hàng", {
+        toast.error('Không thể tải danh sách đơn hàng', {
           description: message,
         });
       }
     } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error("Đã xảy ra lỗi khi tải danh sách đơn hàng");
+      console.error('Error fetching orders:', error);
+      toast.error('Đã xảy ra lỗi khi tải danh sách đơn hàng');
     }
   }, [getMyOrders, paging.pageIndex, paging.pageSize, buildFilterString]);
 
   useEffect(() => {
     fetchOrders();
-  }, [
-    paging.pageIndex,
-    paging.pageSize,
-    debouncedSearchTerm,
-    statusFilter,
-    fetchOrders,
-  ]);
+  }, [paging.pageIndex, paging.pageSize, debouncedSearchTerm, statusFilter, fetchOrders]);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
     }).format(price);
   };
 
   const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(date).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
@@ -219,12 +201,8 @@ export const MyOrders = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Quản lý đơn hàng
-          </h1>
-          <p className="text-muted-foreground">
-            Theo dõi và quản lý tất cả đơn hàng của cửa hàng
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">Quản lý đơn hàng</h1>
+          <p className="text-muted-foreground">Theo dõi và quản lý tất cả đơn hàng của cửa hàng</p>
         </div>
       </div>
 
@@ -265,9 +243,7 @@ export const MyOrders = () => {
 
               <Select
                 value={dateFilter}
-                onValueChange={(
-                  value: "all" | "today" | "week" | "month" | "custom"
-                ) => {
+                onValueChange={(value: 'all' | 'today' | 'week' | 'month' | 'custom') => {
                   setDateFilter(value);
                   setPaging((prev) => ({ ...prev, pageIndex: 0 })); // Reset to first page
                 }}
@@ -284,19 +260,15 @@ export const MyOrders = () => {
                 </SelectContent>
               </Select>
 
-              {dateFilter === "custom" && (
+              {dateFilter === 'custom' && (
                 <div className="flex items-center gap-2">
                   <Input
                     type="date"
                     value={
-                      customDateRange.from
-                        ? customDateRange.from.toISOString().split("T")[0]
-                        : ""
+                      customDateRange.from ? customDateRange.from.toISOString().split('T')[0] : ''
                     }
                     onChange={(e) => {
-                      const date = e.target.value
-                        ? new Date(e.target.value)
-                        : null;
+                      const date = e.target.value ? new Date(e.target.value) : null;
                       setCustomDateRange((prev) => ({
                         ...prev,
                         from: date,
@@ -308,15 +280,9 @@ export const MyOrders = () => {
                   />
                   <Input
                     type="date"
-                    value={
-                      customDateRange.to
-                        ? customDateRange.to.toISOString().split("T")[0]
-                        : ""
-                    }
+                    value={customDateRange.to ? customDateRange.to.toISOString().split('T')[0] : ''}
                     onChange={(e) => {
-                      const date = e.target.value
-                        ? new Date(e.target.value)
-                        : null;
+                      const date = e.target.value ? new Date(e.target.value) : null;
                       setCustomDateRange((prev) => ({
                         ...prev,
                         to: date,
@@ -327,7 +293,7 @@ export const MyOrders = () => {
                     placeholder="Đến ngày"
                     min={
                       customDateRange.from
-                        ? customDateRange.from.toISOString().split("T")[0]
+                        ? customDateRange.from.toISOString().split('T')[0]
                         : undefined
                     }
                   />
@@ -337,9 +303,9 @@ export const MyOrders = () => {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setSearchTerm("");
-                  setStatusFilter("all");
-                  setDateFilter("all");
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                  setDateFilter('all');
                   setCustomDateRange({ from: null, to: null });
                   setPaging((prev) => ({ ...prev, pageIndex: 0 }));
                 }}
@@ -358,19 +324,14 @@ export const MyOrders = () => {
           <Card>
             <CardContent className="p-12 text-center">
               <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Không có đơn hàng nào
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Không có đơn hàng nào</h3>
               <p className="text-gray-600">Chưa có đơn hàng nào được tạo</p>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <Card
-                key={order.id}
-                className="hover:shadow-md transition-shadow relative"
-              >
+              <Card key={order.id} className="hover:shadow-md transition-shadow relative">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 space-y-4">
@@ -378,16 +339,10 @@ export const MyOrders = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2">
-                            <Badge
-                              className={getTypeColor(order.type)}
-                              variant="outline"
-                            >
+                            <Badge className={getTypeColor(order.type)} variant="outline">
                               {getTypeText(order.type)}
                             </Badge>
-                            <Badge
-                              className={getStatusColor(order.status)}
-                              variant="outline"
-                            >
+                            <Badge className={getStatusColor(order.status)} variant="outline">
                               {getStatusText(order.status)}
                             </Badge>
                             <h3 className="font-semibold text-lg">
@@ -399,9 +354,7 @@ export const MyOrders = () => {
                           <p className="text-2xl font-bold text-rose-600">
                             {formatPrice(order.amount)}
                           </p>
-                          <p className="text-sm text-gray-600">
-                            {formatDate(order.createdAt)}
-                          </p>
+                          <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
 
@@ -409,19 +362,13 @@ export const MyOrders = () => {
                       <div className="flex items-center gap-6">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage
-                              src={
-                                order.customer.avatarUrl || "/placeholder.svg"
-                              }
-                            />
+                            <AvatarImage src={order.customer.avatarUrl || '/placeholder.svg'} />
                             <AvatarFallback>
-                              {order.customer.firstName?.charAt(0) || "U"}
+                              {order.customer.firstName?.charAt(0) || 'U'}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium">
-                              {order.customer.firstName}
-                            </p>
+                            <p className="font-medium">{order.customer.firstName}</p>
                             <div className="flex items-center gap-4 text-sm text-gray-600">
                               <div className="flex items-center gap-1">
                                 <Phone className="h-3 w-3" />
@@ -442,9 +389,7 @@ export const MyOrders = () => {
                           <Clock className="h-4 w-4 text-gray-400" />
                           <div>
                             <p className="text-gray-600">Ngày giao hàng</p>
-                            <p className="font-medium">
-                              {formatDate(order.dueDate)}
-                            </p>
+                            <p className="font-medium">{formatDate(order.dueDate)}</p>
                           </div>
                         </div>
                         {order.returnDate && (
@@ -452,9 +397,7 @@ export const MyOrders = () => {
                             <Clock className="h-4 w-4 text-gray-400" />
                             <div>
                               <p className="text-gray-600">Ngày trả</p>
-                              <p className="font-medium">
-                                {formatDate(order.returnDate)}
-                              </p>
+                              <p className="font-medium">{formatDate(order.returnDate)}</p>
                             </div>
                           </div>
                         )}
@@ -462,9 +405,7 @@ export const MyOrders = () => {
                           <MapPin className="h-4 w-4 text-gray-400" />
                           <div className="w-full">
                             <p className="text-gray-600">Địa chỉ giao hàng</p>
-                            <p className="font-medium truncate max-w-full">
-                              {order.address}
-                            </p>
+                            <p className="font-medium truncate max-w-full">{order.address}</p>
                           </div>
                         </div>
                       </div>
@@ -485,7 +426,7 @@ export const MyOrders = () => {
                             onClick={() => {
                               // Tạo chat với khách hàng
                               router.push(
-                                `/chat?userId=${order.customer.id}&userName=${order.customer.firstName}`
+                                `/chat?userId=${order.customer.id}&userName=${order.customer.firstName}`,
                               );
                             }}
                           >
@@ -493,9 +434,7 @@ export const MyOrders = () => {
                             Nhắn tin khách hàng
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() =>
-                              router.push(`/profile/orders/${order.id}`)
-                            }
+                            onClick={() => router.push(`/profile/orders/${order.id}`)}
                           >
                             <Eye className="h-4 w-4 mr-2" />
                             Xem chi tiết
@@ -518,19 +457,13 @@ export const MyOrders = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">
-                  Hiển thị {paging.pageIndex * paging.pageSize + 1} -{" "}
-                  {Math.min(
-                    (paging.pageIndex + 1) * paging.pageSize,
-                    paging.totalItems
-                  )}{" "}
-                  của {paging.totalItems} đơn hàng
+                  Hiển thị {paging.pageIndex * paging.pageSize + 1} -{' '}
+                  {Math.min((paging.pageIndex + 1) * paging.pageSize, paging.totalItems)} của{' '}
+                  {paging.totalItems} đơn hàng
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Select
-                  value={paging.pageSize.toString()}
-                  onValueChange={handlePageSizeChange}
-                >
+                <Select value={paging.pageSize.toString()} onValueChange={handlePageSizeChange}>
                   <SelectTrigger className="w-[100px]">
                     <SelectValue />
                   </SelectTrigger>

@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import { LoadingItem } from "@/components/loading-item";
-import { PagingComponent } from "@/components/paging-component";
-import { AccessoryDetailDialog } from "@/components/shops/my/accessories/accessory-detail-dialog";
-import { CreateAccessoryDialog } from "@/components/shops/my/accessories/create-accessosy-dialog";
-import { DeleteAccessoryDialog } from "@/components/shops/my/accessories/delete-accessory-dialog";
-import { UpdateAccessoryDialog } from "@/components/shops/my/accessories/update-accesssory-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { LoadingItem } from '@/components/loading-item';
+import { PagingComponent } from '@/components/paging-component';
+import { AccessoryDetailDialog } from '@/components/shops/my/accessories/accessory-detail-dialog';
+import { CreateAccessoryDialog } from '@/components/shops/my/accessories/create-accessosy-dialog';
+import { DeleteAccessoryDialog } from '@/components/shops/my/accessories/delete-accessory-dialog';
+import { UpdateAccessoryDialog } from '@/components/shops/my/accessories/update-accesssory-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -33,20 +33,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useDebounce } from "@/hooks/use-debounce";
+} from '@/components/ui/table';
+import { useDebounce } from '@/hooks/use-debounce';
 import {
   accessoryStatusColors,
   accessoryStatusLabels,
   formatPrice,
   getCoverImage,
-} from "@/lib/products-utils";
-import { usePaging } from "@/providers/paging.provider";
-import {
-  useLazyGetMyShopAccessoriesQuery,
-  useUpdateAccessoryMutation,
-} from "@/services/apis";
-import { IAccessory, AccessoryStatus } from "@/services/types";
+} from '@/lib/products-utils';
+import { usePaging } from '@/providers/paging.provider';
+import { useLazyGetMyShopAccessoriesQuery, useUpdateAccessoryMutation } from '@/services/apis';
+import { IAccessory, AccessoryStatus } from '@/services/types';
 import {
   AlertCircleIcon,
   Edit,
@@ -59,19 +56,18 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
-} from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export const ShopAccessoriesTabs = () => {
   const [accessories, setAccessories] = useState<IAccessory[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [getAccessories, { isLoading }] = useLazyGetMyShopAccessoriesQuery();
-  const [updateAccessory, { isLoading: isUpdating }] =
-    useUpdateAccessoryMutation();
+  const [updateAccessory, { isLoading: isUpdating }] = useUpdateAccessoryMutation();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [updateTrigger, setUpdateTrigger] = useState<number>(0);
 
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
@@ -79,12 +75,12 @@ export const ShopAccessoriesTabs = () => {
 
   const fetchAccessories = useCallback(async () => {
     try {
-      let filter = "";
+      let filter = '';
       if (debouncedSearchTerm) {
         filter += `name:like:${debouncedSearchTerm}`;
       }
-      if (statusFilter !== "ALL") {
-        if (filter) filter += ",";
+      if (statusFilter !== 'ALL') {
+        if (filter) filter += ',';
         filter += `status:eq:${statusFilter}`;
       }
 
@@ -102,14 +98,14 @@ export const ShopAccessoriesTabs = () => {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
       } else {
         setIsError(true);
         setError(message);
       }
     } catch {
-      toast.error("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
+      toast.error('Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng');
     }
   }, [
     debouncedSearchTerm,
@@ -130,43 +126,35 @@ export const ShopAccessoriesTabs = () => {
 
   useEffect(() => {
     fetchAccessories();
-  }, [
-    debouncedSearchTerm,
-    statusFilter,
-    pageSize,
-    pageIndex,
-    fetchAccessories,
-  ]);
+  }, [debouncedSearchTerm, statusFilter, pageSize, pageIndex, fetchAccessories]);
 
   const handleStatusUpdate = useCallback(
     async (accessoryId: string, newStatus: string, accessory: IAccessory) => {
       try {
         const { statusCode, message } = await updateAccessory({
           id: accessoryId,
-          categoryId: accessory.categoryId || "", // Ensure it's a string
+          categoryId: accessory.categoryId || '', // Ensure it's a string
           name: accessory.name,
-          description: accessory.description || "",
+          description: accessory.description || '',
           sellPrice:
-            typeof accessory.sellPrice === "string"
+            typeof accessory.sellPrice === 'string'
               ? parseFloat(accessory.sellPrice) || 0
               : accessory.sellPrice,
           rentalPrice:
-            typeof accessory.rentalPrice === "string"
+            typeof accessory.rentalPrice === 'string'
               ? parseFloat(accessory.rentalPrice) || 0
               : accessory.rentalPrice,
           isSellable: accessory.isSellable,
           isRentable: accessory.isRentable,
           status: newStatus as AccessoryStatus,
-          images: accessory.images || "",
+          images: accessory.images || '',
         }).unwrap();
         if (statusCode === 200) {
           setAccessories((prevAccessories) => {
             const updatedAccessories = prevAccessories.map((a) =>
-              a.id === accessoryId
-                ? { ...a, status: newStatus as AccessoryStatus }
-                : a
+              a.id === accessoryId ? { ...a, status: newStatus as AccessoryStatus } : a,
             );
-            console.log("🔄 Updating accessory status:", {
+            console.log('🔄 Updating accessory status:', {
               accessoryId,
               newStatus,
               updatedAccessories,
@@ -174,25 +162,25 @@ export const ShopAccessoriesTabs = () => {
             return updatedAccessories;
           });
           setUpdateTrigger((prev) => prev + 1);
-          toast.success("Cập nhật trạng thái phụ kiện thành công!");
+          toast.success('Cập nhật trạng thái phụ kiện thành công!');
         } else {
-          toast.error(message || "Có lỗi xảy ra khi cập nhật trạng thái");
+          toast.error(message || 'Có lỗi xảy ra khi cập nhật trạng thái');
         }
       } catch {
-        toast.error("Đã xảy ra lỗi khi cập nhật trạng thái phụ kiện");
+        toast.error('Đã xảy ra lỗi khi cập nhật trạng thái phụ kiện');
       }
     },
-    [updateAccessory]
+    [updateAccessory],
   );
 
   // Debug: Log khi accessories state thay đổi
   useEffect(() => {
-    console.log("🔄 Accessories state updated:", accessories);
+    console.log('🔄 Accessories state updated:', accessories);
   }, [accessories]);
 
   // Debug: Log khi updateTrigger thay đổi
   useEffect(() => {
-    console.log("🔄 Update trigger changed:", updateTrigger);
+    console.log('🔄 Update trigger changed:', updateTrigger);
   }, [updateTrigger]);
 
   return (
@@ -238,11 +226,9 @@ export const ShopAccessoriesTabs = () => {
         {isLoading ? (
           <LoadingItem />
         ) : isError ? (
-          <Alert variant={"destructive"} className="mb-4 h-full">
+          <Alert variant={'destructive'} className="mb-4 h-full">
             <AlertCircleIcon />
-            <AlertTitle>
-              Đã có lỗi xảy ra trong quá trình lấy dữ liệu
-            </AlertTitle>
+            <AlertTitle>Đã có lỗi xảy ra trong quá trình lấy dữ liệu</AlertTitle>
             <AlertDescription>
               <p>Chi tiết lỗi:</p>
               <ul className="list-inside list-disc text-sm">
@@ -270,10 +256,7 @@ export const ShopAccessoriesTabs = () => {
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-12 w-12 rounded-lg">
                             <AvatarImage
-                              src={
-                                getCoverImage(accessory.images) ||
-                                "/placeholder.svg"
-                              }
+                              src={getCoverImage(accessory.images) || '/placeholder.svg'}
                               alt={accessory.name}
                             />
                             <AvatarFallback className="rounded-lg">
@@ -284,32 +267,23 @@ export const ShopAccessoriesTabs = () => {
                             <div className="font-medium">{accessory.name}</div>
                             <div className="flex items-center text-sm text-muted-foreground">
                               <Star className="mr-2 text-yellow-300" />
-                              {accessory.ratingAverage} •{" "}
-                              {accessory.ratingCount} bài đánh giá
+                              {accessory.ratingAverage} • {accessory.ratingCount} bài đánh giá
                             </div>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         {accessory.isSellable && accessory.sellPrice ? (
-                          <span className="font-medium">
-                            {formatPrice(accessory.sellPrice)}
-                          </span>
+                          <span className="font-medium">{formatPrice(accessory.sellPrice)}</span>
                         ) : (
-                          <span className="text-muted-foreground">
-                            Không bán
-                          </span>
+                          <span className="text-muted-foreground">Không bán</span>
                         )}
                       </TableCell>
                       <TableCell>
                         {accessory.isRentable && accessory.rentalPrice ? (
-                          <span className="font-medium">
-                            {formatPrice(accessory.rentalPrice)}
-                          </span>
+                          <span className="font-medium">{formatPrice(accessory.rentalPrice)}</span>
                         ) : (
-                          <span className="text-muted-foreground">
-                            Không cho thuê
-                          </span>
+                          <span className="text-muted-foreground">Không cho thuê</span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -372,7 +346,7 @@ export const ShopAccessoriesTabs = () => {
                                 handleStatusUpdate(
                                   accessory.id,
                                   AccessoryStatus.AVAILABLE,
-                                  accessory
+                                  accessory,
                                 )
                               }
                               className="text-green-600"
@@ -390,7 +364,7 @@ export const ShopAccessoriesTabs = () => {
                                 handleStatusUpdate(
                                   accessory.id,
                                   AccessoryStatus.UNAVAILABLE,
-                                  accessory
+                                  accessory,
                                 )
                               }
                               className="text-orange-600"
@@ -408,7 +382,7 @@ export const ShopAccessoriesTabs = () => {
                                 handleStatusUpdate(
                                   accessory.id,
                                   AccessoryStatus.OUT_OF_STOCK,
-                                  accessory
+                                  accessory,
                                 )
                               }
                               className="text-red-600"

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,10 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Check, Edit, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Check, Edit, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UpdateShopStatusDialogProps {
   onConfirm: () => Promise<boolean>;
@@ -48,9 +48,9 @@ export const UpdateShopStatusDialog = ({
     const result = await onConfirm();
     if (result) {
       setOpen(false);
-      toast.success(successMessage || "Cập nhật trạng thái thành công");
+      toast.success(successMessage || 'Cập nhật trạng thái thành công');
     } else {
-      toast.error(errorMessage || "Cập nhật trạng thái thất bại");
+      toast.error(errorMessage || 'Cập nhật trạng thái thất bại');
     }
   }, [onConfirm, errorMessage, successMessage]);
 
@@ -59,10 +59,10 @@ export const UpdateShopStatusDialog = ({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader>
-          <DialogTitle>{title || "Cập nhật trạng thái cửa hàng"}</DialogTitle>
+          <DialogTitle>{title || 'Cập nhật trạng thái cửa hàng'}</DialogTitle>
         </DialogHeader>
         <DialogDescription className="p-9 text-center">
-          {message || "Bạn có chắc chắn muốn cập nhật trạng thái cửa hàng này?"}
+          {message || 'Bạn có chắc chắn muốn cập nhật trạng thái cửa hàng này?'}
         </DialogDescription>
         <DialogFooter>
           <Button

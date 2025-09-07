@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Search, Scissors, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import { Search, Scissors, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export const CTASection: React.FC = () => {
   return (
@@ -14,8 +14,8 @@ export const CTASection: React.FC = () => {
               <span className="block text-rose-100">Váy Cưới Mơ Ước?</span>
             </h2>
             <p className="text-lg md:text-xl text-rose-100 max-w-3xl mx-auto leading-relaxed">
-              Tham gia cùng hàng nghìn cô dâu hạnh phúc đã tìm thấy chiếc váy
-              cưới hoàn hảo thông qua nền tảng kết nối Veila
+              Tham gia cùng hàng nghìn cô dâu hạnh phúc đã tìm thấy chiếc váy cưới hoàn hảo thông
+              qua nền tảng kết nối Veila
             </p>
           </div>
 

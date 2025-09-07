@@ -1,11 +1,4 @@
-import {
-  IAccessory,
-  IDress,
-  IItem,
-  IOrder,
-  IService,
-  IUser,
-} from "@/services/types";
+import { IAccessory, IDress, IItem, IOrder, IService, IUser } from '@/services/types';
 
 export interface IFeedback extends IItem {
   customerId: string;

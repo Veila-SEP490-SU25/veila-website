@@ -1,35 +1,29 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import {
-  ICreateSlide,
-  IItemResponse,
-  IListResponse,
-  ISlide,
-  IUpdateSlide,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
+import { ICreateSlide, IItemResponse, IListResponse, ISlide, IUpdateSlide } from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export const singleApi = createApi({
-  reducerPath: "singleApi",
+  reducerPath: 'singleApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getSlides: builder.query<IListResponse<ISlide>, void>({
       query: () => ({
-        url: "singles/slides",
-        method: "GET",
+        url: 'singles/slides',
+        method: 'GET',
       }),
     }),
 
     getSlide: builder.query<IItemResponse<ISlide>, string>({
       query: (id) => ({
         url: `singles/slides/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     createSlide: builder.mutation<IItemResponse<ISlide>, ICreateSlide>({
       query: (body) => ({
-        url: "singles/slides",
-        method: "POST",
+        url: 'singles/slides',
+        method: 'POST',
         body,
       }),
     }),
@@ -37,7 +31,7 @@ export const singleApi = createApi({
     updateSlide: builder.mutation<IItemResponse<null>, IUpdateSlide>({
       query: ({ id, ...body }) => ({
         url: `singles/slides/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -45,14 +39,14 @@ export const singleApi = createApi({
     deleteSlide: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `singles/slides/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     restoreSlide: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `singles/slides/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
   }),

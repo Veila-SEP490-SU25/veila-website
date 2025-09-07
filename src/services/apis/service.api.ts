@@ -1,12 +1,12 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithRefresh } from "./base.query";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithRefresh } from './base.query';
 
 export interface IService {
   id: string;
   name: string;
   images: string;
   ratingAverage: string;
-  status: "AVAILABLE" | "UNAVAILABLE";
+  status: 'AVAILABLE' | 'UNAVAILABLE';
   user?: {
     shop: {
       id: string;
@@ -26,7 +26,7 @@ export interface IService {
 export interface ICreateService {
   name: string;
   description: string;
-  status: "AVAILABLE" | "UNAVAILABLE";
+  status: 'AVAILABLE' | 'UNAVAILABLE';
 }
 
 export interface IUpdateService {
@@ -34,7 +34,7 @@ export interface IUpdateService {
   name?: string;
   description?: string;
   images?: string;
-  status?: "AVAILABLE" | "UNAVAILABLE";
+  status?: 'AVAILABLE' | 'UNAVAILABLE';
 }
 
 export interface IServiceResponse {
@@ -50,43 +50,43 @@ export interface IServiceResponse {
 }
 
 export const serviceApi = createApi({
-  reducerPath: "serviceApi",
+  reducerPath: 'serviceApi',
   baseQuery: baseQueryWithRefresh,
-  tagTypes: ["Service"],
+  tagTypes: ['Service'],
   endpoints: (builder) => ({
     // Lấy dịch vụ của shop
     getShopServices: builder.query<IServiceResponse, string>({
       query: (shopId) => `/shops/${shopId}/services`,
-      providesTags: ["Service"],
+      providesTags: ['Service'],
     }),
 
     // Tạo dịch vụ mới
     createService: builder.mutation<IServiceResponse, ICreateService>({
       query: (data) => ({
-        url: "/services/me",
-        method: "POST",
+        url: '/services/me',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["Service"],
+      invalidatesTags: ['Service'],
     }),
 
     // Cập nhật dịch vụ
     updateService: builder.mutation<IServiceResponse, IUpdateService>({
       query: ({ id, ...data }) => ({
         url: `/services/${id}/me`,
-        method: "PUT",
+        method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ["Service"],
+      invalidatesTags: ['Service'],
     }),
 
     // Xóa dịch vụ
     deleteService: builder.mutation<IServiceResponse, string>({
       query: (id) => ({
         url: `/services/${id}/me`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Service"],
+      invalidatesTags: ['Service'],
     }),
   }),
 });

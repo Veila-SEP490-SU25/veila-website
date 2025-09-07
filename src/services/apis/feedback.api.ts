@@ -1,18 +1,15 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import { ICreateFeedback, IFeedback, IItemResponse } from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
+import { ICreateFeedback, IFeedback, IItemResponse } from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export const feedbackApi = createApi({
-  reducerPath: "feedbackApi",
+  reducerPath: 'feedbackApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
-    createFeedback: builder.mutation<
-      IItemResponse<IFeedback>,
-      ICreateFeedback
-    >({
+    createFeedback: builder.mutation<IItemResponse<IFeedback>, ICreateFeedback>({
       query: (body) => ({
-        url: "feedbacks/me",
-        method: "POST",
+        url: 'feedbacks/me',
+        method: 'POST',
         body,
       }),
     }),
@@ -20,13 +17,10 @@ export const feedbackApi = createApi({
     getFeedback: builder.query<IItemResponse<IFeedback>, string>({
       query: (id) => ({
         url: `feedbacks/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
   }),
 });
 
-export const {
-  useCreateFeedbackMutation,
-  useLazyGetFeedbackQuery,
-} = feedbackApi;
+export const { useCreateFeedbackMutation, useLazyGetFeedbackQuery } = feedbackApi;

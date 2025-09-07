@@ -1,40 +1,32 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useLazyGetCustomOrderRequestsQuery } from "@/services/apis/custom-order.api";
-import type { ICustomOrderRequest } from "@/services/types/custom-order.type";
-import { customOrderStatusLabels } from "@/services/types/custom-order.type";
-import { formatDateShort } from "@/utils/format";
-import {
-  Search,
-  Filter,
-  Eye,
-  Calendar,
-  User,
-  Ruler,
-  MessageCircle,
-} from "lucide-react";
+} from '@/components/ui/select';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useLazyGetCustomOrderRequestsQuery } from '@/services/apis/custom-order.api';
+import type { ICustomOrderRequest } from '@/services/types/custom-order.type';
+import { customOrderStatusLabels } from '@/services/types/custom-order.type';
+import { formatDateShort } from '@/utils/format';
+import { Search, Filter, Eye, Calendar, User, Ruler, MessageCircle } from 'lucide-react';
 
 export function CustomOrdersList() {
   const router = useRouter();
   const [requests, setRequests] = useState<ICustomOrderRequest[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -51,7 +43,7 @@ export function CustomOrdersList() {
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         filter: searchTerm,
-        sort: "createdAt:desc",
+        sort: 'createdAt:desc',
       }).unwrap();
 
       if (response.items) {
@@ -63,7 +55,7 @@ export function CustomOrdersList() {
         }));
       }
     } catch (error) {
-      console.error("Error fetching requests:", error);
+      console.error('Error fetching requests:', error);
     } finally {
       setLoading(false);
     }
@@ -74,7 +66,7 @@ export function CustomOrdersList() {
   }, [fetchRequests]);
 
   const filteredRequests = requests.filter((request) => {
-    if (statusFilter !== "all" && request.status !== statusFilter) return false;
+    if (statusFilter !== 'all' && request.status !== statusFilter) return false;
     return true;
   });
 
@@ -145,13 +137,11 @@ export function CustomOrdersList() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                  {Object.entries(customOrderStatusLabels).map(
-                    ([status, label]) => (
-                      <SelectItem key={status} value={status}>
-                        {label}
-                      </SelectItem>
-                    )
-                  )}
+                  {Object.entries(customOrderStatusLabels).map(([status, label]) => (
+                    <SelectItem key={status} value={status}>
+                      {label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -165,25 +155,18 @@ export function CustomOrdersList() {
             <CardContent className="py-12 text-center">
               <div className="text-muted-foreground">
                 <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium mb-2">
-                  Không có yêu cầu đặt may nào
-                </p>
+                <p className="text-lg font-medium mb-2">Không có yêu cầu đặt may nào</p>
                 <p className="text-sm">Hãy thử thay đổi bộ lọc hoặc tìm kiếm</p>
               </div>
             </CardContent>
           </Card>
         ) : (
           filteredRequests.map((request) => (
-            <Card
-              key={request.id}
-              className="hover:shadow-md transition-shadow"
-            >
+            <Card key={request.id} className="hover:shadow-md transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-lg mb-2">
-                      {request.title}
-                    </CardTitle>
+                    <CardTitle className="text-lg mb-2">{request.title}</CardTitle>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
@@ -233,9 +216,7 @@ export function CustomOrdersList() {
                   </div>
                 </div>
 
-                <p className="text-gray-600 mb-4 line-clamp-2">
-                  {request.description}
-                </p>
+                <p className="text-gray-600 mb-4 line-clamp-2">{request.description}</p>
 
                 {/* Measurements */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
@@ -300,32 +281,20 @@ export function CustomOrdersList() {
                   request.neckline ||
                   request.sleeve) && (
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {request.material && (
-                      <Badge variant="outline">{request.material}</Badge>
-                    )}
-                    {request.color && (
-                      <Badge variant="outline">{request.color}</Badge>
-                    )}
-                    {request.length && (
-                      <Badge variant="outline">{request.length}</Badge>
-                    )}
-                    {request.neckline && (
-                      <Badge variant="outline">{request.neckline}</Badge>
-                    )}
-                    {request.sleeve && (
-                      <Badge variant="outline">{request.sleeve}</Badge>
-                    )}
+                    {request.material && <Badge variant="outline">{request.material}</Badge>}
+                    {request.color && <Badge variant="outline">{request.color}</Badge>}
+                    {request.length && <Badge variant="outline">{request.length}</Badge>}
+                    {request.neckline && <Badge variant="outline">{request.neckline}</Badge>}
+                    {request.sleeve && <Badge variant="outline">{request.sleeve}</Badge>}
                   </div>
                 )}
 
                 {/* Images - Only show if available */}
                 {request.images && (
                   <div className="mt-4">
-                    <h5 className="font-medium text-gray-900 mb-2">
-                      Hình ảnh tham khảo:
-                    </h5>
+                    <h5 className="font-medium text-gray-900 mb-2">Hình ảnh tham khảo:</h5>
                     <div className="flex gap-2 overflow-x-auto">
-                      {request.images.split(",").map((image, index) => (
+                      {request.images.split(',').map((image, index) => (
                         <Image
                           key={index}
                           src={image.trim()}
@@ -350,19 +319,14 @@ export function CustomOrdersList() {
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
-                Hiển thị {pagination.pageIndex * pagination.pageSize + 1} -{" "}
-                {Math.min(
-                  (pagination.pageIndex + 1) * pagination.pageSize,
-                  pagination.totalItems
-                )}{" "}
+                Hiển thị {pagination.pageIndex * pagination.pageSize + 1} -{' '}
+                {Math.min((pagination.pageIndex + 1) * pagination.pageSize, pagination.totalItems)}{' '}
                 trong tổng số {pagination.totalItems} yêu cầu
               </div>
               <div className="flex items-center gap-2">
                 <Select
                   value={pagination.pageSize.toString()}
-                  onValueChange={(value) =>
-                    handlePageSizeChange(parseInt(value))
-                  }
+                  onValueChange={(value) => handlePageSizeChange(parseInt(value))}
                 >
                   <SelectTrigger className="w-20">
                     <SelectValue />

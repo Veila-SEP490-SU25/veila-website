@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,16 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { isSuccess } from "@/lib/utils";
-import { useStaffHandleCreateShopMutation } from "@/services/apis";
-import { IShop } from "@/services/types";
-import { Check, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { isSuccess } from '@/lib/utils';
+import { useStaffHandleCreateShopMutation } from '@/services/apis';
+import { IShop } from '@/services/types';
+import { Check, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ShopVerifyDialogProps {
   shop: IShop;
@@ -26,19 +26,15 @@ interface ShopVerifyDialogProps {
   trigger?: ReactNode;
 }
 
-export const ShopVerifyDialog = ({
-  shop,
-  onUpdate,
-  trigger,
-}: ShopVerifyDialogProps) => {
+export const ShopVerifyDialog = ({ shop, onUpdate, trigger }: ShopVerifyDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const [verifyTrigger, { isLoading }] = useStaffHandleCreateShopMutation();
   const [isApproved, setIsApproved] = useState<boolean>(false);
-  const [rejectReason, setRejectReason] = useState<string>("");
+  const [rejectReason, setRejectReason] = useState<string>('');
 
   const handleConfirm = useCallback(async () => {
-    if (!isApproved && rejectReason.trim() === "") {
-      toast.error("Vui lòng nhập lý do từ chối");
+    if (!isApproved && rejectReason.trim() === '') {
+      toast.error('Vui lòng nhập lý do từ chối');
       return;
     }
 
@@ -49,25 +45,25 @@ export const ShopVerifyDialog = ({
         rejectReason,
       }).unwrap();
       if (isSuccess(statusCode)) {
-        toast.success("Xác thực cửa hàng thành công");
+        toast.success('Xác thực cửa hàng thành công');
         onUpdate?.();
         setOpen(false);
       } else {
-        toast.error("Xác thực cửa hàng thất bại", {
+        toast.error('Xác thực cửa hàng thất bại', {
           description: message,
         });
       }
     } catch (error) {
       console.error(error);
-      toast.error("Đã xảy ra lỗi khi xác thực cửa hàng", {
-        description: "Vui lòng thử lại sau",
+      toast.error('Đã xảy ra lỗi khi xác thực cửa hàng', {
+        description: 'Vui lòng thử lại sau',
       });
     }
   }, [isApproved, rejectReason, shop, verifyTrigger, onUpdate]);
 
   const resetForm = useCallback(() => {
     setIsApproved(false);
-    setRejectReason("");
+    setRejectReason('');
   }, [setIsApproved, setRejectReason]);
 
   const handleCancel = useCallback(() => {
@@ -78,9 +74,9 @@ export const ShopVerifyDialog = ({
   const handleSwitch = useCallback(
     (value: boolean) => {
       setIsApproved(value);
-      if (!value) setRejectReason("");
+      if (!value) setRejectReason('');
     },
-    [setIsApproved]
+    [setIsApproved],
   );
 
   const defaultTrigger = (
@@ -95,9 +91,7 @@ export const ShopVerifyDialog = ({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="w-lg max-w[90xw] flex flex-col items-center gap-2">
         <DialogHeader className="text-center">
-          <DialogTitle className="w-full text-center">
-            Phê duyệt cửa hàng
-          </DialogTitle>
+          <DialogTitle className="w-full text-center">Phê duyệt cửa hàng</DialogTitle>
           <DialogDescription className="w-full text-center">
             Xác nhận phê duyệt cửa hàng
           </DialogDescription>
@@ -105,16 +99,11 @@ export const ShopVerifyDialog = ({
         <div className="grid grid-cols-1 items-center gap-4 px-8 w-full py-4">
           <div className="flex items-center justify-between w-full">
             <Label htmlFor="is-approved">Phê duyệt</Label>
-            <Switch
-              id="is-approved"
-              checked={isApproved}
-              onCheckedChange={handleSwitch}
-            />
+            <Switch id="is-approved" checked={isApproved} onCheckedChange={handleSwitch} />
           </div>
           <div className="w-full space-y-2">
             <Label htmlFor="reject-reason" className="flex items-start gap-1">
-              Lý do từ chối{" "}
-              {!isApproved && <span className="text-red-500 text-xs">*</span>}
+              Lý do từ chối {!isApproved && <span className="text-red-500 text-xs">*</span>}
             </Label>
             <Textarea
               id="reject-reason"

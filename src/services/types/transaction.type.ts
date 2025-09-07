@@ -1,25 +1,25 @@
-import { IItem, IMembership, IOrder, IWallet } from "@/services/types";
+import { IItem, IMembership, IOrder, IWallet } from '@/services/types';
 
 export enum TransactionType {
-  DEPOSIT = "DEPOSIT",
-  WITHDRAW = "WITHDRAW",
-  TRANSFER = "TRANSFER",
-  RECEIVE = "RECEIVE",
-  REFUND = "REFUND",
+  DEPOSIT = 'DEPOSIT',
+  WITHDRAW = 'WITHDRAW',
+  TRANSFER = 'TRANSFER',
+  RECEIVE = 'RECEIVE',
+  REFUND = 'REFUND',
 }
 
 export enum TransactionStatus {
-  PENDING = "PENDING",
-  COMPLETED = "COMPLETED",
-  FAILED = "FAILED",
-  CANCELLED = "CANCELLED",
-  REFUNDED = "REFUNDED",
-  DISPUTED = "DISPUTED",
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED',
+  DISPUTED = 'DISPUTED',
 }
 
 export enum TypeBalance {
-  AVAILABLE = "AVAILABLE",
-  LOCKED = "LOCKED",
+  AVAILABLE = 'AVAILABLE',
+  LOCKED = 'LOCKED',
 }
 
 export interface ITransaction extends IItem {

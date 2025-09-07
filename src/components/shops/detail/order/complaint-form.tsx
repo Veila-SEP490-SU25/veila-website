@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { toast } from "sonner";
-import { AlertCircle, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { AlertCircle, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
+} from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 import {
   useGetComplaintReasonsQuery,
   useCreateComplaintMutation,
   useConfirmNoComplaintMutation,
-} from "@/services/apis";
-import { ICreateComplaint, ComplaintStatus } from "@/services/types";
+} from '@/services/apis';
+import { ICreateComplaint, ComplaintStatus } from '@/services/types';
 
 interface ComplaintFormProps {
   orderId: string;
@@ -30,15 +30,13 @@ interface ComplaintFormProps {
 
 export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedReason, setSelectedReason] = useState<string>("");
-  const [description, setDescription] = useState("");
+  const [selectedReason, setSelectedReason] = useState<string>('');
+  const [description, setDescription] = useState('');
   const [images, setImages] = useState<string[]>([]);
-  const [imageUrls, setImageUrls] = useState<string>("");
+  const [imageUrls, setImageUrls] = useState<string>('');
 
-  const { data: reasonsData, isLoading: isLoadingReasons } =
-    useGetComplaintReasonsQuery();
-  const [createComplaint, { isLoading: isCreating }] =
-    useCreateComplaintMutation();
+  const { data: reasonsData, isLoading: isLoadingReasons } = useGetComplaintReasonsQuery();
+  const [createComplaint, { isLoading: isCreating }] = useCreateComplaintMutation();
   const [confirmNoComplaint, { isLoading: isConfirmingNoComplaint }] =
     useConfirmNoComplaintMutation();
 
@@ -49,26 +47,24 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
       // Ở đây tôi giả định đã có URLs
       const newImages = files.map((file) => URL.createObjectURL(file));
       setImages((prev) => [...prev, ...newImages]);
-      setImageUrls((prev) =>
-        prev ? `${prev},${newImages.join(",")}` : newImages.join(",")
-      );
+      setImageUrls((prev) => (prev ? `${prev},${newImages.join(',')}` : newImages.join(',')));
     }
   };
 
   const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages(newImages);
-    setImageUrls(newImages.join(","));
+    setImageUrls(newImages.join(','));
   };
 
   const handleSubmit = async () => {
     if (!selectedReason) {
-      toast.error("Vui lòng chọn lý do khiếu nại");
+      toast.error('Vui lòng chọn lý do khiếu nại');
       return;
     }
 
     if (!description.trim()) {
-      toast.error("Vui lòng nhập mô tả khiếu nại");
+      toast.error('Vui lòng nhập mô tả khiếu nại');
       return;
     }
 
@@ -84,21 +80,21 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
     try {
       const response = await createComplaint(complaintData).unwrap();
       if (response.statusCode === 200 || response.statusCode === 201) {
-        toast.success("Gửi khiếu nại thành công");
+        toast.success('Gửi khiếu nại thành công');
         setIsExpanded(false);
-        setSelectedReason("");
-        setDescription("");
+        setSelectedReason('');
+        setDescription('');
         setImages([]);
-        setImageUrls("");
+        setImageUrls('');
         onSuccess?.();
       } else {
-        toast.error("Không thể gửi khiếu nại", {
+        toast.error('Không thể gửi khiếu nại', {
           description: response.message,
         });
       }
     } catch (error) {
-      console.error("Error creating complaint:", error);
-      toast.error("Có lỗi xảy ra khi gửi khiếu nại");
+      console.error('Error creating complaint:', error);
+      toast.error('Có lỗi xảy ra khi gửi khiếu nại');
     }
   };
 
@@ -106,23 +102,21 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
     try {
       const response = await confirmNoComplaint(orderId).unwrap();
       if (response.statusCode === 200 || response.statusCode === 201) {
-        toast.success("Đã xác nhận không có khiếu nại!");
+        toast.success('Đã xác nhận không có khiếu nại!');
         setIsExpanded(false);
         onSuccess?.();
       } else {
-        toast.error("Không thể xác nhận", {
+        toast.error('Không thể xác nhận', {
           description: response.message,
         });
       }
     } catch (error) {
-      console.error("Error confirming no complaint:", error);
-      toast.error("Có lỗi xảy ra khi xác nhận");
+      console.error('Error confirming no complaint:', error);
+      toast.error('Có lỗi xảy ra khi xác nhận');
     }
   };
 
-  const selectedReasonData = reasonsData?.items?.find(
-    (r) => r.code === selectedReason
-  );
+  const selectedReasonData = reasonsData?.items?.find((r) => r.code === selectedReason);
 
   return (
     <Card className="border-orange-200 bg-orange-50/50">
@@ -165,9 +159,7 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
               </Select>
               {selectedReasonData && (
                 <div className="text-sm text-muted-foreground">
-                  <p>
-                    Mức phạt uy tín: {selectedReasonData.reputationPenalty} điểm
-                  </p>
+                  <p>Mức phạt uy tín: {selectedReasonData.reputationPenalty} điểm</p>
                 </div>
               )}
             </div>
@@ -198,7 +190,7 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
                   size="sm"
                   onClick={() => {
                     setImages([]);
-                    setImageUrls("");
+                    setImageUrls('');
                   }}
                 >
                   <X className="h-4 w-4 mr-1" />
@@ -246,21 +238,16 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
                 variant="outline"
                 className="border-green-300 text-green-700 hover:bg-green-50"
               >
-                {isConfirmingNoComplaint
-                  ? "Đang xác nhận..."
-                  : "Xác nhận không có khiếu nại"}
+                {isConfirmingNoComplaint ? 'Đang xác nhận...' : 'Xác nhận không có khiếu nại'}
               </Button>
               <Button
                 onClick={handleSubmit}
                 disabled={
-                  isCreating ||
-                  isConfirmingNoComplaint ||
-                  !selectedReason ||
-                  !description.trim()
+                  isCreating || isConfirmingNoComplaint || !selectedReason || !description.trim()
                 }
                 className="bg-orange-600 hover:bg-orange-700"
               >
-                {isCreating ? "Đang gửi..." : "Gửi khiếu nại"}
+                {isCreating ? 'Đang gửi...' : 'Gửi khiếu nại'}
               </Button>
             </div>
           </div>

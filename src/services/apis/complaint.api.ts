@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   IComplaint,
   IItemResponse,
@@ -8,17 +8,17 @@ import {
   IUpdateComplaint,
   IComplaintReason,
   ICreateComplaint,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export const complaintApi = createApi({
-  reducerPath: "complaintApi",
+  reducerPath: 'complaintApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getComplaintsStaff: builder.query<IListResponse<IComplaint>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
-        url: "complaints",
-        method: "GET",
+      query: ({ sort = '', filter = '', page = 0, size = 10 }) => ({
+        url: 'complaints',
+        method: 'GET',
         params: {
           sort,
           filter,
@@ -31,32 +31,29 @@ export const complaintApi = createApi({
     getComplaintStaff: builder.query<IItemResponse<IComplaint>, string>({
       query: (id) => ({
         url: `complaints/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getMyComplaint: builder.query<IItemResponse<IComplaint>, string>({
       query: (id) => ({
         url: `complaints/${id}/me`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     updateMyComplaint: builder.mutation<IItemResponse<null>, IUpdateComplaint>({
       query: ({ id, ...body }) => ({
         url: `complaints/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
 
-    responseComplaint: builder.mutation<
-      IItemResponse<null>,
-      IResponseComplaint
-    >({
+    responseComplaint: builder.mutation<IItemResponse<null>, IResponseComplaint>({
       query: ({ id, ...body }) => ({
         url: `complaints/${id}/review`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -64,24 +61,21 @@ export const complaintApi = createApi({
     // Lấy danh sách complaint reasons cho SHOP
     getComplaintReasons: builder.query<IListResponse<IComplaintReason>, void>({
       query: () => ({
-        url: "complaints/reasons",
-        method: "GET",
+        url: 'complaints/reasons',
+        method: 'GET',
         params: {
-          type: "SHOP",
+          type: 'SHOP',
         },
       }),
     }),
 
     // Lấy danh sách complaint reasons cho CUSTOMER
-    getComplaintReasonsCustomer: builder.query<
-      IListResponse<IComplaintReason>,
-      void
-    >({
+    getComplaintReasonsCustomer: builder.query<IListResponse<IComplaintReason>, void>({
       query: () => ({
-        url: "complaints/reasons",
-        method: "GET",
+        url: 'complaints/reasons',
+        method: 'GET',
         params: {
-          type: "CUSTOMER",
+          type: 'CUSTOMER',
         },
       }),
     }),
@@ -90,7 +84,7 @@ export const complaintApi = createApi({
     createComplaint: builder.mutation<IItemResponse<any>, ICreateComplaint>({
       query: ({ orderId, ...body }) => ({
         url: `orders/${orderId}/complaints/me`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),

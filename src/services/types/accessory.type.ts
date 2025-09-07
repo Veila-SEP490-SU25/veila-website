@@ -1,9 +1,9 @@
-import { ICategory, IFeedback, IItem, IUser } from "@/services/types";
+import { ICategory, IFeedback, IItem, IUser } from '@/services/types';
 
 export enum AccessoryStatus {
-  AVAILABLE = "AVAILABLE",
-  UNAVAILABLE = "UNAVAILABLE",
-  OUT_OF_STOCK = "OUT_OF_STOCK",
+  AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE',
+  OUT_OF_STOCK = 'OUT_OF_STOCK',
 }
 
 export interface IAccessory extends IItem {

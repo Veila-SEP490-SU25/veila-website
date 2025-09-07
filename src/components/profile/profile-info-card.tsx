@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Image } from "@/components/image";
-import { useAuth } from "@/providers/auth.provider";
-import { Calendar, MapPin, Mail, Phone, User } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Image } from '@/components/image';
+import { useAuth } from '@/providers/auth.provider';
+import { Calendar, MapPin, Mail, Phone, User } from 'lucide-react';
 
 export const ProfileInfoCard: React.FC = () => {
   const { currentUser } = useAuth();
@@ -21,12 +21,10 @@ export const ProfileInfoCard: React.FC = () => {
   }
 
   const getFullName = () => {
-    const parts = [
-      currentUser.firstName,
-      currentUser.middleName,
-      currentUser.lastName,
-    ].filter(Boolean);
-    return parts.join(" ") || "Chưa có tên";
+    const parts = [currentUser.firstName, currentUser.middleName, currentUser.lastName].filter(
+      Boolean,
+    );
+    return parts.join(' ') || 'Chưa có tên';
   };
 
   const getInitials = () => {
@@ -35,19 +33,19 @@ export const ProfileInfoCard: React.FC = () => {
       currentUser.middleName?.charAt(0),
       currentUser.lastName?.charAt(0),
     ].filter(Boolean);
-    return parts.join("").toUpperCase() || "U";
+    return parts.join('').toUpperCase() || 'U';
   };
 
   const formatDate = (date: Date | string | null | undefined) => {
-    if (!date) return "Chưa cập nhật";
+    if (!date) return 'Chưa cập nhật';
     try {
-      return new Date(date).toLocaleDateString("vi-VN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+      return new Date(date).toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       });
     } catch {
-      return "Chưa cập nhật";
+      return 'Chưa cập nhật';
     }
   };
 
@@ -82,34 +80,23 @@ export const ProfileInfoCard: React.FC = () => {
           {/* Avatar and Basic Info */}
           <div className="flex items-start gap-6">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={currentUser.avatarUrl || ""} />
-              <AvatarFallback className="text-lg">
-                {getInitials()}
-              </AvatarFallback>
+              <AvatarImage src={currentUser.avatarUrl || ''} />
+              <AvatarFallback className="text-lg">{getInitials()}</AvatarFallback>
             </Avatar>
 
             <div className="flex-1 space-y-4">
               <div>
-                <h3 className="text-xl font-semibold text-gray-900">
-                  {getFullName()}
-                </h3>
-                <p className="text-gray-600">
-                  @{currentUser.username || "user"}
-                </p>
+                <h3 className="text-xl font-semibold text-gray-900">{getFullName()}</h3>
+                <p className="text-gray-600">@{currentUser.username || 'user'}</p>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {currentUser.isVerified && (
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
+                  <Badge variant="secondary" className="bg-green-100 text-green-700">
                     ✓ Đã xác thực
                   </Badge>
                 )}
-                {currentUser.role && (
-                  <Badge variant="outline">{currentUser.role}</Badge>
-                )}
+                {currentUser.role && <Badge variant="outline">{currentUser.role}</Badge>}
               </div>
             </div>
           </div>
@@ -120,9 +107,7 @@ export const ProfileInfoCard: React.FC = () => {
               <Mail className="h-4 w-4 text-gray-500" />
               <div>
                 <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium">
-                  {currentUser.email || "Chưa cập nhật"}
-                </p>
+                <p className="font-medium">{currentUser.email || 'Chưa cập nhật'}</p>
               </div>
             </div>
 
@@ -130,9 +115,7 @@ export const ProfileInfoCard: React.FC = () => {
               <Phone className="h-4 w-4 text-gray-500" />
               <div>
                 <p className="text-sm text-gray-500">Số điện thoại</p>
-                <p className="font-medium">
-                  {currentUser.phone || "Chưa cập nhật"}
-                </p>
+                <p className="font-medium">{currentUser.phone || 'Chưa cập nhật'}</p>
               </div>
             </div>
 
@@ -140,9 +123,7 @@ export const ProfileInfoCard: React.FC = () => {
               <Calendar className="h-4 w-4 text-gray-500" />
               <div>
                 <p className="text-sm text-gray-500">Ngày sinh</p>
-                <p className="font-medium">
-                  {formatDate(currentUser.birthDate)}
-                </p>
+                <p className="font-medium">{formatDate(currentUser.birthDate)}</p>
               </div>
             </div>
 
@@ -150,9 +131,7 @@ export const ProfileInfoCard: React.FC = () => {
               <MapPin className="h-4 w-4 text-gray-500" />
               <div>
                 <p className="text-sm text-gray-500">Địa chỉ</p>
-                <p className="font-medium">
-                  {currentUser.address || "Chưa cập nhật"}
-                </p>
+                <p className="font-medium">{currentUser.address || 'Chưa cập nhật'}</p>
               </div>
             </div>
           </div>

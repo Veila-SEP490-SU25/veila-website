@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { UpdateShopStatusDialog } from "@/components/staff/shops/update-shop-status-dialog";
-import { ShopVerifyDialog } from "@/components/staff/shops/shop-verify-dialog";
-import { Button } from "@/components/ui/button";
+import { UpdateShopStatusDialog } from '@/components/staff/shops/update-shop-status-dialog';
+import { ShopVerifyDialog } from '@/components/staff/shops/shop-verify-dialog';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn, isSuccess } from "@/lib/utils";
-import { useUpdateShopStatusMutation } from "@/services/apis";
-import { IShop, ShopStatus } from "@/services/types";
-import { MoreHorizontal, Check, LockOpen, Ban, Lock } from "lucide-react";
-import { useCallback } from "react";
+} from '@/components/ui/dropdown-menu';
+import { cn, isSuccess } from '@/lib/utils';
+import { useUpdateShopStatusMutation } from '@/services/apis';
+import { IShop, ShopStatus } from '@/services/types';
+import { MoreHorizontal, Check, LockOpen, Ban, Lock } from 'lucide-react';
+import { useCallback } from 'react';
 
 interface ActionButtonProps {
   shop: IShop;
@@ -41,17 +41,13 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
         return false;
       }
     },
-    [trigger, onUpdate, shop.id]
+    [trigger, onUpdate, shop.id],
   );
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="flex items-center justify-center gap-2"
-          size="icon"
-        >
+        <Button variant="outline" className="flex items-center justify-center gap-2" size="icon">
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -78,9 +74,7 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
             {shop.status === ShopStatus.SUSPENDED ? (
               <DropdownMenuItem asChild>
                 <UpdateShopStatusDialog
-                  onConfirm={async () =>
-                    await handleUpdateStatus(ShopStatus.PENDING)
-                  }
+                  onConfirm={async () => await handleUpdateStatus(ShopStatus.PENDING)}
                   trigger={
                     <Button
                       className="flex items-center justify-start gap-2 w-full"
@@ -102,9 +96,7 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
               shop.status !== ShopStatus.INACTIVE && (
                 <DropdownMenuItem asChild>
                   <UpdateShopStatusDialog
-                    onConfirm={async () =>
-                      await handleUpdateStatus(ShopStatus.SUSPENDED)
-                    }
+                    onConfirm={async () => await handleUpdateStatus(ShopStatus.SUSPENDED)}
                     trigger={
                       <Button
                         className="flex items-center justify-start gap-2 w-full"
@@ -127,15 +119,13 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
             {shop.status !== ShopStatus.BANNED ? (
               <DropdownMenuItem asChild>
                 <UpdateShopStatusDialog
-                  onConfirm={async () =>
-                    await handleUpdateStatus(ShopStatus.BANNED)
-                  }
+                  onConfirm={async () => await handleUpdateStatus(ShopStatus.BANNED)}
                   trigger={
                     <Button
                       className={cn(
-                        "flex items-center justify-start gap-2 bg-rose-500/10 text-rose-500",
-                        "hover:bg-rose-500 hover:text-white",
-                        "w-full"
+                        'flex items-center justify-start gap-2 bg-rose-500/10 text-rose-500',
+                        'hover:bg-rose-500 hover:text-white',
+                        'w-full',
                       )}
                       variant="ghost"
                       size="sm"
@@ -156,15 +146,15 @@ export const ActionButton = ({ shop, onUpdate }: ActionButtonProps) => {
                 <UpdateShopStatusDialog
                   onConfirm={async () =>
                     await handleUpdateStatus(
-                      shop.isVerified ? ShopStatus.ACTIVE : ShopStatus.INACTIVE
+                      shop.isVerified ? ShopStatus.ACTIVE : ShopStatus.INACTIVE,
                     )
                   }
                   trigger={
                     <Button
                       className={cn(
-                        "flex items-center justify-start gap-2 bg-green-500/10 text-green-500",
-                        "hover:bg-green-500 hover:text-white",
-                        "w-full"
+                        'flex items-center justify-start gap-2 bg-green-500/10 text-green-500',
+                        'hover:bg-green-500 hover:text-white',
+                        'w-full',
                       )}
                       variant="ghost"
                       size="sm"

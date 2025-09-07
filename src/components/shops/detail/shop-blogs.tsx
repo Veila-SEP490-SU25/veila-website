@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLazyGetShopBlogsQuery } from "@/services/apis";
-import { IBlog, IPaginationResponse } from "@/services/types";
-import { BookOpen, Calendar } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+} from '@/components/ui/select';
+import { useLazyGetShopBlogsQuery } from '@/services/apis';
+import { IBlog, IPaginationResponse } from '@/services/types';
+import { BookOpen, Calendar } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   id: string;
@@ -53,11 +53,11 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
   const fetchBlogs = useCallback(async () => {
     try {
       const { statusCode, message, items, ...pagination } = await getBlogs({
-        filter: "",
+        filter: '',
         id,
         page: paging.pageIndex,
         size: paging.pageSize,
-        sort: "",
+        sort: '',
       }).unwrap();
       if (statusCode === 200) {
         setBlogs(items);
@@ -79,10 +79,10 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
   }, [fetchBlogs, id]);
 
   const formatDate = (date: string) => {
-    return new Intl.DateTimeFormat("vi-VN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Intl.DateTimeFormat('vi-VN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     }).format(new Date(date));
   };
 
@@ -93,16 +93,11 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold text-gray-900">Blog & Bài Viết</h2>
           {!isLoading && (
-            <span className="text-sm text-gray-600">
-              ({paging.totalItems} bài viết)
-            </span>
+            <span className="text-sm text-gray-600">({paging.totalItems} bài viết)</span>
           )}
         </div>
         <div className="flex flex-col gap-3 md:flex-row md:gap-4">
-          <Select
-            value={paging.pageSize.toString()}
-            onValueChange={handlePageSizeChange}
-          >
+          <Select value={paging.pageSize.toString()} onValueChange={handlePageSizeChange}>
             <SelectTrigger className="w-full md:w-32">
               <SelectValue />
             </SelectTrigger>
@@ -148,7 +143,7 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
               >
                 <div className="relative">
                   <Image
-                    src={blog.images || "/placeholder.svg"}
+                    src={blog.images || '/placeholder.svg'}
                     alt={blog.title}
                     width={400}
                     height={250}
@@ -173,13 +168,13 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
                     <p
                       className="text-gray-600 text-sm line-clamp-3"
                       dangerouslySetInnerHTML={{
-                        __html: (blog.content || "")
-                          .replace(/<[^>]*>/g, "") // Remove all HTML tags
-                          .replace(/&/g, "&amp;")
-                          .replace(/</g, "&lt;")
-                          .replace(/>/g, "&gt;")
-                          .replace(/"/g, "&quot;")
-                          .replace(/'/g, "&#x27;"),
+                        __html: (blog.content || '')
+                          .replace(/<[^>]*>/g, '') // Remove all HTML tags
+                          .replace(/&/g, '&amp;')
+                          .replace(/</g, '&lt;')
+                          .replace(/>/g, '&gt;')
+                          .replace(/"/g, '&quot;')
+                          .replace(/'/g, '&#x27;'),
                       }}
                     />
 
@@ -190,9 +185,7 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
                         <AvatarFallback>T</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          Tác giả
-                        </p>
+                        <p className="text-sm font-medium text-gray-900 truncate">Tác giả</p>
                         <div className="flex items-center gap-1 text-xs text-gray-500">
                           <Calendar className="h-3 w-3" />
                           <span>{formatDate(blog.createdAt as any)}</span>
@@ -226,12 +219,8 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
           <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
             <BookOpen className="h-12 w-12 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Chưa có bài viết nào
-          </h3>
-          <p className="text-gray-500">
-            Cửa hàng này chưa có bài viết blog nào được đăng tải.
-          </p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có bài viết nào</h3>
+          <p className="text-gray-500">Cửa hàng này chưa có bài viết blog nào được đăng tải.</p>
         </div>
       )}
 

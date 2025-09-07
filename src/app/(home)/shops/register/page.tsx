@@ -1,20 +1,14 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import {
   Store,
   Phone,
@@ -27,26 +21,26 @@ import {
   Clock,
   Shield,
   Building,
-} from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { ImagesUpload } from "@/components/images-upload";
-import { LocationInput } from "@/components/location-input";
-import { ICreateShop, IShop } from "@/services/types";
+} from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ImagesUpload } from '@/components/images-upload';
+import { LocationInput } from '@/components/location-input';
+import { ICreateShop, IShop } from '@/services/types';
 import {
   useCreateShopMutation,
   useRecreateShopMutation,
   useLazyGetMyShopQuery,
-} from "@/services/apis";
-import { toast } from "sonner";
+} from '@/services/apis';
+import { toast } from 'sonner';
 
 export default function ShopRegisterPage() {
   const [shopData, setShopData] = useState<ICreateShop>({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    licenseImages: "",
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    licenseImages: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [shopInfo, setShopInfo] = useState<IShop | null>(null);
@@ -84,7 +78,7 @@ export default function ShopRegisterPage() {
     e.preventDefault();
 
     try {
-      const isRejected = shopInfo?.license?.status === "REJECTED";
+      const isRejected = shopInfo?.license?.status === 'REJECTED';
 
       const response = isRejected
         ? await recreateShop(shopData).unwrap()
@@ -92,20 +86,16 @@ export default function ShopRegisterPage() {
 
       if (
         response &&
-        (response.statusCode === 202 ||
-          response.statusCode === 200 ||
-          response.statusCode === 201)
+        (response.statusCode === 202 || response.statusCode === 200 || response.statusCode === 201)
       ) {
         setIsSubmitted(true);
         setIsEditing(false);
 
         toast.success(
-          isRejected
-            ? "Cập nhật đơn đăng ký thành công!"
-            : "Đăng ký mở shop thành công!",
+          isRejected ? 'Cập nhật đơn đăng ký thành công!' : 'Đăng ký mở shop thành công!',
           {
-            description: "Chúng tôi sẽ xem xét đơn đăng ký của bạn.",
-          }
+            description: 'Chúng tôi sẽ xem xét đơn đăng ký của bạn.',
+          },
         );
 
         try {
@@ -114,44 +104,44 @@ export default function ShopRegisterPage() {
             setShopInfo(refreshResponse.item);
           }
         } catch (refreshError) {
-          console.error("Failed to refresh shop info:", refreshError);
+          console.error('Failed to refresh shop info:', refreshError);
         }
       } else {
-        const errorMessage = response?.message || "Không xác định được lỗi";
+        const errorMessage = response?.message || 'Không xác định được lỗi';
         toast.error(
           isRejected
-            ? "Cập nhật đơn đăng ký thất bại. Vui lòng thử lại."
-            : "Đăng ký mở shop thất bại. Vui lòng thử lại.",
+            ? 'Cập nhật đơn đăng ký thất bại. Vui lòng thử lại.'
+            : 'Đăng ký mở shop thất bại. Vui lòng thử lại.',
           {
             description: errorMessage,
-          }
+          },
         );
       }
     } catch (error) {
-      console.error("Submit error:", error);
-      toast.error("Đã xảy ra lỗi khi gửi đơn đăng ký.", {
-        description: "Vui lòng đợi trước khi thử lại.",
+      console.error('Submit error:', error);
+      toast.error('Đã xảy ra lỗi khi gửi đơn đăng ký.', {
+        description: 'Vui lòng đợi trước khi thử lại.',
       });
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "PENDING":
+      case 'PENDING':
         return (
           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
             <Clock className="h-3 w-3 mr-1" />
             Đang xem xét
           </Badge>
         );
-      case "ACTIVE":
+      case 'ACTIVE':
         return (
           <Badge className="bg-green-100 text-green-800 border-green-200">
             <CheckCircle className="h-3 w-3 mr-1" />
             Đang hoạt động
           </Badge>
         );
-      case "INACTIVE":
+      case 'INACTIVE':
         return (
           <Badge className="bg-red-100 text-red-800 border-red-200">
             <AlertCircle className="h-3 w-3 mr-1" />
@@ -170,21 +160,21 @@ export default function ShopRegisterPage() {
 
   const getLicenseStatusBadge = (status: string) => {
     switch (status) {
-      case "PENDING":
+      case 'PENDING':
         return (
           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
             <Clock className="h-3 w-3 mr-1" />
             Đang xem xét
           </Badge>
         );
-      case "ACTIVE":
+      case 'ACTIVE':
         return (
           <Badge className="bg-green-100 text-green-800 border-green-200">
             <CheckCircle className="h-3 w-3 mr-1" />
             Đang hoạt động
           </Badge>
         );
-      case "REJECTED":
+      case 'REJECTED':
         return (
           <Badge className="bg-red-100 text-red-800 border-red-200">
             <AlertCircle className="h-3 w-3 mr-1" />
@@ -226,9 +216,7 @@ export default function ShopRegisterPage() {
       <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Thông tin cửa hàng
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900">Thông tin cửa hàng</h1>
             {getStatusBadge(shopInfo.status)}
           </div>
           <p className="text-gray-600">
@@ -248,45 +236,31 @@ export default function ShopRegisterPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Tên cửa hàng
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Tên cửa hàng</Label>
                     <p className="text-lg font-semibold">{shopInfo.name}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Trạng thái
-                    </Label>
-                    <div className="mt-1">
-                      {getStatusBadge(shopInfo.status)}
-                    </div>
+                    <Label className="text-sm font-medium text-gray-600">Trạng thái</Label>
+                    <div className="mt-1">{getStatusBadge(shopInfo.status)}</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Số điện thoại
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Số điện thoại</Label>
                     <p className="text-lg">{shopInfo.phone}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Email
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Email</Label>
                     <p className="text-lg">{shopInfo.email}</p>
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-600">
-                    Địa chỉ
-                  </Label>
+                  <Label className="text-sm font-medium text-gray-600">Địa chỉ</Label>
                   <p className="text-lg">{shopInfo.address}</p>
                 </div>
                 {shopInfo.description && (
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Mô tả
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Mô tả</Label>
                     <p className="text-lg">{shopInfo.description}</p>
                   </div>
                 )}
@@ -307,19 +281,13 @@ export default function ShopRegisterPage() {
                       Trạng thái giấy phép
                     </Label>
                     <div className="mt-1">
-                      {getLicenseStatusBadge(
-                        shopInfo.license?.status || "PENDING"
-                      )}
+                      {getLicenseStatusBadge(shopInfo.license?.status || 'PENDING')}
                     </div>
                   </div>
                   <div className="text-right">
-                    <Label className="text-sm font-medium text-gray-600">
-                      Ngày tạo
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Ngày tạo</Label>
                     <p className="text-sm">
-                      {new Date(
-                        shopInfo.license?.createdAt || ""
-                      ).toLocaleDateString("vi-VN")}
+                      {new Date(shopInfo.license?.createdAt || '').toLocaleDateString('vi-VN')}
                     </p>
                   </div>
                 </div>
@@ -327,16 +295,13 @@ export default function ShopRegisterPage() {
                   <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      <strong>Lý do từ chối:</strong>{" "}
-                      {shopInfo.license.rejectReason}
+                      <strong>Lý do từ chối:</strong> {shopInfo.license.rejectReason}
                     </AlertDescription>
                   </Alert>
                 )}
                 {(shopInfo.license as any)?.images && (
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Hình ảnh giấy phép
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Hình ảnh giấy phép</Label>
                     <div className="mt-2">
                       <Image
                         src={(shopInfo.license as any).images}
@@ -362,15 +327,13 @@ export default function ShopRegisterPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">
-                      {shopInfo.isVerified ? "Đã xác minh" : "Chưa xác minh"}
+                      {shopInfo.isVerified ? 'Đã xác minh' : 'Chưa xác minh'}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      Trạng thái xác minh
-                    </div>
+                    <div className="text-sm text-gray-600">Trạng thái xác minh</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">
-                      {new Date(shopInfo.createdAt).toLocaleDateString("vi-VN")}
+                      {new Date(shopInfo.createdAt).toLocaleDateString('vi-VN')}
                     </div>
                     <div className="text-sm text-gray-600">Ngày đăng ký</div>
                   </div>
@@ -397,62 +360,51 @@ export default function ShopRegisterPage() {
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      shopInfo.status === "PENDING"
-                        ? "bg-yellow-500"
-                        : shopInfo.status === "ACTIVE"
-                        ? "bg-green-500"
-                        : "bg-gray-300"
+                      shopInfo.status === 'PENDING'
+                        ? 'bg-yellow-500'
+                        : shopInfo.status === 'ACTIVE'
+                          ? 'bg-green-500'
+                          : 'bg-gray-300'
                     }`}
                   >
-                    {shopInfo.status === "PENDING"
-                      ? "2"
-                      : shopInfo.status === "ACTIVE"
-                      ? "✓"
-                      : "!"}
+                    {shopInfo.status === 'PENDING' ? '2' : shopInfo.status === 'ACTIVE' ? '✓' : '!'}
                   </div>
                   <div>
                     <p className="font-medium text-sm">Xem xét tài liệu</p>
                     <p className="text-xs text-gray-600">
-                      {shopInfo.status === "PENDING"
-                        ? "Đang xử lý"
-                        : shopInfo.status === "ACTIVE"
-                        ? "Hoàn thành"
-                        : "Bị từ chối"}
+                      {shopInfo.status === 'PENDING'
+                        ? 'Đang xử lý'
+                        : shopInfo.status === 'ACTIVE'
+                          ? 'Hoàn thành'
+                          : 'Bị từ chối'}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      shopInfo.status === "ACTIVE"
-                        ? "bg-green-500"
-                        : "bg-gray-300"
+                      shopInfo.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-300'
                     }`}
                   >
-                    {shopInfo.status === "ACTIVE" ? "✓" : "3"}
+                    {shopInfo.status === 'ACTIVE' ? '✓' : '3'}
                   </div>
                   <div>
                     <p className="font-medium text-sm">Phê duyệt & thiết lập</p>
                     <p className="text-xs text-gray-600">
-                      {shopInfo.status === "ACTIVE"
-                        ? "Hoàn thành"
-                        : "Chờ phê duyệt"}
+                      {shopInfo.status === 'ACTIVE' ? 'Hoàn thành' : 'Chờ phê duyệt'}
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {shopInfo.status === "ACTIVE" && (
+            {shopInfo.status === 'ACTIVE' && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Hành động</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button
-                    asChild
-                    className="w-full bg-rose-600 hover:bg-rose-700"
-                  >
+                  <Button asChild className="w-full bg-rose-600 hover:bg-rose-700">
                     <Link href="/shops/my">Quản lý cửa hàng</Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
@@ -462,7 +414,7 @@ export default function ShopRegisterPage() {
               </Card>
             )}
 
-            {shopInfo.license?.status === "REJECTED" && (
+            {shopInfo.license?.status === 'REJECTED' && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Hành động</CardTitle>
@@ -476,9 +428,9 @@ export default function ShopRegisterPage() {
                         phone: shopInfo.phone,
                         email: shopInfo.email,
                         address: shopInfo.address,
-                        licenseImages: (shopInfo.license as any)?.images || "",
+                        licenseImages: (shopInfo.license as any)?.images || '',
                       });
-                      console.log("isEditing set to true");
+                      console.log('isEditing set to true');
                     }}
                     className="w-full bg-rose-600 hover:bg-rose-700"
                   >
@@ -494,7 +446,7 @@ export default function ShopRegisterPage() {
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription className="text-sm">
-                Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{" "}
+                Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{' '}
                 <a
                   href="mailto:veila.studio.mail@gmail.com"
                   className="text-rose-600 hover:underline"
@@ -534,9 +486,7 @@ export default function ShopRegisterPage() {
       <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Thông tin cửa hàng
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900">Thông tin cửa hàng</h1>
             {getStatusBadge(shopInfo.status)}
           </div>
           <p className="text-gray-600">
@@ -556,45 +506,31 @@ export default function ShopRegisterPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Tên cửa hàng
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Tên cửa hàng</Label>
                     <p className="text-lg font-semibold">{shopInfo.name}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Trạng thái
-                    </Label>
-                    <div className="mt-1">
-                      {getStatusBadge(shopInfo.status)}
-                    </div>
+                    <Label className="text-sm font-medium text-gray-600">Trạng thái</Label>
+                    <div className="mt-1">{getStatusBadge(shopInfo.status)}</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Số điện thoại
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Số điện thoại</Label>
                     <p className="text-lg">{shopInfo.phone}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Email
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Email</Label>
                     <p className="text-lg">{shopInfo.email}</p>
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-600">
-                    Địa chỉ
-                  </Label>
+                  <Label className="text-sm font-medium text-gray-600">Địa chỉ</Label>
                   <p className="text-lg">{shopInfo.address}</p>
                 </div>
                 {shopInfo.description && (
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Mô tả
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Mô tả</Label>
                     <p className="text-lg">{shopInfo.description}</p>
                   </div>
                 )}
@@ -615,19 +551,13 @@ export default function ShopRegisterPage() {
                       Trạng thái giấy phép
                     </Label>
                     <div className="mt-1">
-                      {getLicenseStatusBadge(
-                        shopInfo.license?.status || "PENDING"
-                      )}
+                      {getLicenseStatusBadge(shopInfo.license?.status || 'PENDING')}
                     </div>
                   </div>
                   <div className="text-right">
-                    <Label className="text-sm font-medium text-gray-600">
-                      Ngày tạo
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Ngày tạo</Label>
                     <p className="text-sm">
-                      {new Date(
-                        shopInfo.license?.createdAt || ""
-                      ).toLocaleDateString("vi-VN")}
+                      {new Date(shopInfo.license?.createdAt || '').toLocaleDateString('vi-VN')}
                     </p>
                   </div>
                 </div>
@@ -635,16 +565,13 @@ export default function ShopRegisterPage() {
                   <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      <strong>Lý do từ chối:</strong>{" "}
-                      {shopInfo.license.rejectReason}
+                      <strong>Lý do từ chối:</strong> {shopInfo.license.rejectReason}
                     </AlertDescription>
                   </Alert>
                 )}
                 {(shopInfo.license as any)?.images && (
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">
-                      Hình ảnh giấy phép
-                    </Label>
+                    <Label className="text-sm font-medium text-gray-600">Hình ảnh giấy phép</Label>
                     <div className="mt-2">
                       <Image
                         src={(shopInfo.license as any).images}
@@ -670,15 +597,13 @@ export default function ShopRegisterPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-600">
-                      {shopInfo.isVerified ? "Đã xác minh" : "Chưa xác minh"}
+                      {shopInfo.isVerified ? 'Đã xác minh' : 'Chưa xác minh'}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      Trạng thái xác minh
-                    </div>
+                    <div className="text-sm text-gray-600">Trạng thái xác minh</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">
-                      {new Date(shopInfo.createdAt).toLocaleDateString("vi-VN")}
+                      {new Date(shopInfo.createdAt).toLocaleDateString('vi-VN')}
                     </div>
                     <div className="text-sm text-gray-600">Ngày đăng ký</div>
                   </div>
@@ -705,62 +630,51 @@ export default function ShopRegisterPage() {
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      shopInfo.status === "PENDING"
-                        ? "bg-yellow-500"
-                        : shopInfo.status === "ACTIVE"
-                        ? "bg-green-500"
-                        : "bg-gray-300"
+                      shopInfo.status === 'PENDING'
+                        ? 'bg-yellow-500'
+                        : shopInfo.status === 'ACTIVE'
+                          ? 'bg-green-500'
+                          : 'bg-gray-300'
                     }`}
                   >
-                    {shopInfo.status === "PENDING"
-                      ? "2"
-                      : shopInfo.status === "ACTIVE"
-                      ? "✓"
-                      : "!"}
+                    {shopInfo.status === 'PENDING' ? '2' : shopInfo.status === 'ACTIVE' ? '✓' : '!'}
                   </div>
                   <div>
                     <p className="font-medium text-sm">Xem xét tài liệu</p>
                     <p className="text-xs text-gray-600">
-                      {shopInfo.status === "PENDING"
-                        ? "Đang xử lý"
-                        : shopInfo.status === "ACTIVE"
-                        ? "Hoàn thành"
-                        : "Bị từ chối"}
+                      {shopInfo.status === 'PENDING'
+                        ? 'Đang xử lý'
+                        : shopInfo.status === 'ACTIVE'
+                          ? 'Hoàn thành'
+                          : 'Bị từ chối'}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      shopInfo.status === "ACTIVE"
-                        ? "bg-green-500"
-                        : "bg-gray-300"
+                      shopInfo.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-300'
                     }`}
                   >
-                    {shopInfo.status === "ACTIVE" ? "✓" : "3"}
+                    {shopInfo.status === 'ACTIVE' ? '✓' : '3'}
                   </div>
                   <div>
                     <p className="font-medium text-sm">Phê duyệt & thiết lập</p>
                     <p className="text-xs text-gray-600">
-                      {shopInfo.status === "ACTIVE"
-                        ? "Hoàn thành"
-                        : "Chờ phê duyệt"}
+                      {shopInfo.status === 'ACTIVE' ? 'Hoàn thành' : 'Chờ phê duyệt'}
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {shopInfo.status === "ACTIVE" && (
+            {shopInfo.status === 'ACTIVE' && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Hành động</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button
-                    asChild
-                    className="w-full bg-rose-600 hover:bg-rose-700"
-                  >
+                  <Button asChild className="w-full bg-rose-600 hover:bg-rose-700">
                     <Link href="/shops/my">Quản lý cửa hàng</Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
@@ -770,7 +684,7 @@ export default function ShopRegisterPage() {
               </Card>
             )}
 
-            {shopInfo.license?.status === "REJECTED" && (
+            {shopInfo.license?.status === 'REJECTED' && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Hành động</CardTitle>
@@ -784,9 +698,9 @@ export default function ShopRegisterPage() {
                         phone: shopInfo.phone,
                         email: shopInfo.email,
                         address: shopInfo.address,
-                        licenseImages: (shopInfo.license as any)?.images || "",
+                        licenseImages: (shopInfo.license as any)?.images || '',
                       });
-                      console.log("isEditing set to true");
+                      console.log('isEditing set to true');
                     }}
                     className="w-full bg-rose-600 hover:bg-rose-700"
                   >
@@ -802,7 +716,7 @@ export default function ShopRegisterPage() {
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription className="text-sm">
-                Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{" "}
+                Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{' '}
                 <a
                   href="mailto:veila.studio.mail@gmail.com"
                   className="text-rose-600 hover:underline"
@@ -826,29 +740,20 @@ export default function ShopRegisterPage() {
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {isEditing
-                ? "Cập nhật đơn đăng ký thành công!"
-                : "Đăng ký cửa hàng thành công!"}
+              {isEditing ? 'Cập nhật đơn đăng ký thành công!' : 'Đăng ký cửa hàng thành công!'}
             </h1>
             <p className="text-gray-600 mb-8">
               {isEditing
-                ? "Đơn đăng ký của bạn đã được cập nhật thành công. Đội ngũ của chúng tôi sẽ xem xét lại và phản hồi cho bạn trong vòng 2-3 ngày làm việc."
-                : "Đăng ký cửa hàng của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xem xét đơn đăng ký và phản hồi cho bạn trong vòng 2-3 ngày làm việc."}
+                ? 'Đơn đăng ký của bạn đã được cập nhật thành công. Đội ngũ của chúng tôi sẽ xem xét lại và phản hồi cho bạn trong vòng 2-3 ngày làm việc.'
+                : 'Đăng ký cửa hàng của bạn đã được gửi thành công. Đội ngũ của chúng tôi sẽ xem xét đơn đăng ký và phản hồi cho bạn trong vòng 2-3 ngày làm việc.'}
             </p>
             <div className="space-y-4">
               <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  Tiếp theo sẽ như thế nào?
-                </h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Tiếp theo sẽ như thế nào?</h3>
                 <ul className="text-sm text-gray-600 space-y-1 text-left">
-                  <li>
-                    • Đội ngũ của chúng tôi sẽ xác minh giấy phép kinh doanh
-                  </li>
+                  <li>• Đội ngũ của chúng tôi sẽ xác minh giấy phép kinh doanh</li>
                   <li>• Bạn sẽ nhận được email xác nhận khi được phê duyệt</li>
-                  <li>
-                    • Quyền truy cập vào bảng điều khiển nhà cung cấp sẽ được
-                    cấp
-                  </li>
+                  <li>• Quyền truy cập vào bảng điều khiển nhà cung cấp sẽ được cấp</li>
                   <li>• Bạn có thể bắt đầu đăng sản phẩm và dịch vụ</li>
                 </ul>
               </div>
@@ -874,11 +779,11 @@ export default function ShopRegisterPage() {
               onClick={() => {
                 setIsEditing(false);
                 setShopData({
-                  name: "",
-                  phone: "",
-                  email: "",
-                  address: "",
-                  licenseImages: "",
+                  name: '',
+                  phone: '',
+                  email: '',
+                  address: '',
+                  licenseImages: '',
                 });
               }}
               className="flex items-center gap-2"
@@ -888,14 +793,12 @@ export default function ShopRegisterPage() {
           )}
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {isEditing
-            ? "Cập nhật đơn đăng ký cửa hàng"
-            : "Đăng ký cửa hàng của bạn"}
+          {isEditing ? 'Cập nhật đơn đăng ký cửa hàng' : 'Đăng ký cửa hàng của bạn'}
         </h1>
         <p className="text-gray-600">
           {isEditing
-            ? "Cập nhật thông tin đơn đăng ký và gửi lại để được xem xét"
-            : "Tham gia Veila với tư cách là nhà cung cấp và bắt đầu cung cấp dịch vụ váy cưới cho các cô dâu trên toàn thế giới"}
+            ? 'Cập nhật thông tin đơn đăng ký và gửi lại để được xem xét'
+            : 'Tham gia Veila với tư cách là nhà cung cấp và bắt đầu cung cấp dịch vụ váy cưới cho các cô dâu trên toàn thế giới'}
         </p>
       </div>
 
@@ -904,9 +807,7 @@ export default function ShopRegisterPage() {
           <Card className="border-rose-200 bg-rose-50">
             <CardContent className="p-6 text-center">
               <Store className="h-8 w-8 text-rose-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Mở rộng tầm với
-              </h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Mở rộng tầm với</h3>
               <p className="text-sm text-gray-600">
                 Kết nối với các cô dâu từ khắp nơi trên thế giới
               </p>
@@ -916,9 +817,7 @@ export default function ShopRegisterPage() {
           <Card className="border-blue-200 bg-blue-50">
             <CardContent className="p-6 text-center">
               <FileText className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Quản lý dễ dàng
-              </h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Quản lý dễ dàng</h3>
               <p className="text-sm text-gray-600">
                 Quản lý đơn hàng, kho hàng và khách hàng tại một nơi
               </p>
@@ -928,9 +827,7 @@ export default function ShopRegisterPage() {
           <Card className="border-green-200 bg-green-50">
             <CardContent className="p-6 text-center">
               <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Nền tảng đáng tin cậy
-              </h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Nền tảng đáng tin cậy</h3>
               <p className="text-sm text-gray-600">
                 Tham gia mạng lưới các nhà cung cấp chất lượng đã được xác minh
               </p>
@@ -941,17 +838,14 @@ export default function ShopRegisterPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {isEditing &&
-            shopInfo &&
-            (shopInfo as IShop).license?.rejectReason && (
-              <Alert className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>Lý do từ chối:</strong>{" "}
-                  {(shopInfo as IShop).license?.rejectReason}
-                </AlertDescription>
-              </Alert>
-            )}
+          {isEditing && shopInfo && (shopInfo as IShop).license?.rejectReason && (
+            <Alert className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Lý do từ chối:</strong> {(shopInfo as IShop).license?.rejectReason}
+              </AlertDescription>
+            </Alert>
+          )}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -959,8 +853,8 @@ export default function ShopRegisterPage() {
                 Thông tin cửa hàng
               </CardTitle>
               <CardDescription>
-                Vui lòng cung cấp thông tin chính xác về doanh nghiệp của bạn.
-                Tất cả các trường đều bắt buộc để xác minh.
+                Vui lòng cung cấp thông tin chính xác về doanh nghiệp của bạn. Tất cả các trường đều
+                bắt buộc để xác minh.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -973,7 +867,7 @@ export default function ShopRegisterPage() {
                   <Input
                     id="name"
                     value={shopData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                     placeholder="Nhập tên cửa hàng của bạn"
                     required
                   />
@@ -989,9 +883,7 @@ export default function ShopRegisterPage() {
                       id="phone"
                       type="tel"
                       value={shopData.phone}
-                      onChange={(e) =>
-                        handleInputChange("phone", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
                       placeholder="0901234567"
                       required
                     />
@@ -1006,9 +898,7 @@ export default function ShopRegisterPage() {
                       id="email"
                       type="email"
                       value={shopData.email}
-                      onChange={(e) =>
-                        handleInputChange("email", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="shop@example.com"
                       required
                     />
@@ -1022,9 +912,7 @@ export default function ShopRegisterPage() {
                   </Label>
                   <LocationInput
                     location={shopData.address}
-                    setLocation={(location) =>
-                      handleInputChange("address", location)
-                    }
+                    setLocation={(location) => handleInputChange('address', location)}
                   />
                 </div>
 
@@ -1035,9 +923,7 @@ export default function ShopRegisterPage() {
                   </Label>
                   <ImagesUpload
                     imageUrls={shopData.licenseImages}
-                    setImageUrls={(urls) =>
-                      handleInputChange("licenseImages", urls)
-                    }
+                    setImageUrls={(urls) => handleInputChange('licenseImages', urls)}
                   />
                 </div>
 
@@ -1063,7 +949,7 @@ export default function ShopRegisterPage() {
                     ) : (
                       <>
                         <CheckCircle className="h-4 w-4 mr-2" />
-                        {isEditing ? "Cập nhật đơn đăng ký" : "Gửi đăng ký"}
+                        {isEditing ? 'Cập nhật đơn đăng ký' : 'Gửi đăng ký'}
                       </>
                     )}
                   </Button>
@@ -1074,11 +960,11 @@ export default function ShopRegisterPage() {
                       onClick={() => {
                         setIsEditing(false);
                         setShopData({
-                          name: "",
-                          phone: "",
-                          email: "",
-                          address: "",
-                          licenseImages: "",
+                          name: '',
+                          phone: '',
+                          email: '',
+                          address: '',
+                          licenseImages: '',
                         });
                       }}
                       className="px-6"
@@ -1101,30 +987,22 @@ export default function ShopRegisterPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">
-                    Giấy phép kinh doanh hợp lệ
-                  </p>
+                  <p className="font-medium text-sm">Giấy phép kinh doanh hợp lệ</p>
                   <p className="text-xs text-gray-600">Bắt buộc để xác minh</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="font-medium text-sm">
-                    Thông tin liên hệ đầy đủ
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    Điện thoại, email và địa chỉ
-                  </p>
+                  <p className="font-medium text-sm">Thông tin liên hệ đầy đủ</p>
+                  <p className="text-xs text-gray-600">Điện thoại, email và địa chỉ</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
                   <p className="font-medium text-sm">Tiêu chuẩn chất lượng</p>
-                  <p className="text-xs text-gray-600">
-                    Cam kết về sự xuất sắc
-                  </p>
+                  <p className="text-xs text-gray-600">Cam kết về sự xuất sắc</p>
                 </div>
               </div>
             </CardContent>
@@ -1168,7 +1046,7 @@ export default function ShopRegisterPage() {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm">
-              Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{" "}
+              Cần hỗ trợ? Liên hệ với đội ngũ hỗ trợ của chúng tôi tại{' '}
               <a
                 href="mailto:veila.studio.mail@gmail.com"
                 className="text-rose-600 hover:underline"

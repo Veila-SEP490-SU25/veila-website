@@ -1,25 +1,23 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/providers/auth.provider";
-import { useFirebase } from "@/services/firebase";
-import { useCallback } from "react";
-import { toast } from "sonner";
-import { signInWithRedirect } from "firebase/auth";
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/providers/auth.provider';
+import { useFirebase } from '@/services/firebase';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
+import { signInWithRedirect } from 'firebase/auth';
 
 interface GoogleButtonProps {
-  variant?: "login" | "signup";
+  variant?: 'login' | 'signup';
 }
 
-export const GoogleButton: React.FC<GoogleButtonProps> = ({
-  variant = "login",
-}) => {
+export const GoogleButton: React.FC<GoogleButtonProps> = ({ variant = 'login' }) => {
   const { auth, signInWithPopup, googleProvider } = useFirebase();
   const { loginGoogle, isAuthenticating } = useAuth();
 
   const handleGoogleSignIn = useCallback(async () => {
     if (!auth || !signInWithPopup || !googleProvider) {
-      toast.error("Firebase chưa được khởi tạo. Vui lòng thử lại sau.");
+      toast.error('Firebase chưa được khởi tạo. Vui lòng thử lại sau.');
       return;
     }
 
@@ -27,9 +25,8 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
       const { user } = await signInWithPopup(auth, googleProvider);
       const { displayName, email } = user;
       if (!displayName || !email) {
-        toast.error("Có lỗi xảy ra trong quá trình xác thực.", {
-          description:
-            "Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.",
+        toast.error('Có lỗi xảy ra trong quá trình xác thực.', {
+          description: 'Vui lòng thử lại sau ít phút hoặc liên hệ với bộ phận hỗ trợ.',
         });
         return;
       } else {
@@ -39,33 +36,32 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
         });
       }
     } catch (error: any) {
-      console.error("Google sign-in error:", error);
+      console.error('Google sign-in error:', error);
 
       // Xử lý lỗi COOP
       if (
-        error.code === "auth/popup-closed-by-user" ||
-        error.message?.includes("popup") ||
-        error.message?.includes("COOP") ||
-        error.code === "auth/popup-blocked" ||
-        error.code === "auth/cancelled-popup-request"
+        error.code === 'auth/popup-closed-by-user' ||
+        error.message?.includes('popup') ||
+        error.message?.includes('COOP') ||
+        error.code === 'auth/popup-blocked' ||
+        error.code === 'auth/cancelled-popup-request'
       ) {
-        toast.error("Popup bị chặn", {
-          description: "Đang chuyển sang chế độ redirect...",
+        toast.error('Popup bị chặn', {
+          description: 'Đang chuyển sang chế độ redirect...',
         });
 
         // Fallback: sử dụng redirect
         try {
           await signInWithRedirect(auth, googleProvider);
         } catch (redirectError: any) {
-          console.error("Redirect error:", redirectError);
-          toast.error("Không thể đăng nhập Google", {
-            description:
-              "Vui lòng thử đăng nhập bằng email hoặc liên hệ hỗ trợ.",
+          console.error('Redirect error:', redirectError);
+          toast.error('Không thể đăng nhập Google', {
+            description: 'Vui lòng thử đăng nhập bằng email hoặc liên hệ hỗ trợ.',
           });
         }
       } else {
-        toast.error("Có lỗi xảy ra khi đăng nhập Google", {
-          description: error.message || "Vui lòng thử lại sau.",
+        toast.error('Có lỗi xảy ra khi đăng nhập Google', {
+          description: error.message || 'Vui lòng thử lại sau.',
         });
       }
     }
@@ -78,11 +74,7 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
       onClick={handleGoogleSignIn}
       disabled={isAuthenticating}
     >
-      <svg
-        className="w-5 h-5 mr-2"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path
           fill="#4285F4"
           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -100,7 +92,7 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
         />
       </svg>
-      {variant === "login" ? "Đăng nhập" : "Đăng ký"} với Google
+      {variant === 'login' ? 'Đăng nhập' : 'Đăng ký'} với Google
     </Button>
   );
 };

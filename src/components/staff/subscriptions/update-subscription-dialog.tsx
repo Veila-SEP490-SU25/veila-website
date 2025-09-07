@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,23 +8,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Textarea } from "@/components/ui/textarea";
-import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
-import { isSuccess } from "@/lib/utils";
-import { useUpdateSubscriptionMutation } from "@/services/apis";
-import {
-  ICreateSubscription,
-  ISubscription,
-  IUpdateSubscription,
-} from "@/services/types";
-import { Check, Trash, X } from "lucide-react";
-import Image from "next/image";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
+import { SingleImageUploadDialog } from '@/components/upload-image-dialog';
+import { isSuccess } from '@/lib/utils';
+import { useUpdateSubscriptionMutation } from '@/services/apis';
+import { ICreateSubscription, ISubscription, IUpdateSubscription } from '@/services/types';
+import { Check, Trash, X } from 'lucide-react';
+import Image from 'next/image';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UpdateSubscriptionDialogProps {
   subscription: ISubscription;
@@ -45,7 +41,7 @@ export const UpdateSubscriptionDialog = ({
     description: subscription.description,
     duration: subscription.duration,
     amount: subscription.amount,
-    images: subscription.images || "",
+    images: subscription.images || '',
   });
 
   const resetForm = useCallback(() => {
@@ -55,23 +51,23 @@ export const UpdateSubscriptionDialog = ({
       description: subscription.description,
       duration: subscription.duration,
       amount: subscription.amount,
-      images: subscription.images || "",
+      images: subscription.images || '',
     });
   }, [setFormData, subscription]);
 
   const handleConfirm = useCallback(async () => {
     if (!formData.name || !formData.description || !formData.images) {
-      toast.error("Vui lòng điền đầy đủ thông tin");
+      toast.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
 
     if (formData.duration <= 0) {
-      toast.error("Thời gian phải lớn hơn 0");
+      toast.error('Thời gian phải lớn hơn 0');
       return;
     }
 
     if (formData.amount <= 0) {
-      toast.error("Số tiền phải lớn hơn 0");
+      toast.error('Số tiền phải lớn hơn 0');
       return;
     }
 
@@ -90,7 +86,7 @@ export const UpdateSubscriptionDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      console.error("Failed to respond to complaint:", error);
+      console.error('Failed to respond to complaint:', error);
     }
   }, [formData, onSuccess, trigger, setOpen, resetForm]);
 
@@ -99,10 +95,7 @@ export const UpdateSubscriptionDialog = ({
     resetForm();
   }, [setOpen, resetForm]);
 
-  const handleInputChange = (
-    field: keyof ICreateSubscription,
-    value: string
-  ) => {
+  const handleInputChange = (field: keyof ICreateSubscription, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -129,12 +122,10 @@ export const UpdateSubscriptionDialog = ({
               </Label>
               <SingleImageUploadDialog
                 imageUrl={formData.images}
-                onImageChange={(url) =>
-                  setFormData((prev) => ({ ...prev, images: url }))
-                }
+                onImageChange={(url) => setFormData((prev) => ({ ...prev, images: url }))}
                 trigger={
                   <Image
-                    src={formData.images || "/placeholder.svg"}
+                    src={formData.images || '/placeholder.svg'}
                     alt="Uploaded image"
                     width={100}
                     height={100}
@@ -150,7 +141,7 @@ export const UpdateSubscriptionDialog = ({
               <Input
                 placeholder="Tên gói"
                 value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
+                onChange={(e) => handleInputChange('name', e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -160,9 +151,7 @@ export const UpdateSubscriptionDialog = ({
               <Textarea
                 placeholder="Mô tả"
                 value={formData.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
+                onChange={(e) => handleInputChange('description', e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -172,7 +161,7 @@ export const UpdateSubscriptionDialog = ({
               <Input
                 placeholder="Thời hạn (ngày)"
                 value={formData.duration}
-                onChange={(e) => handleInputChange("duration", e.target.value)}
+                onChange={(e) => handleInputChange('duration', e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -182,7 +171,7 @@ export const UpdateSubscriptionDialog = ({
               <Input
                 placeholder="Giá gói (đồng)"
                 value={formData.amount}
-                onChange={(e) => handleInputChange("amount", e.target.value)}
+                onChange={(e) => handleInputChange('amount', e.target.value)}
               />
             </div>
           </div>

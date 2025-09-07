@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { useLazyGetPlatformContractQuery } from "@/services/apis/contract.api";
-import { useEffect, useState } from "react";
-import { IContract } from "@/services/types";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useLazyGetPlatformContractQuery } from '@/services/apis/contract.api';
+import { useEffect, useState } from 'react';
+import { IContract } from '@/services/types';
 import {
   Building2,
   Mail,
@@ -17,11 +17,10 @@ import {
   Sparkles,
   Shield,
   Lightbulb,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function AboutPage() {
-  const [trigger, { data, isLoading, error }] =
-    useLazyGetPlatformContractQuery();
+  const [trigger, { data, isLoading, error }] = useLazyGetPlatformContractQuery();
   const [platformInfo, setPlatformInfo] = useState<IContract | null>(null);
 
   useEffect(() => {
@@ -57,9 +56,7 @@ export default function AboutPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50">
         <Card className="max-w-md">
           <CardContent className="p-6 text-center">
-            <p className="text-red-500">
-              Có lỗi xảy ra khi tải thông tin về Veila
-            </p>
+            <p className="text-red-500">Có lỗi xảy ra khi tải thông tin về Veila</p>
           </CardContent>
         </Card>
       </div>
@@ -81,19 +78,19 @@ export default function AboutPage() {
   // Parse markdown content to extract structured information
   const parseContent = (content: string) => {
     const sections: { [key: string]: string } = {};
-    const lines = content.split("\n");
-    let currentSection = "";
-    let currentContent = "";
+    const lines = content.split('\n');
+    let currentSection = '';
+    let currentContent = '';
 
     for (const line of lines) {
-      if (line.startsWith("## ")) {
+      if (line.startsWith('## ')) {
         if (currentSection) {
           sections[currentSection] = currentContent.trim();
         }
-        currentSection = line.replace("## ", "").trim();
-        currentContent = "";
+        currentSection = line.replace('## ', '').trim();
+        currentContent = '';
       } else {
-        currentContent += line + "\n";
+        currentContent += line + '\n';
       }
     }
 
@@ -108,30 +105,30 @@ export default function AboutPage() {
 
   // Extract specific information from content
   const extractInfo = (content: string, key: string) => {
-    const regex = new RegExp(`\\*\\*${key}\\*\\*:\\s*(.+?)(?=\\n|$)`, "i");
+    const regex = new RegExp(`\\*\\*${key}\\*\\*:\\s*(.+?)(?=\\n|$)`, 'i');
     const match = content.match(regex);
-    return match ? match[1].trim() : "";
+    return match ? match[1].trim() : '';
   };
 
-  const generalInfo = sections["1. Thông tin chung"] || "";
-  const missionVision = sections["2. Sứ mệnh và Tầm nhìn"] || "";
-  const contactInfo = sections["3. Thông tin liên hệ"] || "";
-  const supportInfo = sections["5. Hỗ trợ khách hàng"] || "";
+  const generalInfo = sections['1. Thông tin chung'] || '';
+  const missionVision = sections['2. Sứ mệnh và Tầm nhìn'] || '';
+  const contactInfo = sections['3. Thông tin liên hệ'] || '';
+  const supportInfo = sections['5. Hỗ trợ khách hàng'] || '';
 
-  const slogan = extractInfo(generalInfo, "Slogan");
-  const description = extractInfo(generalInfo, "Mô tả");
-  const foundedYear = extractInfo(generalInfo, "Năm thành lập");
+  const slogan = extractInfo(generalInfo, 'Slogan');
+  const description = extractInfo(generalInfo, 'Mô tả');
+  const foundedYear = extractInfo(generalInfo, 'Năm thành lập');
 
-  const mission = extractInfo(missionVision, "Sứ mệnh");
-  const vision = extractInfo(missionVision, "Tầm nhìn");
+  const mission = extractInfo(missionVision, 'Sứ mệnh');
+  const vision = extractInfo(missionVision, 'Tầm nhìn');
 
-  const email = extractInfo(contactInfo, "Email");
-  const phone = extractInfo(contactInfo, "Điện thoại");
-  const address = extractInfo(contactInfo, "Địa chỉ");
+  const email = extractInfo(contactInfo, 'Email');
+  const phone = extractInfo(contactInfo, 'Điện thoại');
+  const address = extractInfo(contactInfo, 'Địa chỉ');
 
-  const supportTime = extractInfo(supportInfo, "Thời gian hỗ trợ");
+  const supportTime = extractInfo(supportInfo, 'Thời gian hỗ trợ');
 
-  const coreValues = ["Chất lượng", "Tin cậy", "Sáng tạo"];
+  const coreValues = ['Chất lượng', 'Tin cậy', 'Sáng tạo'];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
@@ -142,12 +139,8 @@ export default function AboutPage() {
           <Badge className="mb-4 bg-white/20 text-white border-white/30">
             {foundedYear && `Thành lập năm ${foundedYear}`}
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            {platformInfo.title}
-          </h1>
-          <p className="text-xl md:text-2xl mb-6 max-w-3xl mx-auto font-light">
-            {slogan}
-          </p>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">{platformInfo.title}</h1>
+          <p className="text-xl md:text-2xl mb-6 max-w-3xl mx-auto font-light">{slogan}</p>
           <p className="text-lg max-w-4xl mx-auto opacity-90">{description}</p>
         </div>
       </div>
@@ -193,11 +186,7 @@ export default function AboutPage() {
               {coreValues.map((value, index) => {
                 const icons = [Shield, Sparkles, Lightbulb];
                 const Icon = icons[index];
-                const colors = [
-                  "bg-blue-500",
-                  "bg-emerald-500",
-                  "bg-amber-500",
-                ];
+                const colors = ['bg-blue-500', 'bg-emerald-500', 'bg-amber-500'];
 
                 return (
                   <div key={value} className="text-center group">
@@ -206,9 +195,7 @@ export default function AboutPage() {
                     >
                       <Icon className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="font-semibold text-lg text-gray-800">
-                      {value}
-                    </h3>
+                    <h3 className="font-semibold text-lg text-gray-800">{value}</h3>
                   </div>
                 );
               })}
@@ -268,9 +255,7 @@ export default function AboutPage() {
             <CardContent>
               <div className="p-4 bg-blue-50 rounded-lg">
                 <p className="text-blue-800 font-medium">Thời gian hỗ trợ</p>
-                <p className="text-blue-700 text-lg font-semibold">
-                  {supportTime}
-                </p>
+                <p className="text-blue-700 text-lg font-semibold">{supportTime}</p>
                 <p className="text-blue-600 text-sm mt-2">
                   Chúng tôi luôn sẵn sàng hỗ trợ bạn bất cứ lúc nào!
                 </p>
@@ -285,17 +270,11 @@ export default function AboutPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-center gap-3">
                 <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
-                <Badge
-                  variant="outline"
-                  className="border-emerald-300 text-emerald-700"
-                >
+                <Badge variant="outline" className="border-emerald-300 text-emerald-700">
                   Trạng thái: {platformInfo.status}
                 </Badge>
                 <p className="text-gray-600">
-                  Có hiệu lực từ{" "}
-                  {new Date(platformInfo.effectiveFrom).toLocaleDateString(
-                    "vi-VN"
-                  )}
+                  Có hiệu lực từ {new Date(platformInfo.effectiveFrom).toLocaleDateString('vi-VN')}
                 </p>
               </div>
             </CardContent>

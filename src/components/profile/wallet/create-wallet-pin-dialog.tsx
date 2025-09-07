@@ -1,23 +1,19 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Label } from "@/components/ui/label";
-import { useCreateWalletPINMutation } from "@/services/apis";
-import { Loader2, Save, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Label } from '@/components/ui/label';
+import { useCreateWalletPINMutation } from '@/services/apis';
+import { Loader2, Save, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface CreateWalletPINDialogProps {
   open?: boolean;
@@ -40,7 +36,7 @@ export const CreateWalletPINDialog = ({
   const [createWalletPIN, { isLoading }] = useCreateWalletPINMutation();
 
   const [pinData, setPinData] = useState<ICreateWalletPIN>({
-    pin: "",
+    pin: '',
   });
 
   const handleInputChange = (field: keyof ICreateWalletPIN, value: any) => {
@@ -52,7 +48,7 @@ export const CreateWalletPINDialog = ({
 
   const resetForm = () => {
     setPinData({
-      pin: "",
+      pin: '',
     });
   };
 
@@ -67,20 +63,18 @@ export const CreateWalletPINDialog = ({
 
   const handleSubmit = async () => {
     try {
-      const { statusCode, message } = await createWalletPIN(
-        pinData.pin
-      ).unwrap();
+      const { statusCode, message } = await createWalletPIN(pinData.pin).unwrap();
       if ([200, 201, 204, 203].includes(statusCode)) {
-        toast.success("Tạo mã PIN thành công!");
+        toast.success('Tạo mã PIN thành công!');
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi tạo mã PIN");
+        toast.error(message || 'Có lỗi xảy ra khi tạo mã PIN');
       }
     } catch (error) {
       console.error(error);
-      toast.error("Có lỗi xảy ra khi tạo mã PIN");
+      toast.error('Có lỗi xảy ra khi tạo mã PIN');
     }
   };
 
@@ -96,7 +90,7 @@ export const CreateWalletPINDialog = ({
           <InputOTP
             maxLength={6}
             value={pinData.pin}
-            onChange={(pin) => handleInputChange("pin", pin)}
+            onChange={(pin) => handleInputChange('pin', pin)}
             className="gap-2"
             type="password"
           >

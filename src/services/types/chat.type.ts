@@ -1,9 +1,9 @@
-import { IItem } from "@/services/types/base.type";
+import { IItem } from '@/services/types/base.type';
 
 export enum MessageType {
-  TEXT = "text",
-  IMAGE = "image",
-  VIDEO = "video",
+  TEXT = 'text',
+  IMAGE = 'image',
+  VIDEO = 'video',
 }
 
 export interface IChatroom extends IItem {

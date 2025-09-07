@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,19 +8,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Textarea } from "@/components/ui/textarea";
-import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
-import { isSuccess } from "@/lib/utils";
-import { useCreateSubscriptionMutation } from "@/services/apis";
-import { ICreateSubscription } from "@/services/types";
-import { Check, Trash, X } from "lucide-react";
-import Image from "next/image";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
+import { SingleImageUploadDialog } from '@/components/upload-image-dialog';
+import { isSuccess } from '@/lib/utils';
+import { useCreateSubscriptionMutation } from '@/services/apis';
+import { ICreateSubscription } from '@/services/types';
+import { Check, Trash, X } from 'lucide-react';
+import Image from 'next/image';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface CreateSubscriptionDialogProps {
   onSuccess?: () => void;
@@ -34,36 +34,36 @@ export const CreateSubscriptionDialog = ({
   const [trigger, { isLoading }] = useCreateSubscriptionMutation();
   const [open, setOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<ICreateSubscription>({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     duration: 0,
     amount: 0,
-    images: "",
+    images: '',
   });
 
   const resetForm = useCallback(() => {
     setFormData({
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       duration: 0,
       amount: 0,
-      images: "",
+      images: '',
     });
   }, [setFormData]);
 
   const handleConfirm = useCallback(async () => {
     if (!formData.name || !formData.description || !formData.images) {
-      toast.error("Vui lòng điền đầy đủ thông tin");
+      toast.error('Vui lòng điền đầy đủ thông tin');
       return;
     }
 
     if (formData.duration <= 0) {
-      toast.error("Thời gian phải lớn hơn 0");
+      toast.error('Thời gian phải lớn hơn 0');
       return;
     }
 
     if (formData.amount <= 0) {
-      toast.error("Số tiền phải lớn hơn 0");
+      toast.error('Số tiền phải lớn hơn 0');
       return;
     }
 
@@ -82,7 +82,7 @@ export const CreateSubscriptionDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      console.error("Failed to respond to complaint:", error);
+      console.error('Failed to respond to complaint:', error);
     }
   }, [formData, onSuccess, trigger, setOpen, resetForm]);
 
@@ -91,10 +91,7 @@ export const CreateSubscriptionDialog = ({
     resetForm();
   }, [setOpen, resetForm]);
 
-  const handleInputChange = (
-    field: keyof ICreateSubscription,
-    value: string
-  ) => {
+  const handleInputChange = (field: keyof ICreateSubscription, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -121,12 +118,10 @@ export const CreateSubscriptionDialog = ({
               </Label>
               <SingleImageUploadDialog
                 imageUrl={formData.images}
-                onImageChange={(url) =>
-                  setFormData((prev) => ({ ...prev, images: url }))
-                }
+                onImageChange={(url) => setFormData((prev) => ({ ...prev, images: url }))}
                 trigger={
                   <Image
-                    src={formData.images || "/placeholder.svg"}
+                    src={formData.images || '/placeholder.svg'}
                     alt="Uploaded image"
                     width={100}
                     height={100}
@@ -142,7 +137,7 @@ export const CreateSubscriptionDialog = ({
               <Input
                 placeholder="Tên gói"
                 value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
+                onChange={(e) => handleInputChange('name', e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -152,9 +147,7 @@ export const CreateSubscriptionDialog = ({
               <Textarea
                 placeholder="Mô tả"
                 value={formData.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
+                onChange={(e) => handleInputChange('description', e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -164,7 +157,7 @@ export const CreateSubscriptionDialog = ({
               <Input
                 placeholder="Thời hạn (ngày)"
                 value={formData.duration}
-                onChange={(e) => handleInputChange("duration", e.target.value)}
+                onChange={(e) => handleInputChange('duration', e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -174,7 +167,7 @@ export const CreateSubscriptionDialog = ({
               <Input
                 placeholder="Giá gói (đồng)"
                 value={formData.amount}
-                onChange={(e) => handleInputChange("amount", e.target.value)}
+                onChange={(e) => handleInputChange('amount', e.target.value)}
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   useLazyGetOrderMilestoneQuery,
@@ -6,7 +6,7 @@ import {
   useLazyGetOrderDressesQuery,
   useLazyGetOrderAccessoriesQuery,
   useLazyGetOrderServiceQuery,
-} from "@/services/apis";
+} from '@/services/apis';
 import {
   type IMilestone,
   type IOrder,
@@ -14,10 +14,10 @@ import {
   OrderStatus,
   OrderType,
   MilestoneStatus,
-} from "@/services/types";
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/services/types';
+import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   Clock,
@@ -30,30 +30,25 @@ import {
   MessageSquare,
   TrendingUp,
   Edit,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { MilestoneTask } from "@/components/shops/detail/order/milestone-task";
-import { EditMilestoneDialog } from "@/components/shops/detail/order/edit-milestone-dialog";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MilestoneTask } from '@/components/shops/detail/order/milestone-task';
+import { EditMilestoneDialog } from '@/components/shops/detail/order/edit-milestone-dialog';
 
-import { ChangeOrderStatusButton } from "@/components/shops/detail/order/change-order-status-button";
-import { OrderDetailsTab } from "@/components/shops/detail/order/order-details-tab";
-import { MeasurementsTab } from "@/components/shops/detail/order/measurements-tab";
-import {
-  getStatusColor,
-  getStatusText,
-  getTypeColor,
-  getTypeText,
-} from "@/lib/order-util";
+import { ChangeOrderStatusButton } from '@/components/shops/detail/order/change-order-status-button';
+import { OrderDetailsTab } from '@/components/shops/detail/order/order-details-tab';
+import { MeasurementsTab } from '@/components/shops/detail/order/measurements-tab';
+import { getStatusColor, getStatusText, getTypeColor, getTypeText } from '@/lib/order-util';
 
 const getMilestoneStatusIcon = (status: MilestoneStatus) => {
   switch (status) {
@@ -71,13 +66,13 @@ const getMilestoneStatusIcon = (status: MilestoneStatus) => {
 const getMilestoneStatusText = (status: MilestoneStatus) => {
   switch (status) {
     case MilestoneStatus.COMPLETED:
-      return "Hoàn thành";
+      return 'Hoàn thành';
     case MilestoneStatus.IN_PROGRESS:
-      return "Đang thực hiện";
+      return 'Đang thực hiện';
     case MilestoneStatus.CANCELLED:
-      return "Đã hủy";
+      return 'Đã hủy';
     case MilestoneStatus.PENDING:
-      return "Chờ thực hiện";
+      return 'Chờ thực hiện';
     default:
       return status;
   }
@@ -86,30 +81,30 @@ const getMilestoneStatusText = (status: MilestoneStatus) => {
 const getMilestoneStatusColor = (status: MilestoneStatus) => {
   switch (status) {
     case MilestoneStatus.COMPLETED:
-      return "bg-green-100 text-green-800 border-green-200";
+      return 'bg-green-100 text-green-800 border-green-200';
     case MilestoneStatus.IN_PROGRESS:
-      return "bg-blue-100 text-blue-800 border-blue-200";
+      return 'bg-blue-100 text-blue-800 border-blue-200';
     case MilestoneStatus.CANCELLED:
-      return "bg-red-100 text-red-800 border-red-200";
+      return 'bg-red-100 text-red-800 border-red-200';
     case MilestoneStatus.PENDING:
-      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return 'bg-gray-100 text-gray-800 border-gray-200';
   }
 };
 
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
   }).format(amount);
 };
 
 const formatDateShort = (date: Date | string) => {
-  return new Intl.DateTimeFormat("vi-VN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+  return new Intl.DateTimeFormat('vi-VN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   }).format(new Date(date));
 };
 
@@ -122,46 +117,43 @@ const ShopOrderDetailPage = () => {
 
   const fetchOrder = useCallback(async () => {
     try {
-      const { statusCode, message, item } = await getOrder(
-        orderId as string
-      ).unwrap();
+      const { statusCode, message, item } = await getOrder(orderId as string).unwrap();
       if (statusCode === 200) {
         setOrder(item);
       } else {
-        toast.error("Không thể lấy dữ liệu thông tin đơn hàng", {
+        toast.error('Không thể lấy dữ liệu thông tin đơn hàng', {
           description: message,
         });
-        router.push("/shops/my");
+        router.push('/shops/my');
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi tải thông tin đơn hàng");
-      console.error("Error fetching order:", error);
+      toast.error('Có lỗi xảy ra khi tải thông tin đơn hàng');
+      console.error('Error fetching order:', error);
     }
   }, [getOrder, orderId, router]);
 
   const [milestones, setMilestones] = useState<IMilestone[]>([]);
-  const [getMilestones, { isLoading: isMilestonesLoading }] =
-    useLazyGetOrderMilestoneQuery();
+  const [getMilestones, { isLoading: isMilestonesLoading }] = useLazyGetOrderMilestoneQuery();
 
   const fetchMilestone = useCallback(async () => {
     try {
       const { statusCode, message, items } = await getMilestones({
-        filter: "",
+        filter: '',
         orderId: orderId as string,
         page: 0,
         size: 10,
-        sort: "index:asc",
+        sort: 'index:asc',
       }).unwrap();
       if (statusCode === 200) {
         setMilestones(items);
       } else {
-        toast.error("Không thể lấy dữ liệu thông tin milestones", {
+        toast.error('Không thể lấy dữ liệu thông tin milestones', {
           description: message,
         });
       }
     } catch (error) {
-      toast.error("Không thể lấy dữ liệu thông tin milestones");
-      console.error("Error fetching milestones:", error);
+      toast.error('Không thể lấy dữ liệu thông tin milestones');
+      console.error('Error fetching milestones:', error);
     }
   }, [getMilestones, orderId]);
 
@@ -173,61 +165,54 @@ const ShopOrderDetailPage = () => {
     useLazyGetOrderAccessoriesQuery();
   const [orderAccessories, setOrderAccessories] = useState<any[]>([]);
 
-  const [getOrderService, { isLoading: _isOrderServiceLoading }] =
-    useLazyGetOrderServiceQuery();
+  const [getOrderService, { isLoading: _isOrderServiceLoading }] = useLazyGetOrderServiceQuery();
   const [orderServiceDetails, setOrderServiceDetails] = useState<any>(null);
 
   const fetchOrderDressDetail = useCallback(async () => {
     try {
-      const { statusCode, message, items } = await getOrderDressDetail(
-        orderId as string
-      ).unwrap();
+      const { statusCode, message, items } = await getOrderDressDetail(orderId as string).unwrap();
       if (statusCode === 200) {
         setOrderDresses(items);
       } else {
-        toast.error("Không thể lấy dữ liệu thông tin dress details", {
+        toast.error('Không thể lấy dữ liệu thông tin dress details', {
           description: message,
         });
       }
     } catch (error) {
-      toast.error("Không thể lấy dữ liệu thông tin dress details");
-      console.error("Error fetching order dress detail:", error);
+      toast.error('Không thể lấy dữ liệu thông tin dress details');
+      console.error('Error fetching order dress detail:', error);
     }
   }, [getOrderDressDetail, orderId]);
 
   const fetchOrderAccessories = useCallback(async () => {
     try {
-      const { statusCode, message, items } = await getOrderAccessories(
-        orderId as string
-      ).unwrap();
+      const { statusCode, message, items } = await getOrderAccessories(orderId as string).unwrap();
       if (statusCode === 200) {
         setOrderAccessories(items);
       } else {
-        toast.error("Không thể lấy dữ liệu thông tin accessories", {
+        toast.error('Không thể lấy dữ liệu thông tin accessories', {
           description: message,
         });
       }
     } catch (error) {
-      toast.error("Không thể lấy dữ liệu thông tin accessories");
-      console.error("Error fetching order accessories:", error);
+      toast.error('Không thể lấy dữ liệu thông tin accessories');
+      console.error('Error fetching order accessories:', error);
     }
   }, [getOrderAccessories, orderId]);
 
   const fetchOrderService = useCallback(async () => {
     try {
-      const { statusCode, message, item } = await getOrderService(
-        orderId as string
-      ).unwrap();
+      const { statusCode, message, item } = await getOrderService(orderId as string).unwrap();
       if (statusCode === 200) {
         setOrderServiceDetails(item);
       } else {
-        toast.error("Không thể lấy dữ liệu thông tin service", {
+        toast.error('Không thể lấy dữ liệu thông tin service', {
           description: message,
         });
       }
     } catch (error) {
-      toast.error("Không thể lấy dữ liệu thông tin service");
-      console.error("Error fetching order service:", error);
+      toast.error('Không thể lấy dữ liệu thông tin service');
+      console.error('Error fetching order service:', error);
     }
   }, [getOrderService, orderId]);
 
@@ -238,13 +223,7 @@ const ShopOrderDetailPage = () => {
       fetchOrderDressDetail();
       fetchOrderAccessories();
     }
-  }, [
-    orderId,
-    fetchOrder,
-    fetchMilestone,
-    fetchOrderDressDetail,
-    fetchOrderAccessories,
-  ]);
+  }, [orderId, fetchOrder, fetchMilestone, fetchOrderDressDetail, fetchOrderAccessories]);
 
   // Gọi API service riêng khi đã có thông tin order và là đơn custom
   useEffect(() => {
@@ -256,11 +235,7 @@ const ShopOrderDetailPage = () => {
   // Update order when orderDresses is fetched
   // Note: Since API returns IDress[] instead of IOrderDressDetail[], we skip this update
 
-  if (
-    isOrderLoading ||
-    isOrderDressDetailLoading ||
-    isOrderAccessoriesLoading
-  ) {
+  if (isOrderLoading || isOrderDressDetailLoading || isOrderAccessoriesLoading) {
     return (
       <div className="container mx-auto p-4 md:p-6 space-y-6">
         <div className="flex items-center space-x-4">
@@ -291,9 +266,7 @@ const ShopOrderDetailPage = () => {
           <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
             <Package className="h-12 w-12 text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Không tìm thấy đơn hàng
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Không tìm thấy đơn hàng</h3>
           <p className="text-muted-foreground mb-4">
             Đơn hàng có thể đã bị xóa hoặc bạn không có quyền truy cập.
           </p>
@@ -309,11 +282,10 @@ const ShopOrderDetailPage = () => {
   }
 
   const completedMilestones = milestones.filter(
-    (m) => m.status === MilestoneStatus.COMPLETED
+    (m) => m.status === MilestoneStatus.COMPLETED,
   ).length;
   const totalMilestones = milestones.length;
-  const progress =
-    totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
+  const progress = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
   // Calculate payment information
 
@@ -342,12 +314,12 @@ const ShopOrderDetailPage = () => {
               </p>
               <span className="text-sm text-muted-foreground">•</span>
               <p className="text-sm text-muted-foreground">
-                Shop:{" "}
+                Shop:{' '}
                 <span className="font-medium text-blue-600">
                   {currentDress?.dress?.user?.shop?.name ||
                     currentOrderDressDetail?.dress?.user?.shop?.name ||
                     order.shop?.name ||
-                    "Không xác định"}
+                    'Không xác định'}
                 </span>
               </p>
             </div>
@@ -444,8 +416,7 @@ const ShopOrderDetailPage = () => {
                                 {getMilestoneStatusIcon(milestone.status)}
                                 <div>
                                   <span className="text-lg">
-                                    Giai đoạn {milestone.index}:{" "}
-                                    {milestone.title}
+                                    Giai đoạn {milestone.index}: {milestone.title}
                                   </span>
                                   <p className="text-sm text-muted-foreground font-normal mt-1">
                                     Hạn: {formatDateShort(milestone.dueDate)}
@@ -457,20 +428,14 @@ const ShopOrderDetailPage = () => {
                                   milestone={milestone}
                                   previousMilestoneDueDate={
                                     index > 0
-                                      ? milestones[
-                                          index - 1
-                                        ].dueDate?.toString() || null
+                                      ? milestones[index - 1].dueDate?.toString() || null
                                       : null
                                   }
                                   onSuccess={() => {
                                     fetchMilestone();
                                   }}
                                   trigger={
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-8 px-3"
-                                    >
+                                    <Button variant="outline" size="sm" className="h-8 px-3">
                                       <Edit className="h-3 w-3 mr-1" />
                                       Sửa hạn
                                     </Button>
@@ -478,9 +443,7 @@ const ShopOrderDetailPage = () => {
                                 />
                                 <Badge
                                   variant="outline"
-                                  className={getMilestoneStatusColor(
-                                    milestone.status
-                                  )}
+                                  className={getMilestoneStatusColor(milestone.status)}
                                 >
                                   {getMilestoneStatusText(milestone.status)}
                                 </Badge>
@@ -499,9 +462,7 @@ const ShopOrderDetailPage = () => {
                                 milestoneTitle={milestone.title}
                                 _onChange={fetchMilestone}
                                 orderStatus={order.status}
-                                isLastMilestone={
-                                  index === milestones.length - 1
-                                }
+                                isLastMilestone={index === milestones.length - 1}
                                 orderId={order.id}
                               />
                             </div>
@@ -515,13 +476,13 @@ const ShopOrderDetailPage = () => {
                         <Clock className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                         <h3 className="text-lg font-semibold mb-2">
                           {order.status === OrderStatus.PENDING
-                            ? "Chưa có giai đoạn nào được tạo"
-                            : "Chưa có giai đoạn nào được thiết lập cho đơn hàng này."}
+                            ? 'Chưa có giai đoạn nào được tạo'
+                            : 'Chưa có giai đoạn nào được thiết lập cho đơn hàng này.'}
                         </h3>
                         <p className="text-muted-foreground">
                           {order.status === OrderStatus.PENDING
-                            ? "Hãy tạo các giai đoạn công việc để bắt đầu xử lý đơn hàng."
-                            : "Các giai đoạn sẽ được tạo khi đơn hàng được xử lý."}
+                            ? 'Hãy tạo các giai đoạn công việc để bắt đầu xử lý đơn hàng.'
+                            : 'Các giai đoạn sẽ được tạo khi đơn hàng được xử lý.'}
                         </p>
                       </CardContent>
                     </Card>
@@ -544,10 +505,7 @@ const ShopOrderDetailPage = () => {
               />
             </TabsContent>
 
-            <TabsContent
-              value="transactions"
-              className="space-y-4 mt-4"
-            ></TabsContent>
+            <TabsContent value="transactions" className="space-y-4 mt-4"></TabsContent>
           </Tabs>
         </div>
 
@@ -571,13 +529,13 @@ const ShopOrderDetailPage = () => {
                     {currentDress?.dress?.user?.shop?.name ||
                       currentOrderDressDetail?.dress?.user?.shop?.name ||
                       order.shop?.name ||
-                      "Không xác định"}
+                      'Không xác định'}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {currentDress?.dress?.user?.shop?.address ||
                       currentOrderDressDetail?.dress?.user?.shop?.address ||
                       order.shop?.address ||
-                      "Không có địa chỉ"}
+                      'Không có địa chỉ'}
                   </p>
                 </div>
               </div>
@@ -595,22 +553,17 @@ const ShopOrderDetailPage = () => {
             <CardContent>
               <div className="flex items-center space-x-3">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={order.customer.avatarUrl || ""} />
+                  <AvatarImage src={order.customer.avatarUrl || ''} />
                   <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
-                    {order.customer.firstName?.charAt(0) || "U"}
+                    {order.customer.firstName?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold truncate">
-                    {order.customer.firstName} {order.customer.middleName}{" "}
-                    {order.customer.lastName}
+                    {order.customer.firstName} {order.customer.middleName} {order.customer.lastName}
                   </p>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {order.customer.email}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {order.customer.phone}
-                  </p>
+                  <p className="text-sm text-muted-foreground truncate">{order.customer.email}</p>
+                  <p className="text-sm text-muted-foreground">{order.customer.phone}</p>
                 </div>
               </div>
             </CardContent>
@@ -638,7 +591,7 @@ const ShopOrderDetailPage = () => {
                 className="w-full justify-start bg-transparent"
                 variant="outline"
                 onClick={() => {
-                  router.push("/chat");
+                  router.push('/chat');
                 }}
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
@@ -659,27 +612,18 @@ const ShopOrderDetailPage = () => {
                 </Badge>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  Số tiền chuyển cho Shop:
-                </span>
-                <span className="font-bold">
-                  {formatCurrency(order.amount)}
-                </span>
+                <span className="text-muted-foreground">Số tiền chuyển cho Shop:</span>
+                <span className="font-bold">{formatCurrency(order.amount)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Số dư bị khoá:</span>
-                <span className="font-bold">
-                  {" "}
-                  {formatCurrency(parseFloat(order.deposit))}
-                </span>
+                <span className="font-bold"> {formatCurrency(parseFloat(order.deposit))}</span>
               </div>
 
               <Separator />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Ngày giao:</span>
-                <span className="font-medium">
-                  {formatDateShort(order.dueDate)}
-                </span>
+                <span className="font-medium">{formatDateShort(order.dueDate)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Tiến độ:</span>

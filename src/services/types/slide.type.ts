@@ -1,4 +1,4 @@
-import { IItem } from "@/services/types";
+import { IItem } from '@/services/types';
 
 export interface ISlide extends IItem {
   title: string;

@@ -1,29 +1,29 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useVietQR } from "@/hooks/use-vietqr";
-import { IUpdateBankInfo, useUpdateBankInfoMutation } from "@/services/apis";
-import { IWallet } from "@/services/types";
-import { Loader2, Save, X } from "lucide-react";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { useVietQR } from '@/hooks/use-vietqr';
+import { IUpdateBankInfo, useUpdateBankInfoMutation } from '@/services/apis';
+import { IWallet } from '@/services/types';
+import { Loader2, Save, X } from 'lucide-react';
+import Image from 'next/image';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UpdateBankInfoDialogProps {
   open?: boolean;
@@ -45,8 +45,8 @@ export const UpdateBankInfoDialog = ({
   const [updateBankInfo, { isLoading }] = useUpdateBankInfoMutation();
 
   const [bankData, setBankData] = useState<IUpdateBankInfo>({
-    bankNumber: wallet.bankNumber || "",
-    bin: wallet.bin || "",
+    bankNumber: wallet.bankNumber || '',
+    bin: wallet.bin || '',
   });
 
   const handleInputChange = (field: keyof IUpdateBankInfo, value: any) => {
@@ -58,8 +58,8 @@ export const UpdateBankInfoDialog = ({
 
   const resetForm = useCallback(() => {
     setBankData({
-      bankNumber: wallet.bankNumber || "",
-      bin: wallet.bin || "",
+      bankNumber: wallet.bankNumber || '',
+      bin: wallet.bin || '',
     });
   }, [wallet, setBankData]);
 
@@ -76,17 +76,15 @@ export const UpdateBankInfoDialog = ({
     try {
       const { statusCode, message } = await updateBankInfo(bankData).unwrap();
       if ([200, 201, 204, 203].includes(statusCode)) {
-        toast.success("Cập nhật thông tin ngân hàng thành công!");
+        toast.success('Cập nhật thông tin ngân hàng thành công!');
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(
-          message || "Có lỗi xảy ra khi cập nhật thông tin ngân hàng"
-        );
+        toast.error(message || 'Có lỗi xảy ra khi cập nhật thông tin ngân hàng');
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi cập nhật thông tin ngân hàng");
+      toast.error('Có lỗi xảy ra khi cập nhật thông tin ngân hàng');
     }
   };
 
@@ -95,15 +93,10 @@ export const UpdateBankInfoDialog = ({
       <DialogContent className="min-w-xl md:min-w-xl max-w-[90vw] md:max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Thông tin ngân hàng</DialogTitle>
-          <DialogDescription>
-            Cập nhật thông tin ngân hàng của bạn
-          </DialogDescription>
+          <DialogDescription>Cập nhật thông tin ngân hàng của bạn</DialogDescription>
         </DialogHeader>
         {/* Form content goes here */}
-        <Select
-          value={bankData.bin}
-          onValueChange={(value) => handleInputChange("bin", value)}
-        >
+        <Select value={bankData.bin} onValueChange={(value) => handleInputChange('bin', value)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Chọn ngân hàng" />
           </SelectTrigger>
@@ -120,13 +113,8 @@ export const UpdateBankInfoDialog = ({
                         className="w-14 h-14 object-contain"
                       />
                       <div className="flex-1 flex items-center gap-2">
-                        <span className="text-lg text-gray-600 font-semibold">
-                          {bank.code}
-                        </span>
-                        -
-                        <span className="text-sm text-gray-600">
-                          {bank.shortName}
-                        </span>
+                        <span className="text-lg text-gray-600 font-semibold">{bank.code}</span>-
+                        <span className="text-sm text-gray-600">{bank.shortName}</span>
                       </div>
                     </div>
                   </SelectItem>
@@ -138,7 +126,7 @@ export const UpdateBankInfoDialog = ({
           <Label>Số tài khoản *</Label>
           <Input
             value={bankData.bankNumber}
-            onChange={(e) => handleInputChange("bankNumber", e.target.value)}
+            onChange={(e) => handleInputChange('bankNumber', e.target.value)}
             placeholder="Nhập số tài khoản"
           />
         </div>

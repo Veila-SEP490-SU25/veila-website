@@ -1,63 +1,46 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { RefreshCw } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { otpSchema, type OTPSchema } from "@/lib/validations";
-import { useRequestOtpMutation } from "@/services/apis";
-import { toast } from "sonner";
-import { useAuth } from "@/providers/auth.provider";
-import { TextLogo } from "@/components/text-logo";
+import { useState, useEffect, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { RefreshCw } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { otpSchema, type OTPSchema } from '@/lib/validations';
+import { useRequestOtpMutation } from '@/services/apis';
+import { toast } from 'sonner';
+import { useAuth } from '@/providers/auth.provider';
+import { TextLogo } from '@/components/text-logo';
 
 export default function VerifyOTPPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [userId, setUserId] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  const [userId, setUserId] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [timeLeft, setTimeLeft] = useState(300);
 
-  const [requestOtpMutation, { isLoading: isResending }] =
-    useRequestOtpMutation();
+  const [requestOtpMutation, { isLoading: isResending }] = useRequestOtpMutation();
   const { verifyOtp, isAuthenticating } = useAuth();
 
   const form = useForm<OTPSchema>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
-      otp: "",
+      otp: '',
     },
   });
 
   useEffect(() => {
-    const userId = searchParams.get("userId");
-    const email = searchParams.get("email");
+    const userId = searchParams.get('userId');
+    const email = searchParams.get('email');
 
     if (userId && email) {
       setUserId(userId);
       setEmail(email);
     } else {
-      router.push("/login-otp");
+      router.push('/login-otp');
     }
   }, [searchParams, router]);
 
@@ -72,14 +55,14 @@ export default function VerifyOTPPage() {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const onSubmit = useCallback(
     async (data: OTPSchema) => {
       await verifyOtp({ userId, otp: data.otp });
     },
-    [userId, verifyOtp]
+    [userId, verifyOtp],
   );
 
   const handleResendOTP = useCallback(async () => {
@@ -88,19 +71,17 @@ export default function VerifyOTPPage() {
         email,
       }).unwrap();
       if (statusCode === 200) {
-        toast.success("Mã OTP đã được gửi lại đến email của bạn.");
+        toast.success('Mã OTP đã được gửi lại đến email của bạn.');
         setTimeLeft(300);
         form.reset();
         setUserId(item);
       } else {
-        toast.error("Không thể gửi mã xác thực đến email này.", {
+        toast.error('Không thể gửi mã xác thực đến email này.', {
           description: message,
         });
       }
     } catch {
-      toast.error(
-        "Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau."
-      );
+      toast.error('Đã xảy ra lỗi trong quá trình gửi mã OTP. Vui lòng thử lại sau.');
     }
   }, [email, requestOtpMutation, form]);
 
@@ -110,9 +91,7 @@ export default function VerifyOTPPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <TextLogo />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Xác Thực OTP
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Xác Thực OTP</h1>
           <p className="text-gray-600">
             Nhập mã 6 số đã được gửi đến
             <br />
@@ -123,19 +102,14 @@ export default function VerifyOTPPage() {
         {/* OTP Form */}
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl text-center">
-              Nhập Mã Xác Thực
-            </CardTitle>
+            <CardTitle className="text-xl text-center">Nhập Mã Xác Thực</CardTitle>
             <CardDescription className="text-center">
               Mã OTP có hiệu lực trong {formatTime(timeLeft)}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* OTP Input */}
                 <FormField
                   control={form.control}
@@ -195,7 +169,7 @@ export default function VerifyOTPPage() {
                       Đang xác thực...
                     </>
                   ) : (
-                    "Xác Thực"
+                    'Xác Thực'
                   )}
                 </Button>
 
@@ -203,7 +177,7 @@ export default function VerifyOTPPage() {
                 <div className="text-center">
                   {timeLeft > 0 ? (
                     <p className="text-sm text-gray-600">
-                      Không nhận được mã?{" "}
+                      Không nhận được mã?{' '}
                       <button
                         type="button"
                         onClick={handleResendOTP}
@@ -216,7 +190,7 @@ export default function VerifyOTPPage() {
                             Đang gửi...
                           </>
                         ) : (
-                          "Gửi lại"
+                          'Gửi lại'
                         )}
                       </button>
                     </p>
@@ -234,7 +208,7 @@ export default function VerifyOTPPage() {
                           Đang gửi...
                         </>
                       ) : (
-                        "Gửi Lại Mã OTP"
+                        'Gửi Lại Mã OTP'
                       )}
                     </Button>
                   )}

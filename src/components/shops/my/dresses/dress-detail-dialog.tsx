@@ -1,38 +1,24 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Eye,
-  Edit,
-  Trash2,
-  DollarSign,
-  Ruler,
-  Palette,
-  Shirt,
-  Star,
-} from "lucide-react";
-import type { IDress } from "@/services/types";
-import {
-  dressStatusColors,
-  dressStatusLabels,
-  formatPrice,
-  getImages,
-} from "@/lib/products-utils";
-import { ImageGallery } from "@/components/image-gallery";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
+import { Eye, Edit, Trash2, DollarSign, Ruler, Palette, Shirt, Star } from 'lucide-react';
+import type { IDress } from '@/services/types';
+import { dressStatusColors, dressStatusLabels, formatPrice, getImages } from '@/lib/products-utils';
+import { ImageGallery } from '@/components/image-gallery';
 
 interface DressDetailDialogProps {
   dress: IDress;
@@ -41,16 +27,9 @@ interface DressDetailDialogProps {
   onDelete?: (dressId: string) => void;
 }
 
-export function DressDetailDialog({
-  dress,
-  trigger,
-  onEdit,
-  onDelete,
-}: DressDetailDialogProps) {
+export function DressDetailDialog({ dress, trigger, onEdit, onDelete }: DressDetailDialogProps) {
   const [open, setOpen] = useState(false);
-  const [dressImages, setDressImages] = useState<string[]>(
-    getImages(dress.images)
-  );
+  const [dressImages, setDressImages] = useState<string[]>(getImages(dress.images));
   useEffect(() => {
     setDressImages(getImages(dress.images));
   }, [dress]);
@@ -87,21 +66,11 @@ export function DressDetailDialog({
               {/* Status and Category */}
               <div className="flex items-center justify-between">
                 <Badge
-                  className={
-                    dressStatusColors[
-                      dress.status as keyof typeof dressStatusColors
-                    ]
-                  }
+                  className={dressStatusColors[dress.status as keyof typeof dressStatusColors]}
                 >
-                  {
-                    dressStatusLabels[
-                      dress.status as keyof typeof dressStatusLabels
-                    ]
-                  }
+                  {dressStatusLabels[dress.status as keyof typeof dressStatusLabels]}
                 </Badge>
-                {dress.category && (
-                  <Badge variant="outline">{dress.category.name}</Badge>
-                )}
+                {dress.category && <Badge variant="outline">{dress.category.name}</Badge>}
               </div>
 
               {/* Description */}
@@ -120,14 +89,12 @@ export function DressDetailDialog({
                   {dress.isSellable && dress.sellPrice && (
                     <Card>
                       <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground">
-                          Giá bán
-                        </div>
+                        <div className="text-sm text-muted-foreground">Giá bán</div>
                         <div className="text-xl font-bold text-green-600">
                           {formatPrice(
-                            typeof dress.sellPrice === "string"
+                            typeof dress.sellPrice === 'string'
                               ? parseFloat(dress.sellPrice) || 0
-                              : dress.sellPrice || 0
+                              : dress.sellPrice || 0,
                           )}
                         </div>
                       </CardContent>
@@ -136,14 +103,12 @@ export function DressDetailDialog({
                   {dress.isRentable && dress.rentalPrice && (
                     <Card>
                       <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground">
-                          Giá thuê
-                        </div>
+                        <div className="text-sm text-muted-foreground">Giá thuê</div>
                         <div className="text-xl font-bold text-blue-600">
                           {formatPrice(
-                            typeof dress.rentalPrice === "string"
+                            typeof dress.rentalPrice === 'string'
                               ? parseFloat(dress.rentalPrice) || 0
-                              : dress.rentalPrice || 0
+                              : dress.rentalPrice || 0,
                           )}
                         </div>
                       </CardContent>
@@ -163,9 +128,7 @@ export function DressDetailDialog({
                     {dress.bust && (
                       <div className="text-center">
                         <div className="text-2xl font-bold">{dress.bust}</div>
-                        <div className="text-sm text-muted-foreground">
-                          Ngực
-                        </div>
+                        <div className="text-sm text-muted-foreground">Ngực</div>
                       </div>
                     )}
                     {dress.waist && (
@@ -177,9 +140,7 @@ export function DressDetailDialog({
                     {dress.hip && (
                       <div className="text-center">
                         <div className="text-2xl font-bold">{dress.hip}</div>
-                        <div className="text-sm text-muted-foreground">
-                          Hông
-                        </div>
+                        <div className="text-sm text-muted-foreground">Hông</div>
                       </div>
                     )}
                   </div>
@@ -197,17 +158,13 @@ export function DressDetailDialog({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {dress.material && (
                     <div>
-                      <div className="text-sm text-muted-foreground">
-                        Chất liệu
-                      </div>
+                      <div className="text-sm text-muted-foreground">Chất liệu</div>
                       <div className="font-medium">{dress.material}</div>
                     </div>
                   )}
                   {dress.color && (
                     <div>
-                      <div className="text-sm text-muted-foreground">
-                        Màu sắc
-                      </div>
+                      <div className="text-sm text-muted-foreground">Màu sắc</div>
                       <div className="font-medium flex items-center">
                         <Palette className="h-4 w-4 mr-2" />
                         {dress.color}
@@ -216,9 +173,7 @@ export function DressDetailDialog({
                   )}
                   {dress.length && (
                     <div>
-                      <div className="text-sm text-muted-foreground">
-                        Độ dài
-                      </div>
+                      <div className="text-sm text-muted-foreground">Độ dài</div>
                       <div className="font-medium">{dress.length}</div>
                     </div>
                   )}
@@ -230,9 +185,7 @@ export function DressDetailDialog({
                   )}
                   {dress.sleeve && (
                     <div>
-                      <div className="text-sm text-muted-foreground">
-                        Tay áo
-                      </div>
+                      <div className="text-sm text-muted-foreground">Tay áo</div>
                       <div className="font-medium">{dress.sleeve}</div>
                     </div>
                   )}
@@ -241,14 +194,8 @@ export function DressDetailDialog({
 
               {/* Metadata */}
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>
-                  Tạo lúc:{" "}
-                  {new Date(dress.createdAt).toLocaleDateString("vi-VN")}
-                </div>
-                <div>
-                  Cập nhật:{" "}
-                  {new Date(dress.updatedAt).toLocaleDateString("vi-VN")}
-                </div>
+                <div>Tạo lúc: {new Date(dress.createdAt).toLocaleDateString('vi-VN')}</div>
+                <div>Cập nhật: {new Date(dress.updatedAt).toLocaleDateString('vi-VN')}</div>
               </div>
             </div>
           </div>

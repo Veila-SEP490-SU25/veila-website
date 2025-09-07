@@ -1,39 +1,26 @@
-"use client";
+'use client';
 
-import { ErrorCard } from "@/components/error-card";
-import { GoBackButton } from "@/components/go-back-button";
-import { LoadingItem } from "@/components/loading-item";
-import { PagingComponent } from "@/components/paging-component";
-import { OrderCard } from "@/components/staff/orders/order-card";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { ErrorCard } from '@/components/error-card';
+import { GoBackButton } from '@/components/go-back-button';
+import { LoadingItem } from '@/components/loading-item';
+import { PagingComponent } from '@/components/paging-component';
+import { OrderCard } from '@/components/staff/orders/order-card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { TabsContent } from "@/components/ui/tabs";
-import { formatPrice } from "@/lib/products-utils";
-import { usePaging } from "@/providers/paging.provider";
-import { useLazyGetOrderOfShopQuery } from "@/services/apis";
-import { IOrder, IShop } from "@/services/types";
-import {
-  FileText,
-  Package,
-  RefreshCw,
-  Scissors,
-  Shirt,
-  ShoppingBag,
-} from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "react-day-picker";
+} from '@/components/ui/select';
+import { TabsContent } from '@/components/ui/tabs';
+import { formatPrice } from '@/lib/products-utils';
+import { usePaging } from '@/providers/paging.provider';
+import { useLazyGetOrderOfShopQuery } from '@/services/apis';
+import { IOrder, IShop } from '@/services/types';
+import { FileText, Package, RefreshCw, Scissors, Shirt, ShoppingBag } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { Button } from 'react-day-picker';
 
 interface OrdersTabsProps {
   shop: IShop;
@@ -55,8 +42,8 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [trigger, { isLoading }] = useLazyGetOrderOfShopQuery();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [filter, setFilter] = useState<string>("all");
+  const [error, setError] = useState<string>('');
+  const [filter, setFilter] = useState<string>('all');
   const [stats, setStats] = useState<IStats>({
     totalOrders: 0,
     totalOrdersValue: 0,
@@ -68,14 +55,13 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
     totalCustomValue: 0,
   });
 
-  const { setPaging, pageSize, pageIndex, totalItems, resetPaging } =
-    usePaging();
+  const { setPaging, pageSize, pageIndex, totalItems, resetPaging } = usePaging();
 
   const fetchOrders = useCallback(async () => {
     try {
       const { statusCode, message, items, ...paging } = await trigger({
         shopId: shop.id,
-        filter: filter === "all" ? "" : `type:eq:${filter}`,
+        filter: filter === 'all' ? '' : `type:eq:${filter}`,
         sort: `updatedAt:desc`,
         page: pageIndex,
         size: pageSize,
@@ -88,9 +74,9 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
-        setError("");
+        setError('');
         setIsError(false);
       } else {
         setIsError(true);
@@ -99,18 +85,9 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
     } catch (error) {
       console.error(error);
       setIsError(true);
-      setError("Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng");
+      setError('Đã xảy ra lỗi khi tải dữ liệu sản phẩm của cửa hàng');
     }
-  }, [
-    pageIndex,
-    pageSize,
-    setPaging,
-    setIsError,
-    setError,
-    filter,
-    shop,
-    trigger,
-  ]);
+  }, [pageIndex, pageSize, setPaging, setIsError, setError, filter, shop, trigger]);
 
   useEffect(() => {
     resetPaging();
@@ -156,13 +133,9 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
 
     setStats({
       totalOrders: allOrders.totalItems,
-      totalOrdersValue: allOrders.items
-        .map((o) => Number(o.amount))
-        .reduce((a, b) => a + b, 0),
+      totalOrdersValue: allOrders.items.map((o) => Number(o.amount)).reduce((a, b) => a + b, 0),
       totalSales: sellResponse.totalItems,
-      totalSalesValue: sellResponse.items
-        .map((o) => Number(o.amount))
-        .reduce((a, b) => a + b, 0),
+      totalSalesValue: sellResponse.items.map((o) => Number(o.amount)).reduce((a, b) => a + b, 0),
       totalRentals: rentalResponse.totalItems,
       totalRentalsValue: rentalResponse.items
         .map((o) => Number(o.amount))
@@ -183,18 +156,14 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
       <TabsContent value="orders">
         <Card>
           <CardHeader className="items-center justify-center">
-            <CardTitle className="text-red-500">
-              Đã có lỗi xảy ra khi tải dữ liệu
-            </CardTitle>
+            <CardTitle className="text-red-500">Đã có lỗi xảy ra khi tải dữ liệu</CardTitle>
             <CardDescription className="flex items-center justify-center gap-4">
               <GoBackButton />
               <Button
                 className="flex items-center justify-center gap-2 bg-rose-500 text-white"
                 onClick={fetchOrders}
               >
-                <RefreshCw
-                  className={`size-4 ${isLoading ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Thử lại
               </Button>
             </CardDescription>
@@ -227,12 +196,8 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
                   <FileText className="size-6 text-emerald-600" />
                 </CardTitle>
                 <div className="flex items-center justify-between w-full">
-                  <CardDescription className="text-sm">
-                    Số lượng đơn
-                  </CardDescription>
-                  <p className="font-bold text-4xl text-emerald-500">
-                    {stats.totalOrders}
-                  </p>
+                  <CardDescription className="text-sm">Số lượng đơn</CardDescription>
+                  <p className="font-bold text-4xl text-emerald-500">{stats.totalOrders}</p>
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <CardDescription className="text-sm">Giá trị</CardDescription>
@@ -249,12 +214,8 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
                   <ShoppingBag className="size-6 text-cyan-500" />
                 </CardTitle>
                 <div className="flex items-center justify-between w-full">
-                  <CardDescription className="text-sm">
-                    Số lượng đơn
-                  </CardDescription>
-                  <p className="font-bold text-4xl text-cyan-500">
-                    {stats.totalSales}
-                  </p>
+                  <CardDescription className="text-sm">Số lượng đơn</CardDescription>
+                  <p className="font-bold text-4xl text-cyan-500">{stats.totalSales}</p>
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <CardDescription className="text-sm">Giá trị</CardDescription>
@@ -271,12 +232,8 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
                   <Shirt className="size-6 text-amber-500" />
                 </CardTitle>
                 <div className="flex items-center justify-between w-full">
-                  <CardDescription className="text-sm">
-                    Số lượng đơn
-                  </CardDescription>
-                  <p className="font-bold text-4xl text-amber-500">
-                    {stats.totalRentals}
-                  </p>
+                  <CardDescription className="text-sm">Số lượng đơn</CardDescription>
+                  <p className="font-bold text-4xl text-amber-500">{stats.totalRentals}</p>
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <CardDescription className="text-sm">Giá trị</CardDescription>
@@ -293,12 +250,8 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
                   <Scissors className="size-6 text-rose-500" />
                 </CardTitle>
                 <div className="flex items-center justify-between w-full">
-                  <CardDescription className="text-sm">
-                    Số lượng đơn
-                  </CardDescription>
-                  <p className="font-bold text-4xl text-rose-500">
-                    {stats.totalCustom}
-                  </p>
+                  <CardDescription className="text-sm">Số lượng đơn</CardDescription>
+                  <p className="font-bold text-4xl text-rose-500">{stats.totalCustom}</p>
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <CardDescription className="text-sm">Giá trị</CardDescription>
@@ -331,9 +284,7 @@ export const OrdersTabs = ({ shop }: OrdersTabsProps) => {
             <Card>
               <CardContent className="p-12 text-center">
                 <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Không có đơn hàng nào
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Không có đơn hàng nào</h3>
                 <p className="text-gray-600">Chưa có đơn hàng nào được tạo</p>
               </CardContent>
             </Card>

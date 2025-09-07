@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, X, Check, Building2, Map, Home } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MapPin, X, Check, Building2, Map, Home } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Province {
   code: string;
@@ -36,7 +36,7 @@ interface AddressSelectorProps {
 export const AddressSelector: React.FC<AddressSelectorProps> = ({
   value,
   onChange,
-  placeholder = "Chọn địa chỉ...",
+  placeholder = 'Chọn địa chỉ...',
   className,
   disabled = false,
 }) => {
@@ -46,16 +46,12 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   const [wards, setWards] = useState<Ward[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [selectedProvince, setSelectedProvince] = useState<Province | null>(
-    null
-  );
-  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(
-    null
-  );
+  const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(null);
   const [selectedWard, setSelectedWard] = useState<Ward | null>(null);
-  const [detailAddress, setDetailAddress] = useState("");
+  const [detailAddress, setDetailAddress] = useState('');
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredProvinces, setFilteredProvinces] = useState<Province[]>([]);
 
   // Load provinces on mount
@@ -65,11 +61,11 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
 
   // Filter provinces based on search term
   useEffect(() => {
-    if (searchTerm.trim() === "") {
+    if (searchTerm.trim() === '') {
       setFilteredProvinces(provinces);
     } else {
       const filtered = provinces.filter((province) =>
-        province.name.toLowerCase().includes(searchTerm.toLowerCase())
+        province.name.toLowerCase().includes(searchTerm.toLowerCase()),
       );
       setFilteredProvinces(filtered);
     }
@@ -78,7 +74,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
   const loadProvinces = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("https://provinces.open-api.vn/api/p/");
+      const response = await fetch('https://provinces.open-api.vn/api/p/');
       if (response.ok) {
         const data = await response.json();
         setProvinces(data);
@@ -87,29 +83,29 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         // Fallback data
         setProvinces([
           {
-            code: "01",
-            name: "Hà Nội",
+            code: '01',
+            name: 'Hà Nội',
             districts: [
               {
-                code: "001",
-                name: "Ba Đình",
+                code: '001',
+                name: 'Ba Đình',
                 wards: [
-                  { code: "00001", name: "Phúc Xá" },
-                  { code: "00004", name: "Trúc Bạch" },
+                  { code: '00001', name: 'Phúc Xá' },
+                  { code: '00004', name: 'Trúc Bạch' },
                 ],
               },
             ],
           },
           {
-            code: "79",
-            name: "TP. Hồ Chí Minh",
+            code: '79',
+            name: 'TP. Hồ Chí Minh',
             districts: [
               {
-                code: "760",
-                name: "Quận 1",
+                code: '760',
+                name: 'Quận 1',
                 wards: [
-                  { code: "26734", name: "Bến Nghé" },
-                  { code: "26737", name: "Bến Thành" },
+                  { code: '26734', name: 'Bến Nghé' },
+                  { code: '26737', name: 'Bến Thành' },
                 ],
               },
             ],
@@ -117,29 +113,29 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         ]);
         setFilteredProvinces([
           {
-            code: "01",
-            name: "Hà Nội",
+            code: '01',
+            name: 'Hà Nội',
             districts: [
               {
-                code: "001",
-                name: "Ba Đình",
+                code: '001',
+                name: 'Ba Đình',
                 wards: [
-                  { code: "00001", name: "Phúc Xá" },
-                  { code: "00004", name: "Trúc Bạch" },
+                  { code: '00001', name: 'Phúc Xá' },
+                  { code: '00004', name: 'Trúc Bạch' },
                 ],
               },
             ],
           },
           {
-            code: "79",
-            name: "TP. Hồ Chí Minh",
+            code: '79',
+            name: 'TP. Hồ Chí Minh',
             districts: [
               {
-                code: "760",
-                name: "Quận 1",
+                code: '760',
+                name: 'Quận 1',
                 wards: [
-                  { code: "26734", name: "Bến Nghé" },
-                  { code: "26737", name: "Bến Thành" },
+                  { code: '26734', name: 'Bến Nghé' },
+                  { code: '26737', name: 'Bến Thành' },
                 ],
               },
             ],
@@ -147,19 +143,19 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         ]);
       }
     } catch (error) {
-      console.error("Error loading provinces:", error);
+      console.error('Error loading provinces:', error);
       // Fallback data
       setProvinces([
         {
-          code: "01",
-          name: "Hà Nội",
+          code: '01',
+          name: 'Hà Nội',
           districts: [
             {
-              code: "001",
-              name: "Ba Đình",
+              code: '001',
+              name: 'Ba Đình',
               wards: [
-                { code: "00001", name: "Phúc Xá" },
-                { code: "00004", name: "Trúc Bạch" },
+                { code: '00001', name: 'Phúc Xá' },
+                { code: '00004', name: 'Trúc Bạch' },
               ],
             },
           ],
@@ -167,15 +163,15 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
       ]);
       setFilteredProvinces([
         {
-          code: "01",
-          name: "Hà Nội",
+          code: '01',
+          name: 'Hà Nội',
           districts: [
             {
-              code: "001",
-              name: "Ba Đình",
+              code: '001',
+              name: 'Ba Đình',
               wards: [
-                { code: "00001", name: "Phúc Xá" },
-                { code: "00004", name: "Trúc Bạch" },
+                { code: '00001', name: 'Phúc Xá' },
+                { code: '00004', name: 'Trúc Bạch' },
               ],
             },
           ],
@@ -192,46 +188,41 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
     setSelectedWard(null);
     setDistricts(province.districts);
     setWards([]);
-    setDetailAddress("");
-    updateAddress(province.name, "", "", "");
+    setDetailAddress('');
+    updateAddress(province.name, '', '', '');
   };
 
   const handleDistrictSelect = (district: District) => {
     setSelectedDistrict(district);
     setSelectedWard(null);
     setWards(district.wards);
-    setDetailAddress("");
-    updateAddress(selectedProvince?.name || "", district.name, "", "");
+    setDetailAddress('');
+    updateAddress(selectedProvince?.name || '', district.name, '', '');
   };
 
   const handleWardSelect = (ward: Ward) => {
     setSelectedWard(ward);
     updateAddress(
-      selectedProvince?.name || "",
-      selectedDistrict?.name || "",
+      selectedProvince?.name || '',
+      selectedDistrict?.name || '',
       ward.name,
-      detailAddress
+      detailAddress,
     );
   };
 
   const handleDetailAddressChange = (detail: string) => {
     setDetailAddress(detail);
     updateAddress(
-      selectedProvince?.name || "",
-      selectedDistrict?.name || "",
-      selectedWard?.name || "",
-      detail
+      selectedProvince?.name || '',
+      selectedDistrict?.name || '',
+      selectedWard?.name || '',
+      detail,
     );
   };
 
-  const updateAddress = (
-    province: string,
-    district: string,
-    ward: string,
-    detail: string
-  ) => {
+  const updateAddress = (province: string, district: string, ward: string, detail: string) => {
     const parts = [detail, ward, district, province].filter(Boolean);
-    const fullAddress = parts.join(", ");
+    const fullAddress = parts.join(', ');
     onChange(fullAddress);
   };
 
@@ -241,9 +232,9 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
     setSelectedWard(null);
     setDistricts([]);
     setWards([]);
-    setDetailAddress("");
-    setSearchTerm("");
-    onChange("");
+    setDetailAddress('');
+    setSearchTerm('');
+    onChange('');
     setIsOpen(false);
   };
 
@@ -256,13 +247,13 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
         selectedDistrict?.name,
         selectedProvince.name,
       ].filter(Boolean);
-      return parts.join(", ");
+      return parts.join(', ');
     }
-    return "";
+    return '';
   };
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn('relative', className)}>
       <div className="relative">
         <Input
           value={getDisplayValue()}
@@ -313,15 +304,12 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
                     type="button"
                     onClick={() => handleProvinceSelect(province)}
                     className={cn(
-                      "w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between text-sm",
-                      selectedProvince?.code === province.code &&
-                        "bg-blue-50 text-blue-600"
+                      'w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between text-sm',
+                      selectedProvince?.code === province.code && 'bg-blue-50 text-blue-600',
                     )}
                   >
                     <span>{province.name}</span>
-                    {selectedProvince?.code === province.code && (
-                      <Check className="h-3 w-3" />
-                    )}
+                    {selectedProvince?.code === province.code && <Check className="h-3 w-3" />}
                   </button>
                 ))}
               </div>
@@ -341,15 +329,12 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
                       type="button"
                       onClick={() => handleDistrictSelect(district)}
                       className={cn(
-                        "w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between text-sm",
-                        selectedDistrict?.code === district.code &&
-                          "bg-blue-50 text-blue-600"
+                        'w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between text-sm',
+                        selectedDistrict?.code === district.code && 'bg-blue-50 text-blue-600',
                       )}
                     >
                       <span>{district.name}</span>
-                      {selectedDistrict?.code === district.code && (
-                        <Check className="h-3 w-3" />
-                      )}
+                      {selectedDistrict?.code === district.code && <Check className="h-3 w-3" />}
                     </button>
                   ))}
                 </div>
@@ -370,15 +355,12 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
                       type="button"
                       onClick={() => handleWardSelect(ward)}
                       className={cn(
-                        "w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between text-sm",
-                        selectedWard?.code === ward.code &&
-                          "bg-blue-50 text-blue-600"
+                        'w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between text-sm',
+                        selectedWard?.code === ward.code && 'bg-blue-50 text-blue-600',
                       )}
                     >
                       <span>{ward.name}</span>
-                      {selectedWard?.code === ward.code && (
-                        <Check className="h-3 w-3" />
-                      )}
+                      {selectedWard?.code === ward.code && <Check className="h-3 w-3" />}
                     </button>
                   ))}
                 </div>
@@ -402,9 +384,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
             {getDisplayValue() && (
               <div className="space-y-2">
                 <Label className="text-xs font-medium">Địa chỉ đầy đủ:</Label>
-                <div className="p-3 bg-gray-50 rounded-md text-sm">
-                  {getDisplayValue()}
-                </div>
+                <div className="p-3 bg-gray-50 rounded-md text-sm">{getDisplayValue()}</div>
               </div>
             )}
           </CardContent>

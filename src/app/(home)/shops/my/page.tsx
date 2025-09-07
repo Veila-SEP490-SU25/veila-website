@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShopOverview } from "@/components/shops/my/shop-overview";
-import { ShopInformation } from "@/components/shops/my/shop-information";
-import { MyShopOrders } from "@/components/shops/my/shop-orders";
-import { ShopDressesTabs } from "@/components/shops/my/dresses/shop-dresses-tabs";
-import { ShopAccessoriesTabs } from "@/components/shops/my/accessories/shop-accessories-tabs";
-import { ShopBlogsTabs } from "@/components/shops/my/blogs/shop-blogs-tabs";
-import { ShopServices } from "@/components/shops/detail/shop-services";
+import { useCallback, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ShopOverview } from '@/components/shops/my/shop-overview';
+import { ShopInformation } from '@/components/shops/my/shop-information';
+import { MyShopOrders } from '@/components/shops/my/shop-orders';
+import { ShopDressesTabs } from '@/components/shops/my/dresses/shop-dresses-tabs';
+import { ShopAccessoriesTabs } from '@/components/shops/my/accessories/shop-accessories-tabs';
+import { ShopBlogsTabs } from '@/components/shops/my/blogs/shop-blogs-tabs';
+import { ShopServices } from '@/components/shops/detail/shop-services';
 
-import { SuspendedShopDashboard } from "@/components/shops/suspended-shop-dashboard";
-import { useLazyGetMyShopQuery } from "@/services/apis";
-import { IShop, ShopStatus } from "@/services/types";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
+import { SuspendedShopDashboard } from '@/components/shops/suspended-shop-dashboard';
+import { useLazyGetMyShopQuery } from '@/services/apis';
+import { IShop, ShopStatus } from '@/services/types';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
 
 const MyShopPage = () => {
   const [shop, setShop] = useState<IShop | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState('overview');
   const router = useRouter();
   const [getMyShop] = useLazyGetMyShopQuery();
 
@@ -32,12 +32,12 @@ const MyShopPage = () => {
       if (response.statusCode === 200) {
         setShop(response.item);
       } else {
-        toast.error("Không thể tải thông tin cửa hàng", {
+        toast.error('Không thể tải thông tin cửa hàng', {
           description: response.message,
         });
       }
     } catch (error) {
-      console.error("Error fetching shop data:", error);
+      console.error('Error fetching shop data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -107,14 +107,10 @@ const MyShopPage = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Không tìm thấy cửa hàng
-            </h2>
-            <p className="text-gray-600 mb-4">
-              Bạn chưa có cửa hàng hoặc có lỗi xảy ra
-            </p>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Không tìm thấy cửa hàng</h2>
+            <p className="text-gray-600 mb-4">Bạn chưa có cửa hàng hoặc có lỗi xảy ra</p>
             <Button
-              onClick={() => router.push("/shops/register")}
+              onClick={() => router.push('/shops/register')}
               className="bg-rose-600 hover:bg-rose-700"
             >
               Đăng ký cửa hàng
@@ -139,20 +135,12 @@ const MyShopPage = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Cửa hàng của tôi
-          </h1>
-          <p className="text-muted-foreground">
-            Quản lý thông tin và hoạt động kinh doanh của bạn
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">Cửa hàng của tôi</h1>
+          <p className="text-muted-foreground">Quản lý thông tin và hoạt động kinh doanh của bạn</p>
         </div>
       </div>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-6"
-      >
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Tổng quan</TabsTrigger>
           <TabsTrigger value="orders">Đơn hàng</TabsTrigger>

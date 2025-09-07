@@ -1,33 +1,27 @@
-"use client";
+'use client';
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   useLazyGetMyWalletQuery,
   useUpdateWalletPINMutation,
   useCreateWalletPINMutation,
-} from "@/services/apis";
-import { IWallet } from "@/services/types";
-import {
-  Wallet,
-  AlertCircleIcon,
-  CircleDollarSign,
-  Lock,
-  Unlock,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/services/apis';
+import { IWallet } from '@/services/types';
+import { Wallet, AlertCircleIcon, CircleDollarSign, Lock, Unlock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export const WalletCard = () => {
   const router = useRouter();
@@ -38,8 +32,8 @@ export const WalletCard = () => {
   const [hasPin, setHasPin] = useState<boolean>(false);
   const [isPinDialogOpen, setIsPinDialogOpen] = useState<boolean>(false);
   const [isUpdatingPin, setIsUpdatingPin] = useState<boolean>(false);
-  const [oldPin, setOldPin] = useState<string>("");
-  const [newPin, setNewPin] = useState<string>("");
+  const [oldPin, setOldPin] = useState<string>('');
+  const [newPin, setNewPin] = useState<string>('');
 
   const [getMyWWallet, { isLoading }] = useLazyGetMyWalletQuery();
   const [updateWalletPIN] = useUpdateWalletPINMutation();
@@ -53,34 +47,32 @@ export const WalletCard = () => {
         setBalance(item.availableBalance + item.lockedBalance);
 
         // Kiểm tra hasPin với fallback
-        const hasPinValue = item.hasOwnProperty("hasPin")
-          ? Boolean(item.hasPin)
-          : false;
+        const hasPinValue = item.hasOwnProperty('hasPin') ? Boolean(item.hasPin) : false;
         setHasPin(hasPinValue);
       } else {
         setError(message);
         setIsError(true);
       }
     } catch (error) {
-      console.log("Failed to fetch wallet", error);
+      console.log('Failed to fetch wallet', error);
     }
   }, [getMyWWallet]);
 
   const formatVND = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
     }).format(amount);
   };
 
   const handlePinAction = async () => {
     if (!newPin || newPin.length !== 6) {
-      toast.error("Mã PIN phải có 6 chữ số");
+      toast.error('Mã PIN phải có 6 chữ số');
       return;
     }
 
     if (hasPin && (!oldPin || oldPin.length !== 6)) {
-      toast.error("Vui lòng nhập mã PIN cũ");
+      toast.error('Vui lòng nhập mã PIN cũ');
       return;
     }
 
@@ -89,51 +81,48 @@ export const WalletCard = () => {
     try {
       await fetchWallet();
     } catch (error) {
-      console.log("Failed to refresh wallet before PIN action:", error);
+      console.log('Failed to refresh wallet before PIN action:', error);
     }
     try {
-      const currentHasPin = wallet?.hasOwnProperty("hasPin")
-        ? Boolean(wallet.hasPin)
-        : false;
+      const currentHasPin = wallet?.hasOwnProperty('hasPin') ? Boolean(wallet.hasPin) : false;
 
       if (currentHasPin) {
         const result = await updateWalletPIN({ oldPin, pin: newPin }).unwrap();
         if (result.statusCode === 200) {
-          toast.success("Cập nhật mã PIN thành công");
+          toast.success('Cập nhật mã PIN thành công');
           setIsPinDialogOpen(false);
-          setOldPin("");
-          setNewPin("");
+          setOldPin('');
+          setNewPin('');
           fetchWallet();
         } else {
-          toast.error("Cập nhật mã PIN thất bại", {
-            description: result.message || "Có lỗi xảy ra",
+          toast.error('Cập nhật mã PIN thất bại', {
+            description: result.message || 'Có lỗi xảy ra',
           });
         }
       } else {
         const result = await createWalletPIN(newPin).unwrap();
 
         if (result.statusCode === 200) {
-          toast.success("Tạo mã PIN thành công");
+          toast.success('Tạo mã PIN thành công');
           setIsPinDialogOpen(false);
-          setOldPin("");
-          setNewPin("");
+          setOldPin('');
+          setNewPin('');
           fetchWallet();
         } else {
-          toast.error("Tạo mã PIN thất bại", {
-            description: result.message || "Có lỗi xảy ra",
+          toast.error('Tạo mã PIN thất bại', {
+            description: result.message || 'Có lỗi xảy ra',
           });
         }
       }
     } catch (error: any) {
-      console.error("PIN action error:", error);
-      console.error("Error details:", {
+      console.error('PIN action error:', error);
+      console.error('Error details:', {
         status: error?.status,
         data: error?.data,
         message: error?.message,
       });
-      toast.error("Có lỗi xảy ra khi xử lý mã PIN", {
-        description:
-          error?.data?.message || error?.message || "Vui lòng thử lại",
+      toast.error('Có lỗi xảy ra khi xử lý mã PIN', {
+        description: error?.data?.message || error?.message || 'Vui lòng thử lại',
       });
     } finally {
       setIsUpdatingPin(false);
@@ -141,8 +130,8 @@ export const WalletCard = () => {
   };
 
   const openPinDialog = () => {
-    setOldPin("");
-    setNewPin("");
+    setOldPin('');
+    setNewPin('');
     setIsPinDialogOpen(true);
   };
 
@@ -153,7 +142,7 @@ export const WalletCard = () => {
   return (
     <>
       {isError ? (
-        <Alert variant={"destructive"} className="mb-4 h-full">
+        <Alert variant={'destructive'} className="mb-4 h-full">
           <AlertCircleIcon />
           <AlertTitle>Đã có lỗi xảy ra trong quá trình lấy dữ liệu</AlertTitle>
           <AlertDescription>
@@ -209,16 +198,12 @@ export const WalletCard = () => {
                   {hasPin ? (
                     <>
                       <Lock className="h-4 w-4 text-green-500" />
-                      <span className="text-green-600">
-                        Đã thiết lập mã PIN
-                      </span>
+                      <span className="text-green-600">Đã thiết lập mã PIN</span>
                     </>
                   ) : (
                     <>
                       <Unlock className="h-4 w-4 text-orange-500" />
-                      <span className="text-orange-600">
-                        Chưa thiết lập mã PIN
-                      </span>
+                      <span className="text-orange-600">Chưa thiết lập mã PIN</span>
                     </>
                   )}
                 </div>
@@ -265,11 +250,11 @@ export const WalletCard = () => {
       <Dialog open={isPinDialogOpen} onOpenChange={setIsPinDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{hasPin ? "Đổi Mã PIN" : "Tạo Mã PIN"}</DialogTitle>
+            <DialogTitle>{hasPin ? 'Đổi Mã PIN' : 'Tạo Mã PIN'}</DialogTitle>
             <DialogDescription>
               {hasPin
-                ? "Nhập mã PIN cũ và mã PIN mới (6 chữ số)"
-                : "Tạo mã PIN mới cho ví của bạn (6 chữ số)"}
+                ? 'Nhập mã PIN cũ và mã PIN mới (6 chữ số)'
+                : 'Tạo mã PIN mới cho ví của bạn (6 chữ số)'}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -288,11 +273,11 @@ export const WalletCard = () => {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="newPin">{hasPin ? "Mã PIN mới" : "Mã PIN"}</Label>
+              <Label htmlFor="newPin">{hasPin ? 'Mã PIN mới' : 'Mã PIN'}</Label>
               <Input
                 id="newPin"
                 type="password"
-                placeholder={hasPin ? "Nhập mã PIN mới" : "Nhập mã PIN"}
+                placeholder={hasPin ? 'Nhập mã PIN mới' : 'Nhập mã PIN'}
                 value={newPin}
                 onChange={(e) => setNewPin(e.target.value)}
                 maxLength={6}
@@ -313,7 +298,7 @@ export const WalletCard = () => {
                 onClick={handlePinAction}
                 disabled={isUpdatingPin}
               >
-                {isUpdatingPin ? "Đang xử lý..." : hasPin ? "Cập nhật" : "Tạo"}
+                {isUpdatingPin ? 'Đang xử lý...' : hasPin ? 'Cập nhật' : 'Tạo'}
               </Button>
             </div>
           </div>

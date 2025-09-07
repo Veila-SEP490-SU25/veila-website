@@ -1,28 +1,12 @@
-"use client";
+'use client';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Clock,
-  CheckCircle,
-  PlayCircle,
-  XCircle,
-  AlertCircle,
-} from "lucide-react";
-import { IMilestone, MilestoneStatus } from "@/services/types";
-import {
-  formatDateShort,
-  getMilestoneStatusColor,
-  getMilestoneStatusText,
-} from "@/lib/order-util";
-import { MilestoneTask } from "@/components/staff/orders/milestone-task";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Clock, CheckCircle, PlayCircle, XCircle, AlertCircle } from 'lucide-react';
+import { IMilestone, MilestoneStatus } from '@/services/types';
+import { formatDateShort, getMilestoneStatusColor, getMilestoneStatusText } from '@/lib/order-util';
+import { MilestoneTask } from '@/components/staff/orders/milestone-task';
 
 interface MilestonesTabProps {
   milestones: IMilestone[];
@@ -42,10 +26,7 @@ const getMilestoneStatusIcon = (status: MilestoneStatus) => {
   }
 };
 
-export const MilestonesTab = ({
-  milestones,
-  isMilestonesLoading,
-}: MilestonesTabProps ) => {
+export const MilestonesTab = ({ milestones, isMilestonesLoading }: MilestonesTabProps) => {
   if (isMilestonesLoading) {
     return (
       <div className="space-y-4">
@@ -95,25 +76,17 @@ export const MilestonesTab = ({
                   </p>
                 </div>
               </div>
-              <Badge
-                variant="outline"
-                className={getMilestoneStatusColor(milestone.status)}
-              >
+              <Badge variant="outline" className={getMilestoneStatusColor(milestone.status)}>
                 {getMilestoneStatusText(milestone.status)}
               </Badge>
             </CardTitle>
             {milestone.description && (
-              <CardDescription className="text-base">
-                {milestone.description}
-              </CardDescription>
+              <CardDescription className="text-base">{milestone.description}</CardDescription>
             )}
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <MilestoneTask
-                milestoneId={milestone.id}
-                milestoneTitle={milestone.title}
-              />
+              <MilestoneTask milestoneId={milestone.id} milestoneTitle={milestone.title} />
             </div>
           </CardContent>
         </Card>

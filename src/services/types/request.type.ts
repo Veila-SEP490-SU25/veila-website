@@ -1,16 +1,16 @@
-import { IItem, IPagination, IUser } from "@/services/types";
+import { IItem, IPagination, IUser } from '@/services/types';
 
 export enum RequestStatus {
-  DRAFT = "DRAFT",
-  SUBMIT = "SUBMIT",
-  ACCEPTED = "ACCEPTED",
-  CANCELLED = "CANCELLED",
+  DRAFT = 'DRAFT',
+  SUBMIT = 'SUBMIT',
+  ACCEPTED = 'ACCEPTED',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum UpdateRequestStatus {
-  PENDING = "PENDING",
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
 }
 
 export interface IRequest extends IItem {

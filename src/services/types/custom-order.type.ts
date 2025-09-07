@@ -56,31 +56,31 @@ export interface ICustomOrderRequestResponse {
 }
 
 export enum CustomOrderStatus {
-  DRAFT = "DRAFT",
-  SUBMIT = "SUBMIT",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
+  DRAFT = 'DRAFT',
+  SUBMIT = 'SUBMIT',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
 }
 
 export const customOrderStatusColors = {
-  [CustomOrderStatus.DRAFT]: "bg-gray-100 text-gray-800",
-  [CustomOrderStatus.SUBMIT]: "bg-yellow-100 text-yellow-800",
-  [CustomOrderStatus.APPROVED]: "bg-green-100 text-green-800",
-  [CustomOrderStatus.REJECTED]: "bg-red-100 text-red-800",
-  [CustomOrderStatus.IN_PROGRESS]: "bg-blue-100 text-blue-800",
-  [CustomOrderStatus.COMPLETED]: "bg-green-100 text-green-800",
-  [CustomOrderStatus.CANCELLED]: "bg-red-100 text-red-800",
+  [CustomOrderStatus.DRAFT]: 'bg-gray-100 text-gray-800',
+  [CustomOrderStatus.SUBMIT]: 'bg-yellow-100 text-yellow-800',
+  [CustomOrderStatus.APPROVED]: 'bg-green-100 text-green-800',
+  [CustomOrderStatus.REJECTED]: 'bg-red-100 text-red-800',
+  [CustomOrderStatus.IN_PROGRESS]: 'bg-blue-100 text-blue-800',
+  [CustomOrderStatus.COMPLETED]: 'bg-green-100 text-green-800',
+  [CustomOrderStatus.CANCELLED]: 'bg-red-100 text-red-800',
 };
 
 export const customOrderStatusLabels = {
-  [CustomOrderStatus.DRAFT]: "Bản nháp",
-  [CustomOrderStatus.SUBMIT]: "Đã gửi",
-  [CustomOrderStatus.APPROVED]: "Đã duyệt",
-  [CustomOrderStatus.REJECTED]: "Từ chối",
-  [CustomOrderStatus.IN_PROGRESS]: "Đang thực hiện",
-  [CustomOrderStatus.COMPLETED]: "Hoàn thành",
-  [CustomOrderStatus.CANCELLED]: "Đã hủy",
+  [CustomOrderStatus.DRAFT]: 'Bản nháp',
+  [CustomOrderStatus.SUBMIT]: 'Đã gửi',
+  [CustomOrderStatus.APPROVED]: 'Đã duyệt',
+  [CustomOrderStatus.REJECTED]: 'Từ chối',
+  [CustomOrderStatus.IN_PROGRESS]: 'Đang thực hiện',
+  [CustomOrderStatus.COMPLETED]: 'Hoàn thành',
+  [CustomOrderStatus.CANCELLED]: 'Đã hủy',
 };

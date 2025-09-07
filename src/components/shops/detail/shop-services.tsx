@@ -1,25 +1,22 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  useCreateServiceMutation,
-  useGetShopServicesQuery,
-} from "@/services/apis/service.api";
-import { Star, Plus, Image as ImageIcon } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useCreateServiceMutation, useGetShopServicesQuery } from '@/services/apis/service.api';
+import { Star, Plus, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ShopServicesProps {
   id: string;
@@ -28,21 +25,17 @@ interface ShopServicesProps {
 export const ShopServices = ({ id }: ShopServicesProps) => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
   });
 
-  const {
-    data: servicesResponse,
-    isLoading,
-    refetch,
-  } = useGetShopServicesQuery(id);
+  const { data: servicesResponse, isLoading, refetch } = useGetShopServicesQuery(id);
   const [createService, { isLoading: isCreating }] = useCreateServiceMutation();
 
   const handleCreateService = async () => {
     try {
       if (!formData.name || !formData.description) {
-        toast.error("Vui lòng điền đầy đủ thông tin");
+        toast.error('Vui lòng điền đầy đủ thông tin');
         return;
       }
 
@@ -50,28 +43,26 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
       const serviceData = {
         name: formData.name.trim(),
         description: formData.description.trim(),
-        status: "AVAILABLE" as const,
+        status: 'AVAILABLE' as const,
       };
 
-      console.log("Creating service with data:", serviceData); // Debug log
+      console.log('Creating service with data:', serviceData); // Debug log
 
       await createService(serviceData).unwrap();
 
-      toast.success("Tạo dịch vụ thành công!");
+      toast.success('Tạo dịch vụ thành công!');
       setIsCreateDialogOpen(false);
       setFormData({
-        name: "",
-        description: "",
+        name: '',
+        description: '',
       });
       refetch();
     } catch (error: any) {
       // Xử lý error message an toàn
-      let errorMessage = "Không thể tạo dịch vụ";
+      let errorMessage = 'Không thể tạo dịch vụ';
       if (error?.data?.message) {
         errorMessage =
-          typeof error.data.message === "string"
-            ? error.data.message
-            : "Không thể tạo dịch vụ";
+          typeof error.data.message === 'string' ? error.data.message : 'Không thể tạo dịch vụ';
       }
 
       toast.error(errorMessage);
@@ -120,12 +111,9 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <ImageIcon className="h-16 w-16 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Chưa có dịch vụ nào
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có dịch vụ nào</h3>
             <p className="text-gray-500 text-center mb-4">
-              Bạn chưa có dịch vụ nào. Hãy tạo dịch vụ đầu tiên để khách hàng có
-              thể đặt hàng.
+              Bạn chưa có dịch vụ nào. Hãy tạo dịch vụ đầu tiên để khách hàng có thể đặt hàng.
             </p>
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
@@ -142,12 +130,7 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
             <Card key={service.id} className="overflow-hidden">
               <div className="relative h-48 bg-gray-100">
                 {service.images ? (
-                  <Image
-                    src={service.images}
-                    alt={service.name}
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src={service.images} alt={service.name} fill className="object-cover" />
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <ImageIcon className="h-12 w-12 text-gray-400" />
@@ -156,12 +139,12 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
                 <div className="absolute top-2 right-2">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      service.status === "AVAILABLE"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                      service.status === 'AVAILABLE'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
                     }`}
                   >
-                    {service.status === "AVAILABLE" ? "Có sẵn" : "Không có sẵn"}
+                    {service.status === 'AVAILABLE' ? 'Có sẵn' : 'Không có sẵn'}
                   </span>
                 </div>
               </div>
@@ -184,9 +167,7 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Tạo dịch vụ mới</DialogTitle>
-            <DialogDescription>
-              Thêm dịch vụ mới cho cửa hàng của bạn
-            </DialogDescription>
+            <DialogDescription>Thêm dịch vụ mới cho cửa hàng của bạn</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -195,9 +176,7 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
                 id="name"
                 placeholder="Nhập tên dịch vụ"
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
             <div>
@@ -206,9 +185,7 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
                 id="description"
                 placeholder="Mô tả chi tiết về dịch vụ"
                 value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
               />
             </div>
@@ -219,12 +196,9 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
                 disabled={isCreating}
                 className="flex-1 bg-rose-600 hover:bg-rose-700"
               >
-                {isCreating ? "Đang tạo..." : "Tạo dịch vụ"}
+                {isCreating ? 'Đang tạo...' : 'Tạo dịch vụ'}
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => setIsCreateDialogOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                 Hủy
               </Button>
             </div>

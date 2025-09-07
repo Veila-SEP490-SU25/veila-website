@@ -1,25 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, ShoppingBag, Calendar, MessageCircle } from "lucide-react";
-import { UserCard } from "@/components/profile/user-card";
-import { WalletCard } from "@/components/profile/wallet-card";
-import { MyOrders } from "@/components/profile/orders/my-orders";
-import { ProfileEditForm } from "@/components/profile/profile-edit-form";
-import { ProfileStatsSkeleton } from "@/components/ui/loading-skeleton";
-import { CustomRequestsTab } from "@/components/profile/custom-requests/custom-requests-tab";
-import { MembershipInfo } from "@/components/profile/membership-info";
-import { useAuth } from "@/providers/auth.provider";
-import { UserRole } from "@/services/types";
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Heart, ShoppingBag, Calendar, MessageCircle } from 'lucide-react';
+import { UserCard } from '@/components/profile/user-card';
+import { WalletCard } from '@/components/profile/wallet-card';
+import { MyOrders } from '@/components/profile/orders/my-orders';
+import { ProfileEditForm } from '@/components/profile/profile-edit-form';
+import { ProfileStatsSkeleton } from '@/components/ui/loading-skeleton';
+import { CustomRequestsTab } from '@/components/profile/custom-requests/custom-requests-tab';
+import { MembershipInfo } from '@/components/profile/membership-info';
+import { useAuth } from '@/providers/auth.provider';
+import { UserRole } from '@/services/types';
 
 export default function DashboardPage() {
   const { isAuthenticated, currentUser } = useAuth();
@@ -28,7 +22,7 @@ export default function DashboardPage() {
   const isShop = currentUser?.role === UserRole.SHOP;
 
   // Chỉ cho phép tab profile cho shop
-  const [activeTab, setActiveTab] = useState(isShop ? "profile" : "profile");
+  const [activeTab, setActiveTab] = useState(isShop ? 'profile' : 'profile');
 
   if (!isAuthenticated) {
     return (
@@ -63,9 +57,7 @@ export default function DashboardPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">
-                      Đơn Hàng Đang Hoạt Động
-                    </p>
+                    <p className="text-sm text-gray-600">Đơn Hàng Đang Hoạt Động</p>
                     <p className="text-2xl font-bold text-gray-900">2</p>
                   </div>
                   <ShoppingBag className="h-8 w-8 text-rose-600" />
@@ -111,21 +103,13 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="space-y-6"
-        >
-          <TabsList
-            className={`grid w-full ${isShop ? "grid-cols-1" : "grid-cols-4"}`}
-          >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className={`grid w-full ${isShop ? 'grid-cols-1' : 'grid-cols-4'}`}>
             <TabsTrigger value="profile">Thông tin cá nhân</TabsTrigger>
             {!isShop && (
               <>
                 <TabsTrigger value="orders">Đơn Hàng</TabsTrigger>
-                <TabsTrigger value="custom-requests">
-                  Yêu cầu đặt may
-                </TabsTrigger>
+                <TabsTrigger value="custom-requests">Yêu cầu đặt may</TabsTrigger>
                 <TabsTrigger value="favourite">Yêu thích</TabsTrigger>
               </>
             )}
@@ -150,9 +134,7 @@ export default function DashboardPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Messages</CardTitle>
-                    <CardDescription>
-                      Communicate with designers and support
-                    </CardDescription>
+                    <CardDescription>Communicate with designers and support</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -166,13 +148,11 @@ export default function DashboardPage() {
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <h4 className="font-medium">Emma Wilson</h4>
-                              <span className="text-sm text-gray-600">
-                                2 hours ago
-                              </span>
+                              <span className="text-sm text-gray-600">2 hours ago</span>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Great! I've updated the design based on your
-                              feedback. The new sketches are ready for review.
+                              Great! I've updated the design based on your feedback. The new
+                              sketches are ready for review.
                             </p>
                           </div>
                           <div className="w-3 h-3 bg-rose-600 rounded-full"></div>
@@ -189,13 +169,11 @@ export default function DashboardPage() {
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <h4 className="font-medium">Sophie Chen</h4>
-                              <span className="text-sm text-gray-600">
-                                1 day ago
-                              </span>
+                              <span className="text-sm text-gray-600">1 day ago</span>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Thank you for choosing our vintage collection!
-                              Your dress will be ready for pickup on Friday.
+                              Thank you for choosing our vintage collection! Your dress will be
+                              ready for pickup on Friday.
                             </p>
                           </div>
                         </div>
@@ -211,14 +189,11 @@ export default function DashboardPage() {
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <h4 className="font-medium">Veila Support</h4>
-                              <span className="text-sm text-gray-600">
-                                2 days ago
-                              </span>
+                              <span className="text-sm text-gray-600">2 days ago</span>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Welcome to Veila! We're here to help you find your
-                              perfect wedding dress. Let us know if you have any
-                              questions.
+                              Welcome to Veila! We're here to help you find your perfect wedding
+                              dress. Let us know if you have any questions.
                             </p>
                           </div>
                         </div>

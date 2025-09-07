@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,93 +9,87 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { SingleImageUploadDialog } from "@/components/upload-image-dialog";
-import { useCreateBlogMutation } from "@/services/apis";
-import { ICreateBlog, BlogStatus } from "@/services/types";
-import { Plus, Loader2, X } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import Image from "next/image";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { SingleImageUploadDialog } from '@/components/upload-image-dialog';
+import { useCreateBlogMutation } from '@/services/apis';
+import { ICreateBlog, BlogStatus } from '@/services/types';
+import { Plus, Loader2, X } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface CreateBlogDialogProps {
   onSuccess: () => void;
   trigger?: React.ReactNode;
 }
 
-export const CreateBlogDialog = ({
-  onSuccess,
-  trigger,
-}: CreateBlogDialogProps) => {
+export const CreateBlogDialog = ({ onSuccess, trigger }: CreateBlogDialogProps) => {
   const [open, setOpen] = useState(false);
   const [createBlog, { isLoading }] = useCreateBlogMutation();
   const [blogData, setBlogData] = useState<ICreateBlog>({
-    categoryId: "",
-    title: "",
-    content: "",
-    images: "",
+    categoryId: '',
+    title: '',
+    content: '',
+    images: '',
     status: BlogStatus.DRAFT,
   });
 
-  const handleInputChange = (
-    field: keyof ICreateBlog,
-    value: string | BlogStatus
-  ) => {
+  const handleInputChange = (field: keyof ICreateBlog, value: string | BlogStatus) => {
     console.log(`🔄 Updating ${field}:`, value);
     setBlogData((prev) => {
       const newData = { ...prev, [field]: value };
-      console.log("📝 New blog data:", newData);
+      console.log('📝 New blog data:', newData);
       return newData;
     });
   };
 
   const handleSubmit = async () => {
     if (!blogData.title.trim()) {
-      toast.error("Vui lòng nhập tiêu đề blog");
+      toast.error('Vui lòng nhập tiêu đề blog');
       return;
     }
     if (!blogData.content.trim()) {
-      toast.error("Vui lòng nhập nội dung blog");
+      toast.error('Vui lòng nhập nội dung blog');
       return;
     }
 
     try {
-      console.log("📝 Submitting blog data:", blogData);
+      console.log('📝 Submitting blog data:', blogData);
       const response = await createBlog(blogData).unwrap();
-      console.log("📡 API Response:", response);
+      console.log('📡 API Response:', response);
 
       // Kiểm tra cả statusCode và status
       if (response.statusCode === 200 || response.statusCode === 201) {
-        toast("Tạo blog thành công!", {
-          icon: "✅",
+        toast('Tạo blog thành công!', {
+          icon: '✅',
           duration: 3000,
         });
         setOpen(false);
         setBlogData({
-          categoryId: "",
-          title: "",
-          content: "",
-          images: "",
+          categoryId: '',
+          title: '',
+          content: '',
+          images: '',
           status: BlogStatus.DRAFT,
         });
         onSuccess();
       } else {
-        console.error("❌ API Error:", response);
-        toast.error(response.message || "Có lỗi xảy ra khi tạo blog");
+        console.error('❌ API Error:', response);
+        toast.error(response.message || 'Có lỗi xảy ra khi tạo blog');
       }
     } catch (error) {
-      console.error("🚨 Submit Error:", error);
-      toast.error("Có lỗi xảy ra khi tạo blog");
+      console.error('🚨 Submit Error:', error);
+      toast.error('Có lỗi xảy ra khi tạo blog');
     }
   };
 
@@ -112,9 +106,7 @@ export const CreateBlogDialog = ({
       <DialogContent className="w-[90vw] max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Tạo blog mới</DialogTitle>
-          <DialogDescription>
-            Tạo bài viết mới để chia sẻ với khách hàng
-          </DialogDescription>
+          <DialogDescription>Tạo bài viết mới để chia sẻ với khách hàng</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
@@ -128,27 +120,21 @@ export const CreateBlogDialog = ({
                   id="title"
                   placeholder="Nhập tiêu đề blog..."
                   value={blogData.title}
-                  onChange={(e) => handleInputChange("title", e.target.value)}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Trạng thái</Label>
                 <Select
                   value={blogData.status}
-                  onValueChange={(value) =>
-                    handleInputChange("status", value as BlogStatus)
-                  }
+                  onValueChange={(value) => handleInputChange('status', value as BlogStatus)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={BlogStatus.DRAFT}>
-                      Bản nháp (có thể chỉnh sửa)
-                    </SelectItem>
-                    <SelectItem value={BlogStatus.PUBLISHED}>
-                      Xuất bản ngay
-                    </SelectItem>
+                    <SelectItem value={BlogStatus.DRAFT}>Bản nháp (có thể chỉnh sửa)</SelectItem>
+                    <SelectItem value={BlogStatus.PUBLISHED}>Xuất bản ngay</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -164,7 +150,7 @@ export const CreateBlogDialog = ({
                 id="content"
                 placeholder="Viết nội dung blog của bạn..."
                 value={blogData.content}
-                onChange={(e) => handleInputChange("content", e.target.value)}
+                onChange={(e) => handleInputChange('content', e.target.value)}
                 rows={10}
                 className="resize-none"
               />
@@ -181,17 +167,12 @@ export const CreateBlogDialog = ({
               {blogData.images && (
                 <div className="mb-4">
                   <div className="relative w-32 h-32 rounded-lg overflow-hidden border">
-                    <Image
-                      src={blogData.images}
-                      alt="Ảnh bìa blog"
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={blogData.images} alt="Ảnh bìa blog" fill className="object-cover" />
                     <Button
                       variant="destructive"
                       size="icon"
                       className="absolute top-1 right-1 h-6 w-6"
-                      onClick={() => handleInputChange("images", "")}
+                      onClick={() => handleInputChange('images', '')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
@@ -205,13 +186,13 @@ export const CreateBlogDialog = ({
               <SingleImageUploadDialog
                 imageUrl={blogData.images || undefined}
                 onImageChange={(url) => {
-                  console.log("🖼️ Image changed:", url);
-                  handleInputChange("images", url);
+                  console.log('🖼️ Image changed:', url);
+                  handleInputChange('images', url);
                 }}
                 trigger={
                   <Button variant="outline" className="w-full">
                     <Plus className="h-4 w-4 mr-2" />
-                    {blogData.images ? "Thay đổi ảnh" : "Tải lên ảnh"}
+                    {blogData.images ? 'Thay đổi ảnh' : 'Tải lên ảnh'}
                   </Button>
                 }
                 handleUpload={async () => {}}
@@ -221,11 +202,7 @@ export const CreateBlogDialog = ({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={isLoading}
-          >
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={isLoading}>
             Hủy
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
@@ -235,7 +212,7 @@ export const CreateBlogDialog = ({
                 Đang tạo...
               </>
             ) : (
-              "Tạo blog"
+              'Tạo blog'
             )}
           </Button>
         </DialogFooter>

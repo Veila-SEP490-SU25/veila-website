@@ -1,4 +1,4 @@
-import { IItem } from "@/services/types";
+import { IItem } from '@/services/types';
 
 export interface ISubscription extends IItem {
   name: string;
@@ -16,6 +16,6 @@ export interface ICreateSubscription {
   images: string;
 }
 
-export interface IUpdateSubscription extends ICreateSubscription{
+export interface IUpdateSubscription extends ICreateSubscription {
   id: string;
 }

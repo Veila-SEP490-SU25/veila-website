@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,16 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Label } from "@/components/ui/label";
-import { useRequestSmartOtpMutation } from "@/services/apis";
-import { Check, Loader2, X } from "lucide-react";
-import { useState } from "react";
+} from '@/components/ui/dialog';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Label } from '@/components/ui/label';
+import { useRequestSmartOtpMutation } from '@/services/apis';
+import { Check, Loader2, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface RequestSmartOtpDialogProps {
   message: string;
@@ -31,37 +27,35 @@ export const RequestSmartOtpDialog = ({
   onConfirm,
 }: RequestSmartOtpDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [walletPin, setWalletPin] = useState<string>("");
+  const [walletPin, setWalletPin] = useState<string>('');
   const [requestOtp, { isLoading }] = useRequestSmartOtpMutation();
   const [, setIsError] = useState<boolean>(false);
-  const [, setError] = useState<string>("");
+  const [, setError] = useState<string>('');
 
   const handleCancel = () => {
-    setWalletPin("");
+    setWalletPin('');
     setIsError(false);
-    setError("");
+    setError('');
     setOpen(false);
   };
 
   const handleRequestSmartOtp = async () => {
     try {
-      const { statusCode, message, item } = await requestOtp(
-        walletPin
-      ).unwrap();
+      const { statusCode, message, item } = await requestOtp(walletPin).unwrap();
       if ([200, 201, 202, 204].includes(statusCode)) {
         setOpen(false);
         const confirmed = await onConfirm(item);
         if (confirmed) {
-          setWalletPin("");
+          setWalletPin('');
           handleCancel();
         }
       } else {
         setIsError(true);
-        setError(message || "Có lỗi xảy ra, vui lòng thử lại sau");
+        setError(message || 'Có lỗi xảy ra, vui lòng thử lại sau');
       }
     } catch (error) {
       setIsError(true);
-      setError("Có lỗi xảy ra, vui lòng thử lại sau");
+      setError('Có lỗi xảy ra, vui lòng thử lại sau');
       console.error(error);
     }
   };

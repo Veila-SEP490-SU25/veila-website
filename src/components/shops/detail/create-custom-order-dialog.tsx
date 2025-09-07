@@ -1,39 +1,26 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import {
-  useCreateRequestMutation,
-  useCreateCustomOrderMutation,
-} from "@/services/apis";
-import {
-  ICreateRequest,
-  RequestStatus,
-  type ICreateCustomOrder,
-} from "@/services/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/components/ui/progress';
+import { useCreateRequestMutation, useCreateCustomOrderMutation } from '@/services/apis';
+import { ICreateRequest, RequestStatus, type ICreateCustomOrder } from '@/services/types';
 import {
   ChevronLeft,
   ChevronRight,
@@ -47,44 +34,39 @@ import {
   Mail,
   MapPin,
   AlertCircle,
-} from "lucide-react";
-import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { LocationInput } from "@/components/location-input";
-import { useAuth } from "@/providers/auth.provider";
-import { ImagesUpload } from "@/components/images-upload";
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { LocationInput } from '@/components/location-input';
+import { useAuth } from '@/providers/auth.provider';
+import { ImagesUpload } from '@/components/images-upload';
 
 interface CreateCustomOrderDialogProps {
   children: React.ReactNode;
   shopId?: string;
 }
 
-type Step = "request" | "order" | "confirmation";
+type Step = 'request' | 'order' | 'confirmation';
 
 interface ValidationErrors {
   [key: string]: string;
 }
 
-export function CreateCustomOrderDialog({
-  children,
-  shopId,
-}: CreateCustomOrderDialogProps) {
+export function CreateCustomOrderDialog({ children, shopId }: CreateCustomOrderDialogProps) {
   const { currentUser } = useAuth();
   const [open, setOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState<Step>("request");
+  const [currentStep, setCurrentStep] = useState<Step>('request');
   const [createdRequest, setCreatedRequest] = useState<any>(null);
   const [createdOrder, setCreatedOrder] = useState<any>(null);
 
-  const [createRequest, { isLoading: isCreatingRequest }] =
-    useCreateRequestMutation();
-  const [createCustomOrder, { isLoading: isCreatingOrder }] =
-    useCreateCustomOrderMutation();
+  const [createRequest, { isLoading: isCreatingRequest }] = useCreateRequestMutation();
+  const [createCustomOrder, { isLoading: isCreatingOrder }] = useCreateCustomOrderMutation();
 
   // Request data state
   const [requestData, setRequestData] = useState<ICreateRequest>({
-    title: "",
-    description: "",
-    images: "",
+    title: '',
+    description: '',
+    images: '',
     height: 165,
     weight: 55,
     bust: 85,
@@ -98,22 +80,22 @@ export function CreateCustomOrderDialog({
     backLength: 40,
     lowerWaist: 85,
     waistToFloor: 100,
-    material: "",
-    color: "",
-    length: "",
-    neckline: "",
-    sleeve: "",
+    material: '',
+    color: '',
+    length: '',
+    neckline: '',
+    sleeve: '',
     status: RequestStatus.SUBMIT,
     isPrivate: false,
   });
 
   // Order data state
   const [orderData, setOrderData] = useState<ICreateCustomOrder>({
-    phone: currentUser?.phone || "",
-    email: currentUser?.email || "",
-    address: "",
-    shopId: shopId || "",
-    requestId: "",
+    phone: currentUser?.phone || '',
+    email: currentUser?.email || '',
+    address: '',
+    shopId: shopId || '',
+    requestId: '',
   });
 
   // Validation errors
@@ -125,23 +107,23 @@ export function CreateCustomOrderDialog({
     const errors: ValidationErrors = {};
 
     if (!requestData.title.trim()) {
-      errors.title = "Tiêu đề là bắt buộc";
+      errors.title = 'Tiêu đề là bắt buộc';
     } else if (requestData.title.length < 5) {
-      errors.title = "Tiêu đề phải có ít nhất 5 ký tự";
+      errors.title = 'Tiêu đề phải có ít nhất 5 ký tự';
     } else if (requestData.title.length > 100) {
-      errors.title = "Tiêu đề không được quá 100 ký tự";
+      errors.title = 'Tiêu đề không được quá 100 ký tự';
     }
 
     if (!requestData.description.trim()) {
-      errors.description = "Mô tả là bắt buộc";
+      errors.description = 'Mô tả là bắt buộc';
     } else if (requestData.description.length < 10) {
-      errors.description = "Mô tả phải có ít nhất 10 ký tự";
+      errors.description = 'Mô tả phải có ít nhất 10 ký tự';
     } else if (requestData.description.length > 1000) {
-      errors.description = "Mô tả không được quá 1000 ký tự";
+      errors.description = 'Mô tả không được quá 1000 ký tự';
     }
 
     if (requestData.images.trim()) {
-      const urls = requestData.images.split(",").map((url) => url.trim());
+      const urls = requestData.images.split(',').map((url) => url.trim());
       const invalidUrls = urls.filter((url) => {
         try {
           new URL(url);
@@ -151,49 +133,49 @@ export function CreateCustomOrderDialog({
         }
       });
       if (invalidUrls.length > 0) {
-        errors.images = "Vui lòng nhập URL hình ảnh hợp lệ";
+        errors.images = 'Vui lòng nhập URL hình ảnh hợp lệ';
       }
     }
 
     // Measurement validations
     if (requestData.height < 130 || requestData.height > 200) {
-      errors.height = "Chiều cao phải từ 130-200cm";
+      errors.height = 'Chiều cao phải từ 130-200cm';
     }
     if (requestData.weight < 30 || requestData.weight > 100) {
-      errors.weight = "Cân nặng phải từ 30-100kg";
+      errors.weight = 'Cân nặng phải từ 30-100kg';
     }
     if (requestData.bust < 50 || requestData.bust > 150) {
-      errors.bust = "Số đo ngực phải từ 50-150cm";
+      errors.bust = 'Số đo ngực phải từ 50-150cm';
     }
     if (requestData.waist < 40 || requestData.waist > 100) {
-      errors.waist = "Số đo eo phải từ 40-100cm";
+      errors.waist = 'Số đo eo phải từ 40-100cm';
     }
     if (requestData.hip < 40 || requestData.hip > 150) {
-      errors.hip = "Số đo hông phải từ 40-150cm";
+      errors.hip = 'Số đo hông phải từ 40-150cm';
     }
     if (requestData.armpit < 10 || requestData.armpit > 40) {
-      errors.armpit = "Số đo nách phải từ 10-40cm";
+      errors.armpit = 'Số đo nách phải từ 10-40cm';
     }
     if (requestData.bicep < 10 || requestData.bicep > 40) {
-      errors.bicep = "Số đo cánh tay phải từ 10-40cm";
+      errors.bicep = 'Số đo cánh tay phải từ 10-40cm';
     }
     if (requestData.neck < 20 || requestData.neck > 50) {
-      errors.neck = "Số đo cổ phải từ 20-50cm";
+      errors.neck = 'Số đo cổ phải từ 20-50cm';
     }
     if (requestData.shoulderWidth < 20 || requestData.shoulderWidth > 50) {
-      errors.shoulderWidth = "Số đo rộng vai phải từ 20-50cm";
+      errors.shoulderWidth = 'Số đo rộng vai phải từ 20-50cm';
     }
     if (requestData.sleeveLength < 0 || requestData.sleeveLength > 100) {
-      errors.sleeveLength = "Số đo dài tay áo phải từ 0-100cm";
+      errors.sleeveLength = 'Số đo dài tay áo phải từ 0-100cm';
     }
     if (requestData.backLength < 30 || requestData.backLength > 60) {
-      errors.backLength = "Số đo dài lưng phải từ 30-60cm";
+      errors.backLength = 'Số đo dài lưng phải từ 30-60cm';
     }
     if (requestData.lowerWaist < 5 || requestData.lowerWaist > 30) {
-      errors.lowerWaist = "Số đo eo dưới phải từ 5-30cm";
+      errors.lowerWaist = 'Số đo eo dưới phải từ 5-30cm';
     }
     if (requestData.waistToFloor < 0 || requestData.waistToFloor > 200) {
-      errors.waistToFloor = "Số đo eo xuống sàn phải từ 0-200cm";
+      errors.waistToFloor = 'Số đo eo xuống sàn phải từ 0-200cm';
     }
 
     setRequestErrors(errors);
@@ -204,29 +186,29 @@ export function CreateCustomOrderDialog({
     const errors: ValidationErrors = {};
 
     if (!orderData.phone.trim()) {
-      errors.phone = "Số điện thoại là bắt buộc";
+      errors.phone = 'Số điện thoại là bắt buộc';
     } else if (!/^[0-9+\-\s()]+$/.test(orderData.phone)) {
-      errors.phone = "Số điện thoại không hợp lệ";
-    } else if (orderData.phone.replace(/[^0-9]/g, "").length < 10) {
-      errors.phone = "Số điện thoại phải có ít nhất 10 số";
+      errors.phone = 'Số điện thoại không hợp lệ';
+    } else if (orderData.phone.replace(/[^0-9]/g, '').length < 10) {
+      errors.phone = 'Số điện thoại phải có ít nhất 10 số';
     }
 
     if (!orderData.email.trim()) {
-      errors.email = "Email là bắt buộc";
+      errors.email = 'Email là bắt buộc';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orderData.email)) {
-      errors.email = "Email không hợp lệ";
+      errors.email = 'Email không hợp lệ';
     }
 
     if (!orderData.address.trim()) {
-      errors.address = "Địa chỉ là bắt buộc";
+      errors.address = 'Địa chỉ là bắt buộc';
     } else if (orderData.address.length < 10) {
-      errors.address = "Địa chỉ phải có ít nhất 10 ký tự";
+      errors.address = 'Địa chỉ phải có ít nhất 10 ký tự';
     } else if (orderData.address.length > 200) {
-      errors.address = "Địa chỉ không được quá 200 ký tự";
+      errors.address = 'Địa chỉ không được quá 200 ký tự';
     }
 
     if (!orderData.shopId.trim()) {
-      errors.shopId = "Vui lòng chọn cửa hàng";
+      errors.shopId = 'Vui lòng chọn cửa hàng';
     }
 
     setOrderErrors(errors);
@@ -238,7 +220,7 @@ export function CreateCustomOrderDialog({
     setRequestData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (requestErrors[field]) {
-      setRequestErrors((prev) => ({ ...prev, [field]: "" }));
+      setRequestErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -246,13 +228,13 @@ export function CreateCustomOrderDialog({
     setOrderData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (orderErrors[field]) {
-      setOrderErrors((prev) => ({ ...prev, [field]: "" }));
+      setOrderErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
   const handleCreateRequest = async () => {
     if (!validateRequest()) {
-      toast.error("Vui lòng kiểm tra lại thông tin đã nhập.");
+      toast.error('Vui lòng kiểm tra lại thông tin đã nhập.');
       return;
     }
 
@@ -261,29 +243,28 @@ export function CreateCustomOrderDialog({
 
       if (item) {
         setCreatedRequest(item);
-        setCurrentStep("order");
-        toast.success("Tạo yêu cầu thành công", {
-          description:
-            "Yêu cầu thiết kế của bạn đã được tạo. Vui lòng điền thông tin đặt hàng.",
+        setCurrentStep('order');
+        toast.success('Tạo yêu cầu thành công', {
+          description: 'Yêu cầu thiết kế của bạn đã được tạo. Vui lòng điền thông tin đặt hàng.',
         });
       } else {
-        toast.error("Có lỗi xảy ra khi tạo yêu cầu thiết kế.", {
+        toast.error('Có lỗi xảy ra khi tạo yêu cầu thiết kế.', {
           description: message,
         });
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi tạo yêu cầu thiết kế.");
+      toast.error('Có lỗi xảy ra khi tạo yêu cầu thiết kế.');
     }
   };
 
   const handleCreateOrder = async () => {
     if (!validateOrder()) {
-      toast.error("Vui lòng kiểm tra lại thông tin đã nhập.");
+      toast.error('Vui lòng kiểm tra lại thông tin đã nhập.');
       return;
     }
 
     if (!createdRequest?.id) {
-      toast.error("Không tìm thấy thông tin yêu cầu thiết kế.");
+      toast.error('Không tìm thấy thông tin yêu cầu thiết kế.');
       return;
     }
 
@@ -297,28 +278,28 @@ export function CreateCustomOrderDialog({
 
       if (item) {
         setCreatedOrder(item);
-        setCurrentStep("confirmation");
-        toast.success("Đặt hàng thành công", {
-          description: "Đơn hàng tùy chỉnh của bạn đã được tạo thành công.",
+        setCurrentStep('confirmation');
+        toast.success('Đặt hàng thành công', {
+          description: 'Đơn hàng tùy chỉnh của bạn đã được tạo thành công.',
         });
       } else {
-        toast.error("Có lỗi xảy ra khi tạo đơn hàng.", {
+        toast.error('Có lỗi xảy ra khi tạo đơn hàng.', {
           description: message,
         });
       }
     } catch {
-      toast.error("Có lỗi xảy ra khi tạo đơn hàng.");
+      toast.error('Có lỗi xảy ra khi tạo đơn hàng.');
     }
   };
 
   const resetDialog = () => {
-    setCurrentStep("request");
+    setCurrentStep('request');
     setCreatedRequest(null);
     setCreatedOrder(null);
     setRequestData({
-      title: "",
-      description: "",
-      images: "",
+      title: '',
+      description: '',
+      images: '',
       height: 165,
       weight: 55,
       bust: 85,
@@ -332,20 +313,20 @@ export function CreateCustomOrderDialog({
       backLength: 40,
       lowerWaist: 85,
       waistToFloor: 100,
-      material: "",
-      color: "",
-      length: "",
-      neckline: "",
-      sleeve: "",
+      material: '',
+      color: '',
+      length: '',
+      neckline: '',
+      sleeve: '',
       status: RequestStatus.SUBMIT,
       isPrivate: false,
     });
     setOrderData({
-      phone: "",
-      email: "",
-      address: "",
-      shopId: shopId || "",
-      requestId: createdRequest?.id || "",
+      phone: '',
+      email: '',
+      address: '',
+      shopId: shopId || '',
+      requestId: createdRequest?.id || '',
     });
     setRequestErrors({});
     setOrderErrors({});
@@ -358,11 +339,11 @@ export function CreateCustomOrderDialog({
 
   const getStepProgress = () => {
     switch (currentStep) {
-      case "request":
+      case 'request':
         return 33;
-      case "order":
+      case 'order':
         return 66;
-      case "confirmation":
+      case 'confirmation':
         return 100;
       default:
         return 0;
@@ -370,19 +351,19 @@ export function CreateCustomOrderDialog({
   };
 
   const measurementFields = [
-    { key: "height", label: "Chiều cao", icon: "📏", unit: "cm" },
-    { key: "weight", label: "Cân nặng", icon: "⚖️", unit: "kg" },
-    { key: "bust", label: "Vòng ngực", icon: "👗", unit: "cm" },
-    { key: "waist", label: "Vòng eo", icon: "⭕", unit: "cm" },
-    { key: "hip", label: "Vòng hông", icon: "🍑", unit: "cm" },
-    { key: "armpit", label: "Nách", icon: "💪", unit: "cm" },
-    { key: "bicep", label: "Cánh tay", icon: "💪", unit: "cm" },
-    { key: "neck", label: "Cổ", icon: "👔", unit: "cm" },
-    { key: "shoulderWidth", label: "Rộng vai", icon: "👤", unit: "cm" },
-    { key: "sleeveLength", label: "Dài tay áo", icon: "👕", unit: "cm" },
-    { key: "backLength", label: "Dài lưng", icon: "🔙", unit: "cm" },
-    { key: "lowerWaist", label: "Eo dưới", icon: "⭕", unit: "cm" },
-    { key: "waistToFloor", label: "Eo xuống sàn", icon: "📐", unit: "cm" },
+    { key: 'height', label: 'Chiều cao', icon: '📏', unit: 'cm' },
+    { key: 'weight', label: 'Cân nặng', icon: '⚖️', unit: 'kg' },
+    { key: 'bust', label: 'Vòng ngực', icon: '👗', unit: 'cm' },
+    { key: 'waist', label: 'Vòng eo', icon: '⭕', unit: 'cm' },
+    { key: 'hip', label: 'Vòng hông', icon: '🍑', unit: 'cm' },
+    { key: 'armpit', label: 'Nách', icon: '💪', unit: 'cm' },
+    { key: 'bicep', label: 'Cánh tay', icon: '💪', unit: 'cm' },
+    { key: 'neck', label: 'Cổ', icon: '👔', unit: 'cm' },
+    { key: 'shoulderWidth', label: 'Rộng vai', icon: '👤', unit: 'cm' },
+    { key: 'sleeveLength', label: 'Dài tay áo', icon: '👕', unit: 'cm' },
+    { key: 'backLength', label: 'Dài lưng', icon: '🔙', unit: 'cm' },
+    { key: 'lowerWaist', label: 'Eo dưới', icon: '⭕', unit: 'cm' },
+    { key: 'waistToFloor', label: 'Eo xuống sàn', icon: '📐', unit: 'cm' },
   ];
 
   return (
@@ -400,27 +381,13 @@ export function CreateCustomOrderDialog({
           {/* Progress Bar */}
           <div className="space-y-2 mb-2">
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span
-                className={
-                  currentStep === "request" ? "text-primary font-medium" : ""
-                }
-              >
+              <span className={currentStep === 'request' ? 'text-primary font-medium' : ''}>
                 1. Yêu cầu thiết kế
               </span>
-              <span
-                className={
-                  currentStep === "order" ? "text-primary font-medium" : ""
-                }
-              >
+              <span className={currentStep === 'order' ? 'text-primary font-medium' : ''}>
                 2. Thông tin đặt hàng
               </span>
-              <span
-                className={
-                  currentStep === "confirmation"
-                    ? "text-primary font-medium"
-                    : ""
-                }
-              >
+              <span className={currentStep === 'confirmation' ? 'text-primary font-medium' : ''}>
                 3. Xác nhận
               </span>
             </div>
@@ -428,7 +395,7 @@ export function CreateCustomOrderDialog({
           </div>
 
           {/* Step 1: Create Request */}
-          {currentStep === "request" && (
+          {currentStep === 'request' && (
             <div className="space-y-6">
               <Card>
                 <CardHeader>
@@ -447,9 +414,7 @@ export function CreateCustomOrderDialog({
                       id="title"
                       placeholder="VD: Thiết kế váy cưới phong cách cổ điển"
                       value={requestData.title}
-                      onChange={(e) =>
-                        updateRequestData("title", e.target.value)
-                      }
+                      onChange={(e) => updateRequestData('title', e.target.value)}
                     />
                     {requestErrors.title && (
                       <div className="flex items-center gap-1 text-sm text-destructive">
@@ -466,9 +431,7 @@ export function CreateCustomOrderDialog({
                       placeholder="Mô tả chi tiết về phong cách, màu sắc, chất liệu mong muốn..."
                       rows={4}
                       value={requestData.description}
-                      onChange={(e) =>
-                        updateRequestData("description", e.target.value)
-                      }
+                      onChange={(e) => updateRequestData('description', e.target.value)}
                     />
                     {requestErrors.description && (
                       <div className="flex items-center gap-1 text-sm text-destructive">
@@ -482,9 +445,7 @@ export function CreateCustomOrderDialog({
                     <Label htmlFor="images">Hình ảnh tham khảo</Label>
                     <ImagesUpload
                       imageUrls={requestData.images}
-                      setImageUrls={(value) =>
-                        updateRequestData("images", value)
-                      }
+                      setImageUrls={(value) => updateRequestData('images', value)}
                     />
                     {requestErrors.images && (
                       <div className="flex items-center gap-1 text-sm text-destructive">
@@ -510,10 +471,7 @@ export function CreateCustomOrderDialog({
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {measurementFields.map((field) => (
                       <div key={field.key} className="space-y-2">
-                        <Label
-                          htmlFor={field.key}
-                          className="flex items-center gap-1"
-                        >
+                        <Label htmlFor={field.key} className="flex items-center gap-1">
                           <span>{field.icon}</span>
                           {field.label}
                         </Label>
@@ -522,15 +480,11 @@ export function CreateCustomOrderDialog({
                             id={field.key}
                             type="number"
                             step="0.1"
-                            value={
-                              requestData[
-                                field.key as keyof ICreateRequest
-                              ] as number
-                            }
+                            value={requestData[field.key as keyof ICreateRequest] as number}
                             onChange={(e) =>
                               updateRequestData(
                                 field.key as keyof ICreateRequest,
-                                Number.parseFloat(e.target.value) || 0
+                                Number.parseFloat(e.target.value) || 0,
                               )
                             }
                           />
@@ -541,34 +495,34 @@ export function CreateCustomOrderDialog({
                         <div className="text-xs text-muted-foreground">
                           {(() => {
                             switch (field.key) {
-                              case "height":
-                                return "Range: 130-200cm";
-                              case "weight":
-                                return "Range: 30-100kg";
-                              case "bust":
-                                return "Range: 50-150cm";
-                              case "waist":
-                                return "Range: 40-100cm";
-                              case "hip":
-                                return "Range: 40-150cm";
-                              case "armpit":
-                                return "Range: 10-40cm";
-                              case "bicep":
-                                return "Range: 10-40cm";
-                              case "neck":
-                                return "Range: 20-50cm";
-                              case "shoulderWidth":
-                                return "Range: 20-50cm";
-                              case "sleeveLength":
-                                return "Range: 0-100cm";
-                              case "backLength":
-                                return "Range: 30-60cm";
-                              case "lowerWaist":
-                                return "Range: 5-30cm";
-                              case "waistToFloor":
-                                return "Range: 0-200cm";
+                              case 'height':
+                                return 'Range: 130-200cm';
+                              case 'weight':
+                                return 'Range: 30-100kg';
+                              case 'bust':
+                                return 'Range: 50-150cm';
+                              case 'waist':
+                                return 'Range: 40-100cm';
+                              case 'hip':
+                                return 'Range: 40-150cm';
+                              case 'armpit':
+                                return 'Range: 10-40cm';
+                              case 'bicep':
+                                return 'Range: 10-40cm';
+                              case 'neck':
+                                return 'Range: 20-50cm';
+                              case 'shoulderWidth':
+                                return 'Range: 20-50cm';
+                              case 'sleeveLength':
+                                return 'Range: 0-100cm';
+                              case 'backLength':
+                                return 'Range: 30-60cm';
+                              case 'lowerWaist':
+                                return 'Range: 5-30cm';
+                              case 'waistToFloor':
+                                return 'Range: 0-200cm';
                               default:
-                                return "";
+                                return '';
                             }
                           })()}
                         </div>
@@ -585,13 +539,8 @@ export function CreateCustomOrderDialog({
               </Card>
 
               <div className="flex justify-end">
-                <Button
-                  onClick={handleCreateRequest}
-                  disabled={isCreatingRequest}
-                >
-                  {isCreatingRequest && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
+                <Button onClick={handleCreateRequest} disabled={isCreatingRequest}>
+                  {isCreatingRequest && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Tạo yêu cầu thiết kế
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -600,7 +549,7 @@ export function CreateCustomOrderDialog({
           )}
 
           {/* Step 2: Create Order */}
-          {currentStep === "order" && (
+          {currentStep === 'order' && (
             <div className="space-y-6">
               {/* Request Summary */}
               <Card>
@@ -618,9 +567,7 @@ export function CreateCustomOrderDialog({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Tiêu đề:</span>
-                      <span className="font-medium">
-                        {createdRequest?.title}
-                      </span>
+                      <span className="font-medium">{createdRequest?.title}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Trạng thái:</span>
@@ -636,9 +583,7 @@ export function CreateCustomOrderDialog({
                     <Settings className="h-4 w-4" />
                     Thông tin đặt hàng
                   </CardTitle>
-                  <CardDescription>
-                    Nhập thông tin liên hệ và giao hàng
-                  </CardDescription>
+                  <CardDescription>Nhập thông tin liên hệ và giao hàng</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -650,7 +595,7 @@ export function CreateCustomOrderDialog({
                       id="phone"
                       placeholder="0123456789"
                       value={orderData.phone}
-                      onChange={(e) => updateOrderData("phone", e.target.value)}
+                      onChange={(e) => updateOrderData('phone', e.target.value)}
                     />
                     {orderErrors.phone && (
                       <div className="flex items-center gap-1 text-sm text-destructive">
@@ -670,7 +615,7 @@ export function CreateCustomOrderDialog({
                       type="email"
                       placeholder="example@email.com"
                       value={orderData.email}
-                      onChange={(e) => updateOrderData("email", e.target.value)}
+                      onChange={(e) => updateOrderData('email', e.target.value)}
                     />
                     {orderErrors.email && (
                       <div className="flex items-center gap-1 text-sm text-destructive">
@@ -681,16 +626,13 @@ export function CreateCustomOrderDialog({
                   </div>
 
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="address"
-                      className="flex items-center gap-2"
-                    >
+                    <Label htmlFor="address" className="flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
                       Địa chỉ giao hàng *
                     </Label>
                     <LocationInput
                       location={orderData.address}
-                      setLocation={(value) => updateOrderData("address", value)}
+                      setLocation={(value) => updateOrderData('address', value)}
                     />
                     {orderErrors.address && (
                       <div className="flex items-center gap-1 text-sm text-destructive">
@@ -703,18 +645,12 @@ export function CreateCustomOrderDialog({
               </Card>
 
               <div className="flex justify-between">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setCurrentStep("request")}
-                >
+                <Button type="button" variant="outline" onClick={() => setCurrentStep('request')}>
                   <ChevronLeft className="mr-2 h-4 w-4" />
                   Quay lại
                 </Button>
                 <Button onClick={handleCreateOrder} disabled={isCreatingOrder}>
-                  {isCreatingOrder && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
+                  {isCreatingOrder && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Tạo đơn hàng
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -723,16 +659,14 @@ export function CreateCustomOrderDialog({
           )}
 
           {/* Step 3: Confirmation */}
-          {currentStep === "confirmation" && (
+          {currentStep === 'confirmation' && (
             <div className="space-y-6">
               <div className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                   <CheckCircle className="h-8 w-8 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">
-                    Đặt hàng thành công!
-                  </h3>
+                  <h3 className="text-lg font-semibold">Đặt hàng thành công!</h3>
                   <p className="text-muted-foreground">
                     Đơn hàng tùy chỉnh của bạn đã được tạo thành công
                   </p>
@@ -746,30 +680,22 @@ export function CreateCustomOrderDialog({
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-muted-foreground">
-                        Mã đơn hàng
-                      </Label>
+                      <Label className="text-muted-foreground">Mã đơn hàng</Label>
                       <p className="font-medium">{createdOrder?.id}</p>
                     </div>
                     <div>
-                      <Label className="text-muted-foreground">
-                        Trạng thái
-                      </Label>
+                      <Label className="text-muted-foreground">Trạng thái</Label>
                       <Badge className="ml-2">{createdOrder?.status}</Badge>
                     </div>
                     <div>
-                      <Label className="text-muted-foreground">
-                        Loại đơn hàng
-                      </Label>
+                      <Label className="text-muted-foreground">Loại đơn hàng</Label>
                       <p className="font-medium">{createdOrder?.type}</p>
                     </div>
                     <div>
                       <Label className="text-muted-foreground">Ngày tạo</Label>
                       <p className="font-medium">
                         {createdOrder?.createdAt &&
-                          new Date(createdOrder.createdAt).toLocaleDateString(
-                            "vi-VN"
-                          )}
+                          new Date(createdOrder.createdAt).toLocaleDateString('vi-VN')}
                       </p>
                     </div>
                   </div>
@@ -777,9 +703,7 @@ export function CreateCustomOrderDialog({
                   <Separator />
 
                   <div>
-                    <Label className="text-muted-foreground">
-                      Yêu cầu thiết kế
-                    </Label>
+                    <Label className="text-muted-foreground">Yêu cầu thiết kế</Label>
                     <p className="font-medium">{createdRequest?.title}</p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Mã yêu cầu: {createdRequest?.id}

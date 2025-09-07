@@ -1,28 +1,19 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/providers/auth.provider";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Lock, LogIn } from "lucide-react";
-import Link from "next/link";
+import { useAuth } from '@/providers/auth.provider';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Lock, LogIn } from 'lucide-react';
+import Link from 'next/link';
 
 interface RequireAuthProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
 
-export const RequireAuth: React.FC<RequireAuthProps> = ({
-  children,
-  fallback,
-}) => {
+export const RequireAuth: React.FC<RequireAuthProps> = ({ children, fallback }) => {
   const { isAuthenticated, currentUser } = useAuth();
   const router = useRouter();
 
@@ -71,10 +62,7 @@ export const RequireAuth: React.FC<RequireAuthProps> = ({
               </Link>
             </div>
             <div className="text-center pt-4 border-t border-gray-100">
-              <Link
-                href="/"
-                className="text-sm text-crimson-600 hover:text-crimson-700"
-              >
+              <Link href="/" className="text-sm text-crimson-600 hover:text-crimson-700">
                 ← Quay về trang chủ
               </Link>
             </div>

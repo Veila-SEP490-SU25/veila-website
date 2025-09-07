@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,13 +8,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { isSuccess } from "@/lib/utils";
-import { useDeleteSubscriptionMutation } from "@/services/apis";
-import { ISubscription } from "@/services/types";
-import { Check, Trash, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { isSuccess } from '@/lib/utils';
+import { useDeleteSubscriptionMutation } from '@/services/apis';
+import { ISubscription } from '@/services/types';
+import { Check, Trash, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface DeleteSubscriptionDialogProps {
   subscription: ISubscription;
@@ -41,7 +41,7 @@ export const DeleteSubscriptionDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      console.error("Failed to respond to complaint:", error);
+      console.error('Failed to respond to complaint:', error);
     }
   }, [subscription, onSuccess, trigger, setOpen]);
 

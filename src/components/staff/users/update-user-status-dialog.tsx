@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,13 +8,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { isSuccess } from "@/lib/utils";
-import { IUpdateUser, useUpdateUserMutation } from "@/services/apis";
-import { IUser, UserStatus } from "@/services/types";
-import { X, Check } from "lucide-react";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { isSuccess } from '@/lib/utils';
+import { IUpdateUser, useUpdateUserMutation } from '@/services/apis';
+import { IUser, UserStatus } from '@/services/types';
+import { X, Check } from 'lucide-react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UpdateUserStatusDialogProps {
   user: IUser;
@@ -60,7 +60,7 @@ export const UpdateUserStatusDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      toast.error("Đã xảy ra lỗi khi cập nhật trạng thái giao dịch");
+      toast.error('Đã xảy ra lỗi khi cập nhật trạng thái giao dịch');
       console.error(error);
     }
   }, [trigger, onUpdate, updateInfo, successMessage]);

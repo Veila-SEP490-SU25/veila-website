@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { useUpdateOrderStatusMutation } from "@/services/apis";
-import { OrderStatus } from "@/services/types";
-import { toast } from "sonner";
+import { Button } from '@/components/ui/button';
+import { useUpdateOrderStatusMutation } from '@/services/apis';
+import { OrderStatus } from '@/services/types';
+import { toast } from 'sonner';
 
 interface ChangeOrderStatusButtonProps {
   message: string;

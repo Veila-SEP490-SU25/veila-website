@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
-import { getPlaceholderImage } from "@/lib/products-utils";
+import Image from 'next/image';
+import { useState } from 'react';
+import { getPlaceholderImage } from '@/lib/products-utils';
 
 interface ImageWithFallbackProps {
   src: string;
@@ -25,7 +25,7 @@ export const ImageWithFallback = ({
   fill = false,
   sizes,
   priority = false,
-  placeholderText = "Veila Dress",
+  placeholderText = 'Veila Dress',
 }: ImageWithFallbackProps) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
@@ -33,9 +33,7 @@ export const ImageWithFallback = ({
   const handleError = () => {
     if (!hasError) {
       setHasError(true);
-      setImgSrc(
-        getPlaceholderImage(width || 400, height || 600, placeholderText)
-      );
+      setImgSrc(getPlaceholderImage(width || 400, height || 600, placeholderText));
     }
   };
 

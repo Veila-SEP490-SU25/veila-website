@@ -1,46 +1,32 @@
-"use client";
+'use client';
 
-import { ErrorCard } from "@/components/error-card";
-import { GoBackButton } from "@/components/go-back-button";
-import { ImageGallery } from "@/components/image-gallery";
-import { StaffNotFound } from "@/components/staff-not-found";
-import { StatusBadge } from "@/components/staff/complaints/complaint-card";
-import { OrderCollapse } from "@/components/staff/complaints/order-collapse";
-import { ResponseComplaintDialog } from "@/components/staff/complaints/response-complaint-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { PageLoading } from "@/components/ui/page-loading";
-import { Textarea } from "@/components/ui/textarea";
-import { formatDateShort } from "@/lib/order-util";
-import { getImages } from "@/lib/products-utils";
-import { isSuccess } from "@/lib/utils";
-import { useLazyGetComplaintStaffQuery } from "@/services/apis";
-import { ComplaintStatus, IComplaint } from "@/services/types";
-import {
-  Calendar,
-  Check,
-  Mail,
-  MapPin,
-  Phone,
-  RefreshCw,
-  X,
-} from "lucide-react";
-import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { ErrorCard } from '@/components/error-card';
+import { GoBackButton } from '@/components/go-back-button';
+import { ImageGallery } from '@/components/image-gallery';
+import { StaffNotFound } from '@/components/staff-not-found';
+import { StatusBadge } from '@/components/staff/complaints/complaint-card';
+import { OrderCollapse } from '@/components/staff/complaints/order-collapse';
+import { ResponseComplaintDialog } from '@/components/staff/complaints/response-complaint-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageLoading } from '@/components/ui/page-loading';
+import { Textarea } from '@/components/ui/textarea';
+import { formatDateShort } from '@/lib/order-util';
+import { getImages } from '@/lib/products-utils';
+import { isSuccess } from '@/lib/utils';
+import { useLazyGetComplaintStaffQuery } from '@/services/apis';
+import { ComplaintStatus, IComplaint } from '@/services/types';
+import { Calendar, Check, Mail, MapPin, Phone, RefreshCw, X } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function ComplaintDetailPage() {
   const { id: complaintId } = useParams() as { id: string };
   const [trigger, { isLoading }] = useLazyGetComplaintStaffQuery();
   const [complaint, setComplaint] = useState<IComplaint>();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
   const fetchComplaint = useCallback(async () => {
@@ -49,7 +35,7 @@ export default function ComplaintDetailPage() {
       if (isSuccess(statusCode)) {
         setComplaint(item);
         setIsError(false);
-        setError("");
+        setError('');
         setIsNotFound(false);
       } else if (statusCode === 404) {
         setIsNotFound(true);
@@ -60,9 +46,7 @@ export default function ComplaintDetailPage() {
       }
     } catch (error) {
       setIsError(true);
-      setError(
-        "Đã có lỗi xảy ra khi tải dữ liệu của khiếu nại. Vui lòng thử lại sau."
-      );
+      setError('Đã có lỗi xảy ra khi tải dữ liệu của khiếu nại. Vui lòng thử lại sau.');
       console.error(error);
     }
   }, [complaintId, trigger, setComplaint, setIsError, setError, setIsNotFound]);
@@ -82,18 +66,14 @@ export default function ComplaintDetailPage() {
       <div className="p-6 space-y-6 max-w-full">
         <Card>
           <CardHeader className="items-center justify-center">
-            <CardTitle className="text-red-500">
-              Đã có lỗi xảy ra khi tải dữ liệu
-            </CardTitle>
+            <CardTitle className="text-red-500">Đã có lỗi xảy ra khi tải dữ liệu</CardTitle>
             <CardDescription>
               <GoBackButton />
               <Button
                 className="flex items-center justify-center gap-2 bg-rose-500 text-white"
                 onClick={fetchComplaint}
               >
-                <RefreshCw
-                  className={`size-4 ${isLoading ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Thử lại
               </Button>
             </CardDescription>
@@ -120,9 +100,7 @@ export default function ComplaintDetailPage() {
             <GoBackButton />
             <div className="flex items-start justify-between w-full">
               <div className="space-y-2">
-                <CardTitle className="text-lg font-bold">
-                  Khiếu nại #{complaint.id}
-                </CardTitle>
+                <CardTitle className="text-lg font-bold">Khiếu nại #{complaint.id}</CardTitle>
                 <CardDescription className="flex items-center gap-2">
                   <Calendar className="size-4 text-rose-500" />
                   <span className="text-sm text-muted-foreground">
@@ -185,9 +163,7 @@ export default function ComplaintDetailPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium">
-                    {complaint.sender.username}
-                  </p>
+                  <p className="text-sm font-medium">{complaint.sender.username}</p>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Mail className="size-4 text-rose-500" />
                     {complaint.sender.email}
@@ -207,10 +183,7 @@ export default function ComplaintDetailPage() {
                 <CardTitle>{complaint.title}</CardTitle>
                 <CardDescription>{complaint.reason}</CardDescription>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Textarea
-                    value={complaint.description}
-                    className="w-full cursor-text"
-                  />
+                  <Textarea value={complaint.description} className="w-full cursor-text" />
                   <ImageGallery
                     images={getImages(complaint.images) || []}
                     alt="Hình ảnh khiếu nại"

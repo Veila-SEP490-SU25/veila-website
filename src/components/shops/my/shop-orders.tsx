@@ -1,8 +1,8 @@
-"use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+'use client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,23 +10,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
-import { useLazyGetOrdersQuery } from "@/services/apis";
-import {
-  IOrder,
-  IPaginationResponse,
-  OrderStatus,
-  OrderType,
-} from "@/services/types";
+} from '@/components/ui/select';
+import { useDebounce } from '@/hooks/use-debounce';
+import { useLazyGetOrdersQuery } from '@/services/apis';
+import { IOrder, IPaginationResponse, OrderStatus, OrderType } from '@/services/types';
 import {
   AlertCircle,
   Calendar,
@@ -44,10 +39,10 @@ import {
   Phone,
   Search,
   XCircle,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useCallback } from 'react';
+import { toast } from 'sonner';
 
 export const MyShopOrders = () => {
   const router = useRouter();
@@ -61,10 +56,10 @@ export const MyShopOrders = () => {
     totalItems: 0,
     totalPages: 0,
   });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [dateFilter, setDateFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
 
   const handlePageChange = (newPageIndex: number) => {
@@ -84,10 +79,10 @@ export const MyShopOrders = () => {
   };
 
   const resetFilters = () => {
-    setSearchTerm("");
-    setStatusFilter("all");
-    setTypeFilter("all");
-    setDateFilter("all");
+    setSearchTerm('');
+    setStatusFilter('all');
+    setTypeFilter('all');
+    setDateFilter('all');
     setPaging((prev) => ({ ...prev, pageIndex: 0 }));
   };
 
@@ -102,48 +97,48 @@ export const MyShopOrders = () => {
       }
 
       // Filter theo trạng thái
-      if (statusFilter !== "all") {
+      if (statusFilter !== 'all') {
         filters.push(`status:eq:${statusFilter}`);
       }
 
       // Filter theo loại đơn hàng
-      if (typeFilter !== "all") {
+      if (typeFilter !== 'all') {
         filters.push(`type:eq:${typeFilter}`);
       }
 
       // Filter theo ngày
-      if (dateFilter !== "all") {
+      if (dateFilter !== 'all') {
         const today = new Date();
         const startDate = new Date();
 
         switch (dateFilter) {
-          case "today":
+          case 'today':
             startDate.setHours(0, 0, 0, 0);
             break;
-          case "week":
+          case 'week':
             startDate.setDate(today.getDate() - 7);
             break;
-          case "month":
+          case 'month':
             startDate.setMonth(today.getMonth() - 1);
             break;
-          case "custom":
+          case 'custom':
             // Có thể thêm custom date range sau
             break;
         }
 
-        if (dateFilter !== "custom") {
+        if (dateFilter !== 'custom') {
           filters.push(`createdAt:gte:${startDate.toISOString()}`);
         }
       }
 
       // Kết hợp các filter bằng dấu phẩy
-      const filterString = filters.join(",");
+      const filterString = filters.join(',');
 
       const response = await getMyShopOrders({
         page: paging.pageIndex,
         size: paging.pageSize,
         filter: filterString,
-        sort: "createdAt:desc", // Sắp xếp theo thời gian tạo mới nhất
+        sort: 'createdAt:desc', // Sắp xếp theo thời gian tạo mới nhất
       }).unwrap();
 
       if (response.statusCode === 200) {
@@ -157,12 +152,12 @@ export const MyShopOrders = () => {
           hasPrevPage: response.hasPrevPage || false,
         });
       } else {
-        toast.error("Không thể tải danh sách đơn hàng", {
+        toast.error('Không thể tải danh sách đơn hàng', {
           description: response.message,
         });
       }
     } catch {
-      toast.error("Đã xảy ra lỗi khi tải danh sách đơn hàng");
+      toast.error('Đã xảy ra lỗi khi tải danh sách đơn hàng');
     }
   }, [
     getMyShopOrders,
@@ -188,31 +183,31 @@ export const MyShopOrders = () => {
   ]);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
     }).format(price);
   };
 
   const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(date).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
-      case "PENDING":
+      case 'PENDING':
         return <Badge className="bg-yellow-600">Chờ xử lý</Badge>;
-      case "IN_PROCESS":
+      case 'IN_PROCESS':
         return <Badge className="bg-blue-600">Đang xử lý</Badge>;
-      case "COMPLETED":
+      case 'COMPLETED':
         return <Badge className="bg-green-600">Hoàn thành</Badge>;
-      case "CANCELLED":
+      case 'CANCELLED':
         return <Badge className="bg-red-600">Đã hủy</Badge>;
       default:
         return <Badge variant="secondary">Không xác định</Badge>;
@@ -221,24 +216,21 @@ export const MyShopOrders = () => {
 
   const getTypeBadge = (type: OrderType) => {
     switch (type) {
-      case "SELL":
+      case 'SELL':
         return (
           <Badge variant="outline" className="text-green-600 border-green-600">
             Bán
           </Badge>
         );
-      case "RENT":
+      case 'RENT':
         return (
           <Badge variant="outline" className="text-blue-600 border-blue-600">
             Thuê
           </Badge>
         );
-      case "CUSTOM":
+      case 'CUSTOM':
         return (
-          <Badge
-            variant="outline"
-            className="text-purple-600 border-purple-600"
-          >
+          <Badge variant="outline" className="text-purple-600 border-purple-600">
             Đặt may
           </Badge>
         );
@@ -249,13 +241,13 @@ export const MyShopOrders = () => {
 
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
-      case "PENDING":
+      case 'PENDING':
         return <Clock className="h-4 w-4 text-yellow-600" />;
-      case "IN_PROCESS":
+      case 'IN_PROCESS':
         return <AlertCircle className="h-4 w-4 text-blue-600" />;
-      case "COMPLETED":
+      case 'COMPLETED':
         return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case "CANCELLED":
+      case 'CANCELLED':
         return <XCircle className="h-4 w-4 text-red-600" />;
       default:
         return <AlertCircle className="h-4 w-4 text-gray-600" />;
@@ -339,12 +331,8 @@ export const MyShopOrders = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Quản lý đơn hàng
-          </h1>
-          <p className="text-muted-foreground">
-            Theo dõi và quản lý tất cả đơn hàng của cửa hàng
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">Quản lý đơn hàng</h1>
+          <p className="text-muted-foreground">Theo dõi và quản lý tất cả đơn hàng của cửa hàng</p>
         </div>
       </div>
 
@@ -377,14 +365,8 @@ export const MyShopOrders = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Status Filter */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Trạng thái
-                </label>
-                <Select
-                  value={statusFilter}
-                  onValueChange={setStatusFilter}
-                  disabled={isLoading}
-                >
+                <label className="text-sm font-medium text-gray-700">Trạng thái</label>
+                <Select value={statusFilter} onValueChange={setStatusFilter} disabled={isLoading}>
                   <SelectTrigger>
                     <SelectValue placeholder="Tất cả trạng thái" />
                   </SelectTrigger>
@@ -400,14 +382,8 @@ export const MyShopOrders = () => {
 
               {/* Type Filter */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Loại đơn hàng
-                </label>
-                <Select
-                  value={typeFilter}
-                  onValueChange={setTypeFilter}
-                  disabled={isLoading}
-                >
+                <label className="text-sm font-medium text-gray-700">Loại đơn hàng</label>
+                <Select value={typeFilter} onValueChange={setTypeFilter} disabled={isLoading}>
                   <SelectTrigger>
                     <SelectValue placeholder="Tất cả loại" />
                   </SelectTrigger>
@@ -422,14 +398,8 @@ export const MyShopOrders = () => {
 
               {/* Date Filter */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Thời gian
-                </label>
-                <Select
-                  value={dateFilter}
-                  onValueChange={setDateFilter}
-                  disabled={isLoading}
-                >
+                <label className="text-sm font-medium text-gray-700">Thời gian</label>
+                <Select value={dateFilter} onValueChange={setDateFilter} disabled={isLoading}>
                   <SelectTrigger>
                     <SelectValue placeholder="Tất cả thời gian" />
                   </SelectTrigger>
@@ -444,9 +414,7 @@ export const MyShopOrders = () => {
 
               {/* Reset Button */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  &nbsp;
-                </label>
+                <label className="text-sm font-medium text-gray-700">&nbsp;</label>
                 <Button
                   variant="outline"
                   onClick={resetFilters}
@@ -462,49 +430,34 @@ export const MyShopOrders = () => {
       </Card>
 
       {/* Active Filters Info */}
-      {(statusFilter !== "all" ||
-        typeFilter !== "all" ||
-        dateFilter !== "all" ||
-        searchTerm) && (
+      {(statusFilter !== 'all' || typeFilter !== 'all' || dateFilter !== 'all' || searchTerm) && (
         <Card className="border-blue-200 bg-blue-50/50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm text-blue-700">
                 <span className="font-medium">Bộ lọc đang áp dụng:</span>
-                {statusFilter !== "all" && (
-                  <Badge
-                    variant="outline"
-                    className="text-blue-700 border-blue-300"
-                  >
+                {statusFilter !== 'all' && (
+                  <Badge variant="outline" className="text-blue-700 border-blue-300">
                     Trạng thái: {getStatusBadge(statusFilter as OrderStatus)}
                   </Badge>
                 )}
-                {typeFilter !== "all" && (
-                  <Badge
-                    variant="outline"
-                    className="text-blue-700 border-blue-300"
-                  >
+                {typeFilter !== 'all' && (
+                  <Badge variant="outline" className="text-blue-700 border-blue-300">
                     Loại: {getTypeBadge(typeFilter as OrderType)}
                   </Badge>
                 )}
-                {dateFilter !== "all" && (
-                  <Badge
-                    variant="outline"
-                    className="text-blue-700 border-blue-300"
-                  >
-                    Thời gian:{" "}
-                    {dateFilter === "today"
-                      ? "Hôm nay"
-                      : dateFilter === "week"
-                      ? "7 ngày qua"
-                      : "30 ngày qua"}
+                {dateFilter !== 'all' && (
+                  <Badge variant="outline" className="text-blue-700 border-blue-300">
+                    Thời gian:{' '}
+                    {dateFilter === 'today'
+                      ? 'Hôm nay'
+                      : dateFilter === 'week'
+                        ? '7 ngày qua'
+                        : '30 ngày qua'}
                   </Badge>
                 )}
                 {searchTerm && (
-                  <Badge
-                    variant="outline"
-                    className="text-blue-700 border-blue-300"
-                  >
+                  <Badge variant="outline" className="text-blue-700 border-blue-300">
                     Tìm kiếm: "{searchTerm}"
                   </Badge>
                 )}
@@ -528,19 +481,14 @@ export const MyShopOrders = () => {
           <Card>
             <CardContent className="p-12 text-center">
               <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Không có đơn hàng nào
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Không có đơn hàng nào</h3>
               <p className="text-gray-600">Chưa có đơn hàng nào được tạo</p>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <Card
-                key={order.id}
-                className="hover:shadow-md transition-shadow"
-              >
+              <Card key={order.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 space-y-4">
@@ -560,9 +508,7 @@ export const MyShopOrders = () => {
                           <p className="text-2xl font-bold text-rose-600">
                             {formatPrice(order.amount)}
                           </p>
-                          <p className="text-sm text-gray-600">
-                            {formatDate(order.createdAt)}
-                          </p>
+                          <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
 
@@ -570,19 +516,13 @@ export const MyShopOrders = () => {
                       <div className="flex items-center gap-6">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage
-                              src={
-                                order.customer.avatarUrl || "/placeholder.svg"
-                              }
-                            />
+                            <AvatarImage src={order.customer.avatarUrl || '/placeholder.svg'} />
                             <AvatarFallback>
-                              {order.customer.firstName?.charAt(0) || "U"}
+                              {order.customer.firstName?.charAt(0) || 'U'}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <p className="font-medium">
-                              {order.customer.firstName}
-                            </p>
+                            <p className="font-medium">{order.customer.firstName}</p>
                             <div className="flex items-center gap-4 text-sm text-gray-600">
                               <div className="flex items-center gap-1">
                                 <Phone className="h-3 w-3" />
@@ -603,9 +543,7 @@ export const MyShopOrders = () => {
                           <Calendar className="h-4 w-4 text-gray-400" />
                           <div>
                             <p className="text-gray-600">Ngày giao hàng</p>
-                            <p className="font-medium">
-                              {formatDate(order.dueDate)}
-                            </p>
+                            <p className="font-medium">{formatDate(order.dueDate)}</p>
                           </div>
                         </div>
                         {order.returnDate && (
@@ -613,9 +551,7 @@ export const MyShopOrders = () => {
                             <Calendar className="h-4 w-4 text-gray-400" />
                             <div>
                               <p className="text-gray-600">Ngày trả</p>
-                              <p className="font-medium">
-                                {formatDate(order.returnDate)}
-                              </p>
+                              <p className="font-medium">{formatDate(order.returnDate)}</p>
                             </div>
                           </div>
                         )}
@@ -623,9 +559,7 @@ export const MyShopOrders = () => {
                           <MapPin className="h-4 w-4 text-gray-400" />
                           <div>
                             <p className="text-gray-600">Địa chỉ giao hàng</p>
-                            <p className="font-medium truncate">
-                              {order.address}
-                            </p>
+                            <p className="font-medium truncate">{order.address}</p>
                           </div>
                         </div>
                       </div>
@@ -635,11 +569,7 @@ export const MyShopOrders = () => {
                     <div className="flex items-center gap-2 ml-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={isLoading}
-                          >
+                          <Button variant="outline" size="sm" disabled={isLoading}>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -655,9 +585,7 @@ export const MyShopOrders = () => {
                             Cập nhật trạng thái
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() =>
-                              router.push(`/shops/my/orders/${order.id}`)
-                            }
+                            onClick={() => router.push(`/shops/my/orders/${order.id}`)}
                             disabled={isLoading}
                           >
                             <Eye className="h-4 w-4 mr-2" />
@@ -681,12 +609,9 @@ export const MyShopOrders = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">
-                  Hiển thị {paging.pageIndex * paging.pageSize + 1} -{" "}
-                  {Math.min(
-                    (paging.pageIndex + 1) * paging.pageSize,
-                    paging.totalItems
-                  )}{" "}
-                  của {paging.totalItems} đơn hàng
+                  Hiển thị {paging.pageIndex * paging.pageSize + 1} -{' '}
+                  {Math.min((paging.pageIndex + 1) * paging.pageSize, paging.totalItems)} của{' '}
+                  {paging.totalItems} đơn hàng
                 </span>
               </div>
               <div className="flex items-center gap-2">

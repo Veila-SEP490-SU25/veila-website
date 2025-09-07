@@ -1,16 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState, Suspense } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AlertCircle, ArrowLeft, RefreshCw, Wallet } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { AlertCircle, ArrowLeft, RefreshCw, Wallet } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function PaymentCancelPageContent() {
   const router = useRouter();
@@ -19,17 +13,17 @@ function PaymentCancelPageContent() {
   const [transactionData, setTransactionData] = useState<any>(null);
 
   useEffect(() => {
-    const code = searchParams.get("code");
-    const id = searchParams.get("id");
-    const cancel = searchParams.get("cancel");
-    const status = searchParams.get("status");
-    const orderCode = searchParams.get("orderCode");
+    const code = searchParams.get('code');
+    const id = searchParams.get('id');
+    const cancel = searchParams.get('cancel');
+    const status = searchParams.get('status');
+    const orderCode = searchParams.get('orderCode');
 
-    if (cancel === "true" || status === "CANCELLED") {
+    if (cancel === 'true' || status === 'CANCELLED') {
       setTransactionData({
         code,
         id,
-        cancel: cancel === "true",
+        cancel: cancel === 'true',
         status,
         orderCode,
       });
@@ -43,15 +37,15 @@ function PaymentCancelPageContent() {
   }, [searchParams]);
 
   const handleRetryPayment = () => {
-    router.push("/profile/wallet");
+    router.push('/profile/wallet');
   };
 
   const handleBackToWallet = () => {
-    router.push("/profile/wallet");
+    router.push('/profile/wallet');
   };
 
   const handleBackToHome = () => {
-    router.push("/profile");
+    router.push('/profile');
   };
 
   if (isLoading) {
@@ -76,9 +70,7 @@ function PaymentCancelPageContent() {
           <div className="flex justify-center mb-4">
             <AlertCircle className="h-16 w-16 text-yellow-600" />
           </div>
-          <CardTitle className="text-2xl text-yellow-600">
-            Thanh toán đã bị hủy
-          </CardTitle>
+          <CardTitle className="text-2xl text-yellow-600">Thanh toán đã bị hủy</CardTitle>
           <CardDescription className="text-gray-600">
             Bạn đã hủy giao dịch thanh toán
           </CardDescription>
@@ -96,29 +88,23 @@ function PaymentCancelPageContent() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Thời gian:</span>
-                <span className="font-medium">
-                  {new Date().toLocaleString("vi-VN")}
-                </span>
+                <span className="font-medium">{new Date().toLocaleString('vi-VN')}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Mã giao dịch:</span>
                 <span className="font-medium text-gray-800">
-                  {transactionData?.orderCode || "N/A"}
+                  {transactionData?.orderCode || 'N/A'}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Payment ID:</span>
-                <span className="font-medium text-gray-800">
-                  {transactionData?.id || "N/A"}
-                </span>
+                <span className="font-medium text-gray-800">{transactionData?.id || 'N/A'}</span>
               </div>
             </div>
           </div>
 
           <div className="text-center space-y-2">
-            <p className="text-gray-700">
-              Giao dịch thanh toán đã được hủy bởi bạn.
-            </p>
+            <p className="text-gray-700">Giao dịch thanh toán đã được hủy bởi bạn.</p>
             <p className="text-sm text-gray-500">
               Không có khoản tiền nào bị trừ khỏi tài khoản của bạn.
             </p>
@@ -132,19 +118,11 @@ function PaymentCancelPageContent() {
               <RefreshCw className="h-4 w-4 mr-2" />
               Thử lại thanh toán
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleBackToWallet}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={handleBackToWallet} className="w-full">
               <Wallet className="h-4 w-4 mr-2" />
               Quay về ví
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleBackToHome}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={handleBackToHome} className="w-full">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Quay về trang chủ
             </Button>
@@ -161,11 +139,13 @@ function PaymentCancelPageContent() {
 
 export default function PaymentCancelPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600"></div>
+        </div>
+      }
+    >
       <PaymentCancelPageContent />
     </Suspense>
   );

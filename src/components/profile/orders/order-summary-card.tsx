@@ -1,19 +1,16 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { formatCurrency, getTypeColor, getTypeText } from "@/lib/order-util";
-import { IOrder } from "@/services/types";
-import { formatDateOnly } from "@/utils/format";
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { formatCurrency, getTypeColor, getTypeText } from '@/lib/order-util';
+import { IOrder } from '@/services/types';
+import { formatDateOnly } from '@/utils/format';
 
 interface OrderSummaryCardProps {
   order: IOrder;
   progress: number;
 }
 
-export const OrderSummaryCard = ({
-  order,
-  progress,
-}: OrderSummaryCardProps) => {
+export const OrderSummaryCard = ({ order, progress }: OrderSummaryCardProps) => {
   return (
     <Card>
       <CardHeader>
@@ -27,17 +24,12 @@ export const OrderSummaryCard = ({
           </Badge>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">
-            Số tiền chuyển cho Shop:
-          </span>
+          <span className="text-muted-foreground">Số tiền chuyển cho Shop:</span>
           <span className="font-bold">{formatCurrency(order.amount)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Số dư bị khoá:</span>
-          <span className="font-bold">
-            {" "}
-            {formatCurrency(parseFloat(order.deposit))}
-          </span>
+          <span className="font-bold"> {formatCurrency(parseFloat(order.deposit))}</span>
         </div>
 
         <Separator />

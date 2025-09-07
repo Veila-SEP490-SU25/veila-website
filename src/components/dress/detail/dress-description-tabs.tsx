@@ -1,8 +1,8 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { getImages } from "@/lib/products-utils";
-import { IDress } from "@/services/types";
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { getImages } from '@/lib/products-utils';
+import { IDress } from '@/services/types';
 
 interface DressDescriptionTabsProps {
   dress: IDress;
@@ -17,7 +17,7 @@ export const DressDescriptionTabs = ({ dress }: DressDescriptionTabsProps) => {
       <CardContent>
         <div className="prose max-w-none">
           <p className="text-gray-700 leading-relaxed">
-            {dress.description || "Không có mô tả chi tiết cho sản phẩm này."}
+            {dress.description || 'Không có mô tả chi tiết cho sản phẩm này.'}
           </p>
         </div>
         <Separator className="my-6" />
@@ -31,11 +31,11 @@ export const DressDescriptionTabs = ({ dress }: DressDescriptionTabsProps) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Có thể mua:</span>
-                <span>{dress.isSellable ? "Có" : "Không"}</span>
+                <span>{dress.isSellable ? 'Có' : 'Không'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Có thể thuê:</span>
-                <span>{dress.isRentable ? "Có" : "Không"}</span>
+                <span>{dress.isRentable ? 'Có' : 'Không'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Số lượng ảnh:</span>

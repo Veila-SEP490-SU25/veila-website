@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from 'react';
 // import { useRouter } from "next/navigation";
 // import { Badge } from "@/components/ui/badge";
-import { Eye, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { IPaginationResponse, IShop, ShopStatus } from "@/services/types";
-import { useLazyGetShopsQuery } from "@/services/apis";
-import { toast } from "sonner";
+import { Eye, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { IPaginationResponse, IShop, ShopStatus } from '@/services/types';
+import { useLazyGetShopsQuery } from '@/services/apis';
+import { toast } from 'sonner';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { Image } from "@/components/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { RequireAuth } from "@/components/auth/require-auth";
+} from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { Image } from '@/components/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { RequireAuth } from '@/components/auth/require-auth';
 // import { ShopCardSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function ShopPage() {
@@ -87,17 +87,17 @@ export default function ShopPage() {
   const getFilterText = (status: ShopStatus | null) => {
     switch (status) {
       case ShopStatus.ACTIVE:
-        return "status:eq:ACTIVE";
+        return 'status:eq:ACTIVE';
       case ShopStatus.PENDING:
-        return "status:eq:PENDING";
+        return 'status:eq:PENDING';
       case ShopStatus.SUSPENDED:
-        return "status:eq:SUSPENDED";
+        return 'status:eq:SUSPENDED';
       case ShopStatus.INACTIVE:
-        return "status:eq:INACTIVE";
+        return 'status:eq:INACTIVE';
       case ShopStatus.BANNED:
-        return "status:eq:BANNED";
+        return 'status:eq:BANNED';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -108,7 +108,7 @@ export default function ShopPage() {
         filter,
         page: paging.pageIndex,
         size: paging.pageSize,
-        sort: "",
+        sort: '',
       }).unwrap();
 
       if (statusCode === 200) {
@@ -116,7 +116,7 @@ export default function ShopPage() {
         setPaging((prev) => ({ ...prev, ...pagination }));
       }
     } catch {
-      toast.error("Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.");
+      toast.error('Đã xảy ra lỗi trong quá trình lấy dữ liệu cửa hàng.');
     }
   }, [statusFilter, paging.pageIndex, paging.pageSize, getShops]);
 
@@ -150,12 +150,8 @@ export default function ShopPage() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Cửa Hàng Váy Cưới
-          </h1>
-          <p className="text-gray-600">
-            Khám phá các cửa hàng váy cưới uy tín và chất lượng
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Cửa Hàng Váy Cưới</h1>
+          <p className="text-gray-600">Khám phá các cửa hàng váy cưới uy tín và chất lượng</p>
         </div>
 
         {/* Filters and Controls */}
@@ -166,10 +162,7 @@ export default function ShopPage() {
             </span>
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:gap-4">
-            <Select
-              value={paging.pageSize.toString()}
-              onValueChange={handlePageSizeChange}
-            >
+            <Select value={paging.pageSize.toString()} onValueChange={handlePageSizeChange}>
               <SelectTrigger className="w-full md:w-32">
                 <SelectValue />
               </SelectTrigger>
@@ -221,7 +214,7 @@ export default function ShopPage() {
                 {/* Cover Image */}
                 <div className="relative h-48">
                   <Image
-                    src={shop.coverUrl || "/placeholder.svg"}
+                    src={shop.coverUrl || '/placeholder.svg'}
                     alt={shop.name}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
@@ -250,7 +243,7 @@ export default function ShopPage() {
                     {/* Shop Info */}
                     <div className="flex items-center gap-3 h-fit justify-start">
                       <Avatar className="h-12 w-12 border-2 border-white -mt-8 relative z-10 flex-shrink-0">
-                        <AvatarImage src={shop.logoUrl || "/placeholder.svg"} />
+                        <AvatarImage src={shop.logoUrl || '/placeholder.svg'} />
                         <AvatarFallback>{shop.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0 h-full flex items-center">
@@ -280,22 +273,12 @@ export default function ShopPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-2">
-                      <Link
-                        href={`/shops/detail/${shop.id}`}
-                        className="flex-1"
-                      >
-                        <Button
-                          className="w-full bg-rose-600 hover:bg-rose-700"
-                          size="sm"
-                        >
+                      <Link href={`/shops/detail/${shop.id}`} className="flex-1">
+                        <Button className="w-full bg-rose-600 hover:bg-rose-700" size="sm">
                           Xem cửa hàng
                         </Button>
                       </Link>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="bg-transparent"
-                      >
+                      <Button variant="outline" size="sm" className="bg-transparent">
                         <MessageCircle className="h-4 w-4" />
                       </Button>
                     </div>
@@ -309,9 +292,7 @@ export default function ShopPage() {
         {/* Empty State */}
         {!isLoading && shops.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
-              Không tìm thấy cửa hàng nào.
-            </p>
+            <p className="text-gray-500 text-lg">Không tìm thấy cửa hàng nào.</p>
           </div>
         )}
 

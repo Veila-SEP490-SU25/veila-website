@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getFirebaseConfig } from "@/lib/utils/index";
+import { NextRequest, NextResponse } from 'next/server';
+import { getFirebaseConfig } from '@/lib/utils/index';
 
 export async function PUT(request: NextRequest) {
   try {
     // Get authorization header
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     const token = authHeader.substring(7); // Remove "Bearer " prefix
@@ -14,11 +14,8 @@ export async function PUT(request: NextRequest) {
     // Initialize Firebase for server-side
     const firebaseConfig = getFirebaseConfig();
     if (!firebaseConfig || !firebaseConfig.apiKey) {
-      console.error("Firebase config is missing or invalid");
-      return NextResponse.json(
-        { message: "Server configuration error" },
-        { status: 500 }
-      );
+      console.error('Firebase config is missing or invalid');
+      return NextResponse.json({ message: 'Server configuration error' }, { status: 500 });
     }
     // For now, we'll trust the token from the client
     // In production, you should verify the token server-side
@@ -27,46 +24,40 @@ export async function PUT(request: NextRequest) {
     const { pin } = body;
 
     if (!pin) {
-      return NextResponse.json({ message: "PIN is required" }, { status: 400 });
+      return NextResponse.json({ message: 'PIN is required' }, { status: 400 });
     }
 
     // Validate PIN format (6 digits)
     const pinRegex = /^\d{6}$/;
     if (!pinRegex.test(pin)) {
-      return NextResponse.json(
-        { message: "PIN must be 6 digits" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: 'PIN must be 6 digits' }, { status: 400 });
     }
 
     // Gọi API backend để tạo mã PIN
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/wallets/my-wallet/create-pin`,
       {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ pin }),
-      }
+      },
     );
 
     if (!response.ok) {
       const errorData = await response.json();
       return NextResponse.json(
-        { message: errorData.message || "Failed to create PIN" },
-        { status: response.status }
+        { message: errorData.message || 'Failed to create PIN' },
+        { status: response.status },
       );
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Error in create PIN API:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('Error in create PIN API:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }

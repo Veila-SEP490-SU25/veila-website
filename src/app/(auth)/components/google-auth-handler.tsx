@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useAuth } from "@/providers/auth.provider";
-import { useFirebase } from "@/services/firebase";
-import { getRedirectResult } from "firebase/auth";
-import { toast } from "sonner";
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/providers/auth.provider';
+import { useFirebase } from '@/services/firebase';
+import { getRedirectResult } from 'firebase/auth';
+import { toast } from 'sonner';
 
 export const GoogleAuthHandler = () => {
   const { auth } = useFirebase();
@@ -25,7 +25,7 @@ export const GoogleAuthHandler = () => {
           const { displayName, email } = user;
 
           if (!displayName || !email) {
-            toast.error("Có lỗi xảy ra trong quá trình xác thực.");
+            toast.error('Có lỗi xảy ra trong quá trình xác thực.');
             return;
           }
 
@@ -34,11 +34,11 @@ export const GoogleAuthHandler = () => {
             fullname: displayName,
           });
 
-          toast.success("Đăng nhập Google thành công!");
+          toast.success('Đăng nhập Google thành công!');
         }
       } catch (error: any) {
-        console.error("Google redirect error:", error);
-        toast.error("Có lỗi xảy ra khi xử lý đăng nhập Google");
+        console.error('Google redirect error:', error);
+        toast.error('Có lỗi xảy ra khi xử lý đăng nhập Google');
       } finally {
         setIsProcessing(false);
       }

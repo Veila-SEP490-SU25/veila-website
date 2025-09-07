@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface VerifyPhonePopupState {
   isOpen: boolean;
@@ -7,15 +7,9 @@ interface VerifyPhonePopupState {
   closePopup: () => void;
 }
 
-const VerifyPhonePopupContext = createContext<
-  VerifyPhonePopupState | undefined
->(undefined);
+const VerifyPhonePopupContext = createContext<VerifyPhonePopupState | undefined>(undefined);
 
-export function VerifyPhonePopupProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function VerifyPhonePopupProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [returnUrl, setReturnUrl] = useState<string | undefined>(undefined);
 
@@ -37,18 +31,14 @@ export function VerifyPhonePopupProvider({
   };
 
   return (
-    <VerifyPhonePopupContext.Provider value={value}>
-      {children}
-    </VerifyPhonePopupContext.Provider>
+    <VerifyPhonePopupContext.Provider value={value}>{children}</VerifyPhonePopupContext.Provider>
   );
 }
 
 export function useVerifyPhonePopup() {
   const context = useContext(VerifyPhonePopupContext);
   if (context === undefined) {
-    throw new Error(
-      "useVerifyPhonePopup must be used within a VerifyPhonePopupProvider"
-    );
+    throw new Error('useVerifyPhonePopup must be used within a VerifyPhonePopupProvider');
   }
   return context;
 }

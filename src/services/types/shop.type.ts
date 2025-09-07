@@ -1,16 +1,16 @@
-import { IContract, IItem, ILicense, IMembership, IPagination, IUser } from "@/services/types";
+import { IContract, IItem, ILicense, IMembership, IPagination, IUser } from '@/services/types';
 
 export enum ShopStatus {
-  PENDING = "PENDING", // Đang chờ duyệt
-  ACTIVE = "ACTIVE", // Đang hoạt động
-  INACTIVE = "INACTIVE", // Tạm ngưng hoạt động (do chủ shop)
-  SUSPENDED = "SUSPENDED", // Tạm ngưng (do admin)
-  BANNED = "BANNED", // Bị cấm hoạt động
+  PENDING = 'PENDING', // Đang chờ duyệt
+  ACTIVE = 'ACTIVE', // Đang hoạt động
+  INACTIVE = 'INACTIVE', // Tạm ngưng hoạt động (do chủ shop)
+  SUSPENDED = 'SUSPENDED', // Tạm ngưng (do admin)
+  BANNED = 'BANNED', // Bị cấm hoạt động
 }
 
 export interface IShop extends IItem {
   userId: string;
-  
+
   user: IUser;
   name: string;
   phone: string;

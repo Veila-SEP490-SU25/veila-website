@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   ICreateDress,
   IDress,
@@ -6,18 +6,18 @@ import {
   IListResponse,
   IPagination,
   IUpdateDress,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export const dressApi = createApi({
-  reducerPath: "dressApi",
+  reducerPath: 'dressApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     // PUBLIC
     getDresses: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
-        url: "dresses",
-        method: "GET",
+      query: ({ filter = '', page = 0, size = 10, sort = '' }) => ({
+        url: 'dresses',
+        method: 'GET',
         params: { filter, page, size, sort },
       }),
     }),
@@ -25,7 +25,7 @@ export const dressApi = createApi({
     getDress: builder.query<IItemResponse<IDress>, string>({
       query: (id) => ({
         url: `dresses/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
@@ -33,30 +33,30 @@ export const dressApi = createApi({
     addFavorite: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `dresses/${id}/favorites`,
-        method: "POST",
+        method: 'POST',
       }),
     }),
 
     removeFavorite: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `dresses/${id}/favorites`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     getFavorites: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
-        url: "dresses/favorites",
-        method: "GET",
+      query: ({ filter = '', page = 0, size = 10, sort = '' }) => ({
+        url: 'dresses/favorites',
+        method: 'GET',
         params: { filter, page, size, sort },
       }),
     }),
 
     // SHOP (OWNER)
     getMyShopDresses: builder.query<IListResponse<IDress>, IPagination>({
-      query: ({ filter = "", page = 0, size = 10, sort = "" }) => ({
-        url: "dresses/me",
-        method: "GET",
+      query: ({ filter = '', page = 0, size = 10, sort = '' }) => ({
+        url: 'dresses/me',
+        method: 'GET',
         params: { filter, page, size, sort },
       }),
     }),
@@ -64,14 +64,14 @@ export const dressApi = createApi({
     getMyShopDress: builder.query<IItemResponse<IDress>, string>({
       query: (id) => ({
         url: `dresses/${id}/me`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     createDress: builder.mutation<IItemResponse<IDress>, ICreateDress>({
       query: (body) => ({
-        url: "dresses/me",
-        method: "POST",
+        url: 'dresses/me',
+        method: 'POST',
         body,
       }),
     }),
@@ -79,7 +79,7 @@ export const dressApi = createApi({
     updateDress: builder.mutation<IItemResponse<null>, IUpdateDress>({
       query: ({ id, ...body }) => ({
         url: `dresses/${id}/me`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -87,14 +87,14 @@ export const dressApi = createApi({
     deleteDress: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `dresses/${id}/me`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     restoreDress: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `dresses/${id}/me`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
   }),

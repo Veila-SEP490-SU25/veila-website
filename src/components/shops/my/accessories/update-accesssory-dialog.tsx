@@ -1,33 +1,27 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Loader2, Save, Edit } from "lucide-react";
-import {
-  useUpdateAccessoryMutation,
-} from "@/services/apis";
-import {
-  AccessoryStatus,
-  IAccessory,
-  IUpdateAccessory,
-} from "@/services/types";
-import { toast } from "sonner";
-import { ImagesUpload } from "@/components/images-upload";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { X, Loader2, Save, Edit } from 'lucide-react';
+import { useUpdateAccessoryMutation } from '@/services/apis';
+import { AccessoryStatus, IAccessory, IUpdateAccessory } from '@/services/types';
+import { toast } from 'sonner';
+import { ImagesUpload } from '@/components/images-upload';
 
 interface UpdateAccessoryDialogProps {
   trigger?: React.ReactNode;
@@ -45,18 +39,18 @@ export function UpdateAccessoryDialog({
 
   const [accessoryData, setAccessoryData] = useState<IUpdateAccessory>({
     id: accessory.id,
-    categoryId: accessory.categoryId || "",
+    categoryId: accessory.categoryId || '',
     name: accessory.name,
-    description: accessory.description || "",
+    description: accessory.description || '',
     sellPrice: parseInt(accessory.sellPrice.toString()),
     rentalPrice: parseInt(accessory.rentalPrice.toString()),
     isSellable: accessory.isSellable,
     isRentable: accessory.isRentable,
     status: AccessoryStatus.AVAILABLE,
-    images: accessory.images || "",
+    images: accessory.images || '',
   });
 
-  const [imageUrls, setImageUrls] = useState<string>(accessory.images || "");
+  const [imageUrls, setImageUrls] = useState<string>(accessory.images || '');
 
   const handleInputChange = (field: keyof IUpdateAccessory, value: any) => {
     setAccessoryData((prev) => ({
@@ -68,35 +62,33 @@ export function UpdateAccessoryDialog({
   const resetForm = () => {
     setAccessoryData({
       id: accessory.id,
-      categoryId: accessory.categoryId || "",
+      categoryId: accessory.categoryId || '',
       name: accessory.name,
-      description: accessory.description || "",
+      description: accessory.description || '',
       sellPrice: parseInt(accessory.sellPrice.toString()),
       rentalPrice: parseInt(accessory.rentalPrice.toString()),
       isSellable: accessory.isSellable,
       isRentable: accessory.isRentable,
       status: AccessoryStatus.AVAILABLE,
-      images: accessory.images || "",
+      images: accessory.images || '',
     });
-    setImageUrls(accessory.images || "");
+    setImageUrls(accessory.images || '');
   };
 
   const handleSubmit = async () => {
     try {
-      const { statusCode, message } = await updateAccessory(
-        accessoryData
-      ).unwrap();
+      const { statusCode, message } = await updateAccessory(accessoryData).unwrap();
       if (statusCode === 204) {
-        toast.success("Cập nhật phụ kiện thành công!");
+        toast.success('Cập nhật phụ kiện thành công!');
         setOpen(false);
         resetForm();
         onSuccess?.();
       } else {
-        toast.error(message || "Có lỗi xảy ra khi cập nhật phụ kiện");
+        toast.error(message || 'Có lỗi xảy ra khi cập nhật phụ kiện');
       }
     } catch (error) {
-      console.error("Error updating accessory:", error);
-      toast.error("Có lỗi xảy ra khi cập nhật phụ kiện");
+      console.error('Error updating accessory:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật phụ kiện');
     }
   };
 
@@ -106,7 +98,7 @@ export function UpdateAccessoryDialog({
   };
 
   useEffect(() => {
-    handleInputChange("images", imageUrls);
+    handleInputChange('images', imageUrls);
   }, [imageUrls]);
 
   const defaultTrigger = (
@@ -121,9 +113,7 @@ export function UpdateAccessoryDialog({
       <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
       <DialogContent className="min-w-[90vw] md:min-w-5xl max-w-5xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
-            Chỉnh sửa phụ kiện
-          </DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Chỉnh sửa phụ kiện</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">
@@ -140,7 +130,7 @@ export function UpdateAccessoryDialog({
                     id="name"
                     placeholder="Nhập tên phụ kiện"
                     value={accessoryData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                   />
                 </div>
 
@@ -150,9 +140,7 @@ export function UpdateAccessoryDialog({
                     id="description"
                     placeholder="Nhập mô tả chi tiết về phụ kiện"
                     value={accessoryData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange('description', e.target.value)}
                     rows={3}
                   />
                 </div>
@@ -164,15 +152,11 @@ export function UpdateAccessoryDialog({
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label>Có thể bán *</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Cho phép khách hàng mua váy này
-                    </p>
+                    <p className="text-sm text-muted-foreground">Cho phép khách hàng mua váy này</p>
                   </div>
                   <Switch
                     checked={accessoryData.isSellable}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isSellable", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isSellable', checked)}
                   />
                 </div>
 
@@ -183,12 +167,9 @@ export function UpdateAccessoryDialog({
                       id="sellPrice"
                       type="number"
                       placeholder="0"
-                      value={accessoryData.sellPrice || ""}
+                      value={accessoryData.sellPrice || ''}
                       onChange={(e) =>
-                        handleInputChange(
-                          "sellPrice",
-                          Number.parseInt(e.target.value) || 0
-                        )
+                        handleInputChange('sellPrice', Number.parseInt(e.target.value) || 0)
                       }
                     />
                   </div>
@@ -205,9 +186,7 @@ export function UpdateAccessoryDialog({
                   </div>
                   <Switch
                     checked={accessoryData.isRentable}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isRentable", checked)
-                    }
+                    onCheckedChange={(checked) => handleInputChange('isRentable', checked)}
                   />
                 </div>
 
@@ -218,12 +197,9 @@ export function UpdateAccessoryDialog({
                       id="rentalPrice"
                       type="number"
                       placeholder="0"
-                      value={accessoryData.rentalPrice || ""}
+                      value={accessoryData.rentalPrice || ''}
                       onChange={(e) =>
-                        handleInputChange(
-                          "rentalPrice",
-                          Number.parseInt(e.target.value) || 0
-                        )
+                        handleInputChange('rentalPrice', Number.parseInt(e.target.value) || 0)
                       }
                     />
                   </div>

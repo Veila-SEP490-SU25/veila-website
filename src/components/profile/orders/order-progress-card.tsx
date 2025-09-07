@@ -1,8 +1,8 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { IMilestone, MilestoneStatus } from "@/services/types";
-import { AlertCircle, TrendingUp } from "lucide-react";
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { IMilestone, MilestoneStatus } from '@/services/types';
+import { AlertCircle, TrendingUp } from 'lucide-react';
 
 interface OrderProgressCardProps {
   milestones: IMilestone[];
@@ -10,11 +10,10 @@ interface OrderProgressCardProps {
 
 export const OrderProgressCard = ({ milestones }: OrderProgressCardProps) => {
   const completedMilestones = milestones.filter(
-    (m) => m.status === MilestoneStatus.COMPLETED
+    (m) => m.status === MilestoneStatus.COMPLETED,
   ).length;
   const totalMilestones = milestones.length;
-  const progress =
-    totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
+  const progress = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
   return (
     <Card>

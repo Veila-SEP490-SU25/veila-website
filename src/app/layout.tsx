@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { Cormorant_Garamond, Inter } from "next/font/google";
-import Script from "next/script";
-import "./globals.css";
-import { ThemeProvider } from "@/providers/theme.provider";
-import { StoreProvider } from "@/providers/store.provider";
-import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/providers/auth.provider";
-import { RouteProvider } from "@/providers/route.provider";
-import { ChatProvider } from "@/providers/chat.provider";
-import { PagingProvider } from "@/providers/paging.provider";
-import { VerifyPhonePopupProvider } from "@/hooks/use-verify-phone-popup";
-import { GoogleAuthHandler } from "@/app/(auth)/components/google-auth-handler";
+import { Cormorant_Garamond, Inter } from 'next/font/google';
+import Script from 'next/script';
+import './globals.css';
+import { ThemeProvider } from '@/providers/theme.provider';
+import { StoreProvider } from '@/providers/store.provider';
+import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from '@/providers/auth.provider';
+import { RouteProvider } from '@/providers/route.provider';
+import { ChatProvider } from '@/providers/chat.provider';
+import { PagingProvider } from '@/providers/paging.provider';
+import { VerifyPhonePopupProvider } from '@/hooks/use-verify-phone-popup';
+import { GoogleAuthHandler } from '@/app/(auth)/components/google-auth-handler';
 
 export const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700"],
+  variable: '--font-cormorant',
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700'],
 });
 
 export const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin", "vietnamese"],
+  variable: '--font-inter',
+  subsets: ['latin', 'vietnamese'],
 });
 
 export default function RootLayout({
@@ -64,10 +64,7 @@ export default function RootLayout({
             richColors={true}
           />
         </ThemeProvider>
-        <Script
-          src="https://cdn.payos.vn/checkout.js"
-          strategy="afterInteractive"
-        />
+        <Script src="https://cdn.payos.vn/checkout.js" strategy="afterInteractive" />
       </body>
     </html>
   );

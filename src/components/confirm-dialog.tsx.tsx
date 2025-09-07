@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import type { ReactNode } from "react"
+import type { ReactNode } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,67 +11,67 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { AlertTriangle, Info, CheckCircle, XCircle } from "lucide-react"
+} from '@/components/ui/alert-dialog';
+import { AlertTriangle, Info, CheckCircle, XCircle } from 'lucide-react';
 
 export interface ConfirmDialogProps {
-  children: ReactNode
-  title?: string
-  description?: string
-  confirmText?: string
-  cancelText?: string
-  variant?: "default" | "destructive" | "success" | "warning"
-  onConfirm: () => void | Promise<void>
-  onCancel?: () => void
-  disabled?: boolean
-  loading?: boolean
+  children: ReactNode;
+  title?: string;
+  description?: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: 'default' | 'destructive' | 'success' | 'warning';
+  onConfirm: () => void | Promise<void>;
+  onCancel?: () => void;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 const variantConfig = {
   default: {
     icon: Info,
-    iconColor: "text-blue-500",
-    confirmVariant: "default" as const,
+    iconColor: 'text-blue-500',
+    confirmVariant: 'default' as const,
   },
   destructive: {
     icon: XCircle,
-    iconColor: "text-red-500",
-    confirmVariant: "destructive" as const,
+    iconColor: 'text-red-500',
+    confirmVariant: 'destructive' as const,
   },
   success: {
     icon: CheckCircle,
-    iconColor: "text-green-500",
-    confirmVariant: "default" as const,
+    iconColor: 'text-green-500',
+    confirmVariant: 'default' as const,
   },
   warning: {
     icon: AlertTriangle,
-    iconColor: "text-yellow-500",
-    confirmVariant: "default" as const,
+    iconColor: 'text-yellow-500',
+    confirmVariant: 'default' as const,
   },
-}
+};
 
 export function ConfirmDialog({
   children,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  variant = "default",
+  title = 'Are you sure?',
+  description = 'This action cannot be undone.',
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'default',
   onConfirm,
   onCancel,
   disabled = false,
   loading = false,
 }: ConfirmDialogProps) {
-  const config = variantConfig[variant]
-  const Icon = config.icon
+  const config = variantConfig[variant];
+  const Icon = config.icon;
 
   const handleConfirm = async () => {
     try {
-      await onConfirm()
+      await onConfirm();
     } catch (error) {
-      console.error("Confirm action failed:", error)
+      console.error('Confirm action failed:', error);
     }
-  }
+  };
 
   return (
     <AlertDialog>
@@ -103,22 +103,22 @@ export function ConfirmDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }
 
 // Convenience wrapper components for common use cases
 export function DeleteConfirmDialog({
   children,
-  title = "Delete Item",
-  description = "Are you sure you want to delete this item? This action cannot be undone.",
+  title = 'Delete Item',
+  description = 'Are you sure you want to delete this item? This action cannot be undone.',
   onConfirm,
   loading = false,
 }: {
-  children: ReactNode
-  title?: string
-  description?: string
-  onConfirm: () => void | Promise<void>
-  loading?: boolean
+  children: ReactNode;
+  title?: string;
+  description?: string;
+  onConfirm: () => void | Promise<void>;
+  loading?: boolean;
 }) {
   return (
     <ConfirmDialog
@@ -132,21 +132,21 @@ export function DeleteConfirmDialog({
     >
       {children}
     </ConfirmDialog>
-  )
+  );
 }
 
 export function SaveConfirmDialog({
   children,
-  title = "Save Changes",
-  description = "Are you sure you want to save these changes?",
+  title = 'Save Changes',
+  description = 'Are you sure you want to save these changes?',
   onConfirm,
   loading = false,
 }: {
-  children: ReactNode
-  title?: string
-  description?: string
-  onConfirm: () => void | Promise<void>
-  loading?: boolean
+  children: ReactNode;
+  title?: string;
+  description?: string;
+  onConfirm: () => void | Promise<void>;
+  loading?: boolean;
 }) {
   return (
     <ConfirmDialog
@@ -160,21 +160,21 @@ export function SaveConfirmDialog({
     >
       {children}
     </ConfirmDialog>
-  )
+  );
 }
 
 export function WarningConfirmDialog({
   children,
-  title = "Warning",
-  description = "This action may have unintended consequences. Are you sure you want to continue?",
+  title = 'Warning',
+  description = 'This action may have unintended consequences. Are you sure you want to continue?',
   onConfirm,
   loading = false,
 }: {
-  children: ReactNode
-  title?: string
-  description?: string
-  onConfirm: () => void | Promise<void>
-  loading?: boolean
+  children: ReactNode;
+  title?: string;
+  description?: string;
+  onConfirm: () => void | Promise<void>;
+  loading?: boolean;
 }) {
   return (
     <ConfirmDialog
@@ -188,5 +188,5 @@ export function WarningConfirmDialog({
     >
       {children}
     </ConfirmDialog>
-  )
+  );
 }

@@ -1,21 +1,15 @@
-import {
-  IItem,
-  IOrder,
-  IPagination,
-  ITask,
-  TaskStatus,
-} from "@/services/types";
+import { IItem, IOrder, IPagination, ITask, TaskStatus } from '@/services/types';
 
 export enum MilestoneStatus {
-  PENDING = "PENDING",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
 }
 
 export interface IMilestone extends IItem {
   orderId: string;
-  
+
   order: IOrder;
   title: string;
   description: string | null;

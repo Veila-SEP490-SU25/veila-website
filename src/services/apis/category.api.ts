@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   IAccessory,
   IBlog,
@@ -11,27 +11,24 @@ import {
   IPagination,
   IService,
   IUpdateCategory,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export const categoryApi = createApi({
-  reducerPath: "categoryApi",
+  reducerPath: 'categoryApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getCategory: builder.query<IItemResponse<ICategory>, string>({
       query: (id) => ({
         url: `categories/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
-    getAccessoriesByCategory: builder.query<
-      IListResponse<IAccessory>,
-      ICategoryGetRequest
-    >({
-      query: ({ id, filter = "", page = 0, size = 10, sort = "" }) => ({
+    getAccessoriesByCategory: builder.query<IListResponse<IAccessory>, ICategoryGetRequest>({
+      query: ({ id, filter = '', page = 0, size = 10, sort = '' }) => ({
         url: `categories/${id}/accessories`,
-        method: "GET",
+        method: 'GET',
         params: {
           filter,
           page,
@@ -41,13 +38,10 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getBlogsByCategory: builder.query<
-      IListResponse<IBlog>,
-      ICategoryGetRequest
-    >({
-      query: ({ id, filter = "", page = 0, size = 10, sort = "" }) => ({
+    getBlogsByCategory: builder.query<IListResponse<IBlog>, ICategoryGetRequest>({
+      query: ({ id, filter = '', page = 0, size = 10, sort = '' }) => ({
         url: `categories/${id}/blogs`,
-        method: "GET",
+        method: 'GET',
         params: {
           filter,
           page,
@@ -57,13 +51,10 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getDressesByCategory: builder.query<
-      IListResponse<IDress>,
-      ICategoryGetRequest
-    >({
-      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
+    getDressesByCategory: builder.query<IListResponse<IDress>, ICategoryGetRequest>({
+      query: ({ id, sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `categories/${id}/dresses`,
-        method: "GET",
+        method: 'GET',
         params: {
           filter,
           page,
@@ -73,13 +64,10 @@ export const categoryApi = createApi({
       }),
     }),
 
-    getServicesByCategory: builder.query<
-      IListResponse<IService>,
-      ICategoryGetRequest
-    >({
-      query: ({ id, sort = "", filter = "", page = 0, size = 10 }) => ({
+    getServicesByCategory: builder.query<IListResponse<IService>, ICategoryGetRequest>({
+      query: ({ id, sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `categories/${id}/services`,
-        method: "GET",
+        method: 'GET',
         params: {
           filter,
           page,
@@ -90,9 +78,9 @@ export const categoryApi = createApi({
     }),
 
     getMyShopCategories: builder.query<IListResponse<ICategory>, IPagination>({
-      query: ({ sort = "", filter = "", page = 0, size = 10 }) => ({
+      query: ({ sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `categories/me`,
-        method: "GET",
+        method: 'GET',
         params: {
           filter,
           page,
@@ -105,28 +93,22 @@ export const categoryApi = createApi({
     getMyShopCategory: builder.query<IItemResponse<ICategory>, string>({
       query: (id) => ({
         url: `categories/${id}/me`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
-    createMyShopCategory: builder.mutation<
-      IItemResponse<ICategory>,
-      ICreateCategory
-    >({
+    createMyShopCategory: builder.mutation<IItemResponse<ICategory>, ICreateCategory>({
       query: (body) => ({
         url: `categories/me`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),
 
-    updateMyShopCategory: builder.mutation<
-      IItemResponse<null>,
-      IUpdateCategory
-    >({
+    updateMyShopCategory: builder.mutation<IItemResponse<null>, IUpdateCategory>({
       query: (body) => ({
         url: `categories/me`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -134,14 +116,14 @@ export const categoryApi = createApi({
     deleteMyShopCategory: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `categories/${id}/me`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     restoreMyShopCategory: builder.mutation<IItemResponse<null>, string>({
       query: (id) => ({
         url: `categories/${id}/me`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
   }),

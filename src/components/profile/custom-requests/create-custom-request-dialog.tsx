@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,19 +9,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { Ruler, Info, FileText } from "lucide-react";
-import { toast } from "sonner";
+import { Ruler, Info, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   useCreateCustomRequestMutation,
   ICustomRequest,
   ICreateCustomRequest,
-} from "@/services/apis";
+} from '@/services/apis';
 
 interface CreateCustomRequestDialogProps {
   open: boolean;
@@ -42,9 +42,9 @@ export const CreateCustomRequestDialog = ({
 
   // Initialize form data with _editData if editing
   const [_formData, _setFormData] = useState<ICreateCustomRequest>({
-    title: "",
-    description: "",
-    images: "",
+    title: '',
+    description: '',
+    images: '',
     height: 0,
     weight: 0,
     bust: 0,
@@ -58,20 +58,20 @@ export const CreateCustomRequestDialog = ({
     backLength: 0,
     lowerWaist: 0,
     waistToFloor: 0,
-    material: "",
-    color: "",
-    length: "",
-    neckline: "",
-    sleeve: "",
-    status: "DRAFT",
+    material: '',
+    color: '',
+    length: '',
+    neckline: '',
+    sleeve: '',
+    status: 'DRAFT',
     isPrivate: false,
   });
 
   // Form data states
   const [requestData, setRequestData] = useState({
-    title: "",
-    description: "",
-    images: "",
+    title: '',
+    description: '',
+    images: '',
     height: 165,
     weight: 55,
     bust: 85,
@@ -85,32 +85,32 @@ export const CreateCustomRequestDialog = ({
     backLength: 40,
     lowerWaist: 85,
     waistToFloor: 100,
-    material: "",
-    color: "",
-    length: "",
-    neckline: "",
-    sleeve: "",
-    status: "DRAFT" as "DRAFT" | "SUBMIT",
+    material: '',
+    color: '',
+    length: '',
+    neckline: '',
+    sleeve: '',
+    status: 'DRAFT' as 'DRAFT' | 'SUBMIT',
     isPrivate: false,
   });
 
   const measurementFields = [
-    { key: "height", label: "Chiều cao", unit: "cm", min: 130, max: 200 },
-    { key: "weight", label: "Cân nặng", unit: "kg", min: 30, max: 100 },
-    { key: "bust", label: "Vòng ngực", unit: "cm", min: 50, max: 150 },
-    { key: "waist", label: "Vòng eo", unit: "cm", min: 40, max: 100 },
-    { key: "hip", label: "Vòng hông", unit: "cm", min: 40, max: 150 },
-    { key: "armpit", label: "Nách", unit: "cm", min: 10, max: 40 },
-    { key: "bicep", label: "Vòng tay", unit: "cm", min: 10, max: 40 },
-    { key: "neck", label: "Vòng cổ", unit: "cm", min: 20, max: 50 },
-    { key: "shoulderWidth", label: "Rộng vai", unit: "cm", min: 20, max: 50 },
-    { key: "sleeveLength", label: "Dài tay áo", unit: "cm", min: 0, max: 100 },
-    { key: "backLength", label: "Dài lưng", unit: "cm", min: 30, max: 60 },
-    { key: "lowerWaist", label: "Eo dưới", unit: "cm", min: 5, max: 30 },
+    { key: 'height', label: 'Chiều cao', unit: 'cm', min: 130, max: 200 },
+    { key: 'weight', label: 'Cân nặng', unit: 'kg', min: 30, max: 100 },
+    { key: 'bust', label: 'Vòng ngực', unit: 'cm', min: 50, max: 150 },
+    { key: 'waist', label: 'Vòng eo', unit: 'cm', min: 40, max: 100 },
+    { key: 'hip', label: 'Vòng hông', unit: 'cm', min: 40, max: 150 },
+    { key: 'armpit', label: 'Nách', unit: 'cm', min: 10, max: 40 },
+    { key: 'bicep', label: 'Vòng tay', unit: 'cm', min: 10, max: 40 },
+    { key: 'neck', label: 'Vòng cổ', unit: 'cm', min: 20, max: 50 },
+    { key: 'shoulderWidth', label: 'Rộng vai', unit: 'cm', min: 20, max: 50 },
+    { key: 'sleeveLength', label: 'Dài tay áo', unit: 'cm', min: 0, max: 100 },
+    { key: 'backLength', label: 'Dài lưng', unit: 'cm', min: 30, max: 60 },
+    { key: 'lowerWaist', label: 'Eo dưới', unit: 'cm', min: 5, max: 30 },
     {
-      key: "waistToFloor",
-      label: "Eo xuống sàn",
-      unit: "cm",
+      key: 'waistToFloor',
+      label: 'Eo xuống sàn',
+      unit: 'cm',
       min: 0,
       max: 200,
     },
@@ -120,7 +120,7 @@ export const CreateCustomRequestDialog = ({
     switch (step) {
       case 1:
         if (!requestData.title || !requestData.description) {
-          toast.error("Vui lòng điền đầy đủ thông tin yêu cầu");
+          toast.error('Vui lòng điền đầy đủ thông tin yêu cầu');
           return false;
         }
         return true;
@@ -128,13 +128,8 @@ export const CreateCustomRequestDialog = ({
         // Validate all measurements are within range
         for (const field of measurementFields) {
           const value = requestData[field.key as keyof typeof requestData];
-          if (
-            typeof value === "number" &&
-            (value < field.min || value > field.max)
-          ) {
-            toast.error(
-              `${field.label} phải từ ${field.min}-${field.max}${field.unit}`
-            );
+          if (typeof value === 'number' && (value < field.min || value > field.max)) {
+            toast.error(`${field.label} phải từ ${field.min}-${field.max}${field.unit}`);
             return false;
           }
         }
@@ -156,7 +151,7 @@ export const CreateCustomRequestDialog = ({
 
   const handleSubmit = async () => {
     if (!validateStep(currentStep)) {
-      toast.error("Vui lòng kiểm tra lại thông tin");
+      toast.error('Vui lòng kiểm tra lại thông tin');
       return;
     }
 
@@ -165,14 +160,14 @@ export const CreateCustomRequestDialog = ({
       const result = await createCustomRequest(requestData).unwrap();
 
       if (result.statusCode === 201) {
-        toast.success("Tạo yêu cầu đặt may thành công!");
+        toast.success('Tạo yêu cầu đặt may thành công!');
         onOpenChange(false);
         setCurrentStep(1);
         // Reset form data
         setRequestData({
-          title: "",
-          description: "",
-          images: "",
+          title: '',
+          description: '',
+          images: '',
           height: 165,
           weight: 55,
           bust: 85,
@@ -186,20 +181,20 @@ export const CreateCustomRequestDialog = ({
           backLength: 40,
           lowerWaist: 85,
           waistToFloor: 100,
-          material: "",
-          color: "",
-          length: "",
-          neckline: "",
-          sleeve: "",
-          status: "DRAFT" as "DRAFT" | "SUBMIT",
+          material: '',
+          color: '',
+          length: '',
+          neckline: '',
+          sleeve: '',
+          status: 'DRAFT' as 'DRAFT' | 'SUBMIT',
           isPrivate: false,
         });
       } else {
-        toast.error("Tạo yêu cầu thất bại", { description: result.message });
+        toast.error('Tạo yêu cầu thất bại', { description: result.message });
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi tạo yêu cầu");
-      console.error("Create request error:", error);
+      toast.error('Có lỗi xảy ra khi tạo yêu cầu');
+      console.error('Create request error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -220,23 +215,23 @@ export const CreateCustomRequestDialog = ({
 
         <div className="flex items-center justify-between mb-6">
           {[
-            { step: 1, title: "Yêu cầu", icon: FileText },
-            { step: 2, title: "Số đo", icon: Ruler },
-            { step: 3, title: "Xác nhận", icon: Info },
+            { step: 1, title: 'Yêu cầu', icon: FileText },
+            { step: 2, title: 'Số đo', icon: Ruler },
+            { step: 3, title: 'Xác nhận', icon: Info },
           ].map(({ step, title, icon: Icon }) => (
             <div key={step} className="flex items-center">
               <div
                 className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
                   currentStep >= step
-                    ? "bg-rose-600 border-rose-600 text-white"
-                    : "border-gray-300 text-gray-400"
+                    ? 'bg-rose-600 border-rose-600 text-white'
+                    : 'border-gray-300 text-gray-400'
                 }`}
               >
                 <Icon className="h-4 w-4" />
               </div>
               <span
                 className={`ml-2 text-sm font-medium ${
-                  currentStep >= step ? "text-rose-600" : "text-gray-400"
+                  currentStep >= step ? 'text-rose-600' : 'text-gray-400'
                 }`}
               >
                 {title}
@@ -316,7 +311,7 @@ export const CreateCustomRequestDialog = ({
                         onChange={(e) =>
                           setRequestData((prev) => ({
                             ...prev,
-                            status: e.target.value as "DRAFT" | "SUBMIT",
+                            status: e.target.value as 'DRAFT' | 'SUBMIT',
                           }))
                         }
                         className="w-full p-2 border border-gray-300 rounded-md"
@@ -370,17 +365,13 @@ export const CreateCustomRequestDialog = ({
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {measurementFields.map(({ key, label, unit, min, max }) => {
-                      const value =
-                        requestData[key as keyof typeof requestData];
-                      const isValid =
-                        typeof value === "number" &&
-                        value >= min &&
-                        value <= max;
+                      const value = requestData[key as keyof typeof requestData];
+                      const isValid = typeof value === 'number' && value >= min && value <= max;
 
                       return (
                         <div key={key} className="space-y-2">
                           <Label htmlFor={key}>
-                            {label} ({unit}){" "}
+                            {label} ({unit}){' '}
                             <span className="text-xs text-gray-500">
                               ({min}-{max})
                             </span>
@@ -415,7 +406,7 @@ export const CreateCustomRequestDialog = ({
                               }
                             }}
                             className={`text-center ${
-                              !isValid && "border-red-300 focus:border-red-500"
+                              !isValid && 'border-red-300 focus:border-red-500'
                             }`}
                           />
                           {!isValid && (
@@ -448,17 +439,14 @@ export const CreateCustomRequestDialog = ({
                     <h4 className="font-medium mb-2">Thông tin yêu cầu</h4>
                     <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
                       <p>
-                        <span className="font-medium">Tiêu đề:</span>{" "}
-                        {requestData.title}
+                        <span className="font-medium">Tiêu đề:</span> {requestData.title}
                       </p>
                       <p>
-                        <span className="font-medium">Mô tả:</span>{" "}
-                        {requestData.description}
+                        <span className="font-medium">Mô tả:</span> {requestData.description}
                       </p>
                       {requestData.images && (
                         <p>
-                          <span className="font-medium">Hình ảnh:</span>{" "}
-                          {requestData.images}
+                          <span className="font-medium">Hình ảnh:</span> {requestData.images}
                         </p>
                       )}
                     </div>
@@ -469,10 +457,7 @@ export const CreateCustomRequestDialog = ({
                     <h4 className="font-medium mb-2">Số đo cơ thể</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {measurementFields.map(({ key, label, unit }) => (
-                        <div
-                          key={key}
-                          className="text-center p-3 bg-blue-50 rounded-lg"
-                        >
+                        <div key={key} className="text-center p-3 bg-blue-50 rounded-lg">
                           <p className="text-xs text-gray-600">{label}</p>
                           <p className="font-medium text-blue-900">
                             {requestData[key as keyof typeof requestData]}
@@ -491,21 +476,14 @@ export const CreateCustomRequestDialog = ({
         <DialogFooter className="flex justify-between">
           <div className="flex gap-2">
             {currentStep > 1 && (
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={isSubmitting}
-              >
+              <Button variant="outline" onClick={handlePrevious} disabled={isSubmitting}>
                 Quay lại
               </Button>
             )}
           </div>
           <div className="flex gap-2">
             {currentStep < 3 ? (
-              <Button
-                onClick={handleNext}
-                className="bg-rose-600 hover:bg-rose-700"
-              >
+              <Button onClick={handleNext} className="bg-rose-600 hover:bg-rose-700">
                 Tiếp tục
               </Button>
             ) : (
@@ -514,7 +492,7 @@ export const CreateCustomRequestDialog = ({
                 disabled={isSubmitting}
                 className="bg-rose-600 hover:bg-rose-700"
               >
-                {isSubmitting ? "Đang xử lý..." : "Tạo yêu cầu"}
+                {isSubmitting ? 'Đang xử lý...' : 'Tạo yêu cầu'}
               </Button>
             )}
           </div>

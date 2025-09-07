@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import { LoadingItem } from "@/components/loading-item";
-import { PagingComponent } from "@/components/paging-component";
-import { CreateBlogDialog } from "@/components/shops/my/blogs/create-blog-dialog";
-import { DeleteBlogDialog } from "@/components/shops/my/blogs/delete-blog-dialog";
-import { BlogDetailDialog } from "@/components/shops/my/blogs/blog-detail-dialog";
-import { UpdateBlogDialog } from "@/components/shops/my/blogs/update-blog-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { LoadingItem } from '@/components/loading-item';
+import { PagingComponent } from '@/components/paging-component';
+import { CreateBlogDialog } from '@/components/shops/my/blogs/create-blog-dialog';
+import { DeleteBlogDialog } from '@/components/shops/my/blogs/delete-blog-dialog';
+import { BlogDetailDialog } from '@/components/shops/my/blogs/blog-detail-dialog';
+import { UpdateBlogDialog } from '@/components/shops/my/blogs/update-blog-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -32,19 +32,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import {
-  IBlog,
-  BlogStatus,
-  blogStatusColors,
-  blogStatusLabels,
-} from "@/services/types";
-import {
-  useLazyGetMyShopBlogsQuery,
-  useUpdateBlogMutation,
-} from "@/services/apis";
-import { usePaging } from "@/providers/paging.provider";
-import { useDebounce } from "@/hooks/use-debounce";
+} from '@/components/ui/table';
+import { IBlog, BlogStatus, blogStatusColors, blogStatusLabels } from '@/services/types';
+import { useLazyGetMyShopBlogsQuery, useUpdateBlogMutation } from '@/services/apis';
+import { usePaging } from '@/providers/paging.provider';
+import { useDebounce } from '@/hooks/use-debounce';
 import {
   CheckCircle,
   Edit,
@@ -57,19 +49,19 @@ import {
   XCircle,
   AlertCircleIcon,
   Eye,
-} from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
-import Image from "next/image";
+} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 export const ShopBlogsTabs = () => {
   const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [trigger, { isLoading }] = useLazyGetMyShopBlogsQuery();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
   const [isError, setIsError] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [updateTrigger, setUpdateTrigger] = useState<number>(0);
 
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
@@ -77,12 +69,12 @@ export const ShopBlogsTabs = () => {
 
   const fetchBlogs = useCallback(async () => {
     try {
-      let filter = "";
+      let filter = '';
       if (debouncedSearchTerm) {
         filter += `title:like:${debouncedSearchTerm}`;
       }
-      if (statusFilter !== "ALL") {
-        if (filter) filter += ",";
+      if (statusFilter !== 'ALL') {
+        if (filter) filter += ',';
         filter += `status:eq:${statusFilter}`;
       }
 
@@ -100,14 +92,14 @@ export const ShopBlogsTabs = () => {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
       } else {
         setIsError(true);
         setError(message);
       }
     } catch {
-      toast.error("Đã xảy ra lỗi khi tải dữ liệu blog của cửa hàng");
+      toast.error('Đã xảy ra lỗi khi tải dữ liệu blog của cửa hàng');
     }
   }, [
     debouncedSearchTerm,
@@ -126,10 +118,10 @@ export const ShopBlogsTabs = () => {
         const { statusCode, message } = await updateBlog({
           id: blogId,
           data: {
-            categoryId: blog.categoryId || "",
+            categoryId: blog.categoryId || '',
             title: blog.title,
             content: blog.content,
-            images: blog.images || "",
+            images: blog.images || '',
             status: newStatus as BlogStatus,
           },
         }).unwrap();
@@ -137,9 +129,9 @@ export const ShopBlogsTabs = () => {
           // Force update state ngay lập tức
           setBlogs((prevBlogs) => {
             const updatedBlogs = prevBlogs.map((b) =>
-              b.id === blogId ? { ...b, status: newStatus as BlogStatus } : b
+              b.id === blogId ? { ...b, status: newStatus as BlogStatus } : b,
             );
-            console.log("🔄 Updating blog status:", {
+            console.log('🔄 Updating blog status:', {
               blogId,
               newStatus,
               updatedBlogs,
@@ -150,15 +142,15 @@ export const ShopBlogsTabs = () => {
           // Force re-render bằng cách trigger update
           setUpdateTrigger((prev) => prev + 1);
 
-          toast.success("Cập nhật trạng thái blog thành công!");
+          toast.success('Cập nhật trạng thái blog thành công!');
         } else {
-          toast.error(message || "Có lỗi xảy ra khi cập nhật trạng thái");
+          toast.error(message || 'Có lỗi xảy ra khi cập nhật trạng thái');
         }
       } catch {
-        toast.error("Có lỗi xảy ra khi cập nhật trạng thái blog");
+        toast.error('Có lỗi xảy ra khi cập nhật trạng thái blog');
       }
     },
-    [updateBlog]
+    [updateBlog],
   );
 
   useEffect(() => {
@@ -172,20 +164,20 @@ export const ShopBlogsTabs = () => {
 
   // Debug: Log khi blogs state thay đổi
   useEffect(() => {
-    console.log("🔄 Blogs state updated:", blogs);
+    console.log('🔄 Blogs state updated:', blogs);
   }, [blogs]);
 
   // Debug: Log khi updateTrigger thay đổi
   useEffect(() => {
-    console.log("🔄 Update trigger changed:", updateTrigger);
+    console.log('🔄 Update trigger changed:', updateTrigger);
   }, [updateTrigger]);
 
   const formatDate = (date: Date | string) => {
-    const dateObj = typeof date === "string" ? new Date(date) : date;
-    return dateObj.toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
     });
   };
 
@@ -230,11 +222,9 @@ export const ShopBlogsTabs = () => {
         {isLoading ? (
           <LoadingItem />
         ) : isError ? (
-          <Alert variant={"destructive"} className="mb-4 h-full">
+          <Alert variant={'destructive'} className="mb-4 h-full">
             <AlertCircleIcon />
-            <AlertTitle>
-              Đã có lỗi xảy ra trong quá trình lấy dữ liệu
-            </AlertTitle>
+            <AlertTitle>Đã có lỗi xảy ra trong quá trình lấy dữ liệu</AlertTitle>
             <AlertDescription>
               <p>Chi tiết lỗi:</p>
               <ul className="list-inside list-disc text-sm">
@@ -263,7 +253,7 @@ export const ShopBlogsTabs = () => {
                           <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                             {blog.images ? (
                               <Image
-                                src={blog.images.split(",")[0]}
+                                src={blog.images.split(',')[0]}
                                 alt={blog.title}
                                 width={40}
                                 height={40}
@@ -279,16 +269,10 @@ export const ShopBlogsTabs = () => {
                             </p>
                             <Badge
                               className={
-                                blogStatusColors[
-                                  blog.status as keyof typeof blogStatusColors
-                                ]
+                                blogStatusColors[blog.status as keyof typeof blogStatusColors]
                               }
                             >
-                              {
-                                blogStatusLabels[
-                                  blog.status as keyof typeof blogStatusLabels
-                                ]
-                              }
+                              {blogStatusLabels[blog.status as keyof typeof blogStatusLabels]}
                             </Badge>
                           </div>
                         </div>
@@ -302,17 +286,9 @@ export const ShopBlogsTabs = () => {
                       </TableCell>
                       <TableCell>
                         <Badge
-                          className={
-                            blogStatusColors[
-                              blog.status as keyof typeof blogStatusColors
-                            ]
-                          }
+                          className={blogStatusColors[blog.status as keyof typeof blogStatusColors]}
                         >
-                          {
-                            blogStatusLabels[
-                              blog.status as keyof typeof blogStatusLabels
-                            ]
-                          }
+                          {blogStatusLabels[blog.status as keyof typeof blogStatusLabels]}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -324,11 +300,7 @@ export const ShopBlogsTabs = () => {
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              className="h-8 w-8 p-0"
-                              disabled={isLoading}
-                            >
+                            <Button variant="ghost" className="h-8 w-8 p-0" disabled={isLoading}>
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -366,17 +338,9 @@ export const ShopBlogsTabs = () => {
                             {/* Status Update Options */}
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              onClick={() =>
-                                handleStatusUpdate(
-                                  blog.id,
-                                  BlogStatus.DRAFT,
-                                  blog
-                                )
-                              }
+                              onClick={() => handleStatusUpdate(blog.id, BlogStatus.DRAFT, blog)}
                               className="text-gray-600"
-                              disabled={
-                                isUpdating || blog.status === BlogStatus.DRAFT
-                              }
+                              disabled={isUpdating || blog.status === BlogStatus.DRAFT}
                             >
                               {isUpdating ? (
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -387,17 +351,10 @@ export const ShopBlogsTabs = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(
-                                  blog.id,
-                                  BlogStatus.PUBLISHED,
-                                  blog
-                                )
+                                handleStatusUpdate(blog.id, BlogStatus.PUBLISHED, blog)
                               }
                               className="text-green-600"
-                              disabled={
-                                isUpdating ||
-                                blog.status === BlogStatus.PUBLISHED
-                              }
+                              disabled={isUpdating || blog.status === BlogStatus.PUBLISHED}
                             >
                               {isUpdating ? (
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -408,17 +365,10 @@ export const ShopBlogsTabs = () => {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(
-                                  blog.id,
-                                  BlogStatus.UNPUBLISHED,
-                                  blog
-                                )
+                                handleStatusUpdate(blog.id, BlogStatus.UNPUBLISHED, blog)
                               }
                               className="text-red-600"
-                              disabled={
-                                isUpdating ||
-                                blog.status === BlogStatus.UNPUBLISHED
-                              }
+                              disabled={isUpdating || blog.status === BlogStatus.UNPUBLISHED}
                             >
                               {isUpdating ? (
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />

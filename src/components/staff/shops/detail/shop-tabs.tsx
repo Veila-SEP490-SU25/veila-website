@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { AccessoriesTabs } from "@/components/staff/shops/detail/tabs/accessories-tabs";
-import { DressesTabs } from "@/components/staff/shops/detail/tabs/dresses-tabs";
-import { InformationTabs } from "@/components/staff/shops/detail/tabs/information-tabs";
-import { OrdersTabs } from "@/components/staff/shops/detail/tabs/orders-tabs";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IShop } from "@/services/types";
+import { AccessoriesTabs } from '@/components/staff/shops/detail/tabs/accessories-tabs';
+import { DressesTabs } from '@/components/staff/shops/detail/tabs/dresses-tabs';
+import { InformationTabs } from '@/components/staff/shops/detail/tabs/information-tabs';
+import { OrdersTabs } from '@/components/staff/shops/detail/tabs/orders-tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { IShop } from '@/services/types';
 
 interface ShopTabsProps {
   shop: IShop;

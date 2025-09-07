@@ -1,11 +1,6 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
-import {
-  IItemResponse,
-  IListResponse,
-  IMilestone,
-  ITask
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
+import { IItemResponse, IListResponse, IMilestone, ITask } from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 /**
  * Request interfaces
@@ -62,15 +57,14 @@ export interface ITaskAction {
 }
 
 export const milestoneApi = createApi({
-  reducerPath: "milestoneApi",
+  reducerPath: 'milestoneApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
-
     // ---- Milestone ----
     getMilestones: builder.query<IListResponse<IMilestone>, IGetMilestonesParams>({
       query: (params) => ({
         url: `milestones`,
-        method: "GET",
+        method: 'GET',
         params,
       }),
     }),
@@ -78,14 +72,14 @@ export const milestoneApi = createApi({
     getMilestone: builder.query<IItemResponse<IMilestone>, string>({
       query: (id) => ({
         url: `milestones/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     createMilestone: builder.mutation<IItemResponse<IMilestone>, ICreateMilestone>({
       query: (body) => ({
         url: `milestones`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),
@@ -93,7 +87,7 @@ export const milestoneApi = createApi({
     updateMilestoneInfo: builder.mutation<IItemResponse<IMilestone>, IUpdateMilestoneInfo>({
       query: ({ id, ...body }) => ({
         url: `milestones/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -101,7 +95,7 @@ export const milestoneApi = createApi({
     updateMilestoneStatus: builder.mutation<IItemResponse<IMilestone>, IUpdateMilestoneStatus>({
       query: ({ id, status }) => ({
         url: `milestones/${id}/${status}`,
-        method: "PUT",
+        method: 'PUT',
       }),
     }),
 
@@ -109,7 +103,7 @@ export const milestoneApi = createApi({
     getMilestoneTasks: builder.query<IListResponse<ITask>, IGetMilestoneTasksParams>({
       query: ({ id, ...params }) => ({
         url: `milestones/${id}/tasks`,
-        method: "GET",
+        method: 'GET',
         params,
       }),
     }),
@@ -117,14 +111,14 @@ export const milestoneApi = createApi({
     getTaskDetail: builder.query<IItemResponse<ITask>, ITaskAction>({
       query: ({ milestoneId, taskId }) => ({
         url: `milestones/${milestoneId}/tasks/${taskId}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     createTask: builder.mutation<IItemResponse<ITask>, ICreateTask>({
       query: ({ milestoneId, ...body }) => ({
         url: `milestones/${milestoneId}/tasks`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),
@@ -132,7 +126,7 @@ export const milestoneApi = createApi({
     updateTask: builder.mutation<IItemResponse<ITask>, IUpdateTask>({
       query: ({ milestoneId, taskId, ...body }) => ({
         url: `milestones/${milestoneId}/tasks/${taskId}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
@@ -140,24 +134,23 @@ export const milestoneApi = createApi({
     deleteTask: builder.mutation<IItemResponse<null>, ITaskAction>({
       query: ({ milestoneId, taskId }) => ({
         url: `milestones/${milestoneId}/tasks/${taskId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
 
     cancelTask: builder.mutation<IItemResponse<null>, ITaskAction>({
       query: ({ milestoneId, taskId }) => ({
         url: `milestones/${milestoneId}/tasks/${taskId}/cancelled`,
-        method: "PUT",
+        method: 'PUT',
       }),
     }),
 
     completeTask: builder.mutation<IItemResponse<null>, ITaskAction>({
       query: ({ milestoneId, taskId }) => ({
         url: `milestones/${milestoneId}/tasks/${taskId}/completed`,
-        method: "PUT",
+        method: 'PUT',
       }),
     }),
-
   }),
 });
 

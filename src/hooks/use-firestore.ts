@@ -1,34 +1,40 @@
+'use client';
 
-"use client"
-
-import { useFirebase } from "@/services/firebase"
-import { collection, onSnapshot, query, where, type WhereFilterOp, type FieldPath } from "firebase/firestore"
-import { useEffect, useState } from "react"
+import { useFirebase } from '@/services/firebase';
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  type WhereFilterOp,
+  type FieldPath,
+} from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 export interface Condition {
-  field: string | FieldPath
-  operator: WhereFilterOp
-  value: string | number | boolean
+  field: string | FieldPath;
+  operator: WhereFilterOp;
+  value: string | number | boolean;
 }
 
 export function useFirestore(collectionName: string, condition?: Condition) {
-  const [data, setData] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const { firestore } = useFirebase()
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { firestore } = useFirebase();
 
   useEffect(() => {
     if (!firestore) {
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     }
 
     try {
-      const collectionRef = collection(firestore, collectionName)
-      let q = query(collectionRef)
+      const collectionRef = collection(firestore, collectionName);
+      let q = query(collectionRef);
 
       if (condition) {
-        q = query(collectionRef, where(condition.field, condition.operator, condition.value))
+        q = query(collectionRef, where(condition.field, condition.operator, condition.value));
       }
 
       const unsubscribe = onSnapshot(
@@ -37,25 +43,25 @@ export function useFirestore(collectionName: string, condition?: Condition) {
           const documents = snapshot.docs.map((doc) => ({
             docId: doc.id,
             ...doc.data(),
-          }))
-          setData(documents)
-          setLoading(false)
-          setError(null)
+          }));
+          setData(documents);
+          setLoading(false);
+          setError(null);
         },
         (err) => {
-          console.error("Firestore error:", err)
-          setError(err.message)
-          setLoading(false)
+          console.error('Firestore error:', err);
+          setError(err.message);
+          setLoading(false);
         },
-      )
+      );
 
-      return unsubscribe
+      return unsubscribe;
     } catch (err: any) {
-      console.error("Firestore setup error:", err)
-      setError(err.message)
-      setLoading(false)
+      console.error('Firestore setup error:', err);
+      setError(err.message);
+      setLoading(false);
     }
-  }, [firestore, collectionName, condition])
+  }, [firestore, collectionName, condition]);
 
-  return { data, loading, error }
+  return { data, loading, error };
 }

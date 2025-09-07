@@ -1,109 +1,92 @@
-"use client";
+'use client';
 
-import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  Plus,
-  FileText,
-  Clock,
-  CheckCircle,
-  EyeOff,
-  Search,
-  Filter,
-} from "lucide-react";
-import { CreateCustomRequestDialog } from "@/components/profile/custom-requests/create-custom-request-dialog";
-import { CustomRequestDetail } from "@/components/profile/custom-requests/custom-request-detail";
+} from '@/components/ui/select';
+import { Plus, FileText, Clock, CheckCircle, EyeOff, Search, Filter } from 'lucide-react';
+import { CreateCustomRequestDialog } from '@/components/profile/custom-requests/create-custom-request-dialog';
+import { CustomRequestDetail } from '@/components/profile/custom-requests/custom-request-detail';
 import {
   useGetMyCustomRequestsQuery,
   useDeleteCustomRequestMutation,
   ICustomRequest,
-} from "@/services/apis";
-import { formatDateShort } from "@/lib/order-util";
-import { toast } from "sonner";
+} from '@/services/apis';
+import { formatDateShort } from '@/lib/order-util';
+import { toast } from 'sonner';
 
 export const CustomRequestsTab = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
-    null
-  );
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [editRequest, setEditRequest] = useState<ICustomRequest | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   // Fetch custom requests
-  const {
-    data: requestsData,
-    isLoading,
-    refetch,
-  } = useGetMyCustomRequestsQuery();
+  const { data: requestsData, isLoading, refetch } = useGetMyCustomRequestsQuery();
   const [deleteCustomRequest] = useDeleteCustomRequestMutation();
 
   // Memoize requests to prevent unnecessary re-renders
-  const requests = useMemo(
-    () => requestsData?.items || [],
-    [requestsData?.items]
-  );
+  const requests = useMemo(() => requestsData?.items || [], [requestsData?.items]);
 
   const getStatusBadge = (status: string, isPrivate: boolean) => {
     if (isPrivate) {
       return {
-        text: "Riêng tư",
-        className: "bg-gray-600 text-white",
+        text: 'Riêng tư',
+        className: 'bg-gray-600 text-white',
         icon: EyeOff,
       };
     }
 
     switch (status) {
-      case "DRAFT":
+      case 'DRAFT':
         return {
-          text: "Nháp",
-          className: "bg-yellow-600 text-white",
+          text: 'Nháp',
+          className: 'bg-yellow-600 text-white',
           icon: FileText,
         };
-      case "SUBMIT":
+      case 'SUBMIT':
         return {
-          text: "Đã đăng",
-          className: "bg-green-600 text-white",
+          text: 'Đã đăng',
+          className: 'bg-green-600 text-white',
           icon: CheckCircle,
         };
-      case "ACCEPTED":
+      case 'ACCEPTED':
         return {
-          text: "Đang đặt may",
-          className: "bg-gray-600 text-white",
+          text: 'Đang đặt may',
+          className: 'bg-gray-600 text-white',
           icon: CheckCircle,
         };
       default:
         return {
           text: status,
-          className: "bg-gray-600 text-white",
+          className: 'bg-gray-600 text-white',
           icon: FileText,
         };
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa yêu cầu này?")) {
+    if (confirm('Bạn có chắc chắn muốn xóa yêu cầu này?')) {
       try {
         const result = await deleteCustomRequest(id).unwrap();
         if (result.statusCode === 200) {
-          toast.success("Xóa yêu cầu thành công!");
+          toast.success('Xóa yêu cầu thành công!');
           refetch();
         } else {
-          toast.error("Xóa yêu cầu thất bại", { description: result.message });
+          toast.error('Xóa yêu cầu thất bại', { description: result.message });
         }
       } catch (error) {
-        toast.error("Có lỗi xảy ra khi xóa yêu cầu");
-        console.error("Delete request error:", error);
+        toast.error('Có lỗi xảy ra khi xóa yêu cầu');
+        console.error('Delete request error:', error);
       }
     }
   };
@@ -113,13 +96,12 @@ export const CustomRequestsTab = () => {
     return requests.filter((request) => {
       // Search filter
       const matchesSearch =
-        searchTerm === "" ||
+        searchTerm === '' ||
         request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         request.description.toLowerCase().includes(searchTerm.toLowerCase());
 
       // Status filter
-      const matchesStatus =
-        statusFilter === "all" || request.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
@@ -131,9 +113,7 @@ export const CustomRequestsTab = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Yêu cầu đặt may</h2>
-          <p className="text-gray-600 mt-1">
-            Quản lý các yêu cầu đặt may tùy chỉnh của bạn
-          </p>
+          <p className="text-gray-600 mt-1">Quản lý các yêu cầu đặt may tùy chỉnh của bạn</p>
         </div>
         <Button
           onClick={() => setIsCreateDialogOpen(true)}
@@ -177,12 +157,12 @@ export const CustomRequestsTab = () => {
             </div>
 
             {/* Reset Filter Button */}
-            {(searchTerm || statusFilter !== "all") && (
+            {(searchTerm || statusFilter !== 'all') && (
               <Button
                 variant="outline"
                 onClick={() => {
-                  setSearchTerm("");
-                  setStatusFilter("all");
+                  setSearchTerm('');
+                  setStatusFilter('all');
                 }}
                 className="whitespace-nowrap"
               >
@@ -193,10 +173,9 @@ export const CustomRequestsTab = () => {
           </div>
 
           {/* Results Count */}
-          {(searchTerm || statusFilter !== "all") && (
+          {(searchTerm || statusFilter !== 'all') && (
             <div className="mt-3 text-sm text-gray-600">
-              Hiển thị {filteredRequests.length} trong tổng số {requests.length}{" "}
-              yêu cầu
+              Hiển thị {filteredRequests.length} trong tổng số {requests.length} yêu cầu
             </div>
           )}
         </CardContent>
@@ -222,13 +201,11 @@ export const CustomRequestsTab = () => {
             <CardContent>
               <div className="text-center py-12">
                 <FileText className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Chưa có yêu cầu nào
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có yêu cầu nào</h3>
                 <p className="text-gray-600 mb-4">
-                  {searchTerm || statusFilter !== "all"
-                    ? "Không tìm thấy yêu cầu nào phù hợp với bộ lọc của bạn."
-                    : "Bạn chưa có yêu cầu đặt may nào. Hãy tạo yêu cầu đầu tiên!"}
+                  {searchTerm || statusFilter !== 'all'
+                    ? 'Không tìm thấy yêu cầu nào phù hợp với bộ lọc của bạn.'
+                    : 'Bạn chưa có yêu cầu đặt may nào. Hãy tạo yêu cầu đầu tiên!'}
                 </p>
                 <Button
                   onClick={() => setIsCreateDialogOpen(true)}
@@ -243,32 +220,22 @@ export const CustomRequestsTab = () => {
         ) : (
           <div className="space-y-4">
             {filteredRequests.map((request: ICustomRequest) => {
-              const statusBadge = getStatusBadge(
-                request.status,
-                request.isPrivate
-              );
+              const statusBadge = getStatusBadge(request.status, request.isPrivate);
               const Icon = statusBadge.icon;
 
               return (
-                <Card
-                  key={request.id}
-                  className="hover:shadow-md transition-shadow"
-                >
+                <Card key={request.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            {request.title}
-                          </h3>
+                          <h3 className="text-lg font-semibold text-gray-900">{request.title}</h3>
                           <Badge className={statusBadge.className}>
                             <Icon className="h-3 w-3 mr-1" />
                             {statusBadge.text}
                           </Badge>
                         </div>
-                        <p className="text-gray-600 mb-3 line-clamp-2">
-                          {request.description}
-                        </p>
+                        <p className="text-gray-600 mb-3 line-clamp-2">{request.description}</p>
                         <div className="flex items-center gap-4 text-sm text-gray-500">
                           <span className="flex items-center gap-1">
                             <Clock className="h-4 w-4" />
@@ -279,11 +246,7 @@ export const CustomRequestsTab = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditRequest(request)}
-                        >
+                        <Button variant="outline" size="sm" onClick={() => setEditRequest(request)}>
                           Chỉnh sửa
                         </Button>
                         <Button

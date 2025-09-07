@@ -1,10 +1,10 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
-import Image from "next/image";
-import { getImages } from "@/lib/products-utils";
-import { IDress } from "@/services/types";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Star } from 'lucide-react';
+import Image from 'next/image';
+import { getImages } from '@/lib/products-utils';
+import { IDress } from '@/services/types';
 
 interface DressFeedbackTabsProps {
   dress: IDress;
@@ -28,13 +28,11 @@ export const DressFeedbackTabs = ({ dress }: DressFeedbackTabsProps) => {
                   <div className="flex items-start gap-4">
                     <Avatar className="h-12 w-12">
                       <AvatarImage
-                        src={feedback.customer?.avatarUrl || "/placeholder.svg"}
-                        alt={feedback.customer?.username || "Khách hàng"}
+                        src={feedback.customer?.avatarUrl || '/placeholder.svg'}
+                        alt={feedback.customer?.username || 'Khách hàng'}
                       />
                       <AvatarFallback className="bg-rose-100 text-rose-600">
-                        {feedback.customer?.username
-                          ?.charAt(0)
-                          ?.toUpperCase() || "K"}
+                        {feedback.customer?.username?.charAt(0)?.toUpperCase() || 'K'}
                       </AvatarFallback>
                     </Avatar>
 
@@ -42,13 +40,9 @@ export const DressFeedbackTabs = ({ dress }: DressFeedbackTabsProps) => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-gray-900">
-                            {feedback.customer?.username ||
-                              "Khách hàng ẩn danh"}
+                            {feedback.customer?.username || 'Khách hàng ẩn danh'}
                           </span>
-                          <Badge
-                            variant="secondary"
-                            className="bg-yellow-100 text-yellow-700"
-                          >
+                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
                             {feedback.rating}/5
                           </Badge>
                         </div>
@@ -60,16 +54,14 @@ export const DressFeedbackTabs = ({ dress }: DressFeedbackTabsProps) => {
                             key={i}
                             className={`h-4 w-4 ${
                               i < Number(feedback.rating)
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'text-gray-300'
                             }`}
                           />
                         ))}
                       </div>
 
-                      <p className="text-gray-700 leading-relaxed">
-                        {feedback.content}
-                      </p>
+                      <p className="text-gray-700 leading-relaxed">{feedback.content}</p>
 
                       {feedback.images && (
                         <div className="grid grid-cols-4 gap-2 mt-3">
@@ -80,7 +72,7 @@ export const DressFeedbackTabs = ({ dress }: DressFeedbackTabsProps) => {
                             >
                               <Image
                                 alt={`Hình ảnh đánh giá ${index + 1}`}
-                                src={url || "/placeholder.svg"}
+                                src={url || '/placeholder.svg'}
                                 width={80}
                                 height={80}
                                 className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
@@ -101,12 +93,9 @@ export const DressFeedbackTabs = ({ dress }: DressFeedbackTabsProps) => {
             <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <Star className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Chưa có đánh giá nào
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có đánh giá nào</h3>
             <p className="text-gray-500 max-w-md mx-auto">
-              Sản phẩm này chưa nhận được đánh giá từ khách hàng. Hãy là người
-              đầu tiên đánh giá!
+              Sản phẩm này chưa nhận được đánh giá từ khách hàng. Hãy là người đầu tiên đánh giá!
             </p>
           </div>
         )}

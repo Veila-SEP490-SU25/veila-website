@@ -1,28 +1,27 @@
-import type React from "react";
-import { cn } from "@/lib/utils";
-import { forwardRef, useState, useEffect } from "react";
-import NextImage from "next/image";
+import type React from 'react';
+import { cn } from '@/lib/utils';
+import { forwardRef, useState, useEffect } from 'react';
+import NextImage from 'next/image';
 
-interface ImageProps
-  extends Omit<React.ComponentProps<typeof NextImage>, "src" | "alt"> {
+interface ImageProps extends Omit<React.ComponentProps<typeof NextImage>, 'src' | 'alt'> {
   src: string;
   alt: string;
 }
 
 const PLACEHOLDER_SERVICES = [
-  "https://placehold.co",
-  "https://picsum.photos",
-  "https://dummyimage.com",
+  'https://placehold.co',
+  'https://picsum.photos',
+  'https://dummyimage.com',
 ];
 
 export const Image = forwardRef<HTMLImageElement, ImageProps>(
   ({ className, src, alt, onError, ...props }, ref) => {
-    const [imageSrc, setImageSrc] = useState(src || "/placeholder.svg");
+    const [imageSrc, setImageSrc] = useState(src || '/placeholder.svg');
     const [hasError, setHasError] = useState(false);
     const [fallbackIndex, setFallbackIndex] = useState(0);
 
     const getProcessedSrc = (originalSrc: string) => {
-      if (originalSrc.includes("loremflickr.com")) {
+      if (originalSrc.includes('loremflickr.com')) {
         const match = originalSrc.match(/loremflickr\.com\/(\d+)\/(\d+)/);
         if (match) {
           const [, width, height] = match;
@@ -31,7 +30,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
         return `https://placehold.co/400x300/f3f4f6/9ca3af?text=Image`;
       }
 
-      if (originalSrc.includes("picsum.photos")) {
+      if (originalSrc.includes('picsum.photos')) {
         const match = originalSrc.match(/picsum\.photos\/(\d+)\/(\d+)/);
         if (match) {
           const [, width, height] = match;
@@ -60,7 +59,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
           setFallbackIndex((prev) => prev + 1);
           setImageSrc(getFallbackSrc());
         } else {
-          setImageSrc("/placeholder.svg");
+          setImageSrc('/placeholder.svg');
         }
       }
     };
@@ -74,8 +73,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     }, [src]);
 
     const isExternalImage = Boolean(
-      imageSrc &&
-        (imageSrc.startsWith("http://") || imageSrc.startsWith("https://"))
+      imageSrc && (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')),
     );
 
     return (
@@ -85,13 +83,13 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
         alt={alt}
         width={props.width || 800}
         height={props.height || 600}
-        className={cn("max-w-full h-auto object-cover", className)}
+        className={cn('max-w-full h-auto object-cover', className)}
         onError={handleError}
         unoptimized={isExternalImage}
         {...props}
       />
     );
-  }
+  },
 );
 
-Image.displayName = "Image";
+Image.displayName = 'Image';

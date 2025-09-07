@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,13 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { isSuccess } from "@/lib/utils";
-import { useVerifyBlogMutation } from "@/services/apis";
-import { IBlog } from "@/services/types";
-import { Check, X } from "lucide-react";
-import { ReactNode, useCallback, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { isSuccess } from '@/lib/utils';
+import { useVerifyBlogMutation } from '@/services/apis';
+import { IBlog } from '@/services/types';
+import { Check, X } from 'lucide-react';
+import { ReactNode, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface BlogVerifyDialogProps {
   blog: IBlog;
@@ -23,11 +23,7 @@ interface BlogVerifyDialogProps {
   trigger?: ReactNode;
 }
 
-export const BlogVerifyDialog = ({
-  blog,
-  onUpdate,
-  trigger,
-}: BlogVerifyDialogProps) => {
+export const BlogVerifyDialog = ({ blog, onUpdate, trigger }: BlogVerifyDialogProps) => {
   const [updateTrigger, { isLoading }] = useVerifyBlogMutation();
   const [open, setOpen] = useState(false);
 
@@ -46,22 +42,22 @@ export const BlogVerifyDialog = ({
           isVerified,
         }).unwrap();
         if (isSuccess(statusCode)) {
-          toast.success("Xác thực bài đăng thành công");
+          toast.success('Xác thực bài đăng thành công');
           onUpdate?.();
           setOpen(false);
         } else {
-          toast.error("Xác thực bài đăng thất bại", {
+          toast.error('Xác thực bài đăng thất bại', {
             description: message,
           });
         }
       } catch (error) {
         console.error(error);
-        toast.error("Đã xảy ra lỗi khi xác thực bài đăng", {
-          description: "Vui lòng thử lại sau",
+        toast.error('Đã xảy ra lỗi khi xác thực bài đăng', {
+          description: 'Vui lòng thử lại sau',
         });
       }
     },
-    [blog, setOpen, updateTrigger, onUpdate]
+    [blog, setOpen, updateTrigger, onUpdate],
   );
 
   const handleCancel = useCallback(() => {

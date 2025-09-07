@@ -1,23 +1,13 @@
-"use client";
+'use client';
 
-import { OrderCollapse } from "@/components/staff/complaints/order-collapse";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { formatDateShort } from "@/lib/order-util";
-import { ComplaintStatus, IComplaint, IUser } from "@/services/types";
+import { OrderCollapse } from '@/components/staff/complaints/order-collapse';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { formatDateShort } from '@/lib/order-util';
+import { ComplaintStatus, IComplaint, IUser } from '@/services/types';
 import {
   Calendar,
   Check,
@@ -30,9 +20,9 @@ import {
   MapPin,
   Phone,
   X,
-} from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+} from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface IComplaintCardProps {
   complaint: IComplaint;
@@ -111,13 +101,8 @@ export const ComplaintCard = ({ complaint, onUpdate }: IComplaintCardProps) => {
         <div className="space-y-4">
           <div className="flex items-start gap-4">
             <Avatar>
-              <AvatarImage
-                src={sender.avatarUrl || undefined}
-                alt={sender.username}
-              />
-              <AvatarFallback>
-                {sender.username.toUpperCase().charAt(0)}
-              </AvatarFallback>
+              <AvatarImage src={sender.avatarUrl || undefined} alt={sender.username} />
+              <AvatarFallback>{sender.username.toUpperCase().charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-y-1">
               <p className="text-sm font-medium">{sender.username}</p>
@@ -139,10 +124,7 @@ export const ComplaintCard = ({ complaint, onUpdate }: IComplaintCardProps) => {
           </div>
           <Collapsible open={open} onOpenChange={setOpen}>
             <CollapsibleTrigger asChild>
-              <Button
-                className="w-full flex items-center justify-between"
-                variant="outline"
-              >
+              <Button className="w-full flex items-center justify-between" variant="outline">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <FileText className="size-4 text-rose-500" />

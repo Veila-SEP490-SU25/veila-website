@@ -1,4 +1,4 @@
-import { baseQueryWithRefresh } from "@/services/apis/base.query";
+import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   ComplaintStatus,
   IAccessory,
@@ -17,8 +17,8 @@ import {
   ITransaction,
   IUpdateOrderStatus,
   OrderStatus,
-} from "@/services/types";
-import { createApi } from "@reduxjs/toolkit/query/react";
+} from '@/services/types';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 export interface IUpdateOrderInformation {
   id: string;
@@ -75,20 +75,20 @@ export interface IGetOrdersOfShop extends IPagination {
 }
 
 export const orderApi = createApi({
-  reducerPath: "orderApi",
+  reducerPath: 'orderApi',
   baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     getShopIncome: builder.query<IItemResponse<number>, string>({
       query: (shopId) => ({
         url: `orders/shops/${shopId}/income`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getOrders: builder.query<IListResponse<IOrder>, IPagination>({
-      query: ({ filter = "", sort = "", page = 0, size = 10 }) => ({
-        url: "orders",
-        method: "GET",
+      query: ({ filter = '', sort = '', page = 0, size = 10 }) => ({
+        url: 'orders',
+        method: 'GET',
         params: { filter, sort, page, size },
       }),
     }),
@@ -96,146 +96,119 @@ export const orderApi = createApi({
     getOrder: builder.query<IItemResponse<IOrder>, string>({
       query: (id) => ({
         url: `orders/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     createOrder: builder.mutation<IItemResponse<IOrder>, ICreateOrder>({
       query: (body) => ({
-        url: "orders",
-        method: "POST",
+        url: 'orders',
+        method: 'POST',
         body,
       }),
     }),
 
-    createCustomOrder: builder.mutation<
-      IItemResponse<IOrder>,
-      ICreateCustomOrder
-    >({
+    createCustomOrder: builder.mutation<IItemResponse<IOrder>, ICreateCustomOrder>({
       query: (body) => ({
-        url: "orders/custom",
-        method: "POST",
+        url: 'orders/custom',
+        method: 'POST',
         body,
       }),
     }),
 
-    updateOrderInformation: builder.mutation<
-      IItemResponse<IOrder>,
-      IUpdateOrderInformation
-    >({
+    updateOrderInformation: builder.mutation<IItemResponse<IOrder>, IUpdateOrderInformation>({
       query: (body) => ({
         url: `orders/${body.id}`,
-        method: "PUT",
+        method: 'PUT',
         body,
       }),
     }),
 
-    updateOrderStatus: builder.mutation<
-      IItemResponse<IOrder>,
-      IUpdateOrderStatus
-    >({
+    updateOrderStatus: builder.mutation<IItemResponse<IOrder>, IUpdateOrderStatus>({
       query: ({ id, status }) => ({
         url: `orders/${id}/${status}`,
-        method: "PUT",
+        method: 'PUT',
       }),
     }),
 
     cancelOrder: builder.mutation<IItemResponse<IOrder>, string>({
       query: (id) => ({
         url: `orders/${id}/cancel`,
-        method: "PUT",
+        method: 'PUT',
       }),
     }),
 
     checkoutOrder: builder.mutation<IItemResponse<IOrder>, ICheckoutOrder>({
       query: ({ orderId, otp }) => ({
         url: `orders/${orderId}/check-out`,
-        method: "PUT",
+        method: 'PUT',
         body: { otp },
       }),
     }),
 
-    getOrderMilestone: builder.query<
-      IListResponse<IMilestone>,
-      IGetOrderMilestone
-    >({
-      query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
+    getOrderMilestone: builder.query<IListResponse<IMilestone>, IGetOrderMilestone>({
+      query: ({ orderId, page = 0, size = 10, sort = '', filter = '' }) => ({
         url: `orders/${orderId}/milestones`,
-        method: "GET",
+        method: 'GET',
         params: { page, size, sort, filter },
       }),
     }),
 
-    getOrderAccessories: builder.query<
-      IListResponse<IOrderAccessoryDetail>,
-      string
-    >({
+    getOrderAccessories: builder.query<IListResponse<IOrderAccessoryDetail>, string>({
       query: (id) => ({
         url: `orders/${id}/order-accessories-details`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
-    getOrderAccessory: builder.query<
-      IListResponse<IAccessory>,
-      IGetOrderAccessory
-    >({
+    getOrderAccessory: builder.query<IListResponse<IAccessory>, IGetOrderAccessory>({
       query: ({ orderId, accessoryId }) => ({
         url: `orders/${orderId}/order-accessories-details/${accessoryId}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getOrderDresses: builder.query<IListResponse<IOrderDressDetail>, string>({
       query: (id) => ({
         url: `orders/${id}/order-dress-details`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getOrderDress: builder.query<IListResponse<IDress>, IGetOrderDress>({
       query: ({ orderId, dressId }) => ({
         url: `orders/${orderId}/order-dress-details/${dressId}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     getOrderService: builder.query<IItemResponse<IOrderServiceDetail>, string>({
       query: (id) => ({
         url: `orders/${id}/order-service-details`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
-    getOrderTransactions: builder.query<
-      IListResponse<ITransaction>,
-      IGetOrderTransactions
-    >({
-      query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
+    getOrderTransactions: builder.query<IListResponse<ITransaction>, IGetOrderTransactions>({
+      query: ({ orderId, page = 0, size = 10, sort = '', filter = '' }) => ({
         url: `orders/${orderId}/transactions`,
-        method: "GET",
+        method: 'GET',
         params: { page, size, sort, filter },
       }),
     }),
 
-    getOrderComplaints: builder.query<
-      IListResponse<IComplaint>,
-      IGetOrderComplaints
-    >({
-      query: ({ orderId, page = 0, size = 10, sort = "", filter = "" }) => ({
+    getOrderComplaints: builder.query<IListResponse<IComplaint>, IGetOrderComplaints>({
+      query: ({ orderId, page = 0, size = 10, sort = '', filter = '' }) => ({
         url: `orders/${orderId}/complaints/me`,
-        method: "GET",
+        method: 'GET',
         params: { page, size, sort, filter },
       }),
     }),
 
-    createOrderComplaint: builder.mutation<
-      IItemResponse<IComplaint>,
-      ICreateComplaint
-    >({
+    createOrderComplaint: builder.mutation<IItemResponse<IComplaint>, ICreateComplaint>({
       query: ({ orderId, ...body }) => ({
         url: `orders/${orderId}/complaints/me`,
-        method: "POST",
+        method: 'POST',
         body,
       }),
     }),
@@ -243,14 +216,14 @@ export const orderApi = createApi({
     confirmNoComplaint: builder.mutation<IItemResponse<null>, string>({
       query: (orderId) => ({
         url: `orders/${orderId}/confirm-no-complaint`,
-        method: "PUT",
+        method: 'PUT',
       }),
     }),
 
     getOrderOfShop: builder.query<IListResponse<IOrder>, IGetOrdersOfShop>({
-      query: ({ shopId, sort = "", filter = "", page = 0, size = 10 }) => ({
+      query: ({ shopId, sort = '', filter = '', page = 0, size = 10 }) => ({
         url: `orders/shops/${shopId}`,
-        method: "GET",
+        method: 'GET',
         params: { page, size, sort, filter },
       }),
     }),

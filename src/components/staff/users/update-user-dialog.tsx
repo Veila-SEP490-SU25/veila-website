@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,23 +8,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { isSuccess } from "@/lib/utils";
-import { IUpdateUser, useUpdateUserMutation } from "@/services/apis";
-import { IUser } from "@/services/types";
-import { X, Check } from "lucide-react";
-import { ReactNode, useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { isSuccess } from '@/lib/utils';
+import { IUpdateUser, useUpdateUserMutation } from '@/services/apis';
+import { IUser } from '@/services/types';
+import { X, Check } from 'lucide-react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UpdateUserDialogProps {
   user: IUser;
@@ -32,11 +32,7 @@ interface UpdateUserDialogProps {
   children?: ReactNode;
 }
 
-export const UpdateUserDialog = ({
-  user,
-  onUpdate,
-  children,
-}: UpdateUserDialogProps) => {
+export const UpdateUserDialog = ({ user, onUpdate, children }: UpdateUserDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const [trigger, { isLoading }] = useUpdateUserMutation();
   const [updateInfo, setUpdateInfo] = useState<IUpdateUser>({
@@ -62,7 +58,7 @@ export const UpdateUserDialog = ({
         toast.error(message);
       }
     } catch (error) {
-      toast.error("Đã xảy ra lỗi khi cập nhật người dùng");
+      toast.error('Đã xảy ra lỗi khi cập nhật người dùng');
       console.error(error);
     }
   }, [trigger, onUpdate, updateInfo]);
@@ -101,9 +97,7 @@ export const UpdateUserDialog = ({
       <DialogContent className="w-[90vw] max-w-4xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Cập nhật người dùng</DialogTitle>
-          <DialogDescription className="">
-            Cập nhật thông tin người dùng
-          </DialogDescription>
+          <DialogDescription className="">Cập nhật thông tin người dùng</DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[70vh] pr-4">
           <div className="w-full space-y-4">
@@ -114,7 +108,7 @@ export const UpdateUserDialog = ({
               <Input
                 id="username"
                 value={updateInfo.username}
-                onChange={(e) => handleInputChange("username", e.target.value)}
+                onChange={(e) => handleInputChange('username', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -124,7 +118,7 @@ export const UpdateUserDialog = ({
               <Input
                 id="email"
                 value={updateInfo.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
+                onChange={(e) => handleInputChange('email', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -134,7 +128,7 @@ export const UpdateUserDialog = ({
               <Input
                 id="firstName"
                 value={updateInfo.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -144,17 +138,14 @@ export const UpdateUserDialog = ({
               <Input
                 id="lastName"
                 value={updateInfo.lastName}
-                onChange={(e) => handleInputChange("lastName", e.target.value)}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
               />
             </div>
             <div className="space-y-2 flex items-center justify-between">
               <Label htmlFor="role">
                 Vai trò<span className="text-xs text-rose-500">*</span>
               </Label>
-              <Select
-                value={updateInfo.role}
-                onValueChange={(e) => handleInputChange("role", e)}
-              >
+              <Select value={updateInfo.role} onValueChange={(e) => handleInputChange('role', e)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn vai trò" />
                 </SelectTrigger>

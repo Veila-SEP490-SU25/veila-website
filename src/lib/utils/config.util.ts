@@ -3,8 +3,7 @@ export const getFirebaseConfig = () => {
   const authDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN;
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
   const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-  const messagingSenderId =
-    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID;
+  const messagingSenderId = process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID;
   const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
   const measurementId = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
 
@@ -17,7 +16,7 @@ export const getFirebaseConfig = () => {
     !appId ||
     !measurementId
   ) {
-    console.error("Missing Firebase configuration in environment variables");
+    console.error('Missing Firebase configuration in environment variables');
     return null;
   }
 
@@ -36,7 +35,7 @@ export const getVeilaServerConfig = (): string => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   if (!apiUrl) {
-    throw new Error("Missing Veila server API URL in environment variables");
+    throw new Error('Missing Veila server API URL in environment variables');
   }
 
   return apiUrl;
@@ -47,7 +46,7 @@ export const getVietQRConfig = () => {
   const apiKey = process.env.NEXT_PUBLIC_VIETQR_API_KEY;
 
   if (!clientId || !apiKey) {
-    throw new Error("Missing VietQR configuration in environment variables");
+    throw new Error('Missing VietQR configuration in environment variables');
   }
 
   return {

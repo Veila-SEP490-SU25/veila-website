@@ -1,14 +1,14 @@
-import { getFirebaseConfig } from "@/lib/utils/index";
-import { initializeApp, FirebaseApp } from "firebase/app";
-import { getFirestore, Firestore } from "firebase/firestore";
-import { getStorage, FirebaseStorage } from "firebase/storage";
+import { getFirebaseConfig } from '@/lib/utils/index';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import { getFirestore, Firestore } from 'firebase/firestore';
+import { getStorage, FirebaseStorage } from 'firebase/storage';
 import {
   getAuth,
   Auth,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithPhoneNumber,
-} from "firebase/auth";
+} from 'firebase/auth';
 
 let app: FirebaseApp;
 let auth: Auth;
@@ -16,7 +16,7 @@ let firestore: Firestore;
 let storage: FirebaseStorage;
 
 const initializeFirebase = () => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return {
       app: null,
       auth: null,
@@ -33,7 +33,7 @@ const initializeFirebase = () => {
     if (!app) {
       const firebaseConfig = getFirebaseConfig();
       if (!firebaseConfig || !firebaseConfig.apiKey) {
-        console.error("Firebase config is missing or invalid");
+        console.error('Firebase config is missing or invalid');
         return {
           app: null,
           auth: null,
@@ -45,7 +45,7 @@ const initializeFirebase = () => {
           signInWithPopup: null,
         };
       }
-      
+
       app = initializeApp(firebaseConfig);
       auth = getAuth(app);
       firestore = getFirestore(app);
@@ -63,7 +63,7 @@ const initializeFirebase = () => {
       signInWithPopup,
     };
   } catch (error) {
-    console.error("Error initializing Firebase:", error);
+    console.error('Error initializing Firebase:', error);
     return {
       app: null,
       auth: null,

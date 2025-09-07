@@ -1,27 +1,21 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import { toast } from "sonner";
-import Image from "next/image";
-import {
-  AlertTriangle,
-  Package,
-  Calendar,
-  DollarSign,
-  CheckCircle,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
+import Image from 'next/image';
+import { AlertTriangle, Package, Calendar, DollarSign, CheckCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   useLazyGetSubscriptionsQuery,
   useRegisterMembershipMutation,
   useGetMyMembershipsQuery,
-} from "@/services/apis";
-import { ISubscription } from "@/services/types";
-import { RequestSmartOtpDialog } from "@/components/request-smart-otp-dialog";
+} from '@/services/apis';
+import { ISubscription } from '@/services/types';
+import { RequestSmartOtpDialog } from '@/components/request-smart-otp-dialog';
 
 export const SuspendedShopDashboard = () => {
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
@@ -38,20 +32,20 @@ export const SuspendedShopDashboard = () => {
       const response = await getSubscriptions({
         page: 0,
         size: 100,
-        sort: "amount:asc",
-        filter: "",
+        sort: 'amount:asc',
+        filter: '',
       }).unwrap();
 
       if (response.statusCode === 200) {
         setSubscriptions(response.items || []);
       } else {
-        toast.error("Không thể tải danh sách gói đăng ký", {
+        toast.error('Không thể tải danh sách gói đăng ký', {
           description: response.message,
         });
       }
     } catch (error) {
-      console.error("Error fetching subscriptions:", error);
-      toast.error("Có lỗi xảy ra khi tải gói đăng ký");
+      console.error('Error fetching subscriptions:', error);
+      toast.error('Có lỗi xảy ra khi tải gói đăng ký');
     } finally {
       setIsLoading(false);
     }
@@ -62,23 +56,23 @@ export const SuspendedShopDashboard = () => {
   }, [fetchSubscriptions]);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
     }).format(amount);
   };
 
   const parseImages = (images: string | null): string[] => {
     if (!images) return [];
     return images
-      .split(",")
+      .split(',')
       .map((img) => img.trim())
       .filter((img) => img.length > 0);
   };
 
   const handleRegisterMembership = async (
     subscription: ISubscription,
-    smartOtp: string
+    smartOtp: string,
   ): Promise<boolean> => {
     try {
       // Lấy membership hiện tại để so sánh
@@ -107,12 +101,9 @@ export const SuspendedShopDashboard = () => {
         } else if (newAmount < currentAmount) {
           // Gói mới nhỏ hơn -> không cho đăng ký
           canRegister = false;
-          toast.error(
-            "Không thể đăng ký gói có giá trị thấp hơn gói hiện tại",
-            {
-              description: `Gói hiện tại: ${currentMembership.subscription.name} (${currentMembership.subscription.amount} VND)`,
-            }
-          );
+          toast.error('Không thể đăng ký gói có giá trị thấp hơn gói hiện tại', {
+            description: `Gói hiện tại: ${currentMembership.subscription.name} (${currentMembership.subscription.amount} VND)`,
+          });
           return false;
         } else {
           // Gói bằng nhau -> không cần force
@@ -136,19 +127,18 @@ export const SuspendedShopDashboard = () => {
       }).unwrap();
 
       if (result.statusCode === 200 || result.statusCode === 201) {
-        toast.success("Đăng ký gói dịch vụ thành công!");
+        toast.success('Đăng ký gói dịch vụ thành công!');
         // Chuyển về profile shop và reload page
-        window.location.href = "/profile";
+        window.location.href = '/profile';
         window.location.reload();
       } else {
-        toast.error(result.message || "Có lỗi xảy ra khi đăng ký gói dịch vụ");
+        toast.error(result.message || 'Có lỗi xảy ra khi đăng ký gói dịch vụ');
       }
       return true;
     } catch (error: any) {
-      console.error("Registration error:", error);
+      console.error('Registration error:', error);
       toast.error(
-        error?.data?.message ||
-          "Có lỗi xảy ra khi đăng ký gói dịch vụ. Vui lòng thử lại sau."
+        error?.data?.message || 'Có lỗi xảy ra khi đăng ký gói dịch vụ. Vui lòng thử lại sau.',
       );
       return false;
     }
@@ -196,8 +186,7 @@ export const SuspendedShopDashboard = () => {
               Tài khoản Shop bị tạm ngưng
             </h1>
             <p className="text-muted-foreground">
-              Tài khoản của bạn đã bị tạm ngưng. Vui lòng đăng ký gói dịch vụ để
-              tiếp tục sử dụng.
+              Tài khoản của bạn đã bị tạm ngưng. Vui lòng đăng ký gói dịch vụ để tiếp tục sử dụng.
             </p>
           </div>
         </div>
@@ -205,9 +194,8 @@ export const SuspendedShopDashboard = () => {
         <Alert className="border-orange-200 bg-orange-50/50">
           <AlertTriangle className="h-4 w-4 text-orange-600" />
           <AlertDescription className="text-orange-800">
-            <strong>Lưu ý:</strong> Khi tài khoản bị tạm ngưng, bạn chỉ có thể
-            truy cập trang Dashboard và Profile. Để mở khóa tất cả tính năng,
-            vui lòng đăng ký gói dịch vụ phù hợp.
+            <strong>Lưu ý:</strong> Khi tài khoản bị tạm ngưng, bạn chỉ có thể truy cập trang
+            Dashboard và Profile. Để mở khóa tất cả tính năng, vui lòng đăng ký gói dịch vụ phù hợp.
           </AlertDescription>
         </Alert>
       </div>
@@ -215,9 +203,7 @@ export const SuspendedShopDashboard = () => {
       {/* Subscriptions Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Gói dịch vụ có sẵn
-          </h2>
+          <h2 className="text-2xl font-semibold tracking-tight">Gói dịch vụ có sẵn</h2>
           <Badge variant="outline" className="text-green-600 border-green-300">
             {subscriptions.length} gói
           </Badge>
@@ -227,32 +213,21 @@ export const SuspendedShopDashboard = () => {
           <Card>
             <CardContent className="p-12 text-center">
               <Package className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Không có gói dịch vụ nào
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Không có gói dịch vụ nào</h3>
               <p className="text-gray-600">
-                Hiện tại không có gói dịch vụ nào khả dụng. Vui lòng liên hệ
-                admin để được hỗ trợ.
+                Hiện tại không có gói dịch vụ nào khả dụng. Vui lòng liên hệ admin để được hỗ trợ.
               </p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {subscriptions.map((subscription) => (
-              <Card
-                key={subscription.id}
-                className="hover:shadow-lg transition-shadow"
-              >
+              <Card key={subscription.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
-                      <CardTitle className="text-lg leading-tight">
-                        {subscription.name}
-                      </CardTitle>
-                      <Badge
-                        variant="outline"
-                        className="text-blue-600 border-blue-300"
-                      >
+                      <CardTitle className="text-lg leading-tight">{subscription.name}</CardTitle>
+                      <Badge variant="outline" className="text-blue-600 border-blue-300">
                         <Calendar className="h-3 w-3 mr-1" />
                         {subscription.duration}
                       </Badge>
@@ -267,18 +242,17 @@ export const SuspendedShopDashboard = () => {
 
                 <CardContent className="space-y-4">
                   {/* Images */}
-                  {subscription.images &&
-                    parseImages(subscription.images).length > 0 && (
-                      <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                        <Image
-                          src={parseImages(subscription.images)[0]}
-                          alt={subscription.name}
-                          width={400}
-                          height={225}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
+                  {subscription.images && parseImages(subscription.images).length > 0 && (
+                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                      <Image
+                        src={parseImages(subscription.images)[0]}
+                        alt={subscription.name}
+                        width={400}
+                        height={225}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
 
                   {/* Description */}
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -310,9 +284,7 @@ export const SuspendedShopDashboard = () => {
                         Đăng ký ngay
                       </Button>
                     }
-                    onConfirm={(smartOtp) =>
-                      handleRegisterMembership(subscription, smartOtp)
-                    }
+                    onConfirm={(smartOtp) => handleRegisterMembership(subscription, smartOtp)}
                   />
                 </CardContent>
               </Card>
@@ -331,9 +303,8 @@ export const SuspendedShopDashboard = () => {
             <div className="space-y-2">
               <h3 className="font-semibold text-blue-800">Cần hỗ trợ thêm?</h3>
               <p className="text-sm text-blue-700">
-                Nếu bạn cần tư vấn về gói dịch vụ hoặc gặp vấn đề với tài khoản,
-                vui lòng liên hệ đội ngũ hỗ trợ của chúng tôi qua email hoặc
-                hotline.
+                Nếu bạn cần tư vấn về gói dịch vụ hoặc gặp vấn đề với tài khoản, vui lòng liên hệ
+                đội ngũ hỗ trợ của chúng tôi qua email hoặc hotline.
               </p>
               <div className="flex items-center space-x-4 text-sm text-blue-600">
                 <span>📧 veila.studio.mail@gmail.com</span>

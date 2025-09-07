@@ -1,43 +1,36 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Search, RefreshCw, Plus } from "lucide-react";
-import { useLazyGetUsersQuery } from "@/services/apis";
-import { usePaging } from "@/providers/paging.provider";
-import { isSuccess } from "@/lib/utils";
-import { IUser } from "@/services/types";
-import { useDebounce } from "@/hooks/use-debounce";
-import { GoBackButton } from "@/components/go-back-button";
-import { ErrorCard } from "@/components/error-card";
-import { PageLoading } from "@/components/ui/page-loading";
-import { EmptyCard } from "@/components/empty-card";
-import { PagingComponent } from "@/components/paging-component";
-import { UserCard } from "@/components/staff/users/user-card";
-import { CreateUserDialog } from "@/components/staff/users/create-user-dialog";
+import { useCallback, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Search, RefreshCw, Plus } from 'lucide-react';
+import { useLazyGetUsersQuery } from '@/services/apis';
+import { usePaging } from '@/providers/paging.provider';
+import { isSuccess } from '@/lib/utils';
+import { IUser } from '@/services/types';
+import { useDebounce } from '@/hooks/use-debounce';
+import { GoBackButton } from '@/components/go-back-button';
+import { ErrorCard } from '@/components/error-card';
+import { PageLoading } from '@/components/ui/page-loading';
+import { EmptyCard } from '@/components/empty-card';
+import { PagingComponent } from '@/components/paging-component';
+import { UserCard } from '@/components/staff/users/user-card';
+import { CreateUserDialog } from '@/components/staff/users/create-user-dialog';
 
 export default function UsersManagement() {
   const [users, setUsers] = useState<IUser[]>([]);
   const [trigger, { isLoading }] = useLazyGetUsersQuery();
-  const { pageIndex, pageSize, totalItems, resetPaging, setPaging } =
-    usePaging();
+  const { pageIndex, pageSize, totalItems, resetPaging, setPaging } = usePaging();
   const [isError, setIsError] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [filter, setFilter] = useState<string>("");
+  const [error, setError] = useState<string>('');
+  const [filter, setFilter] = useState<string>('');
   const debouncedFilter = useDebounce<string>(filter, 500);
 
   const fetchUsers = useCallback(async () => {
     try {
       const { statusCode, message, items, ...paging } = await trigger({
-        sort: "updatedAt:desc",
+        sort: 'updatedAt:desc',
         page: pageIndex,
         size: pageSize,
         filter: debouncedFilter && `email:like:${debouncedFilter}`,
@@ -50,9 +43,9 @@ export default function UsersManagement() {
           paging.totalItems,
           paging.totalPages,
           paging.hasNextPage,
-          paging.hasPrevPage
+          paging.hasPrevPage,
         );
-        setError("");
+        setError('');
         setIsError(false);
       } else {
         setIsError(true);
@@ -61,17 +54,9 @@ export default function UsersManagement() {
     } catch (error) {
       console.error(error);
       setIsError(true);
-      setError("Có lỗi xảy ra trong quá trình tải dữ liệu khiếu nại");
+      setError('Có lỗi xảy ra trong quá trình tải dữ liệu khiếu nại');
     }
-  }, [
-    debouncedFilter,
-    pageSize,
-    pageIndex,
-    setPaging,
-    trigger,
-    setError,
-    setIsError,
-  ]);
+  }, [debouncedFilter, pageSize, pageIndex, setPaging, trigger, setError, setIsError]);
 
   useEffect(() => {
     fetchUsers();
@@ -116,18 +101,14 @@ export default function UsersManagement() {
             <div className="p-6 space-y-6 max-w-full">
               <Card>
                 <CardHeader className="items-center justify-center">
-                  <CardTitle className="text-red-500">
-                    Đã có lỗi xảy ra khi tải dữ liệu
-                  </CardTitle>
+                  <CardTitle className="text-red-500">Đã có lỗi xảy ra khi tải dữ liệu</CardTitle>
                   <CardDescription className="w-full items-center justify-center flex gap-2">
                     <GoBackButton />
                     <Button
                       className="flex items-center justify-center gap-2 bg-rose-500 text-white"
                       onClick={fetchUsers}
                     >
-                      <RefreshCw
-                        className={`size-4 ${isLoading ? "animate-spin" : ""}`}
-                      />
+                      <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
                       Thử lại
                     </Button>
                   </CardDescription>

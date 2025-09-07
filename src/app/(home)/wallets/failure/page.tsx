@@ -1,16 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState, Suspense } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { XCircle, ArrowLeft, RefreshCw, Wallet } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { XCircle, ArrowLeft, RefreshCw, Wallet } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function PaymentFailedPageContent() {
   const router = useRouter();
@@ -19,17 +13,17 @@ function PaymentFailedPageContent() {
   const [transactionData, setTransactionData] = useState<any>(null);
 
   useEffect(() => {
-    const code = searchParams.get("code");
-    const id = searchParams.get("id");
-    const cancel = searchParams.get("cancel");
-    const status = searchParams.get("status");
-    const orderCode = searchParams.get("orderCode");
+    const code = searchParams.get('code');
+    const id = searchParams.get('id');
+    const cancel = searchParams.get('cancel');
+    const status = searchParams.get('status');
+    const orderCode = searchParams.get('orderCode');
 
-    if (code === "01" || status === "FAILED") {
+    if (code === '01' || status === 'FAILED') {
       setTransactionData({
         code,
         id,
-        cancel: cancel === "true",
+        cancel: cancel === 'true',
         status,
         orderCode,
       });
@@ -43,15 +37,15 @@ function PaymentFailedPageContent() {
   }, [searchParams]);
 
   const handleRetryPayment = () => {
-    router.push("/profile/wallet");
+    router.push('/profile/wallet');
   };
 
   const handleBackToWallet = () => {
-    router.push("/profile/wallet");
+    router.push('/profile/wallet');
   };
 
   const handleBackToHome = () => {
-    router.push("/profile");
+    router.push('/profile');
   };
 
   if (isLoading) {
@@ -76,9 +70,7 @@ function PaymentFailedPageContent() {
           <div className="flex justify-center mb-4">
             <XCircle className="h-16 w-16 text-red-600" />
           </div>
-          <CardTitle className="text-2xl text-red-600">
-            Thanh toán thất bại!
-          </CardTitle>
+          <CardTitle className="text-2xl text-red-600">Thanh toán thất bại!</CardTitle>
           <CardDescription className="text-gray-600">
             Giao dịch của bạn không thể hoàn thành
           </CardDescription>
@@ -96,27 +88,21 @@ function PaymentFailedPageContent() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Thời gian:</span>
-                <span className="font-medium">
-                  {new Date().toLocaleString("vi-VN")}
-                </span>
+                <span className="font-medium">{new Date().toLocaleString('vi-VN')}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Mã giao dịch:</span>
                 <span className="font-medium text-gray-800">
-                  {transactionData?.orderCode || "N/A"}
+                  {transactionData?.orderCode || 'N/A'}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Payment ID:</span>
-                <span className="font-medium text-gray-800">
-                  {transactionData?.id || "N/A"}
-                </span>
+                <span className="font-medium text-gray-800">{transactionData?.id || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Mã lỗi:</span>
-                <span className="font-medium text-red-600">
-                  {transactionData?.code || "N/A"}
-                </span>
+                <span className="font-medium text-red-600">{transactionData?.code || 'N/A'}</span>
               </div>
             </div>
           </div>
@@ -125,9 +111,7 @@ function PaymentFailedPageContent() {
             <p className="text-gray-700">
               Rất tiếc, giao dịch thanh toán của bạn không thể hoàn thành.
             </p>
-            <p className="text-sm text-gray-500">
-              Vui lòng kiểm tra lại thông tin và thử lại.
-            </p>
+            <p className="text-sm text-gray-500">Vui lòng kiểm tra lại thông tin và thử lại.</p>
           </div>
 
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -141,26 +125,15 @@ function PaymentFailedPageContent() {
           </div>
 
           <div className="space-y-3">
-            <Button
-              onClick={handleRetryPayment}
-              className="w-full bg-red-600 hover:bg-red-700"
-            >
+            <Button onClick={handleRetryPayment} className="w-full bg-red-600 hover:bg-red-700">
               <RefreshCw className="h-4 w-4 mr-2" />
               Thử lại thanh toán
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleBackToWallet}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={handleBackToWallet} className="w-full">
               <Wallet className="h-4 w-4 mr-2" />
               Quay về ví
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleBackToHome}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={handleBackToHome} className="w-full">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Quay về trang chủ
             </Button>

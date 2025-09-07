@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,13 +11,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useStorage } from "@/hooks/use-storage";
-import { cn } from "@/lib/utils";
-import { Loader2, Upload, X, ImageIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import Image from "next/image";
+} from '@/components/ui/dialog';
+import { useStorage } from '@/hooks/use-storage';
+import { cn } from '@/lib/utils';
+import { Loader2, Upload, X, ImageIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface SingleImageUploadDialogProps {
   imageUrl?: string;
@@ -30,15 +30,13 @@ interface SingleImageUploadDialogProps {
   handleUpload?: () => Promise<void>;
 }
 
-export const SingleImageUploadDialog: React.FC<
-  SingleImageUploadDialogProps
-> = ({
-  imageUrl = "",
+export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = ({
+  imageUrl = '',
   onImageChange,
   trigger,
-  title = "Tải ảnh lên",
-  description = "Chọn một ảnh để tải lên",
-  acceptedTypes = "image/*",
+  title = 'Tải ảnh lên',
+  description = 'Chọn một ảnh để tải lên',
+  acceptedTypes = 'image/*',
   maxSizeInMB = 5,
   handleUpload,
 }) => {
@@ -53,7 +51,7 @@ export const SingleImageUploadDialog: React.FC<
 
   useEffect(() => {
     setCurrentImageUrl(imageUrl);
-    console.log("🖼️ ImageUrl prop changed:", imageUrl);
+    console.log('🖼️ ImageUrl prop changed:', imageUrl);
   }, [imageUrl]);
 
   useEffect(() => {
@@ -69,18 +67,18 @@ export const SingleImageUploadDialog: React.FC<
 
         setIsUploading(true);
         try {
-          const data = await uploadFile(file, "attachments");
+          const data = await uploadFile(file, 'attachments');
           if (data) {
-            console.log("📸 Upload successful:", data.url);
+            console.log('📸 Upload successful:', data.url);
             setCurrentImageUrl(data.url);
             onImageChange(data.url);
-            toast.success("Ảnh đã được tải lên thành công!");
+            toast.success('Ảnh đã được tải lên thành công!');
             setPreviewUrl(null);
             setFile(null);
           }
         } catch (error) {
-          toast.error("Tải ảnh lên thất bại. Vui lòng thử lại.");
-          console.error("Upload error:", error);
+          toast.error('Tải ảnh lên thất bại. Vui lòng thử lại.');
+          console.error('Upload error:', error);
         } finally {
           setIsUploading(false);
         }
@@ -98,7 +96,7 @@ export const SingleImageUploadDialog: React.FC<
       setFile(selectedFile);
     }
     // Reset input value
-    e.target.value = "";
+    e.target.value = '';
   };
 
   const handleDeleteImage = async () => {
@@ -107,12 +105,12 @@ export const SingleImageUploadDialog: React.FC<
     setIsDeleting(true);
     try {
       await deleteFile(currentImageUrl);
-      setCurrentImageUrl("");
-      onImageChange("");
-      toast.success("Ảnh đã được xóa thành công!");
+      setCurrentImageUrl('');
+      onImageChange('');
+      toast.success('Ảnh đã được xóa thành công!');
     } catch (error) {
-      toast.error("Xóa ảnh thất bại. Vui lòng thử lại.");
-      console.error("Delete error:", error);
+      toast.error('Xóa ảnh thất bại. Vui lòng thử lại.');
+      console.error('Delete error:', error);
     } finally {
       setIsDeleting(false);
     }
@@ -147,7 +145,7 @@ export const SingleImageUploadDialog: React.FC<
         {trigger || (
           <Button variant="outline" size="sm">
             <ImageIcon className="h-4 w-4 mr-2" />
-            {currentImageUrl ? "Thay đổi ảnh" : "Tải ảnh lên"}
+            {currentImageUrl ? 'Thay đổi ảnh' : 'Tải ảnh lên'}
           </Button>
         )}
       </DialogTrigger>
@@ -163,13 +161,13 @@ export const SingleImageUploadDialog: React.FC<
             {displayImageUrl ? (
               <div className="relative group w-full max-w-sm aspect-square rounded-lg overflow-hidden border-2 border-muted">
                 <Image
-                  src={displayImageUrl || "/placeholder.svg"}
+                  src={displayImageUrl || '/placeholder.svg'}
                   alt="Uploaded image"
                   fill
                   className="object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = "/placeholder.svg";
+                    target.src = '/placeholder.svg';
                   }}
                 />
 
@@ -201,15 +199,12 @@ export const SingleImageUploadDialog: React.FC<
               </div>
             ) : (
               <div
-                onClick={() =>
-                  !isUploading &&
-                  document.getElementById("single-upload")?.click()
-                }
+                onClick={() => !isUploading && document.getElementById('single-upload')?.click()}
                 className={cn(
-                  "relative p-8 border-2 border-dashed rounded-lg w-full max-w-sm aspect-square cursor-pointer transition-all duration-200",
+                  'relative p-8 border-2 border-dashed rounded-lg w-full max-w-sm aspect-square cursor-pointer transition-all duration-200',
                   isUploading
-                    ? "border-primary/50 bg-primary/5 cursor-not-allowed"
-                    : "border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5"
+                    ? 'border-primary/50 bg-primary/5 cursor-not-allowed'
+                    : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5',
                 )}
               >
                 <div className="w-full h-full flex flex-col items-center justify-center gap-4">
@@ -251,13 +246,11 @@ export const SingleImageUploadDialog: React.FC<
             {displayImageUrl && !isUploading && (
               <Button
                 variant="outline"
-                onClick={() =>
-                  document.getElementById("single-upload")?.click()
-                }
+                onClick={() => document.getElementById('single-upload')?.click()}
                 className="w-full max-w-sm"
               >
                 <Upload className="h-4 w-4 mr-2" />
-                {currentImageUrl ? "Thay đổi ảnh" : "Chọn ảnh khác"}
+                {currentImageUrl ? 'Thay đổi ảnh' : 'Chọn ảnh khác'}
               </Button>
             )}
           </div>
