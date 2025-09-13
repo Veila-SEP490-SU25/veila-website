@@ -319,7 +319,11 @@ const OrderDetailPage = () => {
 
         <div className="space-y-6">
           <CustomerInfoCard customer={order.customer} />
-          <QuickActionsCard onCheckout={handleCheckout} isCheckingOut={isCheckingOut} />
+          <QuickActionsCard
+            onCheckout={handleCheckout}
+            isCheckingOut={isCheckingOut}
+            order={order}
+          />
           <OrderSummaryCard order={order} progress={progress} />
         </div>
       </div>

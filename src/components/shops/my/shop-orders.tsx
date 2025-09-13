@@ -1,4 +1,5 @@
 'use client';
+import { CreateChatButton } from '@/components/chat/create-chat-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -576,9 +577,17 @@ export const MyShopOrders = () => {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem disabled={isLoading}>
-                            <MessageSquare className="h-4 w-4 mr-2" />
-                            Nhắn tin khách hàng
+                          <DropdownMenuItem disabled={isLoading} asChild>
+                            <CreateChatButton
+                              shopId={order.shop.id}
+                              shopName={order.shop.name}
+                              shopAvatarUrl={order.shop.logoUrl}
+                              customerId={order.customer.id}
+                              customerName={`${order.customer.firstName} ${order.customer.middleName} ${order.customer.lastName}`}
+                              customerAvatarUrl={order.customer.avatarUrl}
+                              orderId={order.id}
+                              variant="ghost"
+                            />
                           </DropdownMenuItem>
                           <DropdownMenuItem disabled={isLoading}>
                             <Edit className="h-4 w-4 mr-2" />

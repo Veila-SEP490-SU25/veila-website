@@ -1,4 +1,5 @@
 'use client';
+import { CreateChatButton } from '@/components/chat/create-chat-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -422,16 +423,17 @@ export const MyOrders = () => {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => {
-                              // Tạo chat với khách hàng
-                              router.push(
-                                `/chat?userId=${order.customer.id}&userName=${order.customer.firstName}`,
-                              );
-                            }}
-                          >
-                            <MessageSquare className="h-4 w-4 mr-2" />
-                            Nhắn tin khách hàng
+                          <DropdownMenuItem asChild>
+                            <CreateChatButton
+                              shopId={order.shop.id}
+                              shopName={order.shop.name}
+                              shopAvatarUrl={order.shop.logoUrl}
+                              customerId={order.customer.id}
+                              customerName={`${order.customer.firstName} ${order.customer.middleName} ${order.customer.lastName}`}
+                              customerAvatarUrl={order.customer.avatarUrl}
+                              orderId={order.id}
+                              variant="ghost"
+                            />
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => router.push(`/profile/orders/${order.id}`)}

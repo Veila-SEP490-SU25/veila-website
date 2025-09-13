@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useAuth } from '@/providers/auth.provider';
 import { useFirebase } from '@/services/firebase';
-import { useFirestore } from '@/hooks/use-firestore';
+import { useFirestore, useFirestoreDoc } from '@/hooks/use-firestore';
 import { FIREBASE_COLLECTIONS, FIREBASE_FIELDS } from '@/constants/firebase';
 import { addDoc, collection, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,57 +16,19 @@ import type { Condition } from '@/hooks/use-firestore';
 export const useChatData = () => {
   const { currentUser, isAuthenticated } = useAuth();
   const { firestore } = useFirebase();
+  const { addDocument, updateDocument } = useFirestoreDoc();
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
-
-  const updateDocument = useCallback(
-    async (collectionPath: string, docId: string, data: any) => {
-      if (!firestore) return;
-      const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined),
-      );
-      const docRef = doc(firestore, collectionPath, docId);
-      await updateDoc(docRef, { ...cleanData, updatedAt: new Date() });
-    },
-    [firestore],
-  );
-
-  const addDocument = useCallback(
-    async (collectionPath: string, data: any) => {
-      if (!firestore) return;
-      const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined),
-      );
-      const query = collection(firestore, collectionPath);
-      const docRef = await addDoc(query, {
-        ...cleanData,
-        createdAt: new Date(),
-      });
-      return docRef.id;
-    },
-    [firestore],
-  );
 
   const currentUserId = currentUser?.id || '';
 
   const chatroomCondition = useMemo<Condition | undefined>(() => {
     if (!currentUserId || !isAuthenticated || !firestore) return undefined;
-
-    const isShop = currentUser?.role === 'SHOP';
-
-    if (isShop) {
-      return {
-        field: FIREBASE_FIELDS.SHOP_ID,
-        operator: '==',
-        value: currentUserId,
-      };
-    } else {
-      return {
-        field: FIREBASE_FIELDS.CUSTOMER_ID,
-        operator: '==',
-        value: currentUserId,
-      };
-    }
-  }, [currentUserId, isAuthenticated, firestore, currentUser?.role]);
+    return {
+      field: 'members',
+      operator: 'array-contains',
+      value: currentUserId,
+    };
+  }, [currentUserId, isAuthenticated, firestore]);
 
   const roomCondition = useMemo<Condition | undefined>(() => {
     if (!currentRoomId) return undefined;
@@ -92,22 +54,6 @@ export const useChatData = () => {
     chatroomCondition,
   );
 
-  // Fallback query for shop role if no data found
-  const { data: fallbackChatrooms } = useFirestore(
-    FIREBASE_COLLECTIONS.CHATROOMS,
-    currentUser?.role === 'SHOP' && (!rawChatrooms || rawChatrooms.length === 0)
-      ? undefined // Query all chatrooms without condition
-      : undefined,
-  );
-
-  // Use main query data or fallback for shop role
-  const effectiveChatrooms = useMemo(() => {
-    if (currentUser?.role === 'SHOP' && (!rawChatrooms || rawChatrooms.length === 0)) {
-      return fallbackChatrooms || [];
-    }
-    return rawChatrooms || [];
-  }, [rawChatrooms, fallbackChatrooms, currentUser?.role]);
-
   const { data: _currentRoomData, error: roomError } = useFirestore(
     FIREBASE_COLLECTIONS.CHATROOMS,
     roomCondition,
@@ -128,31 +74,6 @@ export const useChatData = () => {
       console.error('Error fetching messages:', messagesError);
     }
   }, [chatroomsError, roomError, messagesError]);
-
-  useEffect(() => {
-    // Only log when there are significant changes and not too frequently
-    if (effectiveChatrooms && effectiveChatrooms.length > 0) {
-      console.log('=== CHATROOMS DEBUG ===');
-      console.log('Effective chatrooms count:', effectiveChatrooms.length);
-      console.log('Current user role:', currentUser?.role);
-      console.log('Current user ID:', currentUserId);
-
-      // Only log first few chatrooms to avoid spam
-      effectiveChatrooms.slice(0, 2).forEach((chatroom, index) => {
-        console.log(`Chatroom ${index}:`, {
-          id: chatroom.id,
-          customerId: chatroom.customerId,
-          shopId: chatroom.shopId,
-          customerName: chatroom.customerName,
-          shopName: chatroom.shopName,
-          isForCurrentUser:
-            currentUser?.role === 'SHOP'
-              ? chatroom.shopId === currentUserId
-              : chatroom.customerId === currentUserId,
-        });
-      });
-    }
-  }, [effectiveChatrooms, currentUserId, currentUser?.role]);
 
   useEffect(() => {
     if (!firestore || !currentUserId || !isAuthenticated) return;
@@ -245,26 +166,9 @@ export const useChatData = () => {
   }, [rawMessages]);
 
   const chatrooms = useMemo(() => {
-    if (!effectiveChatrooms || effectiveChatrooms.length === 0) {
-      return [];
-    }
-
-    const filteredChatrooms = effectiveChatrooms.filter((chatroom: any) => {
-      if (currentUser?.role === 'SHOP') {
-        return chatroom.shopId === currentUserId || chatroom.shopId === undefined;
-      } else if (currentUser?.role === 'CUSTOMER') {
-        return chatroom.customerId === currentUserId;
-      }
-      return false;
-    });
-
-    if (filteredChatrooms.length === 0) {
-      return [];
-    }
-
     const uniqueMap = new Map();
 
-    filteredChatrooms.forEach((chatroom: any) => {
+    rawChatrooms.forEach((chatroom: any) => {
       const key = chatroom.docId || chatroom.id;
 
       if (!uniqueMap.has(key)) {
@@ -293,7 +197,7 @@ export const useChatData = () => {
     });
 
     return sortedChatrooms;
-  }, [effectiveChatrooms, currentUser?.role, currentUserId]);
+  }, [rawChatrooms, currentUser?.role, currentUserId]);
 
   const currentRoom = useMemo(() => {
     if (!currentRoomId || !chatrooms.length) return null;
@@ -340,7 +244,7 @@ export const useChatData = () => {
       }
 
       const existingChatroom = chatrooms.find(
-        (room) => room.customerId === data.customerId && room.lastMessage?.shopId === data.shopId,
+        (room) => room.customerId === data.customerId && room.shopId === data.shopId,
       );
 
       if (existingChatroom) {
@@ -366,6 +270,7 @@ export const useChatData = () => {
         shopUnreadCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        members: [data.customerId, data.shopId, currentUserId],
         deletedAt: null,
       };
 

@@ -8,8 +8,11 @@ import {
   where,
   type WhereFilterOp,
   type FieldPath,
+  doc,
+  updateDoc,
+  addDoc,
 } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface Condition {
   field: string | FieldPath;
@@ -64,4 +67,38 @@ export function useFirestore(collectionName: string, condition?: Condition) {
   }, [firestore, collectionName, condition]);
 
   return { data, loading, error };
+}
+
+export function useFirestoreDoc() {
+  const { firestore } = useFirebase();
+
+  const updateDocument = useCallback(
+    async (collectionPath: string, docId: string, data: any) => {
+      if (!firestore) return;
+      const cleanData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined),
+      );
+      const docRef = doc(firestore, collectionPath, docId);
+      await updateDoc(docRef, { ...cleanData, updatedAt: new Date() });
+    },
+    [firestore],
+  );
+
+  const addDocument = useCallback(
+    async (collectionPath: string, data: any) => {
+      if (!firestore) return;
+      const cleanData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined),
+      );
+      const query = collection(firestore, collectionPath);
+      const docRef = await addDoc(query, {
+        ...cleanData,
+        createdAt: new Date(),
+      });
+      return docRef.id;
+    },
+    [firestore],
+  );
+
+  return { updateDocument, addDocument };
 }

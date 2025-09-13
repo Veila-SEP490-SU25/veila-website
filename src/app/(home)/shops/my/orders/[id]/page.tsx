@@ -49,6 +49,7 @@ import { ChangeOrderStatusButton } from '@/components/shops/detail/order/change-
 import { OrderDetailsTab } from '@/components/shops/detail/order/order-details-tab';
 import { MeasurementsTab } from '@/components/shops/detail/order/measurements-tab';
 import { getStatusColor, getStatusText, getTypeColor, getTypeText } from '@/lib/order-util';
+import { CreateChatButton } from '@/components/chat/create-chat-button';
 
 const getMilestoneStatusIcon = (status: MilestoneStatus) => {
   switch (status) {
@@ -587,16 +588,15 @@ const ShopOrderDetailPage = () => {
                   }}
                 />
               )}
-              <Button
-                className="w-full justify-start bg-transparent"
-                variant="outline"
-                onClick={() => {
-                  router.push('/chat');
-                }}
-              >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Nhắn tin khách hàng
-              </Button>
+              <CreateChatButton
+                shopId={order.shop.id}
+                shopName={order.shop.name}
+                shopAvatarUrl={order.shop.logoUrl}
+                customerId={order.customer.id}
+                customerName={`${order.customer.firstName} ${order.customer.middleName} ${order.customer.lastName}`}
+                customerAvatarUrl={order.customer.avatarUrl}
+                orderId={order.id}
+              />
             </CardContent>
           </Card>
 

@@ -11,22 +11,30 @@ interface CreateChatButtonProps {
   shopId: string;
   shopName: string;
   shopAvatarUrl?: string | null;
+  customerId: string;
+  customerName: string;
+  customerAvatarUrl?: string | null;
   orderId?: string | null;
   requestId?: string | null;
   dressId?: string | null;
   dressName?: string | null;
   className?: string;
+  variant?: 'default' | 'outline' | 'ghost' | 'link' | 'destructive';
 }
 
 export function CreateChatButton({
   shopId,
   shopName,
   shopAvatarUrl,
+  customerId,
+  customerName,
+  customerAvatarUrl,
   orderId,
   requestId,
   dressId,
   dressName,
   className,
+  variant = 'outline',
 }: CreateChatButtonProps) {
   const { createChatroom } = useChat();
   const { currentUser } = useAuth();
@@ -56,11 +64,9 @@ export function CreateChatButton({
             : dressId
               ? `Váy: ${dressName || dressId}`
               : null,
-        customerId: currentUser.id,
-        customerName:
-          `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() ||
-          `${currentUser.username || 'Khách hàng'}`,
-        customerAvatarUrl: currentUser.avatarUrl || null,
+        customerId: customerId,
+        customerName: customerName,
+        customerAvatarUrl: customerAvatarUrl || null,
         shopId,
         shopName,
         shopAvatarUrl: shopAvatarUrl || null,
@@ -81,9 +87,9 @@ export function CreateChatButton({
   };
 
   return (
-    <Button onClick={handleCreateChat} disabled={isLoading} className={className} variant="outline">
+    <Button onClick={handleCreateChat} disabled={isLoading} className={className} variant={variant}>
       <MessageCircle className="h-4 w-4 mr-2" />
-      {isLoading ? 'Đang tạo...' : 'Nhắn tin với shop'}
+      {isLoading ? 'Đang tạo...' : 'Nhắn tin'}
     </Button>
   );
 }
