@@ -27,7 +27,6 @@ import {
   XCircle,
   AlertCircle,
   PlayCircle,
-  MessageSquare,
   TrendingUp,
   Edit,
 } from 'lucide-react';

@@ -34,7 +34,6 @@ import {
   Eye,
   Mail,
   MapPin,
-  MessageSquare,
   MoreHorizontal,
   Package,
   Phone,

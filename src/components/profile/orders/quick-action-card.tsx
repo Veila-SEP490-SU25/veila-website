@@ -3,10 +3,10 @@ import { RequestSmartOtpDialog } from '@/components/request-smart-otp-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IOrder } from '@/services/types';
-import { MessageSquare, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 
 interface QuickActionsCardProps {
-  order: IOrder
+  order: IOrder;
   onCheckout: (otp: string) => Promise<boolean>;
   isCheckingOut: boolean;
 }

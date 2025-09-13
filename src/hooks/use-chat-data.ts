@@ -3,7 +3,7 @@ import { useAuth } from '@/providers/auth.provider';
 import { useFirebase } from '@/services/firebase';
 import { useFirestore, useFirestoreDoc } from '@/hooks/use-firestore';
 import { FIREBASE_COLLECTIONS, FIREBASE_FIELDS } from '@/constants/firebase';
-import { addDoc, collection, doc, updateDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import type {
   IChatroom,
@@ -197,7 +197,7 @@ export const useChatData = () => {
     });
 
     return sortedChatrooms;
-  }, [rawChatrooms, currentUser?.role, currentUserId]);
+  }, [rawChatrooms]);
 
   const currentRoom = useMemo(() => {
     if (!currentRoomId || !chatrooms.length) return null;
@@ -286,7 +286,7 @@ export const useChatData = () => {
         return null;
       }
     },
-    [firestore, addDocument, setCurrentRoomId, chatrooms],
+    [firestore, addDocument, setCurrentRoomId, chatrooms, currentUserId],
   );
 
   const sendMessage = useCallback(

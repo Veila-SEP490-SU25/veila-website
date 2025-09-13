@@ -27,10 +27,6 @@ import {
 } from 'recharts';
 import { formatPrice } from '@/lib/products-utils';
 
-interface ShopDashboardProps {
-  shop: IShop;
-}
-
 export const ShopDashboard = () => {
   const [metrics, setMetrics] = useState({
     dresses: 0,
