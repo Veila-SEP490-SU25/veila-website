@@ -8,9 +8,10 @@ import {
   useLazyGetMyShopBlogsQuery,
   useLazyGetOrdersQuery,
   useLazyGetShopIncomeQuery,
+  useLazyGetMyShopQuery,
 } from '@/services/apis';
 import { DollarSign, Package, ShoppingBag, FileText, TrendingUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import {
   BarChart,
@@ -24,12 +25,13 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { formatPrice } from '@/lib/products-utils';
 
 interface ShopDashboardProps {
   shop: IShop;
 }
 
-export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
+export const ShopDashboard = () => {
   const [metrics, setMetrics] = useState({
     dresses: 0,
     accessories: 0,
@@ -38,103 +40,112 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
     income: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
-
+  const [shop, setShop] = useState<IShop | null>(null);
   const [getDresses] = useLazyGetMyShopDressesQuery();
   const [getAccessories] = useLazyGetMyShopAccessoriesQuery();
   const [getBlogs] = useLazyGetMyShopBlogsQuery();
   const [getOrders] = useLazyGetOrdersQuery();
   const [getShopIncome] = useLazyGetShopIncomeQuery();
+  const [getShop] = useLazyGetMyShopQuery();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(price);
-  };
+  const fetchShop = useCallback(async () => {
+    try {
+      const { item, statusCode } = await getShop().unwrap();
+      if (statusCode === 200) {
+        setShop(item);
+      } else {
+        toast.error('Không thể tải thông tin cửa hàng.');
+      }
+    } catch (error) {
+      console.error('Error fetching shop:', error);
+    }
+  }, [getShop, setShop]);
+
+  const fetchMetrics = useCallback(async () => {
+    if (!shop) return;
+    try {
+      setIsLoading(true);
+
+      // Fetch dresses
+      const dressesResponse = await getDresses({
+        page: 0,
+        size: 1000,
+        filter: '',
+        sort: '',
+      }).unwrap();
+      const dressesCount = dressesResponse.items?.length || 0;
+
+      // Fetch accessories
+      const accessoriesResponse = await getAccessories({
+        page: 0,
+        size: 1000,
+        filter: '',
+        sort: '',
+      }).unwrap();
+      const accessoriesCount = accessoriesResponse.items?.length || 0;
+
+      // Fetch blogs
+      const blogsResponse = await getBlogs({
+        page: 0,
+        size: 1000,
+        filter: '',
+        sort: '',
+      }).unwrap();
+      const blogsCount = blogsResponse.items?.length || 0;
+
+      // Fetch orders with shop filter
+      const ordersResponse = await getOrders({
+        page: 0,
+        size: 1000,
+        filter: ``,
+        sort: '',
+      }).unwrap();
+      const ordersCount = ordersResponse.items?.length || 0;
+
+      // Fetch shop income
+      const incomeResponse = await getShopIncome(shop.id).unwrap();
+      const incomeAmount = incomeResponse.item || 0;
+
+      setMetrics({
+        dresses: dressesCount,
+        accessories: accessoriesCount,
+        blogs: blogsCount,
+        orders: ordersCount,
+        income: incomeAmount,
+      });
+    } catch (error: any) {
+      console.error('Error fetching metrics:', error);
+      // Set metrics mặc định khi có lỗi
+      setMetrics({
+        dresses: 0,
+        accessories: 0,
+        blogs: 0,
+        orders: 0,
+        income: 0,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    getDresses,
+    getAccessories,
+    getBlogs,
+    getOrders,
+    shop,
+    getShopIncome,
+    setMetrics,
+    setIsLoading,
+  ]);
 
   useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        setIsLoading(true);
+    if (shop) {
+      fetchMetrics();
+    }
+  }, [shop, fetchMetrics]);
 
-        // Fetch dresses
-        const dressesResponse = await getDresses({
-          page: 0,
-          size: 1000,
-          filter: '',
-          sort: '',
-        }).unwrap();
-        const dressesCount = dressesResponse.items?.length || 0;
-
-        // Fetch accessories
-        const accessoriesResponse = await getAccessories({
-          page: 0,
-          size: 1000,
-          filter: '',
-          sort: '',
-        }).unwrap();
-        const accessoriesCount = accessoriesResponse.items?.length || 0;
-
-        // Fetch blogs
-        const blogsResponse = await getBlogs({
-          page: 0,
-          size: 1000,
-          filter: '',
-          sort: '',
-        }).unwrap();
-        const blogsCount = blogsResponse.items?.length || 0;
-
-        // Fetch orders with shop filter
-        const ordersResponse = await getOrders({
-          page: 0,
-          size: 1000,
-          filter: `shopId:eq:${shop.id}`,
-          sort: '',
-        }).unwrap();
-        const ordersCount = ordersResponse.items?.length || 0;
-
-        // Fetch shop income
-        const incomeResponse = await getShopIncome(shop.id).unwrap();
-        const incomeAmount = incomeResponse.item || 0;
-
-        setMetrics({
-          dresses: dressesCount,
-          accessories: accessoriesCount,
-          blogs: blogsCount,
-          orders: ordersCount,
-          income: incomeAmount,
-        });
-      } catch (error: any) {
-        console.error('Error fetching metrics:', error);
-
-        // Xử lý error message an toàn
-        let errorMessage = 'Không thể tải dữ liệu dashboard';
-        if (error?.data?.message) {
-          errorMessage = error.data.message;
-        } else if (error?.message) {
-          errorMessage = error.message;
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        }
-
-        // Hiển thị toast error với message an toàn
-        toast.error(errorMessage);
-
-        // Set metrics mặc định khi có lỗi
-        setMetrics({
-          dresses: 0,
-          accessories: 0,
-          blogs: 0,
-          orders: 0,
-          income: 0,
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMetrics();
-  }, [getDresses, getAccessories, getBlogs, getOrders, shop.id, getShopIncome]);
+  useEffect(() => {
+    fetchShop();
+  }, [fetchShop]);
 
   // Data for charts
   const productData = [
@@ -158,7 +169,9 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Tổng quan hoạt động kinh doanh của {shop.name}</p>
+          <p className="text-muted-foreground">
+            Tổng quan hoạt động kinh doanh {shop && `của ${shop.name}`}
+          </p>
         </div>
       </div>
 
@@ -248,6 +261,39 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
             </Card>
           </div>
 
+          {/* Detailed Metrics */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Váy cưới</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-rose-600">{metrics.dresses}</div>
+                <p className="text-sm text-muted-foreground">Sản phẩm váy cưới</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Phụ kiện</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-blue-600">{metrics.accessories}</div>
+                <p className="text-sm text-muted-foreground">Sản phẩm phụ kiện</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Tổng doanh thu</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-green-600">
+                  {formatPrice(metrics.income)}
+                </div>
+                <p className="text-sm text-muted-foreground">Doanh thu hiện tại</p>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Charts Section */}
           <div className="grid gap-6 md:grid-cols-2">
             {/* Product Distribution Pie Chart */}
@@ -303,39 +349,6 @@ export const ShopDashboard = ({ shop }: ShopDashboardProps) => {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Detailed Metrics */}
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Váy cưới</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-rose-600">{metrics.dresses}</div>
-                <p className="text-sm text-muted-foreground">Sản phẩm váy cưới</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Phụ kiện</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-blue-600">{metrics.accessories}</div>
-                <p className="text-sm text-muted-foreground">Sản phẩm phụ kiện</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Tổng doanh thu</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600">
-                  {formatPrice(metrics.income)}
-                </div>
-                <p className="text-sm text-muted-foreground">Doanh thu hiện tại</p>
               </CardContent>
             </Card>
           </div>

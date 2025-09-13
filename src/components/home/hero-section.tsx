@@ -6,9 +6,13 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Heart, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  isAuthenticated?: boolean;
+}
+
+export const HeroSection = ({ isAuthenticated }: HeroSectionProps) => {
   return (
-    <section className="relative   px-4 md:px-6 lg:px-8 bg-gradient-to-br from-rose-50 via-white to-ivory-50 min-h-screen flex items-center">
+    <section className="relative px-4 md:px-6 lg:px-8 bg-gradient-to-br from-rose-50 via-white to-ivory-50 min-h-screen flex items-center">
       <div className="max-w-7xl mx-auto relative w-full">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
@@ -46,16 +50,18 @@ export const HeroSection = () => {
                   Khám Phá Váy Cưới
                 </Button>
               </Link>
-              <Link href="/request-order">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-2 border-rose-200 text-rose-700 hover:bg-rose-50 px-8 py-3 text-base font-semibold bg-white/80 backdrop-blur-sm"
-                >
-                  <Heart className="w-5 h-5 mr-2" />
-                  Đặt May Riêng
-                </Button>
-              </Link>
+              {isAuthenticated && (
+                <Link href="/custom-order">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-2 border-rose-200 text-rose-700 hover:bg-rose-50 px-8 py-3 text-base font-semibold bg-white/80 backdrop-blur-sm"
+                  >
+                    <Heart className="w-5 h-5 mr-2" />
+                    Đặt May Riêng
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 

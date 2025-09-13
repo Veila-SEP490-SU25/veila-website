@@ -2,7 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Search, Scissors, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-export const CTASection: React.FC = () => {
+interface CTASectionProps {
+  isAuthenticated?: boolean;
+}
+
+export const CTASection: React.FC<CTASectionProps> = ({ isAuthenticated }) => {
   return (
     <section className="py-16 px-4 md:px-6 lg:px-8 bg-gradient-to-br from-rose-600 via-rose-700 to-pink-700 relative overflow-hidden">
       <div className="max-w-5xl mx-auto relative">
@@ -31,17 +35,19 @@ export const CTASection: React.FC = () => {
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link href="/custom-order">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-rose-600 px-8 py-3 text-base font-semibold bg-transparent backdrop-blur-sm group"
-              >
-                <Scissors className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                Đặt May Riêng
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+            {isAuthenticated && (
+              <Link href="/custom-order">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white text-white hover:bg-white hover:text-rose-600 px-8 py-3 text-base font-semibold bg-transparent backdrop-blur-sm group"
+                >
+                  <Scissors className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                  Đặt May Riêng
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
