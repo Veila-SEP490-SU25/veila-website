@@ -11,8 +11,8 @@ interface CreateChatButtonProps {
   shopId: string;
   shopName: string;
   shopAvatarUrl?: string | null;
-  customerId: string;
-  customerName: string;
+  customerId?: string | null;
+  customerName?: string | null;
   customerAvatarUrl?: string | null;
   orderId?: string | null;
   requestId?: string | null;
@@ -64,8 +64,10 @@ export function CreateChatButton({
             : dressId
               ? `Váy: ${dressName || dressId}`
               : null,
-        customerId: customerId,
-        customerName: customerName,
+        customerId: customerId || currentUser.id,
+        customerName:
+          customerName ||
+          `${currentUser.firstName} ${currentUser.middleName} ${currentUser.lastName}`,
         customerAvatarUrl: customerAvatarUrl || null,
         shopId,
         shopName,
