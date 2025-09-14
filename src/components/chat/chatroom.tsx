@@ -19,7 +19,7 @@ import {
   Minimize2,
   Maximize2,
 } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { ChatMessage } from '@/components/chat/chat-message';
 import { useAuth } from '@/providers/auth.provider';
 
@@ -39,10 +39,19 @@ export function Chatroom({ isMinimized = false, onToggleMinimize }: ChatroomProp
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    console.log('Messages updated, scrolling to bottom');
+
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+      if (scrollRef.current) {
+        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
     }
   }, [messages]);
 
@@ -330,7 +339,7 @@ export function Chatroom({ isMinimized = false, onToggleMinimize }: ChatroomProp
       {/* Messages */}
       {!isMinimized && (
         <ScrollArea className="flex-1 p-4 overflow-auto" ref={scrollAreaRef}>
-          <div className="space-y-4 min-h-0">
+          <div className="space-y-4 min-h-0" ref={scrollRef}>
             {isLoadingMessages ? (
               <div className="text-center text-muted-foreground py-8">
                 <div className="mb-4">

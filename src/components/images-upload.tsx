@@ -1,10 +1,13 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
-import { useStorage } from '@/hooks/use-storage';
 import { cn } from '@/lib/utils';
 import { Loader2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Image } from '@/components/image';
 import { toast } from 'sonner';
+import { useFilestack } from '@/hooks/use-filestack';
+import { PickerResponse } from 'filestack-js';
 
 interface ImagesUploadProps {
   imageUrls: string;
@@ -12,45 +15,39 @@ interface ImagesUploadProps {
 }
 
 export const ImagesUpload: React.FC<ImagesUploadProps> = ({ imageUrls, setImageUrls }) => {
-  const { uploadFile } = useStorage();
-
-  const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+  // hook with callback that updates state when upload completes
+  const { openUpload } = useFilestack((res?: PickerResponse) => {
+    toast.success('Ảnh đã được tải lên thành công!');
+    if (res?.filesUploaded?.length) {
+      if (res?.filesUploaded?.length) {
+        const uploadedUrls = res.filesUploaded.map((f) => f.url);
+        const existing = imageUrls ? imageUrls.split(',').filter(Boolean) : [];
+        const newImages = [...existing, ...uploadedUrls];
+        setImageUrls(newImages.join(','));
+        toast.success(`Đã tải lên ${res.filesUploaded.length} ảnh`);
+      }
+    }
+  });
 
   useEffect(() => {
     if (imageUrls) {
       const parsedImages = imageUrls.split(',').filter((url) => url.trim());
       setImages(parsedImages);
-      console.log('Parsed image URLs:', parsedImages);
     } else {
       setImages([]);
-      console.log('Cleared image URLs');
     }
   }, [imageUrls]);
 
-  useEffect(() => {
-    const handleUpload = async () => {
-      if (file) {
-        setIsUploading(true);
-        try {
-          const data = await uploadFile(file, 'shop-licenses');
-          if (data) {
-            const imgUrls = imageUrls ? `${imageUrls},${data.url}` : data.url;
-            setImageUrls(imgUrls);
-            toast.success('Ảnh đã được tải lên thành công!');
-          }
-        } catch {
-          toast.error('Tải ảnh lên thất bại. Vui lòng thử lại.');
-        } finally {
-          setIsUploading(false);
-          setFile(null);
-        }
-      }
-    };
-    handleUpload();
-  }, [file, uploadFile, imageUrls, setImageUrls]);
+  const handleUpload = async () => {
+    try {
+      await openUpload();
+    } catch (e) {
+      toast.error('Tải ảnh lên thất bại. Vui lòng thử lại.');
+    }
+  };
 
   const handleDeleteImage = async (url: string, index: number) => {
     setUploadingIndex(index);
@@ -70,41 +67,17 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({ imageUrls, setImageU
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Upload Area */}
         <div
-          onClick={() => !isUploading && document.getElementById('upload')?.click()}
+          onClick={handleUpload}
           className={cn(
             'relative p-6 border-2 border-dashed rounded-lg aspect-square cursor-pointer transition-all duration-200',
-            isUploading
-              ? 'border-primary/50 bg-primary/5 cursor-not-allowed'
-              : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5',
+            'border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5',
           )}
         >
           <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-            {isUploading ? (
-              <>
-                <Loader2 className="h-8 w-8 text-primary animate-spin" />
-                <p className="text-sm text-muted-foreground text-center">Đang tải ảnh lên...</p>
-              </>
-            ) : (
-              <>
-                <Upload className="h-8 w-8 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground text-center font-medium">Tải ảnh lên</p>
-                <p className="text-xs text-muted-foreground/70 text-center">Nhấn để chọn ảnh</p>
-              </>
-            )}
+            <Upload className="h-8 w-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground text-center font-medium">Tải ảnh lên</p>
+            <p className="text-xs text-muted-foreground/70 text-center">Nhấn để chọn ảnh</p>
           </div>
-          <input
-            id="upload"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const selectedFile = e.target.files?.[0] || null;
-              setFile(selectedFile);
-              // Reset the input value to allow re-uploading the same file
-              e.target.value = '';
-            }}
-            className="hidden"
-            disabled={isUploading}
-          />
         </div>
 
         {images.map((url, index) => (

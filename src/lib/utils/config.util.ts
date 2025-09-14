@@ -54,3 +54,13 @@ export const getVietQRConfig = () => {
     apiKey,
   };
 };
+
+export const getFileStackConfig = (): string => {
+  const apiKey = process.env.NEXT_PUBLIC_FILESTACK_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Missing FileStack API key in environment variables');
+  }
+
+  return apiKey;
+};

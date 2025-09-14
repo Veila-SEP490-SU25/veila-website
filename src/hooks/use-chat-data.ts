@@ -75,45 +75,6 @@ export const useChatData = () => {
     }
   }, [chatroomsError, roomError, messagesError]);
 
-  useEffect(() => {
-    if (!firestore || !currentUserId || !isAuthenticated) return;
-
-    const migrateData = async () => {
-      try {
-        const lowercaseQuery = query(
-          collection(firestore, 'chatrooms'),
-          where(FIREBASE_FIELDS.MEMBERS, 'array-contains', currentUserId),
-        );
-        const lowercaseSnapshot = await getDocs(lowercaseQuery);
-
-        if (lowercaseSnapshot.docs.length > 0) {
-          console.log(
-            `Found ${lowercaseSnapshot.docs.length} chatrooms in lowercase collection, migrating...`,
-          );
-
-          for (const docSnapshot of lowercaseSnapshot.docs) {
-            const data = docSnapshot.data();
-
-            await addDocument(FIREBASE_COLLECTIONS.CHATROOMS, {
-              ...data,
-              docId: docSnapshot.id,
-            });
-
-            console.log(`Migrated chatroom: ${docSnapshot.id}`);
-          }
-
-          console.log('Migration completed');
-        }
-      } catch (error) {
-        console.error('Migration error:', error);
-      }
-    };
-
-    if (rawChatrooms && rawChatrooms.length === 0) {
-      migrateData();
-    }
-  }, [firestore, currentUserId, isAuthenticated, rawChatrooms, addDocument]);
-
   const messages = useMemo(() => {
     if (!rawMessages || rawMessages.length === 0) return [];
 
@@ -166,37 +127,11 @@ export const useChatData = () => {
   }, [rawMessages]);
 
   const chatrooms = useMemo(() => {
-    const uniqueMap = new Map();
-
-    rawChatrooms.forEach((chatroom: any) => {
-      const key = chatroom.docId || chatroom.id;
-
-      if (!uniqueMap.has(key)) {
-        uniqueMap.set(key, chatroom);
-      } else {
-        const existing = uniqueMap.get(key);
-
-        const existingDate =
-          existing.updatedAt || existing.createdAt || existing.lastMessage?.timestamp;
-        const currentDate =
-          chatroom.updatedAt || chatroom.createdAt || chatroom.lastMessage?.timestamp;
-
-        const existingTime = new Date(existingDate || 0).getTime();
-        const currentTime = new Date(currentDate || 0).getTime();
-
-        if (currentTime > existingTime) {
-          uniqueMap.set(key, chatroom);
-        }
-      }
-    });
-
-    const sortedChatrooms = Array.from(uniqueMap.values()).sort((a, b) => {
+    return rawChatrooms.sort((a, b) => {
       const aTime = new Date(a.updatedAt || a.createdAt || a.lastMessage?.timestamp || 0).getTime();
       const bTime = new Date(b.updatedAt || b.createdAt || b.lastMessage?.timestamp || 0).getTime();
       return bTime - aTime;
     });
-
-    return sortedChatrooms;
   }, [rawChatrooms]);
 
   const currentRoom = useMemo(() => {
