@@ -49,7 +49,7 @@ const initializeFirebase = () => {
       app = initializeApp(firebaseConfig);
       auth = getAuth(app);
       firestore = getFirestore(app);
-      storage = getStorage(app);
+      storage = getStorage(app, 'gs://veilastudio.firebasestorage.app');
     }
 
     const googleProvider = new GoogleAuthProvider();

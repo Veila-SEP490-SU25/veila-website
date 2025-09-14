@@ -155,7 +155,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(
     async (body: ILogin) => {
       try {
-        const { item, statusCode } = await loginMutation(body).unwrap();
+        const { item, statusCode, message } = await loginMutation(body).unwrap();
         if (statusCode === 200) {
           const { accessToken, refreshToken } = item;
           authCheckRef.current = false;
@@ -175,13 +175,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             router.push(`/verify-otp?userId=${item}&email=${body.email}`);
           } else {
             toast.error('Đăng nhập thất bại.', {
-              description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
+              description: message || 'Có lỗi xảy ra trong quá trình đăng nhập.',
             });
             return;
           }
         } else {
           toast.error('Đăng nhập thất bại.', {
-            description: 'Có lỗi xảy ra trong quá trình đăng nhập.',
+            description: message || 'Có lỗi xảy ra trong quá trình đăng nhập.',
           });
           return;
         }

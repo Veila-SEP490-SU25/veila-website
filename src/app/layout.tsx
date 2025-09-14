@@ -62,6 +62,7 @@ export default function RootLayout({
             visibleToasts={3}
             gap={5}
             richColors={true}
+            closeButton={true}
           />
         </ThemeProvider>
         <Script src="https://cdn.payos.vn/checkout.js" strategy="afterInteractive" />
