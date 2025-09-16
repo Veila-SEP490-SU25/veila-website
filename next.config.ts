@@ -46,6 +46,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.veila.studio",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "dev.api.veila.studio",
+        port: "",
+        pathname: "/**",
+      },
     ],
     unoptimized: true,
   },
