@@ -19,6 +19,7 @@ import {
   singleApi,
   subscriptionApi,
   transactionApi,
+  uploadApi,
   userApi,
   vonageApi,
   walletApi,
@@ -51,6 +52,7 @@ const store = configureStore({
     [localeApi.reducerPath]: localeApi.reducer,
     [membershipApi.reducerPath]: membershipApi.reducer,
     [vonageApi.reducerPath]: vonageApi.reducer,
+    [uploadApi.reducerPath]: uploadApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -77,6 +79,7 @@ const store = configureStore({
       localeApi.middleware,
       membershipApi.middleware,
       vonageApi.middleware,
+      uploadApi.middleware,
     ),
 });
 
