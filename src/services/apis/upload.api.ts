@@ -8,7 +8,7 @@ export const uploadApi = createApi({
   endpoints: (builder) => ({
     uploadFile: builder.mutation<IItemResponse<string>, FormData>({
       query: (formData) => ({
-        url: "/uploads",
+        url: "upload",
         method: "POST",
         body: formData,
       }),
