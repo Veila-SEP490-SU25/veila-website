@@ -2,24 +2,11 @@
 
 import { useState } from 'react';
 import { ChatSidebar } from '@/components/chat/chat-sidebar';
-import { Chatroom } from '@/components/chat/chatroom';
 
 export default function ChatPage() {
-  const [isChatMinimized, setIsChatMinimized] = useState(false);
-
   return (
-    <div className="h-screen flex max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+    <div className="h-screen md:h-[calc(100vh-4rem)] flex max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
       <ChatSidebar />
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          isChatMinimized ? 'h-16 overflow-hidden' : 'h-full'
-        }`}
-      >
-        <Chatroom
-          isMinimized={isChatMinimized}
-          onToggleMinimize={() => setIsChatMinimized(!isChatMinimized)}
-        />
-      </div>
     </div>
   );
 }

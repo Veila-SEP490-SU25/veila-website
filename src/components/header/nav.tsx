@@ -6,7 +6,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { UnreadBadge } from '@/components/chat/unread-badge';
 import { useAuth } from '@/providers/auth.provider';
 import { UserRole } from '@/services/types/user.type';
 
@@ -87,7 +86,6 @@ export const Nav: React.FC = () => {
             className="text-gray-700 hover:text-crimson-700 transition-colors relative text-lg font-semibold"
           >
             Tin Nhắn
-            <UnreadBadge />
           </Link>
         )}
       </nav>
@@ -163,7 +161,6 @@ export const Nav: React.FC = () => {
                 >
                   <MessageCircle className="h-4 w-4 inline mr-1" />
                   Tin Nhắn
-                  <UnreadBadge />
                 </Link>
               )}
               <UserNav />

@@ -64,3 +64,13 @@ export const getFileStackConfig = (): string => {
 
   return apiKey;
 };
+
+export const getSocketConfig = (): string => {
+  const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+  if (!socketUrl) {
+    throw new Error('Missing Socket URL in environment variables');
+  }
+
+  return socketUrl;
+};
