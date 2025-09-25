@@ -5,6 +5,7 @@ import {
   useLazyGetMeQuery,
   useLoginMutation,
   useLogoutMutation,
+  useRefreshTokenMutation,
   useRequestOtpMutation,
   useVerifyOtpMutation,
 } from '@/services/apis';
@@ -37,6 +38,7 @@ type AuthContextType = {
   logout: () => Promise<void>;
   verifyOtp: (body: IVerifyOtp) => Promise<void>;
   reloadProfile: () => void;
+  refreshTokens: () => Promise<boolean>;
   isAuthenticating: boolean;
   isAuthenticated: boolean;
   currentAccessToken: string | null;
@@ -265,6 +267,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
   }, [setIsAuthenticated]);
 
+  const [refreshTrigger, { isLoading: isRefreshLoading }] = useRefreshTokenMutation();
+
+  const refreshTokens = useCallback(async () => {
+    try {
+      const currentRefreshToken = getRefreshToken();
+      if (!currentRefreshToken) throw new Error('No refresh token available');
+      const { item, statusCode } = await refreshTrigger({
+        refreshToken: currentRefreshToken,
+      }).unwrap();
+      if (statusCode === 200) {
+        const { accessToken, refreshToken } = item;
+        saveTokens(accessToken, refreshToken);
+        setIsAuthenticated(true);
+        setToLocalStorage('isAuthenticated', true);
+        return true;
+      } else {
+        revokeTokens();
+        setIsAuthenticated(false);
+        removeFromLocalStorage('isAuthenticated');
+        setCurrentUser(null);
+        removeFromLocalStorage('user');
+        return false;
+      }
+    } catch (error) {
+      console.error('Refresh token error:', error);
+      revokeTokens();
+      setIsAuthenticated(false);
+      removeFromLocalStorage('isAuthenticated');
+      setCurrentUser(null);
+      removeFromLocalStorage('user');
+      return false;
+    }
+  }, [refreshTrigger, saveTokens, setIsAuthenticated]);
+
   useEffect(() => {
     if (authCheckRef.current) return;
 
@@ -329,11 +365,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           isLogoutLoading ||
           isVerifyOtpLoading ||
           isGoogleLading ||
-          isGetMeLoading,
+          isGetMeLoading ||
+          isRefreshLoading,
         isAuthenticated,
         currentAccessToken,
         currentRefreshToken,
         currentUser,
+        refreshTokens,
       }}
     >
       {children}

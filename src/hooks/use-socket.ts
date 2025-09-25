@@ -13,7 +13,7 @@ export interface ISendMessagePayload {
 
 export const useSocket = () => {
   const socketUrl = getSocketConfig();
-  const { currentAccessToken, reloadProfile, currentUser } = useAuth();
+  const { currentAccessToken, refreshTokens, currentUser } = useAuth();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [conversations, setConversations] = useState<IConversation[]>([]);
@@ -21,16 +21,18 @@ export const useSocket = () => {
 
   useEffect(() => {
     if (!socketUrl || !currentAccessToken) return;
-
     const socket: Socket = io(socketUrl, {
       extraHeaders: {
-        Authorization: currentAccessToken,
+        authorization: currentAccessToken,
+      },
+      auth: {
+        token: currentAccessToken,
       },
       transports: ['websocket'],
     });
 
     socket.on('exception', () => {
-      reloadProfile();
+      refreshTokens();
     });
 
     socket.on('message', (message: IMessage) => {
@@ -39,7 +41,6 @@ export const useSocket = () => {
     });
 
     socket.on('conversation', (conversation: IConversation) => {
-      console.log('Received conversation:', conversation);
       setConversations((prevConversations) =>
         [
           ...prevConversations.filter((c) => c.conversationId !== conversation.conversationId),
@@ -53,7 +54,7 @@ export const useSocket = () => {
     });
 
     setSocket(socket);
-  }, [currentAccessToken, socketUrl, reloadProfile]);
+  }, [currentAccessToken, socketUrl]);
 
   const changeRoom = useCallback(
     (roomId: string) => {
@@ -92,5 +93,6 @@ export const useSocket = () => {
     sendMessage,
     changeRoom,
     createConversation,
+    currentRoomId,
   };
 };
