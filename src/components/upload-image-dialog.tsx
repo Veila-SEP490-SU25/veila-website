@@ -40,7 +40,7 @@ export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = (
   maxSizeInMB = 5,
   handleUpload,
 }) => {
-  const { uploadFile, deleteFile } = useStorage();
+  const { uploadFile } = useStorage();
 
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -67,7 +67,7 @@ export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = (
 
         setIsUploading(true);
         try {
-          const data = await uploadFile(file, 'attachments');
+          const data = await uploadFile(file);
           if (data) {
             console.log('📸 Upload successful:', data.url);
             setCurrentImageUrl(data.url);
@@ -101,15 +101,11 @@ export const SingleImageUploadDialog: React.FC<SingleImageUploadDialogProps> = (
 
   const handleDeleteImage = async () => {
     if (!currentImageUrl) return;
-
     setIsDeleting(true);
     try {
-      await deleteFile(currentImageUrl);
       setCurrentImageUrl('');
       onImageChange('');
-      toast.success('Ảnh đã được xóa thành công!');
     } catch (error) {
-      toast.error('Xóa ảnh thất bại. Vui lòng thử lại.');
       console.error('Delete error:', error);
     } finally {
       setIsDeleting(false);
