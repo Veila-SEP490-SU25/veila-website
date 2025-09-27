@@ -44,10 +44,10 @@ export default function RootLayout({
             <AuthProvider>
               <RouteProvider>
                 <PagingProvider>
-                    <VerifyPhonePopupProvider>
-                      {children}
-                      <GoogleAuthHandler />
-                    </VerifyPhonePopupProvider>
+                  <VerifyPhonePopupProvider>
+                    {children}
+                    <GoogleAuthHandler />
+                  </VerifyPhonePopupProvider>
                 </PagingProvider>
               </RouteProvider>
             </AuthProvider>

@@ -17,7 +17,6 @@ interface UploadButtonProps {
 }
 
 export const UploadButton = ({
-  urls,
   setUrls,
   trigger,
   className,

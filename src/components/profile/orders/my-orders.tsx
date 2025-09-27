@@ -31,6 +31,7 @@ import {
   Eye,
   Mail,
   MapPin,
+  MessageCircle,
   MoreHorizontal,
   Package,
   Phone,
@@ -424,14 +425,13 @@ export const MyOrders = () => {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem asChild>
                             <CreateChatButton
-                              shopId={order.shop.id}
-                              shopName={order.shop.name}
-                              shopAvatarUrl={order.shop.logoUrl}
-                              customerId={order.customer.id}
-                              customerName={`${order.customer.firstName} ${order.customer.middleName} ${order.customer.lastName}`}
-                              customerAvatarUrl={order.customer.avatarUrl}
-                              orderId={order.id}
-                              variant="ghost"
+                              receiverId={order.shop.user.id}
+                              trigger={
+                                <Button className="" variant="ghost">
+                                  <MessageCircle className="size-4 mr-2" />
+                                  Nhắn tin
+                                </Button>
+                              }
                             />
                           </DropdownMenuItem>
                           <DropdownMenuItem

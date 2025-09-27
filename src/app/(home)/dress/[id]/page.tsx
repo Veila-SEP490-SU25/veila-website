@@ -16,6 +16,7 @@ import {
   Heart,
   Info,
   Mail,
+  MessageCircle,
   RotateCcw,
   Share2,
   Shield,
@@ -367,12 +368,13 @@ const DressDetailPage = () => {
               }
             />
             <CreateChatButton
-              shopId={dress.user?.shop?.id || ''}
-              shopName={dress.user?.shop?.name || ''}
-              shopAvatarUrl={dress.user?.shop?.logoUrl || ''}
-              dressId={dress.id}
-              dressName={dress.name}
-              className="w-full bg-transparent"
+              receiverId={dress.user?.id || ''}
+              trigger={
+                <Button className="" variant="outline">
+                  <MessageCircle className="size-4 mr-2" />
+                  Nhắn tin
+                </Button>
+              }
             />
           </div>
 
@@ -465,12 +467,13 @@ const DressDetailPage = () => {
                       Xem hồ sơ
                     </Button>
                     <CreateChatButton
-                      shopId={dress.user?.shop?.id || ''}
-                      shopName={dress.user?.shop?.name || ''}
-                      shopAvatarUrl={dress.user?.shop?.logoUrl || ''}
-                      dressId={dress.id}
-                      dressName={dress.name}
-                      className="bg-transparent border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                      receiverId={dress.user?.id || ''}
+                      trigger={
+                        <Button className="" variant="outline">
+                          <MessageCircle className="size-4 mr-2" />
+                          Nhắn tin
+                        </Button>
+                      }
                     />
                   </div>
                 </div>

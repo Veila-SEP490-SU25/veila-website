@@ -1,292 +1,25 @@
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDebounce } from '@/hooks/use-debounce';
-import { useSocket } from '@/hooks/use-socket';
 import { cn } from '@/lib/utils';
 import { IConversation } from '@/services/types';
 import { Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const mockedConversations: IConversation[] = [
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-  {
-    conversationId: '1',
-    receiverName: 'Nguyễn Văn A',
-    receiverAvatar: '',
-    receiverId: '1',
-    lastMessage: {
-      chatRoomId: '1',
-      senderId: '2',
-      senderName: 'Nguyễn Văn B',
-      content: 'Hello, how are you?',
-      senderAvatar: '',
-      createdAt: new Date(),
-    },
-    unReadCount: 2,
-  },
-];
+interface ChatSidebarProps {
+  conversations: IConversation[];
+  currentRoomId: string;
+  changeRoom: (conversationId: string) => void;
+}
 
-export const ChatSidebar = () => {
-  const { conversations, currentRoomId, changeRoom } = useSocket();
+export const ChatSidebar = ({ conversations, currentRoomId, changeRoom }: ChatSidebarProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredConversations, setFilteredConversations] = useState(conversations);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
   useEffect(() => {
     if (!debouncedSearchTerm) {
       setFilteredConversations(conversations);
@@ -297,6 +30,11 @@ export const ChatSidebar = () => {
     );
     setFilteredConversations(filtered);
   }, [conversations, debouncedSearchTerm]);
+
+  const handleRoomChange = (conversationId: string) => {
+    console.log('Changing room to:', conversationId);
+    changeRoom(conversationId);
+  };
 
   return (
     <div className="w-full h-full col-span-1 border-r border-l">
@@ -321,19 +59,22 @@ export const ChatSidebar = () => {
             <div
               key={conv.conversationId}
               className={cn(
-                `p-2 hover:bg-rose-50 ${currentRoomId === conv.conversationId ? 'bg-rose-200' : ''}`,
-                `flex items-center cursor-pointer gap-2`,
+                'p-2 hover:bg-rose-50 cursor-pointer flex items-center gap-2 transition-colors',
+                currentRoomId === conv.conversationId ? 'bg-rose-200' : '',
               )}
-              onClick={() => changeRoom(conv.conversationId)}
+              onClick={() => handleRoomChange(conv.conversationId)}
             >
               <Avatar className="size-12 border">
                 <AvatarImage src={conv.receiverAvatar || ''} alt={conv.receiverName} />
                 <AvatarFallback>{conv.receiverName.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold truncate">{conv.receiverName}</p>
                 <p
-                  className={`text-xs text-muted-foreground truncate ${conv.unReadCount > 0 ? 'font-semibold' : ''}`}
+                  className={cn(
+                    'text-xs text-muted-foreground truncate',
+                    conv.unReadCount > 0 ? 'font-semibold' : '',
+                  )}
                 >
                   {(() => {
                     if (conv.lastMessage) {
@@ -344,10 +85,15 @@ export const ChatSidebar = () => {
                         return 'Đã gửi 1 ảnh';
                       }
                     }
-                    return '';
+                    return 'Chưa có tin nhắn';
                   })()}
                 </p>
               </div>
+              {conv.unReadCount > 0 && (
+                <div className="bg-rose-500 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-2">
+                  {conv.unReadCount > 99 ? '99+' : conv.unReadCount}
+                </div>
+              )}
             </div>
           ))
         )}

@@ -3,7 +3,7 @@ import { RequestSmartOtpDialog } from '@/components/request-smart-otp-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IOrder } from '@/services/types';
-import { Wallet } from 'lucide-react';
+import { MessageCircle, Wallet } from 'lucide-react';
 
 interface QuickActionsCardProps {
   order: IOrder;
@@ -31,13 +31,13 @@ export const QuickActionsCard = ({ onCheckout, order }: QuickActionsCardProps) =
       </CardContent>
       <CardContent className="space-y-2">
         <CreateChatButton
-          shopId={order.shop.id}
-          shopName={order.shop.name}
-          shopAvatarUrl={order.shop.logoUrl}
-          customerId={order.customer.id}
-          customerName={`${order.customer.firstName} ${order.customer.middleName} ${order.customer.lastName}`}
-          customerAvatarUrl={order.customer.avatarUrl}
-          orderId={order.id}
+          receiverId={order.shop.user.id}
+          trigger={
+            <Button className="" variant="ghost">
+              <MessageCircle className="size-4 mr-2" />
+              Nhắn tin
+            </Button>
+          }
         />
       </CardContent>
     </Card>

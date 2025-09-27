@@ -131,10 +131,7 @@ const ShopDetailPage = () => {
 
           <div className="flex flex-wrap gap-3">
             <ShopChatButton
-              shopId={shop.id}
-              shopName={shop.name}
-              shopAvatarUrl={shop.logoUrl}
-              className="bg-rose-600 hover:bg-rose-700 text-white border-rose-600"
+              shopId={shop.user.id}
             />
           </div>
         </div>

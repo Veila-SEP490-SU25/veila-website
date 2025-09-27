@@ -29,6 +29,7 @@ import {
   PlayCircle,
   TrendingUp,
   Edit,
+  MessageCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -588,13 +589,13 @@ const ShopOrderDetailPage = () => {
                 />
               )}
               <CreateChatButton
-                shopId={order.shop.id}
-                shopName={order.shop.name}
-                shopAvatarUrl={order.shop.logoUrl}
-                customerId={order.customer.id}
-                customerName={`${order.customer.firstName} ${order.customer.middleName} ${order.customer.lastName}`}
-                customerAvatarUrl={order.customer.avatarUrl}
-                orderId={order.id}
+                receiverId={order.customer.id}
+                trigger={
+                  <Button className="" variant="outline">
+                    <MessageCircle className="size-4 mr-2" />
+                    Nhắn tin
+                  </Button>
+                }
               />
             </CardContent>
           </Card>
