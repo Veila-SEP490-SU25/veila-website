@@ -469,7 +469,7 @@ const DressDetailPage = () => {
                     <CreateChatButton
                       receiverId={dress.user?.id || ''}
                       trigger={
-                        <Button className="" variant="outline">
+                        <Button className="w-full" variant="outline">
                           <MessageCircle className="size-4 mr-2" />
                           Nhắn tin
                         </Button>

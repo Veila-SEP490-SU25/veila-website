@@ -34,55 +34,8 @@ export default function ShopPage() {
     totalPages: 0,
   });
   const [shops, setShops] = useState<IShop[]>([]);
-  // const [stats, setStats] = useState({
-  //   total: 0,
-  //   active: 0,
-  //   pending: 0,
-  //   suspended: 0,
-  //   verified: 0,
-  // });
 
   const [getShops, { isLoading }] = useLazyGetShopsQuery();
-
-  // const getVerificationBadge = (isVerified: boolean) => {
-  //   return isVerified ? (
-  //     <Badge className="bg-blue-100 text-blue-700">
-  //         <ShieldCheck className="h-3 w-3 mr-1" />
-  //         Đã xác minh
-  //       </Badge>
-  //     ) : (
-  //       <Badge className="h-3 w-3 mr-1" />
-  //         Chưa xác minh
-  //       </Badge>
-  //     );
-  //   };
-
-  // const getStatusBadge = (status: ShopStatus) => {
-  //   const statusConfig = {
-  //     [ShopStatus.ACTIVE]: {
-  //       label: "Hoạt động",
-  //       className: "bg-green-100 text-green-700",
-  //     },
-  //     [ShopStatus.PENDING]: {
-  //       label: "Chờ duyệt",
-  //       className: "bg-yellow-100 text-yellow-700",
-  //     },
-  //     [ShopStatus.SUSPENDED]: {
-  //       label: "Tạm khóa",
-  //       className: "bg-red-100 text-red-700",
-  //     },
-  //     [ShopStatus.INACTIVE]: {
-  //       label: "Tạm ngưng",
-  //       className: "bg-gray-100 text-gray-700",
-  //     },
-  //     [ShopStatus.BANNED]: {
-  //       label: "Bị cấm",
-  //       className: "bg-red-200 text-red-800",
-  //     },
-  //   };
-  //   const config = statusConfig[status];
-  //   return <Badge className={config.className}>{config.label}</Badge>;
-  // };
 
   const getFilterText = (status: ShopStatus | null) => {
     switch (status) {
@@ -135,11 +88,6 @@ export default function ShopPage() {
       pageIndex: 0, // Reset to first page when changing page size
     }));
   };
-
-  // const handleStatusFilterChange = (value: string) => {
-  //   setStatusFilter(value === "all" ? null : (value as ShopStatus));
-  //   setPaging((prev) => ({ ...prev, pageIndex: 0 }));
-  // };
 
   useEffect(() => {
     fetchShops();
@@ -228,13 +176,6 @@ export default function ShopPage() {
                         <Eye className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                    </Button>
                   </div>
                 </div>
 
@@ -278,9 +219,6 @@ export default function ShopPage() {
                           Xem cửa hàng
                         </Button>
                       </Link>
-                      <Button variant="outline" size="sm" className="bg-transparent">
-                        <MessageCircle className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
                 </CardContent>

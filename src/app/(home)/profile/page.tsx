@@ -51,57 +51,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="flex-1">
-        {!isShop && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Đơn Hàng Đang Hoạt Động</p>
-                    <p className="text-2xl font-bold text-gray-900">2</p>
-                  </div>
-                  <ShoppingBag className="h-8 w-8 text-rose-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Yêu cầu đặt may</p>
-                    <p className="text-2xl font-bold text-gray-900">3</p>
-                  </div>
-                  <Calendar className="h-8 w-8 text-blue-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Tin Nhắn</p>
-                    <p className="text-2xl font-bold text-gray-900">5</p>
-                  </div>
-                  <MessageCircle className="h-8 w-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Yêu Thích</p>
-                    <p className="text-2xl font-bold text-gray-900">12</p>
-                  </div>
-                  <Heart className="h-8 w-8 text-purple-600" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className={`grid w-full ${isShop ? 'grid-cols-1' : 'grid-cols-4'}`}>

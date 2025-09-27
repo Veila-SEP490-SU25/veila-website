@@ -27,11 +27,11 @@ export function CreateChatButton({ receiverId, trigger }: CreateChatButtonProps)
   }, [createConversation, receiverId, currentUser, router]);
 
   return trigger ? (
-    <div onClick={handleCreateChat} className="cursor-pointer">
+    <div onClick={handleCreateChat} className="cursor-pointer w-full">
       {trigger}
     </div>
   ) : (
-    <Button onClick={handleCreateChat}>
+    <Button onClick={handleCreateChat} className='w-full'>
       <MessageCircle className="h-4 w-4 mr-2" />
       {isLoading ? 'Đang tạo...' : 'Nhắn tin'}
     </Button>
