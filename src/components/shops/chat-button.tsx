@@ -8,9 +8,7 @@ interface ShopChatButtonProps {
   shopId: string;
 }
 
-export function ShopChatButton({
-  shopId,
-}: ShopChatButtonProps) {
+export function ShopChatButton({ shopId }: ShopChatButtonProps) {
   return (
     <CreateChatButton
       receiverId={shopId}

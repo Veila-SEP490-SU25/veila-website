@@ -35,7 +35,7 @@ export const ImagesUpload: React.FC<ImagesUploadProps> = ({ imageUrls, setImageU
       if (file) {
         setIsUploading(true);
         try {
-          const data = await uploadFile(file, 'shop-licenses');
+          const data = await uploadFile(file);
           if (data) {
             const imgUrls = imageUrls ? `${imageUrls},${data.url}` : data.url;
             setImageUrls(imgUrls);

@@ -130,9 +130,7 @@ const ShopDetailPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <ShopChatButton
-              shopId={shop.user.id}
-            />
+            <ShopChatButton shopId={shop.user.id} />
           </div>
         </div>
       </div>

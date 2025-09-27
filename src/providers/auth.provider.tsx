@@ -299,7 +299,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       removeFromLocalStorage('user');
       return false;
     }
-  }, [refreshTrigger, saveTokens, setIsAuthenticated]);
+  }, [refreshTrigger, saveTokens, setIsAuthenticated, revokeTokens]);
 
   useEffect(() => {
     if (authCheckRef.current) return;

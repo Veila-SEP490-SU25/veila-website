@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UploadButton } from '@/components/upload-button';
-import { ISendMessagePayload, useSocket } from '@/hooks/use-socket';
+import { ISendMessagePayload } from '@/hooks/use-socket';
 import { useAuth } from '@/providers/auth.provider';
 import { IConversation, IMessage, UserRole } from '@/services/types';
 import { AvatarImage } from '@radix-ui/react-avatar';
@@ -74,7 +74,7 @@ export const ChatRoom = ({
   useEffect(() => {
     if (!imageUrl) return;
     handleSendMessage();
-  }, [handleSendMessage]);
+  }, [handleSendMessage, imageUrl]);
 
   if (!currentRoomId || !currentConv) {
     return (
