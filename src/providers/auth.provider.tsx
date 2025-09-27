@@ -58,7 +58,6 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const _pathname = usePathname();
 
   // Initialize auth state from localStorage after component mount
   useEffect(() => {
