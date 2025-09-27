@@ -16,6 +16,8 @@ import rehypeHighlight from 'rehype-highlight';
 import { ArrowLeft, Calendar, User, Share2, BookOpen, CheckCircle, Clock, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import 'highlight.js/styles/github.css';
+import { ImageGallery } from '@/components/image-gallery';
+import { getImages } from '@/lib/products-utils';
 
 export default function BlogDetailPage() {
   const router = useRouter();
@@ -223,6 +225,7 @@ export default function BlogDetailPage() {
           {/* Blog Content */}
           <Card className="border-pink-200 shadow-lg">
             <CardContent className="p-8">
+              <ImageGallery images={getImages(blog.images)} alt="img" />
               <div className="prose prose-lg prose-pink max-w-none">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}

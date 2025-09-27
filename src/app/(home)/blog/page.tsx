@@ -29,6 +29,7 @@ import {
   SortDesc,
   Filter,
 } from 'lucide-react';
+import { getCoverImage } from '@/lib/products-utils';
 
 export default function BlogListPage() {
   const router = useRouter();
@@ -136,7 +137,7 @@ export default function BlogListPage() {
   );
 
   const BlogCard = ({ blog }: { blog: IBlog }) => {
-    const image = extractImageFromContent(blog.content) || blog.images;
+    const image = getCoverImage(blog.images) || extractImageFromContent(blog.content);
     const excerpt = extractExcerpt(blog.content);
 
     return (
