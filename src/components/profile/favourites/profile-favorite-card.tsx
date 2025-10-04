@@ -1,4 +1,5 @@
 import { FavoriteDressesTab } from '@/components/profile/favourites/favorite-dressses';
+import { FavoriteShopsTab } from '@/components/profile/favourites/favorite-shops';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -16,7 +17,9 @@ export const ProfileFavoriteCard = () => {
           <TabsContent value="dresses">
             <FavoriteDressesTab />
           </TabsContent>
-          <TabsContent value="shops"></TabsContent>
+          <TabsContent value="shops">
+            <FavoriteShopsTab />
+          </TabsContent>
         </CardContent>
       </Tabs>
     </Card>
