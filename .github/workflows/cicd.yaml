@@ -39,3 +39,13 @@ jobs:
             -p 1207:3000 \
             --env-file .env \
             veila-website:latest
+
+  cleanup:
+    name: Cleanup
+    runs-on: [veila]
+    needs: [build, deploy]
+    steps:
+      - name: Cleanup unused images
+        run: |
+          docker image prune -f
+          docker system prune -f
