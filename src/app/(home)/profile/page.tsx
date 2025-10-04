@@ -11,6 +11,7 @@ import { CustomRequestsTab } from '@/components/profile/custom-requests/custom-r
 import { MembershipInfo } from '@/components/profile/membership-info';
 import { useAuth } from '@/providers/auth.provider';
 import { UserRole } from '@/services/types';
+import { ProfileFavoriteCard } from '@/components/profile/favourites/profile-favorite-card';
 
 export default function DashboardPage() {
   const { isAuthenticated, currentUser } = useAuth();
@@ -75,7 +76,9 @@ export default function DashboardPage() {
                 <CustomRequestsTab />
               </TabsContent>
 
-              <TabsContent value="favourite" className="space-y-6"></TabsContent>
+              <TabsContent value="favourite" className="space-y-6">
+                <ProfileFavoriteCard />
+              </TabsContent>
             </>
           )}
         </Tabs>

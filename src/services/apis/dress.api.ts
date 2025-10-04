@@ -103,7 +103,7 @@ export const dressApi = createApi({
 export const {
   useLazyGetDressesQuery,
   useLazyGetDressQuery,
-  useGetFavoritesQuery,
+  useLazyGetFavoritesQuery,
   useLazyGetMyShopDressQuery,
   useLazyGetMyShopDressesQuery,
   useCreateDressMutation,
