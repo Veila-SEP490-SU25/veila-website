@@ -44,6 +44,8 @@ type AuthContextType = {
   currentAccessToken: string | null;
   currentRefreshToken: string | null;
   currentUser: IUser | null;
+  saveTokens: (accessToken: string, refreshToken: string) => void;
+  revokeTokens: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -358,6 +360,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         verifyOtp,
         reloadProfile,
+        saveTokens,
+        revokeTokens,
+        refreshTokens,
         isAuthenticating:
           !isInitialized ||
           isLoginLoading ||
@@ -370,7 +375,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         currentAccessToken,
         currentRefreshToken,
         currentUser,
-        refreshTokens,
       }}
     >
       {children}

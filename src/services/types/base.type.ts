@@ -1,18 +1,8 @@
-export interface IItemResponse<T> {
-  message: string;
-  statusCode: number;
+export interface IItemResponse<T> extends IResponse {
   item: T;
 }
 
-export interface IListResponse<T> {
-  message: string;
-  statusCode: number;
-  pageIndex: number;
-  pageSize: number;
-  totalItems: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
+export interface IListResponse<T> extends IPaginationResponse, IResponse {
   items: T[];
 }
 
@@ -25,7 +15,7 @@ export interface IPaginationResponse {
   hasPrevPage: boolean;
 }
 
-export interface IErrorResponse {
+export interface IResponse {
   message: string;
   statusCode: number;
 }
