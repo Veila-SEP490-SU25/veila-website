@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { AlertCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import {
-  useGetComplaintReasonsQuery,
+  useLazyGetComplaintReasonsQuery,
   useCreateComplaintMutation,
   useConfirmNoComplaintMutation,
 } from '@/services/apis';
@@ -35,7 +35,13 @@ export const ComplaintForm = ({ orderId, onSuccess }: ComplaintFormProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [imageUrls, setImageUrls] = useState<string>('');
 
-  const { data: reasonsData, isLoading: isLoadingReasons } = useGetComplaintReasonsQuery();
+  const [getReasons, { data: reasonsData, isLoading: isLoadingReasons }] =
+    useLazyGetComplaintReasonsQuery();
+
+  // fetch reasons on mount
+  useEffect(() => {
+    getReasons({ page: 0, size: 10, filter: '', sort: '' });
+  }, [getReasons]);
   const [createComplaint, { isLoading: isCreating }] = useCreateComplaintMutation();
   const [confirmNoComplaint, { isLoading: isConfirmingNoComplaint }] =
     useConfirmNoComplaintMutation();

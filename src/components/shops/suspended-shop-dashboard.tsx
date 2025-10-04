@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   useLazyGetSubscriptionsQuery,
   useRegisterMembershipMutation,
-  useGetMyMembershipsQuery,
+  useLazyGetMyMembershipsQuery,
 } from '@/services/apis';
 import { ISubscription } from '@/services/types';
 import { RequestSmartOtpDialog } from '@/components/request-smart-otp-dialog';
@@ -24,7 +24,12 @@ export const SuspendedShopDashboard = () => {
   const [registerMembership] = useRegisterMembershipMutation();
 
   // Lấy thông tin membership hiện tại để so sánh
-  const { data: membershipsData } = useGetMyMembershipsQuery();
+  const [getMyMemberships, { data: membershipsData }] = useLazyGetMyMembershipsQuery();
+
+  // fetch memberships on mount
+  useEffect(() => {
+    getMyMemberships();
+  }, [getMyMemberships]);
 
   const fetchSubscriptions = useCallback(async () => {
     try {

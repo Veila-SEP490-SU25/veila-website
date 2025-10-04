@@ -17,9 +17,9 @@ import {
   useDeleteUpdateRequestMutation,
   useLazyGetUpdateRequestQuery,
 } from '@/services/apis';
-import { useGetComplaintReasonsCustomerQuery } from '@/services/apis/complaint.api';
+import { useLazyGetComplaintReasonsQuery } from '@/services/apis';
 import { toast } from 'sonner';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -97,11 +97,15 @@ export const MilestonesTab = ({
     images: '',
   });
 
-  // Fetch complaint reasons
-  const { data: complaintReasons, isLoading: isReasonsLoading } =
-    useGetComplaintReasonsCustomerQuery(undefined, {
-      skip: !showComplaintForm,
-    });
+  // Fetch complaint reasons when complaint form is shown
+  const [getComplaintReasons, { data: complaintReasons, isLoading: isReasonsLoading }] =
+    useLazyGetComplaintReasonsQuery();
+
+  useEffect(() => {
+    if (showComplaintForm) {
+      getComplaintReasons({ page: 0, size: 10, filter: '', sort: '' });
+    }
+  }, [showComplaintForm, getComplaintReasons]);
 
   // Create complaint mutation
   const [createComplaint, { isLoading: isCreatingComplaint }] = useCreateComplaintMutation();

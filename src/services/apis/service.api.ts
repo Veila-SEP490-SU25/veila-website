@@ -54,12 +54,6 @@ export const serviceApi = createApi({
   baseQuery: baseQueryWithRefresh,
   tagTypes: ['Service'],
   endpoints: (builder) => ({
-    // Lấy dịch vụ của shop
-    getShopServices: builder.query<IServiceResponse, string>({
-      query: (shopId) => `/shops/${shopId}/services`,
-      providesTags: ['Service'],
-    }),
-
     // Tạo dịch vụ mới
     createService: builder.mutation<IServiceResponse, ICreateService>({
       query: (data) => ({
@@ -91,9 +85,5 @@ export const serviceApi = createApi({
   }),
 });
 
-export const {
-  useGetShopServicesQuery,
-  useCreateServiceMutation,
-  useUpdateServiceMutation,
-  useDeleteServiceMutation,
-} = serviceApi;
+export const { useCreateServiceMutation, useUpdateServiceMutation, useDeleteServiceMutation } =
+  serviceApi;

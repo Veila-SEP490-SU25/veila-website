@@ -1,11 +1,12 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useGetCustomOrderRequestByIdQuery } from '@/services/apis/custom-order.api';
+import { useLazyGetCustomOrderRequestByIdQuery } from '@/services/apis/custom-order.api';
 
 import { formatDateDetailed } from '@/utils/format';
 import { ArrowLeft, Calendar, User, Ruler, MessageCircle, Eye, Download } from 'lucide-react';
@@ -15,15 +16,12 @@ export function CustomOrderDetail() {
   const router = useRouter();
   const requestId = params.id as string;
 
-  const {
-    data: response,
-    isLoading,
-    error,
-    refetch,
-  } = useGetCustomOrderRequestByIdQuery(requestId, {
-    skip: !requestId,
-    refetchOnMountOrArgChange: true,
-  });
+  const [getRequestById, { data: response, isLoading, error }] =
+    useLazyGetCustomOrderRequestByIdQuery();
+
+  useEffect(() => {
+    if (requestId) getRequestById(requestId);
+  }, [requestId, getRequestById]);
 
   const request = response?.item;
 
@@ -39,30 +37,7 @@ export function CustomOrderDetail() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="h-12 w-12 mx-auto border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
           <p className="text-lg font-medium">Đang tải thông tin yêu cầu...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    console.error('CustomOrderDetail - Detailed error:', error);
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="text-muted-foreground mb-4">
-            <User className="h-12 w-12 mx-auto opacity-50" />
-            <p className="text-lg font-medium mb-2">Lỗi khi tải dữ liệu</p>
-            <p className="text-sm text-red-600">Có lỗi xảy ra khi tải thông tin yêu cầu</p>
-            <pre className="text-xs mt-2 p-2 bg-gray-100 rounded text-left overflow-auto">
-              {JSON.stringify(error, null, 2)}
-            </pre>
-          </div>
-          <Button onClick={handleBack} variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
-          </Button>
         </div>
       </div>
     );
@@ -93,7 +68,7 @@ export function CustomOrderDetail() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Quay lại
         </Button>
-        <Button onClick={() => refetch()} variant="outline" size="sm">
+        <Button onClick={() => getRequestById(requestId)} variant="outline" size="sm">
           Tải lại
         </Button>
       </div>

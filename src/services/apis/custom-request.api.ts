@@ -84,7 +84,9 @@ export const customRequestApi = createApi({
 export const {
   useCreateCustomRequestMutation,
   useGetMyCustomRequestsQuery,
+  useLazyGetMyCustomRequestsQuery,
   useGetCustomRequestByIdQuery,
+  useLazyGetCustomRequestByIdQuery,
   useUpdateCustomRequestMutation,
   useDeleteCustomRequestMutation,
 } = customRequestApi;

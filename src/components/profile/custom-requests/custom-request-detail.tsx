@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -14,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { FileText, Ruler, Clock, EyeOff, CheckCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
-  useGetCustomRequestByIdQuery,
+  useLazyGetCustomRequestByIdQuery,
   useDeleteCustomRequestMutation,
   ICustomRequest,
 } from '@/services/apis';
@@ -37,9 +38,13 @@ export const CustomRequestDetail = ({
   _onEdit,
   onDelete,
 }: CustomRequestDetailProps) => {
-  const { data: requestData, isLoading } = useGetCustomRequestByIdQuery(requestId, {
-    skip: !open || !requestId,
-  });
+  const [getRequestById, { data: requestData, isLoading }] = useLazyGetCustomRequestByIdQuery();
+
+  useEffect(() => {
+    if (open && requestId) {
+      getRequestById(requestId);
+    }
+  }, [open, requestId, getRequestById]);
   const [deleteCustomRequest] = useDeleteCustomRequestMutation();
 
   const request = requestData?.item;

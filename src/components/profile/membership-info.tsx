@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Crown, Calendar, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,12 +8,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useGetMyMembershipsQuery } from '@/services/apis';
+import { useLazyGetMyMembershipsQuery } from '@/services/apis';
 import { MembershipStatus } from '@/services/types';
 import { MembershipPackagesDialog } from './membership-packages-dialog';
 
 export const MembershipInfo = () => {
-  const { data: membershipsData, isLoading, error } = useGetMyMembershipsQuery();
+  const [getMemberships, { data: membershipsData, isLoading, error }] =
+    useLazyGetMyMembershipsQuery();
+
+  // fetch on mount
+  useEffect(() => {
+    getMemberships();
+  }, [getMemberships]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('vi-VN', {

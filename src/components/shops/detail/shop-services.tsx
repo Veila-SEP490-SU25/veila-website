@@ -12,10 +12,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useCreateServiceMutation, useGetShopServicesQuery } from '@/services/apis/service.api';
+import { useCreateServiceMutation, useLazyGetShopServicesQuery } from '@/services/apis';
 import { Star, Plus, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 interface ShopServicesProps {
@@ -29,7 +29,13 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
     description: '',
   });
 
-  const { data: servicesResponse, isLoading, refetch } = useGetShopServicesQuery(id);
+  const [getServices, { data: servicesResponse, isLoading }] = useLazyGetShopServicesQuery();
+
+  // trigger fetch on mount
+  useEffect(() => {
+    // shopApi.getShopServices expects an object of type IGetShopItem (id + pagination)
+    getServices({ id, page: 0, size: 10, filter: '', sort: '' });
+  }, [getServices, id]);
   const [createService, { isLoading: isCreating }] = useCreateServiceMutation();
 
   const handleCreateService = async () => {
@@ -56,7 +62,8 @@ export const ShopServices = ({ id }: ShopServicesProps) => {
         name: '',
         description: '',
       });
-      refetch();
+      // refetch using lazy trigger (pass the same arg shape)
+      getServices({ id, page: 0, size: 10, filter: '', sort: '' });
     } catch (error: any) {
       // Xử lý error message an toàn
       let errorMessage = 'Không thể tạo dịch vụ';

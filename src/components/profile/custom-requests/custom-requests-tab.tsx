@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +16,7 @@ import { Plus, FileText, Clock, CheckCircle, EyeOff, Search, Filter } from 'luci
 import { CreateCustomRequestDialog } from '@/components/profile/custom-requests/create-custom-request-dialog';
 import { CustomRequestDetail } from '@/components/profile/custom-requests/custom-request-detail';
 import {
-  useGetMyCustomRequestsQuery,
+  useLazyGetMyCustomRequestsQuery,
   useDeleteCustomRequestMutation,
   ICustomRequest,
 } from '@/services/apis';
@@ -31,7 +31,12 @@ export const CustomRequestsTab = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   // Fetch custom requests
-  const { data: requestsData, isLoading, refetch } = useGetMyCustomRequestsQuery();
+  const [getRequests, { data: requestsData, isLoading }] = useLazyGetMyCustomRequestsQuery();
+
+  // trigger on mount
+  useEffect(() => {
+    getRequests();
+  }, [getRequests]);
   const [deleteCustomRequest] = useDeleteCustomRequestMutation();
 
   // Memoize requests to prevent unnecessary re-renders
@@ -80,7 +85,8 @@ export const CustomRequestsTab = () => {
         const result = await deleteCustomRequest(id).unwrap();
         if (result.statusCode === 200) {
           toast.success('Xóa yêu cầu thành công!');
-          refetch();
+          // refetch via lazy trigger
+          getRequests();
         } else {
           toast.error('Xóa yêu cầu thất bại', { description: result.message });
         }
@@ -276,7 +282,7 @@ export const CustomRequestsTab = () => {
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         _onSuccess={() => {
-          refetch();
+          getRequests();
           setIsCreateDialogOpen(false);
         }}
       />
@@ -287,7 +293,7 @@ export const CustomRequestsTab = () => {
         onOpenChange={(open) => !open && setEditRequest(null)}
         _editData={editRequest}
         _onSuccess={() => {
-          refetch();
+          getRequests();
           setEditRequest(null);
         }}
       />
@@ -304,7 +310,7 @@ export const CustomRequestsTab = () => {
           }}
           onDelete={() => {
             setSelectedRequestId(null);
-            refetch();
+            getRequests();
           }}
         />
       )}

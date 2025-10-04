@@ -47,4 +47,5 @@ export const {
   useRegisterMembershipMutation,
   useCancelMembershipMutation,
   useGetMyMembershipsQuery,
+  useLazyGetMyMembershipsQuery,
 } = membershipApi;
