@@ -20,6 +20,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import Image from 'next/image';
 import { BlogVerifyDialog } from '@/components/staff/blogs/blog-verify-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function BlogDetailPage() {
   const { blogId } = useParams() as { blogId: string };
@@ -127,16 +128,25 @@ export default function BlogDetailPage() {
             {/* Author and Date */}
             <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-6">
               <div className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                <span className="font-medium">Tác giả</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                <span>{formatDateShort(blog.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                <span>{Math.ceil((blog.content?.length || 0) / 1000)} phút đọc</span>
+                <Avatar className="size-12">
+                  <AvatarImage src={blog.user.shop?.logoUrl || undefined} />
+                  <AvatarFallback>{blog.user.shop?.name}</AvatarFallback>
+                </Avatar>
+
+                <div className="space-y-1 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <User className="size-3" />
+                    <span>{blog.user.shop?.name}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="size-3" />
+                    <span>{formatDateShort(blog.createdAt)}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="size-3" />
+                    <span>{Math.ceil((blog.content?.length || 0) / 1000)} phút đọc</span>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>

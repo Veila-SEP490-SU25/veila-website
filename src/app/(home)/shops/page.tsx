@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 // import { useRouter } from "next/navigation";
 // import { Badge } from "@/components/ui/badge";
-import { Eye, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { Eye, Mail, MapPin, Phone } from 'lucide-react';
 import { IPaginationResponse, IShop, ShopStatus } from '@/services/types';
 import { useLazyGetShopsQuery } from '@/services/apis';
 import { toast } from 'sonner';

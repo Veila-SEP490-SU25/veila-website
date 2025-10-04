@@ -31,7 +31,7 @@ export function CreateChatButton({ receiverId, trigger }: CreateChatButtonProps)
       {trigger}
     </div>
   ) : (
-    <Button onClick={handleCreateChat} className='w-full'>
+    <Button onClick={handleCreateChat} className="w-full">
       <MessageCircle className="h-4 w-4 mr-2" />
       {isLoading ? 'Đang tạo...' : 'Nhắn tin'}
     </Button>
