@@ -19,7 +19,7 @@ import { Eye, Trash2, DollarSign, Ruler, Palette, Shirt } from 'lucide-react';
 import type { IDress } from '@/services/types';
 import { dressStatusColors, dressStatusLabels, formatPrice, getImages } from '@/lib/products-utils';
 import { ImageGallery } from '@/components/image-gallery';
-import { ConfirmDialog } from '@/components/confirm-dialog.tsx';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useDeleteDressMutation } from '@/services/apis';
 import { toast } from 'sonner';
 

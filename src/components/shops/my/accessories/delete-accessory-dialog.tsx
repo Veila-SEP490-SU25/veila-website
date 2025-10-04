@@ -26,7 +26,7 @@ import {
 } from '@/lib/products-utils';
 import { useDeleteAccessoryMutation } from '@/services/apis';
 import { toast } from 'sonner';
-import { ConfirmDialog } from '@/components/confirm-dialog.tsx';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 
 interface DeleteAccessoryDialogProps {
   accessory: IAccessory;
