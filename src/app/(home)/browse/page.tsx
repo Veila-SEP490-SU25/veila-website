@@ -137,7 +137,7 @@ export default function BrowsePage() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text">
               Duyệt Váy Cưới
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
