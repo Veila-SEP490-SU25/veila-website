@@ -298,7 +298,7 @@ export const CustomRequestsTab = () => {
           open={!!selectedRequestId}
           onOpenChange={(open) => !open && setSelectedRequestId(null)}
           requestId={selectedRequestId}
-          onEdit={(request) => {
+          _onEdit={(request) => {
             setSelectedRequestId(null);
             setEditRequest(request);
           }}

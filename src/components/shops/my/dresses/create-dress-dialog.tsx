@@ -393,21 +393,6 @@ export function CreateDressDialog({ trigger, onSuccess }: CreateDressDialogProps
                   <ImagesUpload imageUrls={imageUrls} setImageUrls={(urls) => setImageUrls(urls)} />
                 </div>
               </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Danh mục</h3>
-                <div className="space-y-3">
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryId">Danh mục váy</Label>
-                    <Input
-                      id="categoryId"
-                      placeholder="Chọn danh mục (tùy chọn)"
-                      value={dressData.categoryId || ''}
-                      onChange={(e) => handleInputChange('categoryId', e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </ScrollArea>
