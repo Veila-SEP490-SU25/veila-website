@@ -22,3 +22,4 @@ export * from './feedback.type';
 export * from './complaint.type';
 export * from './chat.type';
 export * from './locale.type';
+export * from './appsetting.type';

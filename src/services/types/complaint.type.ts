@@ -45,14 +45,3 @@ export interface ICreateComplaint {
   images: string;
   status: ComplaintStatus;
 }
-
-export interface IComplaintReason {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  code: string;
-  reason: string;
-  reputationPenalty: number;
-  type: string;
-}

@@ -22,3 +22,4 @@ export * from './locale.api';
 export * from './membership.api';
 export * from './vonage.api';
 export * from './upload.api';
+export * from './appsetting.api';
