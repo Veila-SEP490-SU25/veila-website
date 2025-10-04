@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithRefresh } from '@/services/apis/base.query';
 import {
   IAddNewMilestoneTemplate,
+  IUpdateMilestoneTemplate,
   IAppSetting,
   IComplaintReason,
   ICreateComplaintReason,
@@ -144,7 +145,7 @@ export const appsettingApi = createApi({
       }),
     }),
 
-    updateMilestoneTemplate: builder.mutation<IItemResponse<null>, IUpdateComplaintReason>({
+    updateMilestoneTemplate: builder.mutation<IItemResponse<null>, IUpdateMilestoneTemplate>({
       query: (body) => {
         const { id, ...bodyWithoutId } = body;
         return {

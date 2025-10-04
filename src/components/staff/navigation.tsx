@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   MessageSquare,
+  Settings2,
   ShoppingBag,
   Store,
   TrendingUpDown,
@@ -72,6 +73,12 @@ const modRoutes = [
     name: 'Người Dùng',
     href: '/staff/users',
     icon: Users,
+    allowedRoles: adminRoles,
+  },
+  {
+    name: 'Cài Đặt',
+    href: '/staff/app-settings',
+    icon: Settings2,
     allowedRoles: adminRoles,
   },
 ];

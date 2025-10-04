@@ -1,5 +1,6 @@
 import {
   accessoryApi,
+  appsettingApi,
   authApi,
   blogApi,
   categoryApi,
@@ -53,6 +54,7 @@ const store = configureStore({
     [membershipApi.reducerPath]: membershipApi.reducer,
     [vonageApi.reducerPath]: vonageApi.reducer,
     [uploadApi.reducerPath]: uploadApi.reducer,
+    [appsettingApi.reducerPath]: appsettingApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -80,6 +82,7 @@ const store = configureStore({
       membershipApi.middleware,
       vonageApi.middleware,
       uploadApi.middleware,
+      appsettingApi.middleware,
     ),
 });
 
