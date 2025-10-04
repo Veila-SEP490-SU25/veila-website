@@ -130,12 +130,14 @@ export const appsettingApi = createApi({
       }),
     }),
 
-    getMilestoneTemplate: builder.query<IListResponse<IMilestoneTemplate>, IGetMilestoneTemplate>({
-      query: ({ type }) => ({
-        url: `/app-settings/milestone-templates/${type}`,
-        method: 'GET',
-      }),
-    }),
+    getMilestoneTemplate: builder.query<IItemResponse<IMilestoneTemplate[]>, IGetMilestoneTemplate>(
+      {
+        query: ({ type }) => ({
+          url: `/app-settings/milestone-templates/${type}`,
+          method: 'GET',
+        }),
+      },
+    ),
 
     addMilestoneTemplate: builder.mutation<IItemResponse<null>, IAddNewMilestoneTemplate>({
       query: (body) => ({

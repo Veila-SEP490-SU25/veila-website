@@ -34,14 +34,21 @@ interface Props {
 
 export const MilestoneTemplatesTab: React.FC<Props> = ({ milestoneType, setMilestoneType }) => {
   const [_page] = useState(0);
-  const [triggerGetMilestoneTemplate, { data }] = useLazyGetMilestoneTemplateQuery();
+  const [triggerGetMilestoneTemplate] = useLazyGetMilestoneTemplateQuery();
   const [removeMilestoneTemplate] = useRemoveMilestoneTemplateMutation();
   const [showDialog, setShowDialog] = useState(false);
   const [editing, setEditing] = useState<IMilestoneTemplate | null>(null);
+  const [items, setItems] = useState<IMilestoneTemplate[]>([]);
 
   const load = useCallback(async () => {
     try {
-      await triggerGetMilestoneTemplate({ type: milestoneType }).unwrap();
+      const res = await triggerGetMilestoneTemplate({
+        type: milestoneType,
+      }).unwrap();
+      console.log('Loaded milestone templates:', res);
+      if (isSuccess(res.statusCode)) {
+        setItems(res.item);
+      }
     } catch (err) {
       console.error('Error loading milestone templates', err);
     }
@@ -72,8 +79,6 @@ export const MilestoneTemplatesTab: React.FC<Props> = ({ milestoneType, setMiles
       toast.error('Không thể xóa mốc thời gian');
     }
   };
-
-  const items = data?.items || [];
 
   return (
     <>
@@ -124,21 +129,19 @@ export const MilestoneTemplatesTab: React.FC<Props> = ({ milestoneType, setMiles
                   </TableCell>
                 </TableRow>
               ) : (
-                items
-                  .sort((a, b) => a.index - b.index)
-                  .map((milestone) => (
-                    <TableRow key={milestone.id}>
-                      <TableCell>{milestone.index}</TableCell>
-                      <TableCell className="font-medium">{milestone.title}</TableCell>
-                      <TableCell className="max-w-md truncate">{milestone.description}</TableCell>
-                      <TableCell>{milestone.timeGap} ngày</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="icon" onClick={() => handleOpen(milestone)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                items.map((milestone) => (
+                  <TableRow key={milestone.id}>
+                    <TableCell>{milestone.index}</TableCell>
+                    <TableCell className="font-medium">{milestone.title}</TableCell>
+                    <TableCell className="max-w-md truncate">{milestone.description}</TableCell>
+                    <TableCell>{milestone.timeGap} ngày</TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => handleOpen(milestone)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
             </TableBody>
           </Table>
