@@ -4,9 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 // Button not used in this parent; specific tabs render their own buttons
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings } from 'lucide-react';
-import GeneralSettingsTab from '@/components/staff/app-settings/GeneralSettingsTab';
-import ComplaintReasonsTab from '@/components/staff/app-settings/ComplaintReasonsTab';
-import MilestoneTemplatesTab from '@/components/staff/app-settings/MilestoneTemplatesTab';
+import GeneralSettingsTab from '@/components/staff/app-settings/general-setting-tab';
+import ComplaintReasonsTab from '@/components/staff/app-settings/compaint-reason-tab';
+import MilestoneTemplatesTab from '@/components/staff/app-settings/milestone-template-tab';
 import {
   useLazyGetCancelPenaltyQuery,
   useSetCancelPenaltyMutation,

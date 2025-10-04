@@ -16,7 +16,7 @@ import {
   useLazyGetComplaintReasonsQuery,
   useDeleteComplaintReasonMutation,
 } from '@/services/apis/appsetting.api';
-import ComplaintReasonDialog from './ComplaintReasonDialog';
+import ComplaintReasonDialog from './complaint-reason-dialog';
 import { toast } from 'sonner';
 import { isSuccess } from '@/lib/utils';
 

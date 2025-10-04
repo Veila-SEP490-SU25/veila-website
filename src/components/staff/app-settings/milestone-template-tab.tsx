@@ -22,7 +22,7 @@ import {
   useLazyGetMilestoneTemplateQuery,
   useRemoveMilestoneTemplateMutation,
 } from '@/services/apis/appsetting.api';
-import MilestoneDialog from './MilestoneDialog';
+import MilestoneDialog from './milestone-dialog';
 import { toast } from 'sonner';
 import { isSuccess } from '@/lib/utils';
 
