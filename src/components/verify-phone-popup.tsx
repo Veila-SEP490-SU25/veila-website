@@ -260,31 +260,38 @@ export function VerifyPhonePopup() {
               <div className="space-y-2">
                 <Label htmlFor="otp">Nhập mã OTP *</Label>
                 <InputOTP
-                  value={otp}
-                  onChange={(value) => {
-                    setOtp(value);
-                    setError(''); // Clear error when user types
-                  }}
                   maxLength={6}
-                  disabled={isVerifying}
-                  render={({ slots }) => (
-                    <InputOTPGroup className="gap-2">
-                      {slots && slots.length > 0
-                        ? slots.map((slot, index) => (
-                            <InputOTPSlot
-                              key={index}
-                              {...slot}
-                              index={index}
-                              className="w-12 h-12 text-lg"
-                            />
-                          ))
-                        : // Fallback khi slots chưa sẵn sàng
-                          Array.from({ length: 6 }).map((_, index) => (
-                            <InputOTPSlot key={index} index={index} className="w-12 h-12 text-lg" />
-                          ))}
-                    </InputOTPGroup>
-                  )}
-                />
+                  value={otp}
+                  onChange={(value) => setOtp(value)}
+                  className="gap-2"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot
+                      index={0}
+                      className="w-12 h-12 text-lg font-bold border-2 focus:border-rose-500"
+                    />
+                    <InputOTPSlot
+                      index={1}
+                      className="w-12 h-12 text-lg font-bold border-2 focus:border-rose-500"
+                    />
+                    <InputOTPSlot
+                      index={2}
+                      className="w-12 h-12 text-lg font-bold border-2 focus:border-rose-500"
+                    />
+                    <InputOTPSlot
+                      index={3}
+                      className="w-12 h-12 text-lg font-bold border-2 focus:border-rose-500"
+                    />
+                    <InputOTPSlot
+                      index={4}
+                      className="w-12 h-12 text-lg font-bold border-2 focus:border-rose-500"
+                    />
+                    <InputOTPSlot
+                      index={5}
+                      className="w-12 h-12 text-lg font-bold border-2 focus:border-rose-500"
+                    />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
 
               <Button
