@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getCoverImage } from '@/lib/products-utils';
 import { useLazyGetShopBlogsQuery } from '@/services/apis';
 import { IBlog, IPaginationResponse } from '@/services/types';
 import { BookOpen, Calendar } from 'lucide-react';
@@ -143,7 +144,7 @@ export const ShopBlogs: React.FC<Props> = ({ id }) => {
               >
                 <div className="relative">
                   <Image
-                    src={blog.images || '/placeholder.svg'}
+                    src={getCoverImage(blog.images) || '/placeholder.svg'}
                     alt={blog.title}
                     width={400}
                     height={250}

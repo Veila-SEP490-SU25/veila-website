@@ -14,16 +14,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useLazyGetCustomOrderRequestsQuery } from '@/services/apis/custom-order.api';
-import type { ICustomOrderRequest } from '@/services/types/custom-order.type';
+import type { ICustomOrderRequestDetail } from '@/services/types/custom-order.type';
 import { customOrderStatusLabels } from '@/services/types/custom-order.type';
 import { formatDateShort } from '@/utils/format';
 import { Search, Filter, Eye, Calendar, User, Ruler, MessageCircle } from 'lucide-react';
+import { CreateChatButton } from '@/components/chat/create-chat-button';
 
 export function CustomOrdersList() {
   const router = useRouter();
-  const [requests, setRequests] = useState<ICustomOrderRequest[]>([]);
+  const [requests, setRequests] = useState<ICustomOrderRequestDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -86,11 +87,6 @@ export function CustomOrdersList() {
 
   const handlePageSizeChange = (newSize: number) => {
     setPagination((prev) => ({ ...prev, pageSize: newSize, pageIndex: 0 }));
-  };
-
-  const handleChat = (request: ICustomOrderRequest) => {
-    // Navigate to chat page
-    router.push(`/chat?requestId=${request.id}`);
   };
 
   const handleViewDetail = (requestId: string) => {
@@ -175,15 +171,15 @@ export function CustomOrdersList() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChat(request)}
-                      className="flex items-center gap-2"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      Nhắn tin ngay
-                    </Button>
+                    <CreateChatButton
+                      receiverId={request.user.id}
+                      trigger={
+                        <Button className="" variant="outline">
+                          <MessageCircle className="size-4 mr-2" />
+                          Nhắn tin
+                        </Button>
+                      }
+                    />
                     <Button
                       variant="outline"
                       size="sm"
@@ -199,18 +195,25 @@ export function CustomOrdersList() {
                 {/* Customer Information */}
                 <div className="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
                   <Avatar className="h-12 w-12">
+                    <AvatarImage src={request.user.avatarUrl || undefined} alt="Avatar" />
                     <AvatarFallback className="bg-primary text-primary-foreground">
                       KH
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-gray-900">Khách hàng</h4>
+                      <h4 className="font-medium text-gray-900">
+                        {request.user.firstName +
+                          ' ' +
+                          request.user.middleName +
+                          ' ' +
+                          request.user.lastName || 'Khách hàng'}
+                      </h4>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <div className="flex items-center gap-1">
                         <User className="h-4 w-4" />
-                        <span>Yêu cầu đặt may</span>
+                        <span>{request.user.email || 'Khách hàng'}</span>
                       </div>
                     </div>
                   </div>

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Ruler, Clock, EyeOff, CheckCircle, Edit, Trash2 } from 'lucide-react';
+import { FileText, Ruler, Clock, EyeOff, CheckCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   useGetCustomRequestByIdQuery,
@@ -19,12 +19,14 @@ import {
   ICustomRequest,
 } from '@/services/apis';
 import { formatDateShort } from '@/lib/order-util';
+import { ImageGallery } from '@/components/image-gallery';
+import { getImages } from '@/lib/products-utils';
 
 interface CustomRequestDetailProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   requestId: string;
-  onEdit?: (request: ICustomRequest) => void;
+  _onEdit?: (request: ICustomRequest) => void;
   onDelete?: () => void;
 }
 
@@ -32,7 +34,7 @@ export const CustomRequestDetail = ({
   open,
   onOpenChange,
   requestId,
-  onEdit,
+  _onEdit,
   onDelete,
 }: CustomRequestDetailProps) => {
   const { data: requestData, isLoading } = useGetCustomRequestByIdQuery(requestId, {
@@ -208,12 +210,6 @@ export const CustomRequestDetail = ({
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {onEdit && (
-                    <Button variant="outline" size="sm" onClick={() => onEdit(request)}>
-                      <Edit className="h-4 w-4 mr-1" />
-                      Chỉnh sửa
-                    </Button>
-                  )}
                   <Button
                     variant="outline"
                     size="sm"
@@ -236,9 +232,7 @@ export const CustomRequestDetail = ({
                 {request.images && (
                   <div>
                     <h4 className="font-medium mb-2">Hình ảnh tham khảo</h4>
-                    <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm">
-                      {request.images}
-                    </p>
+                    <ImageGallery images={getImages(request.images)} alt="Hình ảnh yêu cầu" />
                   </div>
                 )}
 

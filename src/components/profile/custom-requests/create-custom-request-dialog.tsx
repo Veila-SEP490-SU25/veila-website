@@ -22,6 +22,7 @@ import {
   ICustomRequest,
   ICreateCustomRequest,
 } from '@/services/apis';
+import { ImagesUpload } from '@/components/images-upload';
 
 interface CreateCustomRequestDialogProps {
   open: boolean;
@@ -161,9 +162,9 @@ export const CreateCustomRequestDialog = ({
 
       if (result.statusCode === 201) {
         toast.success('Tạo yêu cầu đặt may thành công!');
+        _onSuccess?.();
         onOpenChange(false);
         setCurrentStep(1);
-        // Reset form data
         setRequestData({
           title: '',
           description: '',
@@ -287,20 +288,12 @@ export const CreateCustomRequestDialog = ({
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="images">Hình ảnh tham khảo</Label>
-                    <Input
-                      id="images"
-                      placeholder="Link hình ảnh tham khảo (cách nhau bằng dấu phẩy)"
-                      value={requestData.images}
-                      onChange={(e) =>
-                        setRequestData((prev) => ({
-                          ...prev,
-                          images: e.target.value,
-                        }))
+                    <ImagesUpload
+                      imageUrls={requestData.images}
+                      setImageUrls={(value) =>
+                        setRequestData((prev) => ({ ...prev, images: value }))
                       }
                     />
-                    <p className="text-xs text-gray-500">
-                      Có thể nhập nhiều link hình ảnh, cách nhau bằng dấu phẩy
-                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

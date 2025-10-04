@@ -20,7 +20,7 @@ import {
   setToLocalStorage,
   cleanupCorruptTokens,
 } from '@/lib/utils/index';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,

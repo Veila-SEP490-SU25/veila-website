@@ -2,10 +2,10 @@
 
 interface RequireAuthProps {
   children: React.ReactNode;
-  fallback?: React.ReactNode;
+  _fallback?: React.ReactNode;
 }
 
-export const RequireAuth: React.FC<RequireAuthProps> = ({ children, fallback }) => {
+export const RequireAuth: React.FC<RequireAuthProps> = ({ children, _fallback }) => {
   // const { isAuthenticated, currentUser } = useAuth();
   // const router = useRouter();
 

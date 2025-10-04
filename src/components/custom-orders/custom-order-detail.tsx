@@ -227,7 +227,7 @@ export function CustomOrderDetail() {
                         height={120}
                         className="w-full h-48 object-cover rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
                       />
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center">
+                      <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center">
                         <Button
                           variant="secondary"
                           size="sm"

@@ -1,7 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithRefresh } from './base.query';
 import type { IListResponse } from '../types/base.type';
-import type { ICustomOrderRequest, ICustomOrderRequestResponse } from '../types/custom-order.type';
+import type {
+  ICustomOrderRequestDetail,
+  ICustomOrderRequestResponse,
+} from '../types/custom-order.type';
 
 export const customOrderApi = createApi({
   reducerPath: 'customOrderApi',
@@ -9,7 +12,7 @@ export const customOrderApi = createApi({
   tagTypes: ['CustomOrder'],
   endpoints: (builder) => ({
     getCustomOrderRequests: builder.query<
-      IListResponse<ICustomOrderRequest>,
+      IListResponse<ICustomOrderRequestDetail>,
       { pageIndex: number; pageSize: number; filter?: string; sort?: string }
     >({
       query: (params) => ({

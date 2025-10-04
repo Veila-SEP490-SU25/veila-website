@@ -246,9 +246,6 @@ export const CustomRequestsTab = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => setEditRequest(request)}>
-                          Chỉnh sửa
-                        </Button>
                         <Button
                           variant="outline"
                           size="sm"

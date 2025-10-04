@@ -54,6 +54,9 @@ export const customRequestApi = createApi({
       query: () => ({
         url: 'requests/me',
         method: 'GET',
+        params: {
+          order: 'createdAt:desc',
+        },
       }),
     }),
     getCustomRequestById: builder.query<IItemResponse<ICustomRequest>, string>({

@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useLazyGetShopQuery } from '@/services/apis';
 import { IShop } from '@/services/types';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs';
-import { ArrowLeft, Mail, MapPin, Phone, Share2 } from 'lucide-react';
+import { ArrowLeft, Mail, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -93,10 +93,11 @@ const ShopDetailPage = () => {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute top-4 right-4 flex gap-2">
-          <Button variant="secondary" size="icon" className="bg-white/90 hover:bg-white">
-            <Share2 className="h-4 w-4" />
-          </Button>
+        <div className="absolute top-4 right-4">
+          <CreateCustomOrderDialog
+            children={<Button className="mt-4 bg-rose-600 hover:bg-rose-700">Đặt may ngay</Button>}
+            shopId={shop.id}
+          />
         </div>
       </div>
 
@@ -137,7 +138,7 @@ const ShopDetailPage = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7 bg-gray-100/50 p-1 rounded-lg">
+        <TabsList className="grid w-full grid-cols-5 bg-gray-100/50 p-1 rounded-lg">
           <TabsTrigger
             value="about"
             className="relative py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
@@ -155,18 +156,6 @@ const ShopDetailPage = () => {
             className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
           >
             Phụ kiện
-          </TabsTrigger>
-          <TabsTrigger
-            value="custom"
-            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
-          >
-            Đặt may
-          </TabsTrigger>
-          <TabsTrigger
-            value="services"
-            className="relative  py-2 rounded-md transition-all duration-300 ease-out focus:outline-none focus:ring-0 focus:bg-white focus:shadow-lg focus:scale-105 hover:bg-white/80 hover:shadow-md data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-lg data-[state=active]:font-medium"
-          >
-            Dịch vụ
           </TabsTrigger>
           <TabsTrigger
             value="blogs"
@@ -235,7 +224,7 @@ const ShopDetailPage = () => {
 
         {/* Info Tab */}
         <TabsContent value="info">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>Thông tin liên hệ</CardTitle>
@@ -261,26 +250,6 @@ const ShopDetailPage = () => {
                     <p className="font-medium">Email</p>
                     <p className="text-gray-600">{shop.email}</p>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Giờ làm việc</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Thứ 2 - Thứ 6:</span>
-                  <span className="font-medium">9:00 - 18:00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Thứ 7:</span>
-                  <span className="font-medium">9:00 - 17:00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Chủ nhật:</span>
-                  <span className="font-medium">10:00 - 16:00</span>
                 </div>
               </CardContent>
             </Card>
